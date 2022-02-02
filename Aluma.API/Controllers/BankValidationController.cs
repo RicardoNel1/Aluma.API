@@ -59,12 +59,13 @@ namespace Aluma.API.Controllers
             return Ok("Bank Details Updated");
         }
 
-        [HttpGet]
-        public IActionResult GetClientBankDetails([FromBody] ClientDto dto)
+        [HttpGet, AllowAnonymous]
+        //public IActionResult GetClientBankDetails([FromBody] ClientDto dto)
+        public IActionResult GetClientBankDetails(int clientId)
         {
             try
             {
-                BankDetailsDto bankDetails = _repo.BankDetails.GetBankDetails(dto);
+                BankDetailsDto bankDetails = _repo.BankDetails.GetBankDetails(clientId);
 
                 return Ok(bankDetails);
             }
