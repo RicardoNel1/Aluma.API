@@ -1,0 +1,188 @@
+﻿using Aluma.API.Repositories;
+using AutoMapper;
+using Azure.Storage.Files.Shares;
+using BankValidationService;
+using DataService.Context;
+using FileStorageService;
+using JwtService;
+using KycService;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using SignatureService;
+using SmsService;
+using StringHasher;
+
+namespace Aluma.API.RepoWrapper
+{
+    public class Wrapper : IWrapper
+    {
+        private IAdvisorRepo _advisor;
+
+        private IApplicationDocumentsRepo _applicationDocuments;
+        private IApplicationRepo _application;
+
+        //private IDividendTaxRepo _dividendTax;
+        private IFspMandateRepo _fspMandate;
+
+        private IIRSW8Repo _irsw8;
+        private IIRSW9Repo _irsw9;
+        private IPurposeAndFundingRepo _purposeAndFunding;
+        private IRecordOfAdviceRepo _recordOfAdvice;
+
+        private IBankDetailsRepo _bankDetails;
+        private IClientRepo _client;
+        private IKycDataRepo _kycData;
+        private IRiskProfileRepo _riskProfile;
+
+        private IDisclosureRepo _disclosures;
+
+        private IOtpRepo _otp;
+        private IUserRepo _user;
+        private IUserDocumentsRepo _userDocuments;
+
+        private ISmsRepo _sms;
+        private IJwtRepo _jwt;
+        private IKycFactoryRepo _kyc;
+        private IBankValidationServiceRepo _bankValidation;
+        private readonly ISignatureRepo _signature;
+        private IFileStorageRepo _fileStorage;
+
+        private IStringHasher _hasher;
+
+        private AlumaDBContext _dbContext;
+        private IConfiguration _config;
+        private readonly IWebHostEnvironment _host;
+        private IMapper _mapper;
+        private readonly ShareServiceClient _shareServiceClient;
+
+        public Wrapper(AlumaDBContext dbContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage)
+        {
+            _dbContext = dbContext;
+            _host = host;
+            _config = config;
+            _mapper = mapper;
+            _fileStorage = fileStorage;
+        }
+
+        public IAdvisorRepo Advisor
+        {
+            get { return _advisor == null ? new AdvisorRepo(_dbContext, _host, _config, _mapper) : _advisor; }
+        }
+
+        public IApplicationDocumentsRepo ApplicationDocuments
+        {
+            get { return _applicationDocuments == null ? new ApplicationDocumentsRepo(_dbContext, _host, _config, _mapper) : _applicationDocuments; }
+        }
+
+        public IApplicationRepo Applications
+        {
+            get { return _application == null ? new ApplicationRepo(_dbContext, _host, _config, _mapper) : _application; }
+        }
+
+        //public IDividendTaxRepo DividendTax
+        //{
+        //    get { return _dividendTax == null ? new DividendTaxRepo(_dbContext) : _dividendTax; }
+        //}
+        public IFspMandateRepo FSPMandate
+        {
+            get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper) : _fspMandate; }
+        }
+
+        public IIRSW8Repo IRSW8
+        {
+            get { return _irsw8 == null ? new IRSW8Repo(_dbContext, _host, _config, _mapper) : _irsw8; }
+        }
+
+        public IIRSW9Repo IRSW9
+        {
+            get { return _irsw9 == null ? new IRSW9Repo(_dbContext, _host, _config, _mapper) : _irsw9; }
+        }
+
+        public IPurposeAndFundingRepo PurposeAndFunding
+        {
+            get { return _purposeAndFunding == null ? new PurposeAndFundingRepo(_dbContext) : _purposeAndFunding; }
+        }
+
+        public IRecordOfAdviceRepo RecordOfAdvice
+        {
+            get { return _recordOfAdvice == null ? new RecordOfAdviceRepo(_dbContext, _host, _config, _mapper) : _recordOfAdvice; }
+        }
+
+        public IClientRepo Client
+        {
+            get { return _client == null ? new ClientRepo(_dbContext, _host, _config, _mapper) : _client; }
+        }
+
+        public IBankDetailsRepo BankDetails
+        {
+            get { return _bankDetails == null ? new BankDetailsRepo(_dbContext, _host, _config, _mapper) : _bankDetails; }
+        }
+
+        public IKycDataRepo KycData
+        {
+            get { return _kycData == null ? new KycDataRepo(_dbContext, _host, _config, _mapper) : _kycData; }
+        }
+
+        public IRiskProfileRepo RiskProfile
+        {
+            get { return _riskProfile == null ? new RiskProfileRepo(_dbContext, _host, _config, _mapper) : _riskProfile; }
+        }
+
+        public IDisclosureRepo Disclosures
+        {
+            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _mapper, _userDocuments) : _disclosures; }
+        }
+
+        //User
+        public IOtpRepo Otp
+        {
+            get { return _otp == null ? new OtpRepo(_dbContext, _host, _config, _mapper) : _otp; }
+        }
+
+        public IUserRepo User
+        {
+            get { return _user == null ? new UserRepo(_dbContext, _host, _config, _mapper) : _user; }
+        }
+
+        public IUserDocumentsRepo UserDocuments
+        {
+            get { return _userDocuments == null ? new UserDocumentsRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _userDocuments; }
+        }
+
+        // Third Party Services
+        public ISmsRepo SmsRepo
+        {
+            get { return _sms == null ? new SmsRepo() : _sms; }
+        }
+
+        public IJwtRepo JwtRepo
+        {
+            get { return _jwt == null ? new JwtRepo() : _jwt; }
+        }
+
+        public IKycFactoryRepo KycRepo
+        {
+            get { return _kyc == null ? new KycFactoryRepo() : _kyc; }
+        }
+
+        public IBankValidationServiceRepo BankValidationRepo
+        {
+            get { return _bankValidation == null ? new BankValidationServiceRepo() : _bankValidation; }
+        }
+
+        public ISignatureRepo SignatureRepo
+        {
+            get { return _signature == null ? new SignatureRepo() : _signature; }
+        }
+
+        public IFileStorageRepo FileStorageRepo
+        {
+            get { return _fileStorage == null ? new FileStorageRepo(_shareServiceClient) : _fileStorage; }
+        }
+
+        public IStringHasher StrHasher
+        {
+            get { return _hasher == null ? new StringHasherRepo() : _hasher; }
+        }
+    }
+}

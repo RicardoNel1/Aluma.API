@@ -1,0 +1,110 @@
+﻿using AutoMapper;
+using DataService.Dto;
+using DataService.Model;
+
+namespace DataService
+{
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            //Advisor
+            CreateMap<AdvisorModel, AdvisorDto>()
+              .ReverseMap();
+
+            // Applications
+
+            CreateMap<ApplicationDocumentModel, ApplicationDocumentDto>()
+             .ReverseMap();
+
+            CreateMap<ApplicationDocumentModel, UserDocumentModel>()
+             .ReverseMap();
+
+            CreateMap<ApplicationModel, ApplicationDto>()
+                .ReverseMap();
+
+            //CreateMap<DividendTaxModel, DividendTaxDto>()
+            //    .ReverseMap();
+
+            CreateMap<FSPMandateModel, FSPMandateDto>()
+                .ReverseMap();
+
+            CreateMap<IRSW8Model, IRSW8Dto>()
+               .ReverseMap();
+
+            CreateMap<IRSW9Model, IRSW9Dto>()
+               .ReverseMap();
+
+            CreateMap<PurposeAndFundingModel, PurposeAndFundingDto>()
+                .ReverseMap();
+
+            CreateMap<RecordOfAdviceModel, RecordOfAdviceDto>()
+               .ReverseMap();
+
+            CreateMap<RecordOfAdviceItemsModel, RecordOfAdviceItemsDto>()
+                .ReverseMap();
+
+            CreateMap<USPersonsModel, USPersonsDto>()
+                .ReverseMap();
+
+            //Client
+
+            CreateMap<BankDetailsModel, BankDetailsDto>()
+                .ReverseMap();
+
+            //CreateMap<ClientModel, ApplicationDto>()
+            //   .ReverseMap();
+
+            CreateMap<ClientModel, ClientDto>()
+               .ReverseMap();
+
+            //CreateMap<ClientModel, RegistrationDto>()
+            //    .ReverseMap();
+
+            CreateMap<KycDataModel, KycResultsDto>()
+                .ReverseMap();
+
+            CreateMap<PassportModel, PassportDto>()
+              .ReverseMap();
+
+            CreateMap<RiskProfileModel, RiskProfileDto>()
+                .ReverseMap();
+
+            CreateMap<TaxResidencyModel, TaxResidencyDto>()
+                .ReverseMap();
+
+            //Shared
+            CreateMap<DisclosureModel, DisclosureDto>()
+                .ReverseMap();
+
+            // Users
+
+            CreateMap<AddressModel, AddressDto>()
+                .ReverseMap();
+
+            //CreateMap<OtpModel, OtpDto>()
+            //    .ReverseMap();
+
+            CreateMap<UserModel, UserDto>()
+                .ReverseMap();
+
+            CreateMap<UserModel, RegistrationDto>()
+                .ReverseMap();
+
+            CreateMap<UserDocumentModel, UserDocumentDto>()
+                .ReverseMap();
+        }
+    }
+
+    public class StringToByte : IValueConverter<string, byte[]>
+    {
+        public byte[] Convert(string sourceMember, ResolutionContext context) =>
+            System.Convert.FromBase64String(sourceMember);
+    }
+
+    public class ByteToString : IValueConverter<byte[], string>
+    {
+        public string Convert(byte[] sourceMember, ResolutionContext context) =>
+            System.Convert.ToBase64String(sourceMember);
+    }
+}

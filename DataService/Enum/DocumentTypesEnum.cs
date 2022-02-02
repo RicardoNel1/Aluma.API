@@ -1,0 +1,35 @@
+﻿namespace DataService.Enum
+{
+    public enum DocumentTypesEnum
+    {
+        IdDocument,
+        ProofOfAddress,
+        BankStatements,
+        AdvisorAdvise,
+        ComplianceReport,
+        BankVerification,
+        EnterpriseBOGuideline,
+        PrimarySchedule,
+        SecondarySchedule,
+        Dividends,
+        FinancialNeedsAnalysis,
+        IRSW9E,
+        IntroLetter,
+        FSPMandate,
+        RecordOfAdvice,
+        RiskProfile,
+        FW8BENE,
+        DisclosureLetter,
+        MentonovaFSP,
+        StanlibSwitchForm,
+        SACompanyEnterpriseGeneralDeclaration,
+        TrustEnterpriseGeneralDeclaration,
+        PartnershipEnterpriseGeneralDeclaration,
+        CCEnterpriseGeneralDeclaration,
+        Resolution,
+        SACompanySoleShareholderDeclaration,
+        TermsAndConditions_Nedbank,
+        LibertyRiskProfile,
+        DOA
+    }
+}
