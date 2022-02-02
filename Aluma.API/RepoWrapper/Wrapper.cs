@@ -30,6 +30,7 @@ namespace Aluma.API.RepoWrapper
         private IRecordOfAdviceRepo _recordOfAdvice;
 
         private IBankDetailsRepo _bankDetails;
+        private ITaxResidencyRepo _taxResidency;
         private IClientRepo _client;
         private IKycDataRepo _kycData;
         private IRiskProfileRepo _riskProfile;
@@ -116,6 +117,11 @@ namespace Aluma.API.RepoWrapper
         public IBankDetailsRepo BankDetails
         {
             get { return _bankDetails == null ? new BankDetailsRepo(_dbContext, _host, _config, _mapper) : _bankDetails; }
+        }
+
+        public ITaxResidencyRepo TaxResidency
+        {
+            get { return _taxResidency == null ? new TaxResidencyRepo(_dbContext, _host, _config, _mapper) : _taxResidency; }
         }
 
         public IKycDataRepo KycData

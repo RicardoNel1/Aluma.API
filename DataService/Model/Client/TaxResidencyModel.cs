@@ -12,7 +12,7 @@ namespace DataService.Model
         public ClientModel Client { get; set; }
         public ICollection<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string TaxNumber { get; set; }
@@ -26,6 +26,9 @@ namespace DataService.Model
     {
         public void Configure(EntityTypeBuilder<TaxResidencyModel> mb)
         {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
             mb.HasMany(c => c.TaxResidencyItems)
                 .WithOne(c => c.TaxResidency)
                 .IsRequired()
@@ -38,7 +41,7 @@ namespace DataService.Model
     {
         public TaxResidencyModel TaxResidency { get; set; }
         public int Id { get; set; }
-        public int TasResidencyId { get; set; }
+        public int TaxResidencyId { get; set; }     
         public string Country { get; set; }
         public string TinNumber { get; set; }
         public string TinUnavailableReason { get; set; }
