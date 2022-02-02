@@ -29,10 +29,8 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasMany(c => c.TaxResidencyItems)
-                .WithOne(c => c.TaxResidency)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+            mb.HasIndex(c => c.ClientId).IsUnique();
+           
         }
     }
 

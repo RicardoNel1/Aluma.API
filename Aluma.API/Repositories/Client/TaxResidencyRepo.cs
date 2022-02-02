@@ -39,7 +39,12 @@ namespace Aluma.API.Repositories
 
         public TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto)
         {
-            throw new System.NotImplementedException();
+            TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);
+            _context.TaxResidency.Add(details);
+            _context.SaveChanges();
+            dto = _mapper.Map<TaxResidencyDto>(details);
+            return dto;
+
         }
                
 
