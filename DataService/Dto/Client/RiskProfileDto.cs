@@ -6,18 +6,18 @@ namespace DataService.Dto
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public string Goal { get; set; }
+        //public string Goal { get; set; }
 
-        public string LibertyRequiredRisk { get; set; }
-        public string LibertyInvestmentTerm { get; set; }
-        public string LibertyRiskTolerance { get; set; }
-        public string LibertyRiskCapacity { get; set; }
+        //public string LibertyRequiredRisk { get; set; }
+        //public string LibertyInvestmentTerm { get; set; }
+        //public string LibertyRiskTolerance { get; set; }
+        //public string LibertyRiskCapacity { get; set; }
 
-        public string RiskAge { get; set; }
-        public string RiskTerm { get; set; }
-        public string RiskInflation { get; set; }
-        public string RiskReaction { get; set; }
-        public string RiskExample { get; set; }
+        public int RiskAge { get; set; }
+        public int RiskTerm { get; set; }
+        public int RiskInflation { get; set; }
+        public int RiskReaction { get; set; }
+        public int RiskExample { get; set; }
 
         public string DerivedProfile { get; set; }
         public bool AgreeWithOutcome { get; set; }

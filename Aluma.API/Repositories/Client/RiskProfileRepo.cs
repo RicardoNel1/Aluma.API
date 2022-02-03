@@ -39,7 +39,15 @@ namespace Aluma.API.Repositories
 
         public RiskProfileDto CreateRiskProfile(RiskProfileDto dto)
         {
-            throw new System.NotImplementedException();
+            RiskProfileModel newRiskProfile = _mapper.Map<RiskProfileModel>(dto);
+
+            _context.RiskProfiles.Add(newRiskProfile);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<RiskProfileDto>(newRiskProfile);
+
+            return dto;
+
         }
 
         public bool DeleteRiskProfile(RiskProfileDto dto)
@@ -49,7 +57,13 @@ namespace Aluma.API.Repositories
 
         public bool DoesClientHaveRiskProfile(RiskProfileDto dto)
         {
-            throw new System.NotImplementedException();
+            var rm = _context.RiskProfiles.Where(r => r.ClientId == dto.ClientId);
+            if (rm.Any())
+            {
+                return true;
+            }
+            return false;
+
         }
 
         public RiskProfileDto GetRiskProfile(int clientId)
@@ -61,7 +75,14 @@ namespace Aluma.API.Repositories
 
         public RiskProfileDto UpdateRiskProfile(RiskProfileDto dto)
         {
-            throw new System.NotImplementedException();
+            RiskProfileModel newRiskProfile = _mapper.Map<RiskProfileModel>(dto);
+
+            _context.RiskProfiles.Update(newRiskProfile);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<RiskProfileDto>(newRiskProfile);
+
+            return dto;
         }
     }
 }
