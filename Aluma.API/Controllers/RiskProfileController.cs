@@ -16,7 +16,7 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public IActionResult CreateRiskProfile([FromBody] RiskProfileDto dto)
         {
             try
@@ -37,13 +37,13 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateRiskProfile([FromBody] RiskProfileDto dto)
         {
             try
             {
                 bool riskExists = _repo.RiskProfile.DoesClientHaveRiskProfile(dto);
-                if (riskExists)
+                if (!riskExists)
                 {
                     return BadRequest("Risk Profile Does Not Exist");
                 }
@@ -58,14 +58,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("userId")]
-        public IActionResult GetRiskProfile(int userId)
+        [HttpGet("clientId"), AllowAnonymous]
+        public IActionResult GetRiskProfile(int clientId)
         {
             RiskProfileDto response = null;
             try
             {
-                ClientDto client = _repo.Client.GetClient(userId);
-                response = _repo.RiskProfile.GetRiskProfile(client.Id);
+                //ClientDto client = _repo.Client.GetClient(userId);
+                response = _repo.RiskProfile.GetRiskProfile(clientId);
 
                 return Ok(response);
             }
