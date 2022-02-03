@@ -30,6 +30,7 @@ namespace Aluma.API.RepoWrapper
         IBankDetailsRepo BankDetails { get; }
         IKycDataRepo KycData { get; }
         IRiskProfileRepo RiskProfile { get; }
+        ITaxResidencyRepo TaxResidency { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
