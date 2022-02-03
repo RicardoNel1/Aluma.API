@@ -46,9 +46,9 @@ namespace Aluma.API.Controllers
             {
                 //bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);
                 bool taxResidencyExists = false;        //remove
-                if (taxResidencyExists)
+                if (!taxResidencyExists)
                 {
-                    return BadRequest("Risk Profile Does Not Exist");
+                    CreateTaxResidency(dto);
                 }
 
                 TaxResidencyDto taxResidency = _repo.TaxResidency.UpdateTaxResidency(dto);
