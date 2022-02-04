@@ -69,7 +69,10 @@ namespace Aluma.API.Repositories
 
             //set fields to be updated
             details.TaxNumber = dto.TaxNumber;
-            //details.
+            details.TaxObligations = dto.TaxObligations;
+            details.UsCitizen = dto.UsCitizen;
+            details.UsRelinquished = dto.UsRelinquished;
+            details.UsOther = dto.UsOther;
             
             _context.TaxResidency.Update(details);
             _context.SaveChanges();
