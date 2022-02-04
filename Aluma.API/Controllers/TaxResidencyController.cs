@@ -21,17 +21,17 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                //bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);
-                bool taxResidencyExists = false;        //
+                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);                
 
                 if (taxResidencyExists)
                 {
                     return BadRequest("Tax Residency Exists");
                 }
-
-                TaxResidencyDto taxResidency = _repo.TaxResidency.CreateTaxResidency(dto);
-
-                return Ok(taxResidency);
+                else 
+                { 
+                     _repo.TaxResidency.CreateTaxResidency(dto);
+                }
+                return Ok("Tax Residency Created");
             }
             catch (Exception e)
             {
@@ -44,16 +44,18 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                //bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);
-                bool taxResidencyExists = false;        //remove
+                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);               
+
                 if (!taxResidencyExists)
                 {
                     CreateTaxResidency(dto);
                 }
+                else 
+                { 
+                    _repo.TaxResidency.UpdateTaxResidency(dto);
+                }
 
-                TaxResidencyDto taxResidency = _repo.TaxResidency.UpdateTaxResidency(dto);
-
-                return Ok(taxResidency);
+                return Ok("Tax Residency Updated");
             }
             catch (Exception e)
             {
@@ -62,7 +64,6 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        //public IActionResult GetClientBankDetails([FromBody] ClientDto dto)
         public IActionResult GetTaxResidency(int clientId)
         {
             try
