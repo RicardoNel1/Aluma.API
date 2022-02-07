@@ -1,25 +1,12 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DataService.Model
+namespace DataService.Dto
 {
-    [Table("fsp_mandate")]
-    public class FSPMandateModel : BaseModel
+    public class FSPMandateDto
     {
-        public ApplicationModel Application { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int ApplicationId { get; set; }
-        public string ClientDetails { get; set; }
-        public string Products { get; set; }
-        public string Bank { get; set; }
-        public string Branch { get; set; }
-        public string AccNo { get; set; }
-        public string StartDate { get; set; }
-        public string Address_1 { get; set; }
-        public string Address_2 { get; set; }
-        public string Address_3 { get; set; }
-        public string Email { get; set; }
+        public int ClientId { get; set; }        
+        public string StartDate { get; set; }        
         public string FspSignatory { get; set; }
         public string AtFsp { get; set; }
         public string DateFsp { get; set; }
