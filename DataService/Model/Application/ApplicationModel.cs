@@ -59,10 +59,10 @@ namespace DataService.Model
                 .HasForeignKey<PurposeAndFundingModel>(c => c.ApplicationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            mb.HasOne(c => c.FSPMandate)
-                .WithOne(c => c.Application)
-                .HasForeignKey<FSPMandateModel>(c => c.ApplicationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //mb.HasOne(c => c.FSPMandate)
+            //    .WithOne(c => c.Client)
+            //    .HasForeignKey<FSPMandateModel>(c => c.client)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasOne(c => c.RecordOfAdvice)
                 .WithOne(c => c.Application)
