@@ -21,6 +21,7 @@ namespace DataService.Context
 
             //Client
             mb.ApplyConfiguration(new ClientModelBuilder());
+            mb.ApplyConfiguration(new FSPModelBuilder());
             mb.ApplyConfiguration(new TaxResidencyModelBuilder());
 
             //User
