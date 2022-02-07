@@ -59,13 +59,14 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMandate([FromBody] FSPMandateDto dto)
+        public IActionResult GetMandate(int clientId)
         {
             try
             {
-                FSPMandateDto mandate = _repo.FSPMandate.GetFSPMandate(dto);
+                //FSPMandateDto mandate = _repo.FSPMandate.GetFSPMandate(dto);
 
-                return Ok(mandate);
+                //return Ok(mandate);
+                return Ok();
             }
             catch (Exception e)
             {
