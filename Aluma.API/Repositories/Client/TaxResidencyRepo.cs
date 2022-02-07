@@ -50,7 +50,10 @@ namespace Aluma.API.Repositories
 
         public bool DoesTaxResidencyExist(TaxResidencyDto dto)
         {
-            throw new System.NotImplementedException();
+            bool taxResidencyExist = false;
+            taxResidencyExist = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).Any();
+            return taxResidencyExist;
+
         }
 
         public TaxResidencyDto GetTaxResidency(int clientId)
@@ -62,7 +65,20 @@ namespace Aluma.API.Repositories
 
         public TaxResidencyDto UpdateTaxResidency(TaxResidencyDto dto)
         {
-            throw new System.NotImplementedException();
+            TaxResidencyModel details = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+
+            //set fields to be updated
+            details.TaxNumber = dto.TaxNumber;
+            details.TaxObligations = dto.TaxObligations;
+            details.UsCitizen = dto.UsCitizen;
+            details.UsRelinquished = dto.UsRelinquished;
+            details.UsOther = dto.UsOther;
+            
+            _context.TaxResidency.Update(details);
+            _context.SaveChanges();
+            dto = _mapper.Map<TaxResidencyDto>(details);
+            return dto;
+
         }
     }
 }
