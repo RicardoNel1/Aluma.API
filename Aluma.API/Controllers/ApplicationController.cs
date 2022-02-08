@@ -24,9 +24,9 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                dto = _repo.Applications.CreateNewApplication(dto);
+                var application = _repo.Applications.CreateNewApplication(dto);
 
-                return Ok("created");
+                return Ok(application);
             }
             catch (Exception e)
             {
