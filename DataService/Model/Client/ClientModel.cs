@@ -16,6 +16,7 @@ namespace DataService.Model
         public KycDataModel KycData { get; set; }
         public TaxResidencyModel TaxResidency { get; set; }
         public RiskProfileModel RiskProfile { get; set; }
+        public FSPMandateModel FspMandate { get; set; }
 
         public ICollection<ApplicationModel> Applications { get; set; }
         public ICollection<BankDetailsModel> BankDetails { get; set; }
@@ -70,6 +71,11 @@ namespace DataService.Model
             mb.HasOne(c => c.RiskProfile)
                 .WithOne(c => c.Client)
                 .HasForeignKey<RiskProfileModel>(c => c.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasOne(c => c.FspMandate)
+                .WithOne(c => c.Client)
+                .HasForeignKey<FSPMandateModel>(c => c.ClientId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasOne(c => c.KycData)
