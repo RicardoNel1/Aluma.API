@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
@@ -8,7 +10,6 @@ namespace DataService.Model
     {
         public ClientModel Client { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string Goal { get; set; }
@@ -28,5 +29,16 @@ namespace DataService.Model
         public bool AgreeWithOutcome { get; set; }
         public string DisagreeReason { get; set; }
         public string AdvisorNotes { get; set; }
+    }
+
+    public class RiskProfileModelBuilder : IEntityTypeConfiguration<RiskProfileModel>
+    {
+        public void Configure(EntityTypeBuilder<RiskProfileModel> mb)
+        {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            //mb.HasIndex(c => c.ClientId).IsUnique();
+        }
     }
 }
