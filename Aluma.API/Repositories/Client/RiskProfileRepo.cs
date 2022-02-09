@@ -68,8 +68,13 @@ namespace Aluma.API.Repositories
 
         public RiskProfileDto GetRiskProfile(int clientId)
         {
-            RiskProfileModel riskProfileModel = _context.RiskProfiles.Where(r => r.ClientId == clientId).First();
-            return _mapper.Map<RiskProfileDto>(riskProfileModel);
+            var riskProfileModel = _context.RiskProfiles.Where(r => r.ClientId == clientId);
+
+            if (riskProfileModel.Any())
+            {
+                return _mapper.Map<RiskProfileDto>(riskProfileModel.First());
+            }
+            return null;
 
         }
 

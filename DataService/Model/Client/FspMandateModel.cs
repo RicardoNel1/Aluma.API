@@ -24,7 +24,6 @@ namespace DataService.Model
         //Managed Account Fees
         public string PortfolioManagementFee { get; set; }
         public string InitialFee { get; set; }
-        public string AnnualAdvisorFee { get; set; }
         public string AdditionalAdvisorFee { get; set; }
         public string ForeignInvestmentInitialFee { get; set; }
         public string ForeignInvestmentAnnualFee { get; set; }

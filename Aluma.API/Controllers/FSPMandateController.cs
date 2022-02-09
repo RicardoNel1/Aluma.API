@@ -16,7 +16,7 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public IActionResult CreateMandate([FromBody] FSPMandateDto dto)
         {
             try
@@ -37,7 +37,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateMandate([FromBody] FSPMandateDto dto)
         {
             try
@@ -58,14 +58,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public IActionResult GetMandate(int clientId)
         {
             try
             {
-                //FSPMandateDto mandate = _repo.FSPMandate.GetFSPMandate(dto);
+                FSPMandateDto mandate = _repo.FSPMandate.GetFSPMandate(clientId);
 
-                //return Ok(mandate);
+                return Ok(mandate);
                 return Ok();
             }
             catch (Exception e)

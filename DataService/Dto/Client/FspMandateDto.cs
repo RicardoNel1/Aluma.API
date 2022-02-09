@@ -9,7 +9,7 @@ namespace DataService.Dto
 
         //Discretion
         public string DiscretionType { get; set; }
-        public string InvestmentObjective { get; set; }
+        public string InvestmentObjective { get; set; } 
         public bool onClientInstruction { get; set; }
         public bool onAdvisorInstruction { get; set; }
 
@@ -19,7 +19,6 @@ namespace DataService.Dto
         //Managed Account Fees
         public string PortfolioManagementFee { get; set; }
         public string InitialFee { get; set; }
-        public string AnnualAdvisorFee { get; set; }
         public string AdditionalAdvisorFee { get; set; }
         public string ForeignInvestmentInitialFee { get; set; }
         public string ForeignInvestmentAnnualFee { get; set; }

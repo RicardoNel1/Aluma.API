@@ -5,20 +5,19 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace Aluma.API.Repositories
 {
     public interface IFspMandateRepo : IRepoBase<FSPMandateModel>
     {
-        FSPMandateDto GetFspMandate(FSPMandateDto dto);
-
         bool DoesApplicationHaveMandate(FSPMandateDto dto);
 
         FSPMandateDto UpdateFSPMandate(FSPMandateDto dto);
 
         FSPMandateDto CreateFSPMandate(FSPMandateDto dto);
 
-        FSPMandateDto GetFSPMandate(FSPMandateDto dto);
+        FSPMandateDto GetFSPMandate(int clientId);
 
         bool DeleteFSPMandate(FSPMandateDto dto);
     }
@@ -40,7 +39,14 @@ namespace Aluma.API.Repositories
 
         public FSPMandateDto CreateFSPMandate(FSPMandateDto dto)
         {
-            throw new System.NotImplementedException();
+            FSPMandateModel newFsp = _mapper.Map<FSPMandateModel>(dto);
+
+            _context.FspMandates.Add(newFsp);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<FSPMandateDto>(newFsp);
+
+            return dto;
         }
 
         public bool DeleteFSPMandate(FSPMandateDto dto)
@@ -50,22 +56,36 @@ namespace Aluma.API.Repositories
 
         public bool DoesApplicationHaveMandate(FSPMandateDto dto)
         {
-            throw new System.NotImplementedException();
+            var fsp = _context.FspMandates.Where(r => r.ClientId == dto.ClientId);
+            if (fsp.Any())
+            {
+                return true;
+            }
+            return false;
         }
 
-        public FSPMandateDto GetFspMandate(FSPMandateDto dto)
+        public FSPMandateDto GetFSPMandate(int clientId)
         {
-            throw new System.NotImplementedException();
-        }
+            var fspModel = _context.FspMandates.Where(r => r.ClientId == clientId);
 
-        public FSPMandateDto GetFSPMandate(FSPMandateDto dto)
-        {
-            throw new System.NotImplementedException();
+            if (fspModel.Any())
+            {
+                return _mapper.Map<FSPMandateDto>(fspModel.First());
+            }
+            return null;
+            
         }
 
         public FSPMandateDto UpdateFSPMandate(FSPMandateDto dto)
         {
-            throw new System.NotImplementedException();
+            FSPMandateModel newFsp = _mapper.Map<FSPMandateModel>(dto);
+
+            _context.FspMandates.Update(newFsp);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<FSPMandateDto>(newFsp);
+
+            return dto;
         }
     }
 }
