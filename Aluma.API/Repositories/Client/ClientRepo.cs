@@ -97,15 +97,9 @@ namespace Aluma.API.Repositories
         public bool DoesClientExist(ClientDto dto)
         {
             bool clientExists = false;
-            //UserRepo ur = new UserRepo(_context, _host, _config, _mapper);
-            //bool userExists = ur.DoesUserExist(dto.User);
-
-            //if (userExists)
-            //{
-                //UserModel user = _mapper.Map<UserModel>(ur.GetUser(dto.User));
-                clientExists = _context.Clients.Where(a => a.Id == dto.Id).Any();
-            //}
-
+            
+            clientExists = _context.Clients.Where(a => a.Id == dto.Id).Any();
+            
             return clientExists;
         }
 

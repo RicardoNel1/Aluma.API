@@ -26,7 +26,11 @@ namespace Aluma.API.Repositories
 
         public bool DeleteApplication(ApplicationDto dto);
 
+        public ApplicationDto SoftDeleteApplication(ApplicationDto dto);
+
         public ApplicationDto CreateNewApplication(ApplicationDto dto);
+
+        bool DoesApplicationExist(ApplicationDto dto);
 
         //ApplicationDocumentsModel PopulateTestDocument();
 
@@ -103,6 +107,27 @@ namespace Aluma.API.Repositories
         public ApplicationDto UpdateApplication(ApplicationDto dto)
         {
             throw new NotImplementedException();
+        }
+
+        public bool DoesApplicationExist(ApplicationDto dto)
+        {
+            bool applicationExists = false;
+
+            applicationExists = _context.Applications.Where(a => a.Id == dto.Id).Any();
+
+            return applicationExists;
+        }
+
+        public ApplicationDto SoftDeleteApplication(ApplicationDto dto)
+        {
+            ApplicationModel application = _context.Applications.Where(x => x.Id == dto.Id).FirstOrDefault();
+           
+            application.ApplicationStatus = 0;
+
+            _context.Applications.Update(application);
+            _context.SaveChanges();
+            dto = _mapper.Map<ApplicationDto>(application);
+            return dto;
         }
 
         public ApplicationDto CreateNewApplication(ApplicationDto dto)

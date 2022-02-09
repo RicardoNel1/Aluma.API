@@ -34,6 +34,30 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut("delete"), AllowAnonymous]
+        public IActionResult SoftDeleteApplication(ApplicationDto dto)
+        {
+            try
+            {
+                
+                bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
+                if (!applicationExist)
+                {
+                    return BadRequest("Application Does Not Exist");
+                }
+                else
+                {
+
+                    _repo.Applications.SoftDeleteApplication(dto);
+                }
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPut]
         public IActionResult UpdateApplication([FromBody] ApplicationDto dto)
         {
