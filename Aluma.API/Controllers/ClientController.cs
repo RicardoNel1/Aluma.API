@@ -66,10 +66,11 @@ namespace Aluma.API.Controllers
                 {
                     return BadRequest("Client Does Not Exist");
                 }
+                else { 
 
-                ClientDto client = _repo.Client.UpdateClient(dto);
-
-                return Ok(client);
+                _repo.Client.UpdateClient(dto);
+                }
+                return Ok(dto);
             }
             catch (Exception e)
             {

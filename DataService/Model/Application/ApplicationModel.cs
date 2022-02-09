@@ -14,7 +14,7 @@ namespace DataService.Model
         public AdvisorModel Advisor { get; set; }
         public ICollection<ApplicationDocumentModel> Documents { get; set; }
         public PurposeAndFundingModel PurposeAndFunding { get; set; }
-        public FSPMandateModel FSPMandate { get; set; }
+        //public FSPMandateModel FSPMandate { get; set; }
         public RecordOfAdviceModel RecordOfAdvice { get; set; }
         public IRSW8Model IRSW8 { get; set; }
         public IRSW9Model IRSW9 { get; set; }
@@ -52,12 +52,12 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasIndex(c => c.ClientId).IsUnique();
+            //mb.HasIndex(c => c.ClientId).IsUnique();
 
-            mb.HasOne(c => c.PurposeAndFunding)
-                .WithOne(c => c.Application)
-                .HasForeignKey<PurposeAndFundingModel>(c => c.ApplicationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //mb.HasOne(c => c.PurposeAndFunding)
+            //    .WithOne(c => c.Application)
+            //    .HasForeignKey<PurposeAndFundingModel>(c => c.ApplicationId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             //mb.HasOne(c => c.FSPMandate)
             //    .WithOne(c => c.Client)
