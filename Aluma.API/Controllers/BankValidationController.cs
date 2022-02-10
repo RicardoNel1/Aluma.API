@@ -21,8 +21,8 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                //bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);  put back
-                bool bankDetailsExist = false;   //remove
+                bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);  
+                //bool bankDetailsExist = false;   //remove
 
 
                 if (bankDetailsExist)

@@ -4,13 +4,7 @@ namespace DataService.Dto
 {
     public class PurposeAndFundingDto
     {
-        public int ApplicationId { get; set; }
-
-        public string NumberOfDeposits { get; set; }
-        public string NumberOfWithdrrawals { get; set; }
-        public string DepositsValue { get; set; }
-        public string WithdrawalsValue { get; set; }
-        public string SourceOfFunds { get; set; }
+        public int ApplicationId { get; set; }       
         public bool fundsEmployedSalary { get; set; }
         public bool fundsEmployedCommission { get; set; }
         public bool fundsEmployedBonus { get; set; }
@@ -31,11 +25,5 @@ namespace DataService.Dto
         public bool wealthLoan { get; set; }
         public bool wealthGift { get; set; }
         public string wealthOther { get; set; }
-        public string SourceOfWealth { get; set; }
-        public string ExpectedMonthlyTurnover { get; set; }
-        public string SourceOfAdditional { get; set; }
-        public string DonorDetails { get; set; }
-        public string DonorAmount { get; set; }
-        public bool InternationalTransactions { get; set; }
     }
 }

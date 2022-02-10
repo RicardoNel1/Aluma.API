@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataService.Model
 {
@@ -12,11 +14,11 @@ namespace DataService.Model
         public int Id { get; set; }
         public int ApplicationId { get; set; }
 
-        public string NumberOfDeposits { get; set; }
-        public string NumberOfWithdrrawals { get; set; }
-        public string DepositsValue { get; set; }
-        public string WithdrawalsValue { get; set; }
-        public string SourceOfFunds { get; set; }
+        //public string NumberOfDeposits { get; set; }
+        //public string NumberOfWithdrrawals { get; set; }
+        //public string DepositsValue { get; set; }
+        //public string WithdrawalsValue { get; set; }
+        //public string SourceOfFunds { get; set; }
         public bool fundsEmployedSalary { get; set; }
         public bool fundsEmployedCommission { get; set; }
         public bool fundsEmployedBonus { get; set; }
@@ -37,11 +39,23 @@ namespace DataService.Model
         public bool wealthLoan { get; set; }
         public bool wealthGift { get; set; }
         public string wealthOther { get; set; }
-        public string SourceOfWealth { get; set; }
-        public string ExpectedMonthlyTurnover { get; set; }
-        public string SourceOfAdditional { get; set; }
-        public string DonorDetails { get; set; }
-        public string DonorAmount { get; set; }
-        public bool InternationalTransactions { get; set; }
+        //public string SourceOfWealth { get; set; }
+        //public string ExpectedMonthlyTurnover { get; set; }
+        //public string SourceOfAdditional { get; set; }
+        //public string DonorDetails { get; set; }
+        //public string DonorAmount { get; set; }
+        //public bool InternationalTransactions { get; set; }
+    }
+
+    public class PurposeAndFundingModelBuilder : IEntityTypeConfiguration<PurposeAndFundingModel>
+    {
+        public void Configure(EntityTypeBuilder<PurposeAndFundingModel> mb)
+        {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            mb.HasIndex(c => c.ApplicationId).IsUnique();
+
+        }
     }
 }

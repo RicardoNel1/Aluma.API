@@ -70,11 +70,13 @@ namespace Aluma.API.Controllers
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+            ClientDto client = _repo.Client.GetClient(user.Id);
 
             response.Message = "OtpVerified";
             response.Token = token;
             response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString("yyyy/MM/dd");
             response.User = user;
+            response.ClientId = client.Id;
 
             return Ok(response);
         }

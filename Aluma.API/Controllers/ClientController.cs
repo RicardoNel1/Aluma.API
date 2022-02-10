@@ -97,8 +97,8 @@ namespace Aluma.API.Controllers
         }
 
 
-        [HttpPost("register"), AllowAnonymous] //moved from authenticationcontroller
-        public IActionResult RegisterClient(RegistrationDto dto) //create client
+        [HttpPost("register"), AllowAnonymous] 
+        public IActionResult RegisterClient(RegistrationDto dto) 
         {
             AuthResponseDto response = new AuthResponseDto();
             UserDto user = null;

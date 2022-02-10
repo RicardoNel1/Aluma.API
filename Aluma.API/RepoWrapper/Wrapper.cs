@@ -101,7 +101,7 @@ namespace Aluma.API.RepoWrapper
 
         public IPurposeAndFundingRepo PurposeAndFunding
         {
-            get { return _purposeAndFunding == null ? new PurposeAndFundingRepo(_dbContext) : _purposeAndFunding; }
+            get { return _purposeAndFunding == null ? new PurposeAndFundingRepo(_dbContext, _host, _config, _mapper) : _purposeAndFunding; }
         }
 
         public IRecordOfAdviceRepo RecordOfAdvice

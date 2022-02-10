@@ -47,7 +47,6 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-
                     _repo.Applications.SoftDeleteApplication(dto);
                 }
                 return Ok(dto);

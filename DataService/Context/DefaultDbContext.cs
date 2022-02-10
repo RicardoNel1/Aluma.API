@@ -33,12 +33,12 @@ namespace DataService.Context
 
         //Application
         public DbSet<ApplicationDocumentModel> ApplicationDocuments { get; set; }
-
         public DbSet<ApplicationModel> Applications { get; set; }
 
         //public DbSet<DividendTaxModel> Dividends { get; set; }
-        public DbSet<FSPMandateModel> FspMandates { get; set; }
 
+        public DbSet<PurposeAndFundingModel> PurposeAndFunding { get; set; }
+        public DbSet<FSPMandateModel> FspMandates { get; set; }
         public DbSet<IRSW8Model> IRSW8 { get; set; }
         public DbSet<IRSW9Model> IRSW9 { get; set; }
         public DbSet<RecordOfAdviceModel> RecordOfAdvice { get; set; }
@@ -47,7 +47,6 @@ namespace DataService.Context
 
         //Client
         public DbSet<BankDetailsModel> BankDetails { get; set; }
-
         public DbSet<ClientModel> Clients { get; set; }
         public DbSet<KycDataModel> KycData { get; set; }
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
@@ -59,7 +58,6 @@ namespace DataService.Context
 
         //User
         public DbSet<AddressModel> Address { get; set; }
-
         public DbSet<OtpModel> Otp { get; set; }
         public DbSet<UserModel> Users { get; set; }
         public DbSet<UserDocumentModel> UserDocuments { get; set; }
