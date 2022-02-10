@@ -42,7 +42,9 @@ namespace Aluma.API.Repositories
         public bool DoesPurposeAndFundingExist(PurposeAndFundingDto dto)
         {
             bool purposeAndFundingExist = false;
-            //purposeAndFundingExist = _context.PurposeAndFunding.Where(a => a.ApplicationId == dto.ApplicationId).Any();
+
+            purposeAndFundingExist = _context.PurposeAndFunding.Where(a => a.ApplicationId == dto.ApplicationId).Any();
+
             return purposeAndFundingExist;
         }
 
@@ -60,11 +62,8 @@ namespace Aluma.API.Repositories
         public PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto)
         {            
             PurposeAndFundingModel details = _context.PurposeAndFunding.Where(a => a.ApplicationId == dto.ApplicationId).FirstOrDefault();
-
-            //details.BankName = dto.BankName;
-            //details.AccountType = dto.AccountType;
-            //details.AccountNumber = dto.AccountNumber;
-
+                        
+            details = _mapper.Map<PurposeAndFundingModel>(dto);
             _context.PurposeAndFunding.Update(details);
             _context.SaveChanges();
             dto = _mapper.Map<PurposeAndFundingDto>(details);
