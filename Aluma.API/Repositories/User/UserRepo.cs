@@ -191,7 +191,7 @@ namespace Aluma.API.Repositories
 
         public bool IsSocialLoginVerified(LoginDto dto)
         {
-            bool result = _context.Users.Where(u => u.Email == dto.UserName && u.isSocialLogin == true).Any();
+            bool result = _context.Users.Where(u => u.Email == dto.UserName && u.isSocialLogin == true && u.SocialId == dto.SocialId).Any();
 
             return result;
         }
@@ -199,7 +199,6 @@ namespace Aluma.API.Repositories
         public bool IsPasswordVerified(LoginDto dto)
         {
             StringHasherRepo str = new StringHasherRepo();
-            //bool match = _context.Users.Where(c => c.Password == str.CreateHash(dto.Password) && c.Email == dto.UserName).Any();
             UserModel user = _context.Users.Where(c => c.Email == dto.UserName).First();
             bool match = str.ValidateHash(user.Password, dto.Password);
 
@@ -228,8 +227,9 @@ namespace Aluma.API.Repositories
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
+            user.isSocialLogin = dto.SocialId == null ? false : true;
             user.Role = RoleEnum.Client;
-            user.Password = str.CreateHash(dto.Password);
+            user.Password =  dto.Password != null ? str.CreateHash(dto.Password) : null;
             _context.Users.Add(user);
             _context.SaveChanges();
 

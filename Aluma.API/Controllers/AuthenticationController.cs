@@ -42,8 +42,7 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, "Invalid");
                 }
 
-                //socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);   put back
-                socialLoginVerified = true;
+                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
 
                 if (!socialLoginVerified)
                 {
@@ -74,14 +73,12 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-
                     user = _repo.User.GetUser(dto);
                     RoleEnum role = RoleEnum.Client;
                     var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
                     string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
                     ClientDto client = _repo.Client.GetClient(user.Id);
-
 
                     response = new AuthResponseDto()
                     {
@@ -214,6 +211,8 @@ namespace Aluma.API.Controllers
         //        return StatusCode(500, e.Message);
         //    }
         //}
+
+
 
 
 
