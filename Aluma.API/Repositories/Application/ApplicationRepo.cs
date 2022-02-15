@@ -32,6 +32,8 @@ namespace Aluma.API.Repositories
 
         bool DoesApplicationExist(ApplicationDto dto);
 
+        bool ApplicationInProgress(ApplicationDto dto);
+
         //ApplicationDocumentsModel PopulateTestDocument();
 
         //void CreateDocuments(Guid applicationId);
@@ -116,6 +118,20 @@ namespace Aluma.API.Repositories
             applicationExists = _context.Applications.Where(a => a.Id == dto.Id).Any();
 
             return applicationExists;
+        }
+
+        public bool ApplicationInProgress(ApplicationDto dto)
+        {
+            bool applicationInProgress = false;
+
+            Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
+
+            //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
+
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress &&  a.Product == parsedProduct).Any();
+
+
+            return applicationInProgress;
         }
 
         public ApplicationDto SoftDeleteApplication(ApplicationDto dto)
