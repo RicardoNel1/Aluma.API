@@ -25,5 +25,6 @@ namespace DataService.Dto
         public bool wealthLoan { get; set; }
         public bool wealthGift { get; set; }
         public string wealthOther { get; set; }
+        public string InvestmentGoal { get; set; }
     }
 }

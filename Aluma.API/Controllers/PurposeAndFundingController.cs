@@ -59,11 +59,11 @@ namespace Aluma.API.Controllers
 
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetPurposeAndFunding(int clientId)
+        public IActionResult GetPurposeAndFunding(int applicationId)
         {
             try
             {
-                PurposeAndFundingDto purposeAndFunding = _repo.PurposeAndFunding.GetPurposeAndFunding(clientId);
+                PurposeAndFundingDto purposeAndFunding = _repo.PurposeAndFunding.GetPurposeAndFunding(applicationId);
 
                 return Ok(purposeAndFunding);
             }
