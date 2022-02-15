@@ -8,7 +8,7 @@ using System;
 
 namespace Aluma.API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize]
+    [ApiController, Route("api/[controller]")]
     public class OTPController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -38,17 +38,19 @@ namespace Aluma.API.Controllers
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-
+            ClientDto client = _repo.Client.GetClient(user.Id);
 
             response.Message = "OtpVerified";
             response.Token = token;
-            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString("yyyy/MM/dd");
+            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
+            response.ClientId = client.Id;
+
 
             return Ok(response);
         }
 
-        [HttpPost("verify/register"), AllowAnonymous]
+        [HttpPost("verify/register")]
         public IActionResult VerifyRegisterOtp(LoginDto dto)
         {
             UserDto user = _repo.User.GetUser(dto);
@@ -64,9 +66,6 @@ namespace Aluma.API.Controllers
 
             _repo.User.VerifyUser(user);
 
-            //Todo: lots of duplicated code, fix in next sprint.
-
-
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
@@ -74,7 +73,7 @@ namespace Aluma.API.Controllers
 
             response.Message = "OtpVerified";
             response.Token = token;
-            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString("yyyy/MM/dd");
+            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
             response.ClientId = client.Id;
 
