@@ -56,7 +56,7 @@ namespace DataService.Model
         public bool isRegistrationVerified { get; set; }
         public DateTime RegistrationVerifiedDate { get; set; }
         public bool isSocialLogin { get; set; }
-        public string SocialAuthToken { get; set; }
+        public string SocialId { get; set; }
         public bool isOtpLocked { get; set; }
 
     }

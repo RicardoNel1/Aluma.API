@@ -115,8 +115,6 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    //Todo: CodeReview discussion.
-
                     //Create User
                     user = _repo.User.CreateClientUser(dto);
 

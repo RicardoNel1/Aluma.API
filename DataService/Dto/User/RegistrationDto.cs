@@ -40,6 +40,6 @@ namespace DataService.Dto
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public string SocialAuthToken { get; set; }
+        public string SocialId { get; set; }
     }
 }
