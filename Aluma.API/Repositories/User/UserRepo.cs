@@ -227,7 +227,14 @@ namespace Aluma.API.Repositories
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
-            user.isSocialLogin = dto.SocialId == null ? false : true;
+
+            if (dto.SocialId != null)
+            {
+                user.isSocialLogin = true;
+                user.isRegistrationVerified = true;
+                user.RegistrationVerifiedDate = DateTime.UtcNow;
+            }
+
             user.Role = RoleEnum.Client;
             user.Password =  dto.Password != null ? str.CreateHash(dto.Password) : null;
             _context.Users.Add(user);
