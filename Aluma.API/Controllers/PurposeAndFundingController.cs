@@ -33,7 +33,7 @@ namespace Aluma.API.Controllers
                 {
                     _repo.PurposeAndFunding.CreatePurposeAndFunding(dto);
                 }
-                return Ok("Purpose And Funding Created");
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -54,7 +54,7 @@ namespace Aluma.API.Controllers
             {
                 _repo.PurposeAndFunding.UpdatePurposeAndFunding(dto);
             }
-            return Ok("Purpose And Funding Updated");
+            return Ok(dto);
         }
 
 

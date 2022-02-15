@@ -24,9 +24,16 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                var application = _repo.Applications.CreateNewApplication(dto);
-
-                return Ok(application);
+                bool applicationStarted = _repo.Applications.ApplicationInProgress(dto);
+                if (!applicationStarted)
+                {
+                    _repo.Applications.CreateNewApplication(dto);
+                }
+                else 
+                {
+                    return Ok(dto);
+                }
+                return Ok(dto);
             }
             catch (Exception e)
             {
