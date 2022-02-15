@@ -18,7 +18,7 @@ namespace Aluma.API.Repositories
 
         PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto);
 
-        PurposeAndFundingDto GetPurposeAndFunding(int clientId);
+        PurposeAndFundingDto GetPurposeAndFunding(int applicationId);
 
     }
 

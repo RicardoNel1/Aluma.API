@@ -39,6 +39,8 @@ namespace DataService.Model
         public bool wealthLoan { get; set; }
         public bool wealthGift { get; set; }
         public string wealthOther { get; set; }
+
+        public string InvestmentGoal { get; set; }
         //public string SourceOfWealth { get; set; }
         //public string ExpectedMonthlyTurnover { get; set; }
         //public string SourceOfAdditional { get; set; }
