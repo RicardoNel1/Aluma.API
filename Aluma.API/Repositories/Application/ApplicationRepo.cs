@@ -32,6 +32,8 @@ namespace Aluma.API.Repositories
 
         bool DoesApplicationExist(ApplicationDto dto);
 
+        bool DoesApplicationExist(int clientId);
+
         bool ApplicationInProgress(ApplicationDto dto);
 
         //ApplicationDocumentsModel PopulateTestDocument();
@@ -116,6 +118,15 @@ namespace Aluma.API.Repositories
             bool applicationExists = false;
 
             applicationExists = _context.Applications.Where(a => a.Id == dto.Id).Any();
+
+            return applicationExists;
+        }
+
+        public bool DoesApplicationExist(int clientId)
+        {
+            bool applicationExists = false;
+
+            applicationExists = _context.Applications.Where(a => a.ClientId == clientId).Any();
 
             return applicationExists;
         }

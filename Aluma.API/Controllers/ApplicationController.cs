@@ -133,6 +133,30 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("exist"), AllowAnonymous]
+        public IActionResult DoesApplicationsExist(int clientId)
+        {
+            try
+            {
+                //var applications = _repo.Applications.GetApplicationsByClient(clientId);
+
+                //return Ok(applications);
+                bool applicationExist = _repo.Applications.DoesApplicationExist(clientId);
+                if (!applicationExist)
+                {
+                    return Ok(false);
+                }
+                else
+                {
+                    return Ok(true);
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
         [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
         public IActionResult ListAdvisorApplications(AdvisorDto dto)
