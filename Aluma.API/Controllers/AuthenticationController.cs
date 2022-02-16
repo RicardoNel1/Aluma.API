@@ -34,11 +34,42 @@ namespace Aluma.API.Controllers
 
                 AuthResponseDto response = new AuthResponseDto();
                 UserDto user = new UserDto();
+                RoleEnum role = RoleEnum.Client;
+                var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+                string token = String.Empty;
 
                 loginExists = _repo.User.DoesUserNameExist(dto);
 
                 if (!loginExists)
                 {
+                    if (dto.SocialId != null && dto.Password == "")
+                    {
+                        RegistrationDto regDto = new RegistrationDto()
+                        {
+                            Email = dto.UserName,
+                            SocialId = dto.SocialId, 
+                            FirstName = dto.FirstName,
+                            LastName = dto.LastName,
+                        };
+
+                        user = _repo.User.CreateClientUser(regDto);
+
+                        ClientDto client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
+                        client = _repo.Client.CreateClient(client);
+                        token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+
+                        response = new AuthResponseDto()
+                        {
+                            Token = token,
+                            ClientId = client.Id,
+                            TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
+                            User = user,
+                            Message = "SuccessfulSocialLogin",
+                        };
+
+                        return Ok(response);
+                    }
+                    
                     return StatusCode(401, "Invalid");
                 }
 
@@ -74,9 +105,8 @@ namespace Aluma.API.Controllers
                 else
                 {
                     user = _repo.User.GetUser(dto);
-                    RoleEnum role = RoleEnum.Client;
-                    var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
-                    string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+                    
+                    token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
                     ClientDto client = _repo.Client.GetClient(user.Id);
 

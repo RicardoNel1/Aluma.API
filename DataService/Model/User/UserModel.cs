@@ -25,13 +25,11 @@ namespace DataService.Model
             isSocialLogin = false;
         }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required, StringLength(60), MinLength(4)]
         public string FirstName { get; set; }
-
-        [Required, StringLength(60), MinLength(4)]
+                
         public string LastName { get; set; }
                 
         public string RSAIdNumber { get; set; }
@@ -43,7 +41,7 @@ namespace DataService.Model
 
         public string MobileNumber { get; set; }
 
-        [Required]
+        
         public string Password { get; set; }
 
 
