@@ -73,6 +73,9 @@ namespace DataService
             CreateMap<TaxResidencyModel, TaxResidencyDto>()
                 .ReverseMap();
 
+            CreateMap<ForeignTaxResidencyModel, ForeignTaxResidencyDto>()
+                .ReverseMap();
+
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()
                 .ReverseMap();

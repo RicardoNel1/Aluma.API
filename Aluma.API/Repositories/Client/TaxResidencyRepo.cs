@@ -5,6 +5,7 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -40,6 +41,7 @@ namespace Aluma.API.Repositories
         public TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto)
         {
             TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);
+
             _context.TaxResidency.Add(details);
             _context.SaveChanges();
             dto = _mapper.Map<TaxResidencyDto>(details);
@@ -67,16 +69,22 @@ namespace Aluma.API.Repositories
         {
             TaxResidencyModel details = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
+            ForeignTaxResidencyModel taxItems = _mapper.Map<ForeignTaxResidencyModel>(dto.TaxResidencyItems);
+
             //set fields to be updated
             details.TaxNumber = dto.TaxNumber;
             details.TaxObligations = dto.TaxObligations;
             details.UsCitizen = dto.UsCitizen;
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
-            
+
+            taxItems.TinNumber = dto.TaxResidencyItems.TinNumber;
+
             _context.TaxResidency.Update(details);
+            _context.TaxResidencyItems.Update(taxItems);
+            //_context.TaxResidencyItems.Update(taxItems);
             _context.SaveChanges();
-            dto = _mapper.Map<TaxResidencyDto>(details);
+            dto = _mapper.Map<TaxResidencyDto>(details);            
             return dto;
 
         }

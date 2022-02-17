@@ -53,6 +53,8 @@ namespace DataService.Context
         public DbSet<PassportModel> Passports { get; set; }
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }
 
+        public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
+
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
 

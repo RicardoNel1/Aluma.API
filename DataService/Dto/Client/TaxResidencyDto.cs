@@ -5,7 +5,10 @@ namespace DataService.Dto
 {
     public class TaxResidencyDto
     {
-        public ICollection<ForeignTaxResidencyDto> TaxResidencyItems { get; set; }
+        //public List<ForeignTaxResidencyDto> TaxResidencyItems { get; set; }
+
+        public ForeignTaxResidencyDto TaxResidencyItems { get; set; }
+
 
         public int Id { get; set; }
         public int ClientId { get; set; }
@@ -18,6 +21,8 @@ namespace DataService.Dto
 
     public class ForeignTaxResidencyDto
     {
+        public int Id { get; set; }     //added
+        public int TaxResidencyId { get; set; } //added
         public string Country { get; set; }
         public string TinNumber { get; set; }
         public string TinUnavailableReason { get; set; }

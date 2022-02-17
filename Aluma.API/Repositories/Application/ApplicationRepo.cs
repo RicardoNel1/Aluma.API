@@ -126,7 +126,7 @@ namespace Aluma.API.Repositories
         {
             bool applicationExists = false;
 
-            applicationExists = _context.Applications.Where(a => a.ClientId == clientId).Any();
+            applicationExists = _context.Applications.Where(a => a.ClientId == clientId && a.ApplicationStatus != 0).Any();
 
             return applicationExists;
         }

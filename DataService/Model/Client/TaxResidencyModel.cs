@@ -10,7 +10,8 @@ namespace DataService.Model
     public class TaxResidencyModel : BaseModel
     {
         public ClientModel Client { get; set; }
-        public ICollection<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
+        //public ICollection<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
+        public ForeignTaxResidencyModel TaxResidencyItems { get; set; }
 
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
