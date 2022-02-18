@@ -80,8 +80,6 @@ namespace Aluma.API.Repositories
         {
             TaxResidencyModel details = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
-            //ForeignTaxResidencyModel taxItems = _mapper.Map<ForeignTaxResidencyModel>(dto.TaxResidencyItems);
-
             //set fields to be updated
             details.TaxNumber = dto.TaxNumber;
             details.TaxObligations = dto.TaxObligations;
@@ -89,19 +87,34 @@ namespace Aluma.API.Repositories
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
 
-            foreach (var item in dto.TaxResidencyItems)
+            //List<ForeignTaxResidencyModel> items = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == dto.Id).ToList();
+            //details.TaxResidencyItems.
+
+            foreach (var item in dto.TaxResidencyItems) 
             {
-                //ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
-                ForeignTaxResidencyModel newItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
-                //newItem.TaxResidencyId = item.Id;
-                newItem.TinNumber = item.TinNumber;
-                _context.TaxResidencyItems.Update(newItem);
 
+                //ForeignTaxResidencyModel updateItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
+                bool existingItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).Any();
+
+                if (existingItem)
+                 {
+                    ForeignTaxResidencyModel updateItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
+                    updateItem.TinNumber = item.TinNumber;
+                    _context.TaxResidencyItems.Update(updateItem);
+                
+                }
+                else
+                {
+                    ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
+                    newItem.TaxResidencyId = dto.Id;
+                    newItem.Country = item.Country;
+                    newItem.TinNumber = item.TinNumber;
+                    newItem.TinUnavailableReason = item.TinUnavailableReason;
+                    _context.TaxResidencyItems.Add(newItem);
+
+                }
             }
-
             _context.TaxResidency.Update(details);
-            //_context.TaxResidencyItems.Update(taxItems);
-            //_context.TaxResidencyItems.Update(taxItems);
             _context.SaveChanges();
             dto = _mapper.Map<TaxResidencyDto>(details);            
             return dto;
