@@ -5,10 +5,9 @@ namespace DataService.Dto
 {
     public class TaxResidencyDto
     {
-        //public List<ForeignTaxResidencyDto> TaxResidencyItems { get; set; }
+        public List<ForeignTaxResidencyDto> TaxResidencyItems { get; set; }
 
-        public ForeignTaxResidencyDto TaxResidencyItems { get; set; }
-
+        //public ForeignTaxResidencyDto TaxResidencyItems { get; set; }
 
         public int Id { get; set; }
         public int ClientId { get; set; }

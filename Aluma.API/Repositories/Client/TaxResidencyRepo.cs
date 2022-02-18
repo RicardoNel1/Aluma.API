@@ -40,11 +40,24 @@ namespace Aluma.API.Repositories
 
         public TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto)
         {
-            TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);
 
+            TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);            
+            
             _context.TaxResidency.Add(details);
             _context.SaveChanges();
+
             dto = _mapper.Map<TaxResidencyDto>(details);
+
+            foreach (var item in dto.TaxResidencyItems)
+            {
+                ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
+
+                newItem.TaxResidencyId = dto.Id;
+                _context.TaxResidencyItems.Add(newItem);
+
+            }
+
+           
             return dto;
 
         }
@@ -78,7 +91,7 @@ namespace Aluma.API.Repositories
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
 
-            taxItems.TinNumber = dto.TaxResidencyItems.TinNumber;
+            //taxItems.TinNumber = dto.TaxResidencyItems.TinNumber;
 
             _context.TaxResidency.Update(details);
             _context.TaxResidencyItems.Update(taxItems);
