@@ -55,9 +55,7 @@ namespace Aluma.API.Repositories
                 newItem.TaxResidencyId = dto.Id;
                 _context.TaxResidencyItems.Add(newItem);
 
-            }
-
-           
+            }           
             return dto;
 
         }
@@ -82,7 +80,7 @@ namespace Aluma.API.Repositories
         {
             TaxResidencyModel details = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
-            ForeignTaxResidencyModel taxItems = _mapper.Map<ForeignTaxResidencyModel>(dto.TaxResidencyItems);
+            //ForeignTaxResidencyModel taxItems = _mapper.Map<ForeignTaxResidencyModel>(dto.TaxResidencyItems);
 
             //set fields to be updated
             details.TaxNumber = dto.TaxNumber;
@@ -91,10 +89,18 @@ namespace Aluma.API.Repositories
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
 
-            //taxItems.TinNumber = dto.TaxResidencyItems.TinNumber;
+            foreach (var item in dto.TaxResidencyItems)
+            {
+                //ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
+                ForeignTaxResidencyModel newItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
+                //newItem.TaxResidencyId = item.Id;
+                newItem.TinNumber = item.TinNumber;
+                _context.TaxResidencyItems.Update(newItem);
+
+            }
 
             _context.TaxResidency.Update(details);
-            _context.TaxResidencyItems.Update(taxItems);
+            //_context.TaxResidencyItems.Update(taxItems);
             //_context.TaxResidencyItems.Update(taxItems);
             _context.SaveChanges();
             dto = _mapper.Map<TaxResidencyDto>(details);            
