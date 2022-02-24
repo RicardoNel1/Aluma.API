@@ -71,7 +71,10 @@ namespace Aluma.API.Repositories
 
         public TaxResidencyDto GetTaxResidency(int clientId)
         {
-            TaxResidencyModel taxResidencyModel = _context.TaxResidency.Where(r => r.ClientId == clientId).First();
+            TaxResidencyModel taxResidencyModel = _context.TaxResidency.Where(a => a.ClientId == clientId).FirstOrDefault();
+            taxResidencyModel.TaxResidencyItems = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == taxResidencyModel.Id).ToList();        
+
+
             return _mapper.Map<TaxResidencyDto>(taxResidencyModel);
 
         }
@@ -87,13 +90,9 @@ namespace Aluma.API.Repositories
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
 
-            //List<ForeignTaxResidencyModel> items = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == dto.Id).ToList();
-            //details.TaxResidencyItems.
-
             foreach (var item in dto.TaxResidencyItems) 
             {
 
-                //ForeignTaxResidencyModel updateItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
                 bool existingItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).Any();
 
                 if (existingItem)
