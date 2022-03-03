@@ -78,5 +78,20 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpDelete, AllowAnonymous]
+        public IActionResult DeleteTaxResidencyItem(int id)
+        {
+            try
+            {
+                bool deleted = _repo.TaxResidency.DeleteTaxResidencyItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
     }
 }

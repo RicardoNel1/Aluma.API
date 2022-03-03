@@ -20,7 +20,9 @@ namespace Aluma.API.Repositories
 
         TaxResidencyDto UpdateTaxResidency(TaxResidencyDto dto);
 
-       
+        bool DeleteTaxResidencyItem(int id);
+
+
     }
 
     public class TaxResidencyRepo : RepoBase<TaxResidencyModel>, ITaxResidencyRepo
@@ -41,8 +43,8 @@ namespace Aluma.API.Repositories
         public TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto)
         {
 
-            TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);            
-            
+            TaxResidencyModel details = _mapper.Map<TaxResidencyModel>(dto);
+
             _context.TaxResidency.Add(details);
             _context.SaveChanges();
 
@@ -55,11 +57,11 @@ namespace Aluma.API.Repositories
                 newItem.TaxResidencyId = dto.Id;
                 _context.TaxResidencyItems.Add(newItem);
 
-            }           
+            }
             return dto;
 
         }
-               
+
 
         public bool DoesTaxResidencyExist(TaxResidencyDto dto)
         {
@@ -72,7 +74,7 @@ namespace Aluma.API.Repositories
         public TaxResidencyDto GetTaxResidency(int clientId)
         {
             TaxResidencyModel taxResidencyModel = _context.TaxResidency.Where(a => a.ClientId == clientId).FirstOrDefault();
-            taxResidencyModel.TaxResidencyItems = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == taxResidencyModel.Id).ToList();        
+            taxResidencyModel.TaxResidencyItems = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == taxResidencyModel.Id).ToList();
 
 
             return _mapper.Map<TaxResidencyDto>(taxResidencyModel);
@@ -90,17 +92,17 @@ namespace Aluma.API.Repositories
             details.UsRelinquished = dto.UsRelinquished;
             details.UsOther = dto.UsOther;
 
-            foreach (var item in dto.TaxResidencyItems) 
+            foreach (var item in dto.TaxResidencyItems)
             {
 
                 bool existingItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).Any();
 
                 if (existingItem)
-                 {
+                {
                     ForeignTaxResidencyModel updateItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
                     updateItem.TinNumber = item.TinNumber;
                     _context.TaxResidencyItems.Update(updateItem);
-                
+
                 }
                 else
                 {
@@ -115,9 +117,20 @@ namespace Aluma.API.Repositories
             }
             _context.TaxResidency.Update(details);
             _context.SaveChanges();
-            dto = _mapper.Map<TaxResidencyDto>(details);            
+            dto = _mapper.Map<TaxResidencyDto>(details);
             return dto;
 
         }
+
+        public bool DeleteTaxResidencyItem(int id)
+        {
+            ForeignTaxResidencyModel item = _context.TaxResidencyItems.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.TaxResidencyItems.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
+
     }
 }
