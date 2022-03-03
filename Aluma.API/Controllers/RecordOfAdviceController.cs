@@ -16,7 +16,7 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
-        [HttpPost]
+        [HttpPost,AllowAnonymous]
         public IActionResult CreateAdvice([FromBody] RecordOfAdviceDto dto)
         {
             try
@@ -37,7 +37,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateAdvice([FromBody] RecordOfAdviceDto dto)
         {
             try
@@ -58,12 +58,12 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetAdvice([FromBody] RecordOfAdviceDto dto)
+        [HttpGet("applicationId"), AllowAnonymous]
+        public IActionResult GetAdvice(int applicationId)
         {
             try
             {
-                RecordOfAdviceDto advice = _repo.RecordOfAdvice.GetRecordOfAdvice(dto);
+                RecordOfAdviceDto advice = _repo.RecordOfAdvice.GetRecordOfAdvice(applicationId);
 
                 return Ok(advice);
             }
