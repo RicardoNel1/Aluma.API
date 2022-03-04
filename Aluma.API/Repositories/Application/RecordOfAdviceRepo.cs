@@ -49,7 +49,7 @@ namespace Aluma.API.Repositories
 
         public RecordOfAdviceDto GetRecordOfAdvice(int applicationId)
         {
-            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == appId);
+            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
 
             if (roa.Any())
             {

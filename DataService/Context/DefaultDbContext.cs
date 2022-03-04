@@ -55,6 +55,10 @@ namespace DataService.Context
 
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
 
+        //Product
+
+        public DbSet<ProductModel> Products { get; set; }
+
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
 

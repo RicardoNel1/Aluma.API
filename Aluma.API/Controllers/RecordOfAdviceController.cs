@@ -21,7 +21,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool adviceExist = _repo.RecordOfAdvice.DoesApplicationHaveRecordOfAdice(dto);
+                bool adviceExist = _repo.RecordOfAdvice.DoesApplicationHaveRecordOfAdice(dto.ApplicationId);
                 if (adviceExist)
                 {
                     return BadRequest("ROA Exists");
@@ -42,7 +42,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool adviceExist = _repo.RecordOfAdvice.DoesApplicationHaveRecordOfAdice(dto);
+                bool adviceExist = _repo.RecordOfAdvice.DoesApplicationHaveRecordOfAdice(dto.ApplicationId);
                 if (adviceExist)
                 {
                     return BadRequest("ROA Does Not Exist");
