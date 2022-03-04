@@ -139,7 +139,7 @@ namespace Aluma.API.Repositories
 
             //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
 
-            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress &&  a.Product == parsedProduct).Any();
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress &&  a.Product == parsedProduct).Any();
 
 
             return applicationInProgress;
