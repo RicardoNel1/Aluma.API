@@ -66,7 +66,6 @@ namespace Aluma.API.Controllers
                 FSPMandateDto mandate = _repo.FSPMandate.GetFSPMandate(clientId);
 
                 return Ok(mandate);
-                return Ok();
             }
             catch (Exception e)
             {

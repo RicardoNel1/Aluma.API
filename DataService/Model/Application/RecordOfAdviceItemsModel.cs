@@ -8,10 +8,9 @@ namespace DataService.Model
     public class RecordOfAdviceItemsModel : BaseModel
     {
         public RecordOfAdviceModel RecordOfAdvice { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int RecordOfAdviceId { get; set; }
-        public ProductsEnum ProductName { get; set; }
+        public int ProductId { get; set; }
         public double RecommendedLumpSum { get; set; }
         public double AcceptedLumpSum { get; set; }
         public double RecommendedRecurringPremium { get; set; }

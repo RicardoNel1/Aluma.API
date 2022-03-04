@@ -5,14 +5,15 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace Aluma.API.Repositories
 {
     public interface IRecordOfAdviceRepo : IRepoBase<RecordOfAdviceModel>
     {
-        RecordOfAdviceDto GetRecordOfAdvice(RecordOfAdviceDto dto);
+        RecordOfAdviceDto GetRecordOfAdvice(int applicationId);
 
-        bool DoesApplicationHaveRecordOfAdice(RecordOfAdviceDto dto);
+        bool DoesApplicationHaveRecordOfAdice(int applicationId);
 
         RecordOfAdviceDto CreateRecordOfAdvice(RecordOfAdviceDto dto);
 
@@ -36,9 +37,49 @@ namespace Aluma.API.Repositories
             _context = databaseContext;
         }
 
+        public bool DoesApplicationHaveRecordOfAdice(int applicationId)
+        {
+            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
+            if (roa.Any())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public RecordOfAdviceDto GetRecordOfAdvice(int applicationId)
+        {
+            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
+
+            if (roa.Any())
+            {
+                return _mapper.Map<RecordOfAdviceDto>(roa.First());
+            }
+            return null;
+        }
+
         public RecordOfAdviceDto CreateRecordOfAdvice(RecordOfAdviceDto dto)
         {
-            throw new System.NotImplementedException();
+            RecordOfAdviceModel newRoa = _mapper.Map<RecordOfAdviceModel>(dto);
+
+            _context.RecordOfAdvice.Add(newRoa);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
+
+            return dto;
+        }
+
+        public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
+        {
+            RecordOfAdviceModel newRoa = _mapper.Map<RecordOfAdviceModel>(dto);
+
+            _context.RecordOfAdvice.Update(newRoa);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
+
+            return dto;
         }
 
         public bool DeleteRecordOfAdvice(RecordOfAdviceDto dto)
@@ -46,19 +87,5 @@ namespace Aluma.API.Repositories
             throw new System.NotImplementedException();
         }
 
-        public bool DoesApplicationHaveRecordOfAdice(RecordOfAdviceDto dto)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public RecordOfAdviceDto GetRecordOfAdvice(RecordOfAdviceDto dto)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
