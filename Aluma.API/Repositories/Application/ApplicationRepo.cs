@@ -135,11 +135,12 @@ namespace Aluma.API.Repositories
         {
             bool applicationInProgress = false;
 
-            Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
+            //Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
+            int productId = _context.Products.Where(a => a.Name == dto.Product).First().Id;
 
             //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
 
-            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress &&  a.Product == parsedProduct).Any();
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress &&  a.ProductId == productId).Any();
 
 
             return applicationInProgress;

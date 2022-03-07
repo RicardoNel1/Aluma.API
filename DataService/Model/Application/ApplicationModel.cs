@@ -24,7 +24,7 @@ namespace DataService.Model
         public System.Nullable<int> AdvisorId { get; set; }
         public int ClientId { get; set; }        
         public ApplicationTypesEnum ApplicationType { get; set; }
-        public ProductsEnum Product { get; set; }
+        public int ProductId { get; set; }
 
         public ApplicationStatusEnum ApplicationStatus { get; set; }
 
