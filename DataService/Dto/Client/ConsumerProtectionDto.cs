@@ -11,7 +11,7 @@ namespace DataService.Dto
         public bool InformProducts { get; set; }
         public bool InformOffers { get; set; }
         public bool RequestResearch { get; set; }     
-        public CommEnum PreferredComm { get; set; }
+        public string PreferredComm { get; set; }
         public bool OtherCommMethods { get; set; }
 
     }
