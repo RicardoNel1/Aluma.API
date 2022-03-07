@@ -5,6 +5,7 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,16 +74,15 @@ namespace Aluma.API.Repositories
         public ConsumerProtectionDto UpdateConsumerProtection(ConsumerProtectionDto dto)
         {
             ConsumerProtectionModel data = _context.ConsumerProtection.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            Enum.TryParse(dto.PreferredComm, true, out DataService.Enum.CommEnum parsedComm);
 
-            //set fields to be updated
-            
-            //details.TaxNumber = dto.TaxNumber;
-            //details.TaxObligations = dto.TaxObligations;
-            //details.UsCitizen = dto.UsCitizen;
-            //details.UsRelinquished = dto.UsRelinquished;
-            //details.UsOther = dto.UsOther;
+            //set fields to be updated            
+            data.InformProducts = dto.InformProducts;
+            data.InformOffers = dto.InformOffers;
+            data.RequestResearch = dto.RequestResearch;                       
+            data.PreferredComm = parsedComm;
+            data.OtherCommMethods = dto.OtherCommMethods;
 
-           
             _context.ConsumerProtection.Update(data);
             _context.SaveChanges();
             dto = _mapper.Map<ConsumerProtectionDto>(data);

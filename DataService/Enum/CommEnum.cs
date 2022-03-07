@@ -2,6 +2,7 @@
 {
     public enum CommEnum
     {
+        None,
         Email,
         SMS,
         DirectMail,

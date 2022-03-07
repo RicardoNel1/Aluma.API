@@ -22,8 +22,6 @@ namespace Aluma.API.Controllers
             try
             {
                 bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);  
-                //bool bankDetailsExist = false;   //remove
-
 
                 if (bankDetailsExist)
                 {
@@ -45,7 +43,6 @@ namespace Aluma.API.Controllers
         public IActionResult UpdateClientBankDetails([FromBody] BankDetailsDto dto)
         {
             bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto); 
-            //bool bankDetailsExist = false;      //remove
 
             if (!bankDetailsExist)
             {
