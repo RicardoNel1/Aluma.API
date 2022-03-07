@@ -1,6 +1,6 @@
 ﻿namespace DataService.Enum
 {
-    public enum StatusEnum
+    public enum ApplicationStatusEnum
     {
         Deleted,
         InProgress,

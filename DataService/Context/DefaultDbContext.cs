@@ -23,6 +23,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new ClientModelBuilder());
             mb.ApplyConfiguration(new FSPModelBuilder());
             mb.ApplyConfiguration(new TaxResidencyModelBuilder());
+            mb.ApplyConfiguration(new ConsumerProtectionModelBuilder());
 
             //User
             mb.ApplyConfiguration(new UserModelBuilder());
@@ -52,8 +53,8 @@ namespace DataService.Context
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
         public DbSet<PassportModel> Passports { get; set; }
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }
-
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
+        public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
 
         //Product
 

@@ -26,7 +26,7 @@ namespace DataService.Model
         public ApplicationTypesEnum ApplicationType { get; set; }
         public ProductsEnum Product { get; set; }
 
-        public StatusEnum ApplicationStatus { get; set; }
+        public ApplicationStatusEnum ApplicationStatus { get; set; }
 
         //public bool PersonalDetailsComplete { get; set; }
         //public bool BankingDetailsComplete { get; set; }

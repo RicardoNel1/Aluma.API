@@ -65,7 +65,7 @@ namespace DataService
                 .ReverseMap();
 
             CreateMap<PassportModel, PassportDto>()
-              .ReverseMap();
+                .ReverseMap();
 
             CreateMap<RiskProfileModel, RiskProfileDto>()
                 .ReverseMap();
@@ -74,6 +74,9 @@ namespace DataService
                 .ReverseMap();
 
             CreateMap<ForeignTaxResidencyModel, ForeignTaxResidencyDto>()
+                .ReverseMap();
+
+            CreateMap<ConsumerProtectionModel, ConsumerProtectionDto>()
                 .ReverseMap();
 
 
@@ -86,7 +89,7 @@ namespace DataService
             CreateMap<DisclosureModel, DisclosureDto>()
                 .ReverseMap();
 
-            // Users
+            //Users
 
             CreateMap<AddressModel, AddressDto>()
                 .ReverseMap();
