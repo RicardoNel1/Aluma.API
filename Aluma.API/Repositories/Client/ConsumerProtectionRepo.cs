@@ -43,12 +43,10 @@ namespace Aluma.API.Repositories
         public ConsumerProtectionDto CreateConsumerProtection(ConsumerProtectionDto dto)
         {
 
-            ConsumerProtectionModel data = _mapper.Map<ConsumerProtectionModel>(dto);
-
-            _context.ConsumerProtection.Add(data);
+            ConsumerProtectionModel consumerProtection = _mapper.Map<ConsumerProtectionModel>(dto);
+            _context.ConsumerProtection.Add(consumerProtection);
             _context.SaveChanges();
-
-            dto = _mapper.Map<ConsumerProtectionDto>(data);
+            dto = _mapper.Map<ConsumerProtectionDto>(consumerProtection);
             
             return dto;
 
@@ -65,8 +63,7 @@ namespace Aluma.API.Repositories
 
         public ConsumerProtectionDto GetConsumerProtection(int clientId)
         {
-            ConsumerProtectionModel consumerProtectionModel = _context.ConsumerProtection.Where(a => a.ClientId == clientId).FirstOrDefault();
-
+            ConsumerProtectionModel consumerProtectionModel = _context.ConsumerProtection.Where(a => a.ClientId == clientId).First();
             return _mapper.Map<ConsumerProtectionDto>(consumerProtectionModel);
 
         }
