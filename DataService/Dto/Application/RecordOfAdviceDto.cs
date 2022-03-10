@@ -5,6 +5,7 @@ namespace DataService.Dto
 {
     public class RecordOfAdviceDto
     {
+        public int Id { get; set; }
         public int ApplicationId { get; set; }
         public int AdvisorId { get; set; }
         public string BdaNumber { get; set; }

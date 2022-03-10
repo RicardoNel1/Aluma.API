@@ -12,8 +12,6 @@ namespace DataService.Model
         public ApplicationModel Application { get; set; }
         public AdvisorModel Advisor { get; set; }
         public ICollection<RecordOfAdviceItemsModel> SelectedProducts { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ApplicationId { get; set; }
         public int AdvisorId { get; set; }
@@ -31,6 +29,9 @@ namespace DataService.Model
     {
         public void Configure(EntityTypeBuilder<RecordOfAdviceModel> mb)
         {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
             mb.HasMany(c => c.SelectedProducts)
                 .WithOne(c => c.RecordOfAdvice)
                 .HasForeignKey(c => c.RecordOfAdviceId)

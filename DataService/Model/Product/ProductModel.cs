@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("product")]
+    [Table("products")]
     public class ProductModel : BaseModel
     {
         public int Id { get; set; }
@@ -19,5 +19,22 @@ namespace DataService.Model
         //variable rates
         //product life span
         //product listing date ranges
-    }    
+    }
+    public class ProductModelBuilder : IEntityTypeConfiguration<ProductModel>
+    {
+        public void Configure(EntityTypeBuilder<ProductModel> mb)
+        {
+            mb.HasData(new ProductModel()
+            {
+                Id = 1,
+                Name = "Structured Note",
+                Description = "",
+                Institute = "Standard Bank",
+                ProductType = "Investment",
+                ProductCategory = "Category 2"
+            });
+
+        }
+    }
+
 }

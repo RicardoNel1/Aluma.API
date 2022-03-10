@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("record_of_advise_items")]
+    [Table("record_of_advice_items")]
     public class RecordOfAdviceItemsModel : BaseModel
     {
         public RecordOfAdviceModel RecordOfAdvice { get; set; }

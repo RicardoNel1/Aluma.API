@@ -19,6 +19,9 @@ namespace DataService.Context
             mb.ApplyConfiguration(new IRSW8ModelBuilder());
             mb.ApplyConfiguration(new RecordOfAdviceModelBuilder());
 
+            //Product
+            mb.ApplyConfiguration(new ProductModelBuilder());
+
             //Client
             mb.ApplyConfiguration(new ClientModelBuilder());
             mb.ApplyConfiguration(new FSPModelBuilder());

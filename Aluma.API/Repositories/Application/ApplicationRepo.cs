@@ -93,7 +93,15 @@ namespace Aluma.API.Repositories
         public List<ApplicationDto> GetApplicationsByClient(string clientId)
         {
             List<ApplicationModel> applications = _context.Applications.Where(c => c.ClientId.ToString() == clientId && c.ApplicationStatus != 0).ToList();
-            return _mapper.Map<List<ApplicationDto>>(applications);
+
+            //remove when productID is implemented
+            List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
+            foreach (var app in result)
+            {
+                app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
+            }
+
+            return result;
         }
 
         public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto)
@@ -136,7 +144,7 @@ namespace Aluma.API.Repositories
             bool applicationInProgress = false;
 
             //Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
-            int productId = _context.Products.Where(a => a.Name == dto.Product).First().Id;
+            int productId = _context.Products.Where(a => a.Name == dto.ProductName).First().Id;
 
             //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
 
@@ -162,11 +170,18 @@ namespace Aluma.API.Repositories
         {
             //ClientModel client = _mapper.Map<ClientModel>(dto);
             //ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
+            
+
+
             ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
+            Enum.TryParse(dto.ApplicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
+            application.ApplicationStatus = appStatus;
+            ProductModel product = _context.Products.Where(a => a.Name == dto.ProductName).First();
+            application.ProductId = product.Id;
             _context.Applications.Add(application);
             _context.SaveChanges();
             dto = _mapper.Map<ApplicationDto>(application);
-
+            dto.ProductName = product.Name;
             return dto;
             //throw new NotImplementedException();
         }

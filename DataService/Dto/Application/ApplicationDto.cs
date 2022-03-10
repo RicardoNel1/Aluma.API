@@ -12,7 +12,8 @@ namespace DataService.Dto
         //public System.Nullable<Guid> AdvisorId { get; set; }
         public int ClientId { get; set; }
         public string ApplicationType { get; set; }
-        public string Product { get; set; }
+        public string ProductName { get; set; }
+        public int ProductId { get; set; }
         public string ApplicationStatus { get; set; }
 
         //public bool PersonalDetailsComplete { get; set; }
