@@ -43,7 +43,7 @@ namespace Aluma.API.Controllers
             try
             {
                 bool adviceExist = _repo.RecordOfAdvice.DoesApplicationHaveRecordOfAdice(dto.ApplicationId);
-                if (adviceExist)
+                if (!adviceExist)
                 {
                     return BadRequest("ROA Does Not Exist");
                 }
@@ -58,7 +58,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("applicationId"), AllowAnonymous]
+        [HttpGet, AllowAnonymous]
         public IActionResult GetAdvice(int applicationId)
         {
             try

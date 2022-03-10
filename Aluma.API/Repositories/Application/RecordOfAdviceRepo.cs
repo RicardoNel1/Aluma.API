@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 
@@ -53,7 +54,14 @@ namespace Aluma.API.Repositories
 
             if (roa.Any())
             {
-                return _mapper.Map<RecordOfAdviceDto>(roa.First());
+                RecordOfAdviceDto result = _mapper.Map<RecordOfAdviceDto>(roa.Include(r => r.SelectedProducts).First());
+
+                foreach (var product in result.SelectedProducts)
+                {
+                    product.ProductName = _context.Products.First(p => p.Id == product.ProductId).Name;
+                }
+
+                return result;
             }
             return null;
         }
@@ -67,7 +75,7 @@ namespace Aluma.API.Repositories
 
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
-            return dto;
+            return dto; 
         }
 
         public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
