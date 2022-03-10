@@ -36,6 +36,8 @@ namespace Aluma.API.Repositories
         public UserDto CreateClientUser(RegistrationDto dto);
         public UserDto CreateAdvisorUser(RegistrationDto dto);
 
+        bool DoesAddressExist(AddressDto dto);
+
         public AddressDto CreateUserAddress(AddressDto dto);
         public AddressDto UpdateUserAddress(AddressDto dto);
 
@@ -259,6 +261,13 @@ namespace Aluma.API.Repositories
             return _mapper.Map<UserDto>(user);
         }
 
+        //Address
+        public bool DoesAddressExist(AddressDto dto)
+        {
+            bool addressExist = false;
+            addressExist = _context.Address.Where(a => a.UserId == dto.UserId).Any();
+            return addressExist;
+        }
         public AddressDto CreateUserAddress(AddressDto dto) 
         {
             AddressModel details = _mapper.Map<AddressModel>(dto);
