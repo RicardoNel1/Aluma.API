@@ -115,13 +115,71 @@ namespace Aluma.API.Repositories
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user  = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
-            ClientModel client = _mapper.Map<ClientModel>(dto);
+            ClientModel client = _mapper.Map<ClientModel>(dto);           //can't map address
+            //ClientModel client = _context.Clients.Where(x => x.Id == dto.Id).FirstOrDefault();
 
             //set user fields to be updated
             user.FirstName = dto.User.FirstName;
             user.LastName = dto.User.LastName;
             user.RSAIdNumber = dto.User.RSAIdNumber;
             user.DateOfBirth = dto.User.DateOfBirth;
+
+            ////set address fields to be updated
+            //if (dto.User.Address != null) { 
+            //foreach (var item in dto.User.Address)
+            //{
+
+            //    bool existingItem = _context.Address.Where(a => a.Id == item.Id).Any();
+
+            //    if (existingItem)
+            //    {
+            //        AddressModel updateItem = _context.Address.Where(a => a.Id == item.Id).FirstOrDefault();
+            //        Enum.TryParse(item.Type, true, out DataService.Enum.AddressTypesEnum parsedType);
+
+            //        updateItem.UnitNumber = item.UnitNumber;
+            //        updateItem.ComplexName = item.ComplexName;
+            //        updateItem.StreetNumber = item.StreetNumber;
+            //        updateItem.StreetName = item.StreetName;
+            //        updateItem.Suburb = item.Suburb;
+            //        updateItem.City = item.City;
+            //        updateItem.PostalCode = item.PostalCode;
+            //        //updateItem.Country = item.Country;
+            //        updateItem.Type = parsedType;
+            //        updateItem.InCareAddress = item.InCareAddress;
+            //        updateItem.InCareName = item.InCareName;
+            //        updateItem.YearsAtAddress = item.YearsAtAddress;
+            //        updateItem.AddressSameAs = item.AddressSameAs;
+
+            //        _context.Address.Update(updateItem);
+
+            //    }
+            //    else
+            //    {
+            //        AddressModel newItem = new AddressModel();
+            //        Enum.TryParse(item.Type, true, out DataService.Enum.AddressTypesEnum parsedType);
+
+            //        newItem.UserId = dto.UserId;
+            //        newItem.UnitNumber = item.UnitNumber;
+            //        newItem.ComplexName = item.ComplexName;
+            //        newItem.StreetNumber = item.StreetNumber;
+            //        newItem.StreetName = item.StreetName;
+            //        newItem.Suburb = item.Suburb;
+            //        newItem.City = item.City;
+            //        newItem.PostalCode = item.PostalCode;
+            //        //newItem.Country = item.Country;
+            //        newItem.Type = parsedType;
+            //        newItem.InCareAddress = item.InCareAddress;
+            //        newItem.InCareName = item.InCareName;
+            //        newItem.YearsAtAddress = item.YearsAtAddress;
+            //        newItem.AddressSameAs = item.AddressSameAs;                    
+
+            //        _context.Address.Add(newItem);
+
+            //    }
+            //}
+            //}
+
+
 
 
             //set client fields to be updated

@@ -12,9 +12,6 @@ namespace DataService.Model
         public ClientModel Client { get; set; }
         
         public ICollection<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
-        //public ForeignTaxResidencyModel TaxResidencyItems { get; set; }
-
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string TaxNumber { get; set; }
@@ -47,14 +44,4 @@ namespace DataService.Model
         public string TinUnavailableReason { get; set; }
     }
 
-    //public class ForeignTaxResidencyModelBuilder : IEntityTypeConfiguration<ForeignTaxResidencyModel>
-    //{
-    //    public void Configure(EntityTypeBuilder<ForeignTaxResidencyModel> mb)
-    //    {
-    //        mb.HasKey(x => x.Id);
-    //        mb.Property(x => x.Id).ValueGeneratedOnAdd();
-
-
-    //    }
-    //}
 }

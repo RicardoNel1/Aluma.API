@@ -14,7 +14,7 @@ namespace DataService.Model
     {
         public ICollection<OtpModel> Otp { get; set; }
         public ICollection<UserDocumentModel> Documents { get; set; }
-        public ICollection<AddressModel> Addresses { get; set; }
+        public ICollection<AddressModel> Address { get; set; }
 
         public AdvisorModel Advisor { get; set; }
         public ClientModel Client { get; set; }
@@ -93,7 +93,7 @@ namespace DataService.Model
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            mb.HasMany(c => c.Addresses)
+            mb.HasMany(c => c.Address)
                .WithOne(c => c.User)
                .HasForeignKey(c => c.UserId)
                .IsRequired()

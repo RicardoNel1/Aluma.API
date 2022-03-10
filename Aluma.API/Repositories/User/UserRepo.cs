@@ -17,7 +17,6 @@ namespace Aluma.API.Repositories
         //Task<string> SendForgotPasswordMail(UserMail user);
         public bool DoesUserExist(UserDto dto);
         public bool DoesUserExist(RegistrationDto dto);
-
         public UserDto GetUser(UserDto dto);
         public UserDto GetUser(LoginDto dto);
 
@@ -36,6 +35,9 @@ namespace Aluma.API.Repositories
 
         public UserDto CreateClientUser(RegistrationDto dto);
         public UserDto CreateAdvisorUser(RegistrationDto dto);
+
+        public AddressDto CreateUserAddress(AddressDto dto);
+        public AddressDto UpdateUserAddress(AddressDto dto);
 
         string GetUserSignature(UserDto dto);       
 
@@ -255,6 +257,37 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
             return _mapper.Map<UserDto>(user);
+        }
+
+        public AddressDto CreateUserAddress(AddressDto dto) 
+        {
+            AddressModel details = _mapper.Map<AddressModel>(dto);
+
+            _context.Address.Add(details);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<AddressDto>(details);        
+            
+            return dto;
+        }
+
+        public AddressDto UpdateUserAddress(AddressDto dto) 
+        {
+            AddressModel details = _context.Address.Where(a => a.UserId == dto.UserId).FirstOrDefault();
+
+            //set fields to be updated
+            details.UnitNumber = dto.UnitNumber;
+            details.ComplexName = dto.ComplexName;
+            details.StreetNumber = dto.StreetNumber;
+            details.StreetName = dto.StreetName;
+            details.City = dto.City;
+            details.PostalCode = dto.PostalCode;
+            details.Country = dto.Country;
+            
+            _context.Address.Update(details);
+            _context.SaveChanges();
+            dto = _mapper.Map<AddressDto>(dto);
+            return dto;
         }
 
         public void ResetPassword(LoginDto dto)

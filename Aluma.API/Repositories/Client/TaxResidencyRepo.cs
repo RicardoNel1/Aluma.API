@@ -100,7 +100,9 @@ namespace Aluma.API.Repositories
                 if (existingItem)
                 {
                     ForeignTaxResidencyModel updateItem = _context.TaxResidencyItems.Where(a => a.Id == item.Id).FirstOrDefault();
+                    updateItem.Country = item.Country;
                     updateItem.TinNumber = item.TinNumber;
+                    updateItem.TinUnavailableReason = item.TinUnavailableReason;
                     _context.TaxResidencyItems.Update(updateItem);
 
                 }
