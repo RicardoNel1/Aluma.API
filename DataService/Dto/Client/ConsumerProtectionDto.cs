@@ -5,7 +5,6 @@ namespace DataService.Dto
 {
     public class ConsumerProtectionDto
     {
-        public ClientDto Client { get; set; }
         public int Id { get; set; }
         public int ClientId { get; set; }
         public bool InformProducts { get; set; }
