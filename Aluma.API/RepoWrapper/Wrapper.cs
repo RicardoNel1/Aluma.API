@@ -29,6 +29,7 @@ namespace Aluma.API.RepoWrapper
         private IPurposeAndFundingRepo _purposeAndFunding;
         private IRecordOfAdviceRepo _recordOfAdvice;
 
+
         private IBankDetailsRepo _bankDetails;
         private ITaxResidencyRepo _taxResidency;
         private IConsumerProtectionRepo _consumerProtection;
@@ -37,6 +38,9 @@ namespace Aluma.API.RepoWrapper
         private IRiskProfileRepo _riskProfile;
 
         private IDisclosureRepo _disclosures;
+
+        private IProductRepo _product;
+
 
         private IOtpRepo _otp;
         private IUserRepo _user;
@@ -144,6 +148,14 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _disclosures == null ? new DisclosureRepo(_dbContext, _mapper, _userDocuments) : _disclosures; }
         }
+
+        //Product
+
+        public IProductRepo Product
+        {
+            get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product}
+        }
+
 
         //User
         public IOtpRepo Otp

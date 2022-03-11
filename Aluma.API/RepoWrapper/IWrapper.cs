@@ -32,6 +32,9 @@ namespace Aluma.API.RepoWrapper
         ITaxResidencyRepo TaxResidency { get; }
         IConsumerProtectionRepo ConsumerProtection { get; }
 
+        //Product
+        IProductRepo ProductRepo { get; };
+
         //Shared
         IDisclosureRepo Disclosures { get; }
 
