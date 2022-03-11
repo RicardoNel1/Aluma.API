@@ -38,16 +38,16 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                //bool addressExist = _repo.User.DoesAddressExist(dto);
+                bool addressExist = _repo.User.DoesAddressExist(dto);
 
-                //if (addressExist)
-                //{
-                //    return BadRequest("Address Exists");
-                //}
-                //else
-                //{
+                if (addressExist)
+                {
+                    return BadRequest("Address Exists");
+                }
+                else
+                {
                     _repo.User.CreateUserAddress(dto);
-                //}
+                }
                 return Ok(dto);
             }
             catch (Exception e)
@@ -59,7 +59,7 @@ namespace Aluma.API.Controllers
         [HttpPut, AllowAnonymous]
         public IActionResult UpdateClient(AddressDto dto)
         {
-            bool addressExist = true;//_repo.User.DoesAddressExist(dto);
+            bool addressExist = _repo.User.DoesAddressExist(dto);
 
 
             if (!addressExist)
