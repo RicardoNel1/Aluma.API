@@ -151,9 +151,9 @@ namespace Aluma.API.RepoWrapper
 
         //Product
 
-        public IProductRepo Product
+        public IProductRepo ProductRepo
         {
-            get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product}
+            get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product; }
         }
 
 

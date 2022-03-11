@@ -33,7 +33,7 @@ namespace Aluma.API.RepoWrapper
         IConsumerProtectionRepo ConsumerProtection { get; }
 
         //Product
-        IProductRepo ProductRepo { get; };
+        IProductRepo ProductRepo { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
