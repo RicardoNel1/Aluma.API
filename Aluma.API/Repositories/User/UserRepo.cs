@@ -38,6 +38,7 @@ namespace Aluma.API.Repositories
 
         bool DoesAddressExist(AddressDto dto);
 
+        public AddressDto GetUserAddress(int userId, string type);
         public AddressDto CreateUserAddress(AddressDto dto);
         public AddressDto UpdateUserAddress(AddressDto dto);
 
@@ -280,6 +281,16 @@ namespace Aluma.API.Repositories
             dto = _mapper.Map<AddressDto>(details);        
             
             return dto;
+        }
+
+        public AddressDto GetUserAddress(int userId, string type)
+
+        {
+            Enum.TryParse(type, true, out AddressTypesEnum parsedType);
+            AddressModel addressModel = _context.Address.Where(a => a.UserId == userId && a.Type == parsedType).FirstOrDefault();
+
+            return _mapper.Map<AddressDto>(addressModel);
+
         }
 
         public AddressDto UpdateUserAddress(AddressDto dto) 

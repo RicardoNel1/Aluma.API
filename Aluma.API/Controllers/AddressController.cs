@@ -18,20 +18,20 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
-        //[HttpGet, AllowAnonymous]
-        //public IActionResult GetAddress(int userId)
-        //{
-        //    try
-        //    {
-        //        AddressDto address = _repo.User.GetClient(userId);
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetAddress(int userId, string type)
+        {
+            try
+            {
+                AddressDto address = _repo.User.GetUserAddress(userId, type);
 
-        //        return Ok(client);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
+                return Ok(address);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateAddress(AddressDto dto)
