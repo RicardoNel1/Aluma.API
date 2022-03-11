@@ -265,7 +265,9 @@ namespace Aluma.API.Repositories
         public bool DoesAddressExist(AddressDto dto)
         {
             bool addressExist = false;
-            addressExist = _context.Address.Where(a => a.UserId == dto.UserId).Any();
+            Enum.TryParse(dto.Type, true, out AddressTypesEnum parsedType);
+
+            addressExist = _context.Address.Where(a => a.UserId == dto.UserId && a.Type == parsedType).Any();
             return addressExist;
         }
         public AddressDto CreateUserAddress(AddressDto dto) 
@@ -282,13 +284,15 @@ namespace Aluma.API.Repositories
 
         public AddressDto UpdateUserAddress(AddressDto dto) 
         {
-            AddressModel details = _context.Address.Where(a => a.UserId == dto.UserId).FirstOrDefault();
+            Enum.TryParse(dto.Type, true, out AddressTypesEnum parsedType);
+            AddressModel details = _context.Address.Where(a => a.UserId == dto.UserId && a.Type == parsedType).FirstOrDefault();
 
             //set fields to be updated
             details.UnitNumber = dto.UnitNumber;
             details.ComplexName = dto.ComplexName;
             details.StreetNumber = dto.StreetNumber;
             details.StreetName = dto.StreetName;
+            details.Suburb = dto.Suburb;
             details.City = dto.City;
             details.PostalCode = dto.PostalCode;
             details.Country = dto.Country;

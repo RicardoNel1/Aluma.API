@@ -57,7 +57,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateClient(AddressDto dto)
+        public IActionResult UpdateAddress(AddressDto dto)
         {
             bool addressExist = _repo.User.DoesAddressExist(dto);
 
