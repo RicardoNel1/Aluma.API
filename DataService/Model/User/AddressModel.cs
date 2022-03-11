@@ -25,6 +25,6 @@ namespace DataService.Model
         public bool InCareAddress { get; set; }
         public string InCareName { get; set; }
         public int YearsAtAddress { get; set; }
-        public string AddressSameAs { get; set; }
+        public bool AddressSameAs { get; set; }
     }
 }

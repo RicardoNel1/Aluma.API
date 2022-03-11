@@ -292,6 +292,11 @@ namespace Aluma.API.Repositories
             details.City = dto.City;
             details.PostalCode = dto.PostalCode;
             details.Country = dto.Country;
+
+            details.InCareAddress = dto.InCareAddress;
+            details.InCareName = dto.InCareName;
+            details.YearsAtAddress = dto.YearsAtAddress;
+            details.AddressSameAs = dto.AddressSameAs;
             
             _context.Address.Update(details);
             _context.SaveChanges();
