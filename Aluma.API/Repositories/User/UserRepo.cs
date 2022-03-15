@@ -287,7 +287,7 @@ namespace Aluma.API.Repositories
 
         {
             Enum.TryParse(type, true, out AddressTypesEnum parsedType);
-            AddressModel addressModel = _context.Address.Where(a => a.UserId == userId && a.Type == parsedType).FirstOrDefault();
+            AddressModel addressModel = _context.Address.Where(a => a.UserId == userId && a.Type == parsedType).First();
 
             return _mapper.Map<AddressDto>(addressModel);
 
