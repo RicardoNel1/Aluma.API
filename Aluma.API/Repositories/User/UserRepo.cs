@@ -42,9 +42,9 @@ namespace Aluma.API.Repositories
         public AddressDto CreateUserAddress(AddressDto dto);
         public AddressDto UpdateUserAddress(AddressDto dto);
 
-        string GetUserSignature(UserDto dto);       
+        string GetUserSignature(UserDto dto);
 
-        void EditUserSignature(UserDto dto);
+        bool EditUserSignature(int userId, byte[] signature);//(UserDto dto);
 
         void ResetPassword(LoginDto dto);
 
@@ -170,14 +170,18 @@ namespace Aluma.API.Repositories
             return Convert.ToBase64String(signature);
         }
 
-        public void EditUserSignature(UserDto dto)
+        public bool EditUserSignature(int userId, byte[] signature)
         {
-            byte[] newSignature = dto.Signature;
+            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
 
-            UserModel user = _mapper.Map<UserModel>(dto);
+            byte[] newSignature = signature;
+
+            //UserModel user = _mapper.Map<UserModel>(dto);
             user.Signature = newSignature;            
             _context.Users.Update(user);
             _context.SaveChanges();
+
+            return true;
         }
 
         public bool DoesUserNameExist(LoginDto dto)

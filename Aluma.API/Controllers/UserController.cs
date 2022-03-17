@@ -48,14 +48,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut("edit/signature")]
-        public IActionResult EditUserSignature([FromBody] UserDto dto)
+        [HttpPut("edit/signature"), AllowAnonymous]
+        public IActionResult EditUserSignature(int userId, byte[] signature)
         {
             try
             {
-                _repo.User.EditUserSignature(dto);
+                bool updated = _repo.User.EditUserSignature(userId, signature);
 
-                return Ok();
+                return Ok(updated);
             }
             catch (Exception e)
             {
