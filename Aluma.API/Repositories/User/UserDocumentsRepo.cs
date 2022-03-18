@@ -64,7 +64,7 @@ namespace Aluma.API.Repositories
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,
-                FileName = dto.Name,
+                FileName = dto.DocumentName,
             };
 
             dto.DocumentData = await _fileStorage.DownloadAsync(fileDto);
@@ -98,7 +98,7 @@ namespace Aluma.API.Repositories
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,
-                FileName = dto.Name,
+                FileName = dto.DocumentName,
             };
 
             try

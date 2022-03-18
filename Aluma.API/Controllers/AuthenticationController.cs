@@ -47,7 +47,7 @@ namespace Aluma.API.Controllers
                         RegistrationDto regDto = new RegistrationDto()
                         {
                             Email = dto.UserName,
-                            SocialId = dto.SocialId, 
+                            SocialId = dto.SocialId,
                             FirstName = dto.FirstName,
                             LastName = dto.LastName,
                         };
@@ -69,7 +69,7 @@ namespace Aluma.API.Controllers
 
                         return Ok(response);
                     }
-                    
+
                     return StatusCode(401, "Invalid");
                 }
 
@@ -105,7 +105,7 @@ namespace Aluma.API.Controllers
                 else
                 {
                     user = _repo.User.GetUser(dto);
-                    
+
                     token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
                     ClientDto client = _repo.Client.GetClient(user.Id);
@@ -135,8 +135,6 @@ namespace Aluma.API.Controllers
                 bool loginExists = false;
                 bool passwordMatched = false;
                 bool registrationVerified = false;
-                bool socialLoginVerified = false;
-                bool isAdvisor = false;
 
                 AuthResponseDto response = new AuthResponseDto();
                 UserDto user = new UserDto();
@@ -148,55 +146,31 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, "Invalid");
                 }
 
-                isAdvisor = _repo.User.IsUserAdvisor(dto);
-
-                if (!isAdvisor)
+                passwordMatched = _repo.User.IsPasswordVerified(dto);
+                if (!passwordMatched)
                 {
-                    return StatusCode(401, "Invalid");
+                    response.Message = "Invalid";
+                    return StatusCode(401, response);
                 }
 
-                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
+                registrationVerified = _repo.User.IsRegistrationVerified(dto);
 
-                if (!socialLoginVerified)
+                user = _repo.User.GetUser(dto);
+                if (!registrationVerified)
                 {
-                    passwordMatched = _repo.User.IsPasswordVerified(dto);
-
-                    if (!passwordMatched)
-                    {
-                        return StatusCode(401, "Invalid");
-                    }
-
-                    registrationVerified = _repo.User.IsRegistrationVerified(dto);
-                    user = _repo.User.GetUser(dto);
-                    if (!registrationVerified)
-                    {
-                        //Re-send Verification OTP
-                        _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
-                        return StatusCode(401, "Register Verify");
-                    }
-                    else
-                    {
-                        //Send Two-Factor Auth OTP
-                        _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
-                        return Ok("TwoFactor");
-                    }
+                    //Re-send Verification OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                    response.Message = "verifyRegistration";
+                    return StatusCode(401, response);
                 }
                 else
                 {
-                    user = _repo.User.GetUser(dto);
-                    RoleEnum role = RoleEnum.Client;
-                    var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
-                    string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-
-                    response = new AuthResponseDto()
-                    {
-                        Token = token,
-                        TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
-                        User = user,
-                        Message = "SuccessfulSocialLogin"
-                    };
+                    //Send Two-Factor Auth OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                    response.Message = "verifyLogin";
                     return Ok(response);
                 }
+
             }
             catch (Exception e)
             {

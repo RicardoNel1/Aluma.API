@@ -77,7 +77,7 @@ namespace Aluma.API.Controllers
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                var advisor = _repo.Advisor.GetAdvisor(dto);
+                var advisor = _repo.Advisor.GetAdvisor(dto.UserId);
 
                 return Ok(advisor);
             }
@@ -104,5 +104,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+
     }
 }

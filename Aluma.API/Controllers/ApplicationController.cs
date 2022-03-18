@@ -4,6 +4,7 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
@@ -29,7 +30,7 @@ namespace Aluma.API.Controllers
                 {
                     _repo.Applications.CreateNewApplication(dto);
                 }
-                else 
+                else
                 {
                     return Ok(dto);
                 }
@@ -46,7 +47,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                
+
                 bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
                 if (!applicationExist)
                 {
@@ -157,6 +158,22 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("documents"), AllowAnonymous]
+        public IActionResult DownloadAllApplicationDocuments(int applicationId)
+        {
+            try
+            {
+                _repo.Applications.GenerateApplicationDocuments(applicationId);
+
+                List<ApplicationDocumentDto> appDocs = _repo.Applications.GetApplicationDocuments(applicationId);
+
+                return Ok(appDocs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
         public IActionResult ListAdvisorApplications(AdvisorDto dto)

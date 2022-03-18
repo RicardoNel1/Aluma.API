@@ -16,7 +16,7 @@ namespace Aluma.API.Repositories
     {
         public bool DoesAdvisorExist(UserDto dto);
 
-        public AdvisorDto GetAdvisor(AdvisorDto dto);
+        public AdvisorDto GetAdvisor(int userId);
 
         public AdvisorDto CreateAdvisor(AdvisorDto dto);
 
@@ -55,9 +55,9 @@ namespace Aluma.API.Repositories
             return advisorExists;
         }
 
-        public AdvisorDto GetAdvisor(AdvisorDto dto)
+        public AdvisorDto GetAdvisor(int userId)
         {
-            AdvisorModel advisor = _context.Advisors.Where(a => a.Id == dto.Id).First();
+            AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).First();
             return _mapper.Map<AdvisorDto>(advisor);
         }
 

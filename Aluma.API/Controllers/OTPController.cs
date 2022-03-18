@@ -38,14 +38,21 @@ namespace Aluma.API.Controllers
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-            ClientDto client = _repo.Client.GetClient(user.Id);
+            if (role == RoleEnum.Client)
+            {
+                ClientDto client = _repo.Client.GetClient(user.Id);
+                response.ClientId = client.Id;
+            }
+            else if (role == RoleEnum.Advisor || role == RoleEnum.Admin)
+            {
+                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+                response.AdvisorId = advisor.Id;
+            }
 
             response.Message = "OtpVerified";
             response.Token = token;
             response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
-            response.ClientId = client.Id;
-
 
             return Ok(response);
         }
@@ -69,13 +76,22 @@ namespace Aluma.API.Controllers
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-            ClientDto client = _repo.Client.GetClient(user.Id);
+            if (role == RoleEnum.Client)
+            {
+                ClientDto client = _repo.Client.GetClient(user.Id);
+                response.ClientId = client.Id;
+            }
+            else if (role == RoleEnum.Advisor)
+            {
+                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+                response.AdvisorId = advisor.Id;
+            }
 
             response.Message = "OtpVerified";
             response.Token = token;
             response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
-            response.ClientId = client.Id;
+           
 
             return Ok(response);
         }
