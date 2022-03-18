@@ -48,14 +48,32 @@ namespace Aluma.API.Controllers
             }
         }
 
+        //[HttpPut("edit/signature"), AllowAnonymous]
+        //public IActionResult EditUserSignature([FromBody] int userId, string signature)
+        ////public IActionResult EditUserSignature(dto)
+        //{
+        //    try
+        //    {
+        //        bool updated = _repo.User.EditUserSignature(userId, signature);
+
+        //        return Ok(updated);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
+
         [HttpPut("edit/signature"), AllowAnonymous]
-        public IActionResult EditUserSignature(int userId, byte[] signature)
+        //public IActionResult EditUserSignature([FromBody] int userId, string signature)
+        public IActionResult EditUserSignature([FromBody] UserDto dto)
         {
             try
             {
-                bool updated = _repo.User.EditUserSignature(userId, signature);
 
-                return Ok(updated);
+               _repo.User.EditUserSignature(dto);
+
+                return Ok("Signature Updated");
             }
             catch (Exception e)
             {
@@ -64,25 +82,6 @@ namespace Aluma.API.Controllers
         }
 
 
-        //[HttpPost, AllowAnonymous] //testing
-        //public IActionResult CreateClientUser(RegistrationDto dto)
-        //{
-        //    try
-        //    {
-        //        //bool clientExist = _repo.Client.DoesClientExist(dto);
-        //        //if (clientExist)
-        //        //{
-        //        //    return BadRequest("Client Exists");
-        //       // }
 
-        //        dto = _repo.User.CreateClientUser(dto);
-
-        //        return Ok(dto);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
     }
 }

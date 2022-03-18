@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using StringHasher;
 using DataService.Enum;
+using System.Text;
 
 namespace Aluma.API.Repositories
 {
@@ -44,7 +45,7 @@ namespace Aluma.API.Repositories
 
         string GetUserSignature(UserDto dto);
 
-        bool EditUserSignature(int userId, byte[] signature);//(UserDto dto);
+        public UserDto EditUserSignature(UserDto dto);//(UserDto dto);
 
         void ResetPassword(LoginDto dto);
 
@@ -170,18 +171,33 @@ namespace Aluma.API.Repositories
             return Convert.ToBase64String(signature);
         }
 
-        public bool EditUserSignature(int userId, byte[] signature)
-        {
-            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
+        //public bool EditUserSignature(int userId, string signature)
+        //{
+        //    UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
 
-            byte[] newSignature = signature;
+        //    byte[] newSignature = Encoding.ASCII.GetBytes(signature);
+
+        //    //UserModel user = _mapper.Map<UserModel>(dto);
+        //    user.Signature = newSignature;            
+        //    _context.Users.Update(user);
+        //    _context.SaveChanges();
+
+        //    return true;
+        //}
+
+        public UserDto EditUserSignature(UserDto dto)
+        {
+            UserModel user = _context.Users.Where(a => a.Id == dto.Id).FirstOrDefault();
+
+            //byte[] newSignature = Encoding.ASCII.GetBytes(dto.Signature);
+            byte[] newSignature = dto.Signature;
 
             //UserModel user = _mapper.Map<UserModel>(dto);
-            user.Signature = newSignature;            
+            user.Signature = newSignature;
             _context.Users.Update(user);
             _context.SaveChanges();
 
-            return true;
+            return dto;
         }
 
         public bool DoesUserNameExist(LoginDto dto)
@@ -252,8 +268,7 @@ namespace Aluma.API.Repositories
             return _mapper.Map<UserDto>(user);
         }
         public UserDto CreateAdvisorUser(RegistrationDto dto)
-        {
-            //create user            
+        {                       
             StringHasherRepo str = new StringHasherRepo();
 
             //Create User
