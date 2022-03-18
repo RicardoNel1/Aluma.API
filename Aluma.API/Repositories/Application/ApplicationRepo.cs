@@ -208,6 +208,8 @@ namespace Aluma.API.Repositories
                     DocumentName = doc.Name,
                     b64 = doc.URL
                 };
+
+                response.Add(dto);
             }
 
             return response;
@@ -218,12 +220,11 @@ namespace Aluma.API.Repositories
         public void GenerateApplicationDocuments(int applicationId)
         {
             ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-            ClientModel c = _context.Clients.SingleOrDefault(c => c.Id == a.ClientId);
-            UserModel u = _context.Users.SingleOrDefault(c => c.Id == a.ClientId);
+            ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
             AdvisorModel ad = _context.Advisors.SingleOrDefault(ad => ad.Id == c.AdvisorId);
             RiskProfileModel r = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == c.Id);
 
-            GenerateRiskProfile(u, ad, r);
+            GenerateRiskProfile(c.User, ad, r);
         }
 
         private void GenerateRiskProfile(UserModel user, AdvisorModel advisor, RiskProfileModel riskProfile)
@@ -263,8 +264,8 @@ namespace Aluma.API.Repositories
             {
                 DocumentType = DataService.Enum.DocumentTypesEnum.RiskProfile,
                 FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital Risk Profile: {user.FirstName + " " + user.LastName} .pdf",
-                URL = "data:application/pdf;base64" + doc,
+                Name = $"Aluma Capital Risk Profile - {user.FirstName + " " + user.LastName} .pdf",
+                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
                 UserId = user.Id
             };
 
