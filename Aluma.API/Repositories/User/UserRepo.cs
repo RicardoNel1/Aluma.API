@@ -43,7 +43,7 @@ namespace Aluma.API.Repositories
         public AddressDto CreateUserAddress(AddressDto dto);
         public AddressDto UpdateUserAddress(AddressDto dto);
 
-        string GetUserSignature(UserDto dto);
+        string GetUserSignature(int userId);
 
         public UserDto EditUserSignature(UserDto dto);//(UserDto dto);
 
@@ -164,9 +164,9 @@ namespace Aluma.API.Repositories
             return null;
         }
 
-        public string GetUserSignature(UserDto dto)               
+        public string GetUserSignature(int userId)               
         {
-            byte[] signature = _context.Users.Where(u => u.Id == dto.Id).First().Signature;
+            byte[] signature = _context.Users.Where(u => u.Id == userId).First().Signature;
 
             return Convert.ToBase64String(signature);
         }

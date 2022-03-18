@@ -31,14 +31,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("signature")]
-        public IActionResult GetSignature(UserDto dto)
+        [HttpGet("signature"), AllowAnonymous]
+        public IActionResult GetSignature(int userId)
         {
             try
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                string signature = _repo.User.GetUserSignature(dto);
+                string signature = _repo.User.GetUserSignature(userId);
 
                 return Ok(signature);
             }
