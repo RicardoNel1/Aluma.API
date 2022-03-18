@@ -3,11 +3,15 @@ using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
+using iText.Forms;
+using iText.Forms.Fields;
+using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -15,6 +19,8 @@ namespace Aluma.API.Repositories
     public interface IApplicationRepo : IRepoBase<ApplicationModel>
     {
         public ApplicationDto GetApplication(ApplicationDto dto);
+
+        public List<ApplicationDocumentDto> GetApplicationDocuments(int applicationId);
 
         public List<ApplicationDto> GetApplications();
 
@@ -36,6 +42,7 @@ namespace Aluma.API.Repositories
 
         bool ApplicationInProgress(ApplicationDto dto);
 
+        void GenerateApplicationDocuments(int applicationId);
         //ApplicationDocumentsModel PopulateTestDocument();
 
         //void CreateDocuments(Guid applicationId);
@@ -71,7 +78,7 @@ namespace Aluma.API.Repositories
             try
             {
                 var application = _mapper.Map<ApplicationModel>(dto);
-                application.ApplicationStatus = 0;         
+                application.ApplicationStatus = 0;
                 _context.Applications.Update(application);
                 _context.SaveChanges();
 
@@ -148,7 +155,7 @@ namespace Aluma.API.Repositories
 
             //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
 
-            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress &&  a.ProductId == productId).Any();
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress && a.ProductId == productId).Any();
 
 
             return applicationInProgress;
@@ -157,7 +164,7 @@ namespace Aluma.API.Repositories
         public ApplicationDto SoftDeleteApplication(ApplicationDto dto)
         {
             ApplicationModel application = _context.Applications.Where(x => x.Id == dto.Id).FirstOrDefault();
-           
+
             application.ApplicationStatus = 0;
 
             _context.Applications.Update(application);
@@ -170,7 +177,7 @@ namespace Aluma.API.Repositories
         {
             //ClientModel client = _mapper.Map<ClientModel>(dto);
             //ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
-            
+
 
 
             ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
@@ -184,6 +191,118 @@ namespace Aluma.API.Repositories
             dto.ProductName = product.Name;
             return dto;
             //throw new NotImplementedException();
+        }
+
+        public List<ApplicationDocumentDto> GetApplicationDocuments(int applicationId)
+        {
+            ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+            ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
+            //List<ApplicationDocumentModel> result = _context.ApplicationDocuments.Where(d => d.ApplicationId == applicationId).ToList();
+            List<UserDocumentModel> result = _context.UserDocuments.Where(d => d.UserId == c.User.Id).ToList();
+            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
+            foreach (var doc in result)
+            {
+                ApplicationDocumentDto dto = new ApplicationDocumentDto()
+                {
+                    Id = doc.Id,
+                    DocumentName = doc.Name,
+                    b64 = doc.URL
+                };
+            }
+
+            return response;
+
+        }
+
+
+        public void GenerateApplicationDocuments(int applicationId)
+        {
+            ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+            ClientModel c = _context.Clients.SingleOrDefault(c => c.Id == a.ClientId);
+            UserModel u = _context.Users.SingleOrDefault(c => c.Id == a.ClientId);
+            AdvisorModel ad = _context.Advisors.SingleOrDefault(ad => ad.Id == c.AdvisorId);
+            RiskProfileModel r = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == c.Id);
+
+            GenerateRiskProfile(u, ad, r);
+        }
+
+        private void GenerateRiskProfile(UserModel user, AdvisorModel advisor, RiskProfileModel riskProfile)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>();
+
+            d["User"] = $"{user.FirstName} {user.LastName}";
+            d["IdNo"] = user.RSAIdNumber;
+            d["Advisor"] = $"{advisor.User.FirstName ?? string.Empty} {advisor.User.LastName ?? string.Empty}";
+            d["Created"] = DateTime.Today.ToString("yyyy/MM/dd");
+            d["Goal"] = riskProfile.Goal;
+
+            d[riskProfile.RiskAge] = "x";
+            d[riskProfile.RiskTerm] = "x";
+            d[riskProfile.RiskInflation] = "x";
+            d[riskProfile.RiskReaction] = "x";
+            d[riskProfile.RiskExample] = "x";
+
+            d["DerivedProfile"] = riskProfile.DerivedProfile;
+
+            var agreeStr = riskProfile.AgreeWithOutcome == true ? "agree_True" : "agree_False";
+            if (!riskProfile.AgreeWithOutcome)
+            {
+                d["Reason"] = riskProfile.DisagreeReason ?? string.Empty;
+                d["agree_False"] = "x";
+            }
+            else
+                d["agree_True"] = "x";
+            d["Date"] = DateTime.Today.ToString("yyyy/MM/dd");
+
+            // advisor notes
+            d["advisorNotes"] = riskProfile.AdvisorNotes ?? string.Empty;
+
+            byte[] doc = PopulateDocument("RiskProfile.pdf", d);
+
+            UserDocumentModel udm = new UserDocumentModel()
+            {
+                DocumentType = DataService.Enum.DocumentTypesEnum.RiskProfile,
+                FileType = DataService.Enum.FileTypesEnum.Pdf,
+                Name = $"Aluma Capital Risk Profile: {user.FirstName + " " + user.LastName} .pdf",
+                URL = "data:application/pdf;base64" + doc,
+                UserId = user.Id
+            };
+
+            _context.UserDocuments.Add(udm);
+            _context.SaveChanges();
+        }
+
+        public byte[] PopulateDocument(string templateName, Dictionary<string, string> formData)
+        {
+            char slash = Path.DirectorySeparatorChar;
+            string templatePath = $"{_host.WebRootPath}{slash}pdf{slash}{templateName}";
+
+            var ms = new MemoryStream();
+            var pdf = new PdfDocument(new PdfReader(templatePath), new PdfWriter(ms));
+            var form = PdfAcroForm.GetAcroForm(pdf, true);
+            IDictionary<String, PdfFormField> fields = form.GetFormFields();
+            PdfFormField toSet;
+
+            foreach (var d in formData)
+            {
+                try
+                {
+                    fields.TryGetValue(d.Key, out toSet);
+                    toSet.SetValue(d.Value);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Form Field Error:  {d.Key}, {d.Value}");
+                }
+            }
+
+            form.FlattenFields();
+            pdf.Close();
+
+            byte[] file = ms.ToArray();
+            ms.Close();
+
+            return file;
         }
 
         //public void ProcessApplication(Guid applicationId, Guid userId)
@@ -6528,4 +6647,5 @@ namespace Aluma.API.Repositories
         //    }
         //}
     }
+
 }

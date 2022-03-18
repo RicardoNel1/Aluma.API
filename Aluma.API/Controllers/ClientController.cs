@@ -142,12 +142,12 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
-        public IActionResult ListAdvisorClients(AdvisorDto dto)
+        [HttpGet("list/advisor/{advisorId}"), AllowAnonymous]
+        public IActionResult ListAdvisorClients(int advisorId)
         {
             try
             {
-                var clientList = _repo.Client.GetClientsByAdvisor(dto); ;
+                var clientList = _repo.Client.GetClientsByAdvisor(advisorId); ;
 
                 return Ok(clientList);
             }

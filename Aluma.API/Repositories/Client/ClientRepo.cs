@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Aluma.API.Repositories
         public ClientDto GetClient(int userId);
         public List<ClientDto> GetClients();
 
-        public List<ClientDto> GetClientsByAdvisor(AdvisorDto dto);
+        public List<ClientDto> GetClientsByAdvisor(int advisorId);
 
         public bool DeleteClient(ClientDto dto);
 
@@ -49,9 +50,9 @@ namespace Aluma.API.Repositories
             return _mapper.Map<List<ClientDto>>(clients);
         }
 
-        public List<ClientDto> GetClientsByAdvisor(AdvisorDto dto)
+        public List<ClientDto> GetClientsByAdvisor(int advisorId)
         {
-            List<ClientModel> clients = _context.Clients.Where(c => c.AdvisorId == dto.Id).ToList();
+            List<ClientModel> clients = _context.Clients.Include(c => c.User).Where(c => c.AdvisorId == advisorId).ToList();
             return _mapper.Map<List<ClientDto>>(clients);
         }
 
