@@ -21,6 +21,16 @@ namespace Aluma.API.Helpers
                     {"TYMEBANK",678910},
                 };
 
+        Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
+                {
+                    {"00","Unknown"},
+                    {"01","Current / Cheque Account"},
+                    {"02","Savings Account"},
+                    {"03","Transmission Account"},
+                    {"04","Bond Account"},
+                    {"06","Subscription Share"}
+                };
+
         public string Initials(string str)
         {
             var newStr = string.Empty;

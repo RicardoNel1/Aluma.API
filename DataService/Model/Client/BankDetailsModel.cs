@@ -10,7 +10,6 @@ namespace DataService.Model
     {
         public ClientModel Client { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string JobID { get; set; }

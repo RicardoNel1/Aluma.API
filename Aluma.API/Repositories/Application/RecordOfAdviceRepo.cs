@@ -6,6 +6,7 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -95,5 +96,9 @@ namespace Aluma.API.Repositories
             throw new System.NotImplementedException();
         }
 
+        internal void GenerateRecordOfAdvice(UserModel user, AdvisorModel ad, RiskProfileModel r)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

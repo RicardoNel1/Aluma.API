@@ -18,6 +18,8 @@ namespace Aluma.API.RepoWrapper
 
         //IDividendTaxRepo DividendTax { get; }
         IFspMandateRepo FSPMandate { get; }
+        IFNARepo FNA { get; }
+
 
         IIRSW8Repo IRSW8 { get; }
         IIRSW9Repo IRSW9 { get; }

@@ -58,6 +58,7 @@ namespace DataService.Context
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
         public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
+        public DbSet<FNAModel> FNA { get; set; }
 
         //Product
 

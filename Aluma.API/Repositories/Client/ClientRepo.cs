@@ -27,6 +27,8 @@ namespace Aluma.API.Repositories
         ClientDto CreateClient(ClientDto dto);
 
         ClientDto UpdateClient(ClientDto dto);
+
+        void GenerateClientDocuments(int clientId);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -190,6 +192,30 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
             return dto;
+        }
+
+        public void GenerateClientDocuments(int clientId)
+        {
+            ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.BankDetails).Include(c => c.TaxResidency).SingleOrDefault(c => c.Id == clientId);
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == client.AdvisorId);
+            
+            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
+            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
+            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
+
+
+            //Risk Profile
+            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper);
+            riskRepo.GenerateRiskProfile(client, advisor, risk);
+
+            //FSP Mandate
+            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
+            fspRepo.GenerateFSP(client,advisor,fsp);
+
+            //FNA
+            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper);
+            fnaRepo.GenerateFNA(client,advisor,fna);
+
         }
 
     }

@@ -23,6 +23,7 @@ namespace Aluma.API.RepoWrapper
 
         //private IDividendTaxRepo _dividendTax;
         private IFspMandateRepo _fspMandate;
+        private IFNARepo _fna;
 
         private IIRSW8Repo _irsw8;
         private IIRSW9Repo _irsw9;
@@ -92,6 +93,11 @@ namespace Aluma.API.RepoWrapper
         public IFspMandateRepo FSPMandate
         {
             get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper) : _fspMandate; }
+        }
+
+        public IFNARepo FNA
+        {
+            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper) : _fna; }
         }
 
         public IIRSW8Repo IRSW8
