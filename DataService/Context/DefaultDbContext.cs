@@ -30,6 +30,8 @@ namespace DataService.Context
 
             //User
             mb.ApplyConfiguration(new UserModelBuilder());
+            mb.ApplyConfiguration(new AddressModelBuilder());
+            
         }
 
         //Advisor

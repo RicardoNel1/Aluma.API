@@ -147,7 +147,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                var clientList = _repo.Client.GetClientsByAdvisor(advisorId); ;
+                var clientList = _repo.Client.GetClientsByAdvisor(advisorId);
 
                 return Ok(clientList);
             }

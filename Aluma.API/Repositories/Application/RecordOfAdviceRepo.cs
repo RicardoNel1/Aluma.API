@@ -122,7 +122,7 @@ namespace Aluma.API.Repositories
                 {
                     if (item.Type == DataService.Enum.AddressTypesEnum.Residential)
                     {
-                        data["adviserAddress"] = $"{item.UnitNumber}  {item.ComplexName}, " +
+                        data["advisorAddress"] = $"{item.UnitNumber}  {item.ComplexName}, " +
                         $"{item.StreetNumber} {item.StreetName}, " +
                         $"{item.Suburb} {item.City}";
                     }
@@ -150,20 +150,20 @@ namespace Aluma.API.Repositories
             {
                 ProductModel product = _context.Products.Where(c => c.Id == item.Id).FirstOrDefault();
 
-                data[$"{product.Name}_productName"] = product.Name; //not used?
+                data[$"{product.Name.Trim().Replace(" ","")}_productName"] = product.Name; //not used?
 
-                data[$"{product.Name}_recommendedLumpSum"] = item.RecommendedLumpSum > 0 ?
+                data[$"{product.Name.Trim().Replace(" ", "")}_recommendedLumpSum"] = item.RecommendedLumpSum > 0 ?
                     item.RecommendedLumpSum.ToString() : string.Empty;
 
-                data[$"{product.Name}_acceptedLumpSum"] = item.AcceptedLumpSum > 0 ?
+                data[$"{product.Name.Trim().Replace(" ", "")}_acceptedLumpSum"] = item.AcceptedLumpSum > 0 ?
                     item.AcceptedLumpSum.ToString() : string.Empty;
 
                 if (item.RecommendedRecurringPremium > 0)
                 {
-                    data[$"{product.Name}_recommendedRecurringPremium"] = item.RecommendedRecurringPremium > 0 ?            //removed new doc
+                    data[$"{product.Name.Trim().Replace(" ", "")}_recommendedRecurringPremium"] = item.RecommendedRecurringPremium > 0 ?            //removed new doc
                       item.RecommendedRecurringPremium.ToString() : string.Empty; ;
 
-                    data[$"{product.Name}_acceptedRecurringPremium"] = item.AcceptedRecurringPremium > 0 ?                  //removed new doc
+                    data[$"{product.Name.Trim().Replace(" ", "")}_acceptedRecurringPremium"] = item.AcceptedRecurringPremium > 0 ?                  //removed new doc
                         item.AcceptedRecurringPremium.ToString() : string.Empty; ;
                 }
 
