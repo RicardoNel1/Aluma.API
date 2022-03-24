@@ -61,7 +61,7 @@ namespace DataService
             //CreateMap<ClientModel, RegistrationDto>()
             //    .ReverseMap();
 
-            CreateMap<KycDataModel, KycResultsDto>()
+            CreateMap<KYCDataModel, KycResultsDto>()
                 .ReverseMap();
 
             CreateMap<PassportModel, PassportDto>()

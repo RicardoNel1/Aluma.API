@@ -52,7 +52,7 @@ namespace DataService.Context
         //Client
         public DbSet<BankDetailsModel> BankDetails { get; set; }
         public DbSet<ClientModel> Clients { get; set; }
-        public DbSet<KycDataModel> KycData { get; set; }
+        public DbSet<KYCDataModel> KycData { get; set; }
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
         public DbSet<PassportModel> Passports { get; set; }
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }

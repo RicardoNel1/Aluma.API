@@ -13,7 +13,7 @@ namespace DataService.Model
         public UserModel User { get; set; }
 
         public AdvisorModel Advisor { get; set; }
-        public KycDataModel KycData { get; set; }
+        public KYCDataModel KycData { get; set; }
         public TaxResidencyModel TaxResidency { get; set; }
         public RiskProfileModel RiskProfile { get; set; }
         public FSPMandateModel FspMandate { get; set; }
@@ -50,6 +50,9 @@ namespace DataService.Model
         public string SpouseDateOfBirth { get; set; }
         public bool PowerOfAttorney { get; set; }
         public bool NonResidentialAccount { get; set; }
+        public bool isSmoker { get; set; }
+        public string LeadType { get; set; }
+        public string Education { get; set; }
         public bool isDeleted { get; set; }
     }
 
@@ -80,7 +83,7 @@ namespace DataService.Model
 
             mb.HasOne(c => c.KycData)
                .WithOne(c => c.Client)
-               .HasForeignKey<KycDataModel>(c => c.ClientId)
+               .HasForeignKey<KYCDataModel>(c => c.ClientId)
                .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasMany(c => c.Passports)

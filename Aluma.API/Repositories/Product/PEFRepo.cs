@@ -13,19 +13,20 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IPrivateEquityRepo : IRepoBase<ProductModel>
+    public interface IPEFRepo : IRepoBase<ProductModel>
     {
-        void GenerateDOA(ClientModel user, AdvisorModel advisor, RecordOfAdviceItemsModel roa);
+        void GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+        void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
     }
 
-    public class PrivateEquityRepo : RepoBase<ProductModel>, IPrivateEquityRepo
+    public class PEFRepo : RepoBase<ProductModel>, IPEFRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         DocumentHelper dh = new DocumentHelper();
-        public PrivateEquityRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        public PEFRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
@@ -37,6 +38,7 @@ namespace Aluma.API.Repositories
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
+            DocumentTypesEnum docType;
             string docName = string.Empty;
             string fileName = string.Empty;
 
@@ -89,11 +91,13 @@ namespace Aluma.API.Repositories
             d["signDate_3"] = DateTime.Today.ToString("yyyyMMdd");
             d["signAt_3"] = advisor.User.Address.First().City;
 
+            docType = docName == "DOA.pdf" ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2Quote;
+
             byte[] doc = dh.PopulateDocument(docName, d, _host);
 
             UserDocumentModel udm = new UserDocumentModel()
             {
-                DocumentType = DocumentTypesEnum.FSPMandate,
+                DocumentType = docType,
                 FileType = FileTypesEnum.Pdf,
                 Name = fileName,
                 URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
@@ -104,7 +108,47 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
         }
 
+        public void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa)
+        {
+            var d = new Dictionary<string, string>();
+            string signCity = string.Empty;
+            DocumentTypesEnum docType;
+            string docName = string.Empty;
+            string fileName = string.Empty;
 
+            //d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
+
+            //Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
+            
+            //if (parsedProduct == ProductsEnum.PE1)
+            //{               
+            //    docName = "PEFQuote.pdf";
+            //    fileName = $"Aluma Capital - Private Equity Fund Growth - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
+                
+            //}
+
+            //if (parsedProduct == ProductsEnum.PE2)
+            //{                
+            //    docName = "PEF2Quote.pdf";
+            //    fileName = $"Aluma Capital - Private Equity Fund Income - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";                
+            //}
+
+            byte[] doc = dh.PopulateDocument(docName, d, _host);
+
+            docType = docName == "PEFQuote.pdf" ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
+
+            UserDocumentModel udm = new UserDocumentModel()
+            {
+                DocumentType = docType,
+                FileType = FileTypesEnum.Pdf,
+                Name = fileName,
+                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
+                UserId = client.User.Id
+            };
+
+            _context.UserDocuments.Add(udm);
+            _context.SaveChanges();
+        }
 
     }
 }

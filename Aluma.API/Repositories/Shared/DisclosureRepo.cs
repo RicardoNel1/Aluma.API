@@ -1,8 +1,11 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +32,8 @@ namespace Aluma.API.Repositories
         void UpdateDisclosure(ClientDto dto);
 
         bool DeleteDisclosure(DisclosureDto dto);
+
+
     }
 
     public class DisclosureRepo : RepoBase<DisclosureModel>, IDisclosureRepo
@@ -36,6 +41,8 @@ namespace Aluma.API.Repositories
         private readonly AlumaDBContext _context;
         private readonly IMapper _mapper;
         private readonly IUserDocumentsRepo _userDocuments;
+        private readonly IWebHostEnvironment _host;
+        DocumentHelper dh = new DocumentHelper();
 
         public DisclosureRepo(AlumaDBContext databaseContext, IMapper mapper, IUserDocumentsRepo userDocuments) : base(databaseContext)
         {
@@ -111,283 +118,271 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        //private void CreateDisclosure(DisclosureModel disclosure)
-        //{
-        //    ApplicationRepo appRepo = new ApplicationRepo(_context, _host, _config);
+        public void GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
+        {
+            var d = new Dictionary<string, string>();
+            //Advisor Details
+            d["advisor"] = advisor.User.FirstName + " " + advisor.User.LastName;
+            d["dofa"] = advisor.AppointmentDate.ToString("yyyy/MM/dd") ?? string.Empty;
 
-        //    var adviser = _context.Advisors
-        //        .Where(a => a.Id == disclosure.AdvisorID)
-        //        .Include(a => a.BrokerDetails)
-        //        .Include(a => a.User)
-        //        .First();
+            if (advisor.User.Address.Count > 1)
+            {
+                var resAddress = advisor.User.Address.First(a => a.Type == AddressTypesEnum.Residential);
+                var postalAddress = advisor.User.Address.First(a => a.Type == AddressTypesEnum.Postal);
 
-        //    Dictionary<string, string> d = new Dictionary<string, string>();
+                //Physical Address
+                d["resAddressLine1"] = resAddress.ComplexName + " " + resAddress.UnitNumber;
+                d["resAddressLine2"] = resAddress.StreetNumber + " " + resAddress.StreetName;
+                d["resAddressLine3"] = resAddress.Suburb + ", " + resAddress.City;
+                d["resAddressLine4"] = resAddress.Country;
+                d["resAddressPostalCode"] = resAddress.PostalCode;
 
-        //    //Advisor Details
-        //    d["advisor"] = adviser.User.FirstName + " " + adviser.User.LastName;
-        //    d["dofa"] = adviser.AppointmentDate.ToString("yyyy/MM/dd") ?? string.Empty;
+                //Postal Address
+                d["postAddressLine1"] = postalAddress.UnitNumber + " " + postalAddress.ComplexName;
+                d["postAddressLine2"] = postalAddress.StreetNumber + " " + postalAddress.StreetName;
+                d["postAddressLine3"] = postalAddress.Suburb + ", " + postalAddress.City;
+                d["postAddressLine4"] = postalAddress.Country;
+                d["postAddressPostalCode"] = postalAddress.PostalCode;
 
-        //    //Physical Address
-        //    d["resAddressLine1"] = adviser.BrokerDetails.ResidentialAddressLine1 ?? string.Empty;
-        //    d["resAddressLine2"] = adviser.BrokerDetails.ResidentialAddressLine2 ?? string.Empty;
-        //    d["resAddressLine3"] = adviser.BrokerDetails.ResidentialAddressLine3 ?? string.Empty;
-        //    d["resAddressLine4"] = adviser.BrokerDetails.ResidentialAddressLine4 ?? string.Empty;
-        //    d["resAddressPostalCode"] = adviser.BrokerDetails.ResidentialAddressPostalCode ?? string.Empty;
+            }
 
-        //    //Postal Address
-        //    d["postAddressLine1"] = adviser.BrokerDetails.PostalAddressLine1 ?? string.Empty;
-        //    d["postAddressLine2"] = adviser.BrokerDetails.PostalAddressLine2 ?? string.Empty;
-        //    d["postAddressLine3"] = adviser.BrokerDetails.PostalAddressLine3 ?? string.Empty;
-        //    d["postAddressLine4"] = adviser.BrokerDetails.PostalAddressLine4 ?? string.Empty;
-        //    d["postAddressPostalCode"] = adviser.BrokerDetails.PostalAddressPostalCode ?? string.Empty;
+            //Contact Details
+            d["adviserBusTel"] = advisor.BusinessTel ?? string.Empty;
+            d["adviserHomeTel"] = advisor.HomeTel ?? string.Empty;
+            d["adviserCell"] = "0" + advisor.User.MobileNumber ?? string.Empty;
+            d["adviserFax"] = advisor.Fax ?? string.Empty;
+            d["adviserEmail"] = advisor.User.Email ?? string.Empty;
 
-        //    //Contact Details
-        //    d["adviserBusTel"] = adviser.BrokerDetails.BusinessTel ?? string.Empty;
-        //    d["adviserHomeTel"] = adviser.BrokerDetails.HomeTel ?? string.Empty;
-        //    d["adviserCell"] = adviser.User.MobileNumber ?? string.Empty;
-        //    d["adviserFax"] = adviser.BrokerDetails.Fax ?? string.Empty;
-        //    d["adviserEmail"] = adviser.User.Email ?? string.Empty;
+            //Financial Services
 
-        //    //Financial Services
+            d["LongTermSubA_A"] = advisor.AdviceLTSubCatA ? "X" : null;
 
-        //    d["LongTermSubA_A"] = adviser.AdviceLTSubCatA ? "X" : null;
+            d["LongTermSubA_S"] = advisor.SupervisedLTSubCatA ? "X" : null;
 
-        //    d["LongTermSubA_S"] = adviser.SupervisedLTSubCatA ? "X" : null;
 
-        //    d["ShortTermPersonal_A"] = adviser.AdviceSTPersonal ? "X" : null;
+            d["ShortTermPersonal_A"] = advisor.AdviceSTPersonal ? "X" : null;
 
-        //    d["ShortTermPersonal_S"] = adviser.SupervisedSTPersonal ? "X" : null;
+            d["ShortTermPersonal_S"] = advisor.SupervisedSTPersonal ? "X" : null;
 
-        //    d["LongTermSubB1_A"] = adviser.AdviceLTSubCatB1 ? "X" : null; ;
 
-        //    d["LongTermSubB1_S"] = adviser.SupervisedLTSubCatB1 ? "X" : null;
+            d["LongTermSubB1_A"] = advisor.AdviceLTSubCatB1 ? "X" : null;
 
-        //    d["LongTermSubC_A"] = adviser.AdviceLTSubCatC ? "X" : null;
+            d["LongTermSubB1_S"] = advisor.SupervisedLTSubCatB1 ? "X" : null;
 
-        //    d["LongTermSubC_S"] = adviser.SupervisedLTSubCatC ? "X" : null;
 
-        //    d["RetailPension_A"] = adviser.AdviceRetailPension ? "X" : null;
+            d["LongTermSubC_A"] = advisor.AdviceLTSubCatC ? "X" : null;
 
-        //    d["RetailPension_S"] = adviser.SupervisedRetailPension ? "X" : null;
+            d["LongTermSubC_S"] = advisor.SupervisedLTSubCatC ? "X" : null;
 
-        //    d["ShortTermCommercial_A"] = adviser.AdviceSTCommercial ? "X" : null;
 
-        //    d["ShortTermCommercial_S"] = adviser.SupervisedSTCommercial ? "X" : null;
+            d["RetailPension_A"] = advisor.AdviceRetailPension ? "X" : null;
 
-        //    d["PensionFundsBenefits_A"] = adviser.AdvicePensionFunds ? "X" : null;
+            d["RetailPension_S"] = advisor.SupervisedRetailPension ? "X" : null;
 
-        //    d["PensionFundsBenefits_S"] = adviser.SupervisedPensionFunds ? "X" : null;
 
-        //    d["Shares_A"] = adviser.AdviceShares ? "X" : null;
+            d["ShortTermCommercial_A"] = advisor.AdviceSTCommercial ? "X" : null;
 
-        //    d["Shares_S"] = adviser.SupervisedShares ? "X" : null;
+            d["ShortTermCommercial_S"] = advisor.SupervisedSTCommercial ? "X" : null;
 
-        //    d["MoneyMarket_A"] = adviser.AdviceMoneyMarket ? "X" : null;
 
-        //    d["MoneyMarket_S"] = adviser.SupervisedMoneyMarket ? "X" : null;
+            d["PensionFundsBenefits_A"] = advisor.AdvicePensionFunds ? "X" : null;
 
-        //    d["Debentures_A"] = adviser.AdviceDebentures ? "X" : null;
+            d["PensionFundsBenefits_S"] = advisor.SupervisedPensionFunds ? "X" : null;
 
-        //    d["Debentures_S"] = adviser.SupervisedDebentures ? "X" : null;
 
-        //    d["Warrants_A"] = adviser.AdviceWarrants ? "X" : null;
+            d["Shares_A"] = advisor.AdviceShares ? "X" : null;
 
-        //    d["Warrants_S"] = adviser.SupervisedWarrants ? "X" : null;
+            d["Shares_S"] = advisor.SupervisedShares ? "X" : null;
 
-        //    d["Bonds_A"] = adviser.AdviceBonds ? "X" : null;
 
-        //    d["Bonds_S"] = adviser.SupervisedBonds ? "X" : null;
+            d["MoneyMarket_A"] = advisor.AdviceMoneyMarket ? "X" : null;
 
-        //    d["DerivativeInstruments_A"] = adviser.AdviceDerivatives ? "X" : null;
+            d["MoneyMarket_S"] = advisor.SupervisedMoneyMarket ? "X" : null;
 
-        //    d["DerivativeInstruments_S"] = adviser.SupervisedDerivatives ? "X" : null;
 
-        //    d["CollectiveInvestmentScheme_A"] = adviser.AdviceParticipatoryInterestCollective ? "X" : null;
+            d["Debentures_A"] = advisor.AdviceDebentures ? "X" : null;
 
-        //    d["CollectiveInvestmentScheme_S"] = adviser.SupervisedParticipatoryInterestCollective ? "X" : null;
+            d["Debentures_S"] = advisor.SupervisedDebentures ? "X" : null;
 
-        //    //d["MedicalAid_A"] = adviser.AdviceMedicalAid ? "X" : null;
 
-        //    //d["MedicalAid_S"] = adviser.SupervisedMedicalAid ? "X" : null;
+            d["Warrants_A"] = advisor.AdviceWarrants ? "X" : null;
 
-        //    d["LongTermDeposits_A"] = adviser.AdviceLTDeposits ? "X" : null;
+            d["Warrants_S"] = advisor.SupervisedWarrants ? "X" : null;
 
-        //    d["LongTermDeposits_S"] = adviser.SupervisedLTDeposits ? "X" : null;
 
-        //    d["ShortTermDeposits_A"] = adviser.AdviceSTDeposits ? "X" : null;
+            d["Bonds_A"] = advisor.AdviceBonds ? "X" : null;
 
-        //    d["ShortTermDeposits_S"] = adviser.SupervisedSTDeposits ? "X" : null;
+            d["Bonds_S"] = advisor.SupervisedBonds ? "X" : null;
 
-        //    d["LongTermSubB2_A"] = adviser.AdviceLTSubCatB2 ? "X" : null;
 
-        //    d["LongTermSubB2_S"] = adviser.SupervisedLTSubCatB2 ? "X" : null;
+            d["DerivativeInstruments_A"] = advisor.AdviceDerivatives ? "X" : null;
 
-        //    d["LongTermSubB2A_A"] = adviser.AdviceLTSubCatB2A ? "X" : null;
+            d["DerivativeInstruments_S"] = advisor.SupervisedDerivatives ? "X" : null;
 
-        //    d["LongTermSubB2A_S"] = adviser.SupervisedLTSubCatB2A ? "X" : null;
 
-        //    d["LongTermSubB1A_A"] = adviser.AdviceLTSubCatB1A ? "X" : null;
+            d["CollectiveInvestmentScheme_A"] = advisor.AdviceParticipatoryInterestCollective ? "X" : null;
 
-        //    d["LongTermSubB1A_S"] = adviser.SupervisedLTSubCatB1A ? "X" : null;
+            d["CollectiveInvestmentScheme_S"] = advisor.SupervisedParticipatoryInterestCollective ? "X" : null;
 
-        //    d["ShortTermPersonalA1_A"] = adviser.AdviceSTPersonalA1 ? "X" : null;
 
-        //    d["ShortTermPersonalA1_S"] = adviser.SupervisedSTPersonalA1 ? "X" : null;
+            //d["MedicalAid_A"] = adviser.AdviceMedicalAid ? "X" : null;
 
-        //    d["StructuredDeposits_A"] = adviser.AdviceStructuredDeposits ? "X" : null;
+            //d["MedicalAid_S"] = adviser.SupervisedMedicalAid ? "X" : null;
 
-        //    d["StructuredDeposits_S"] = adviser.SupervisedStructuredDeposits ? "X" : null;
 
-        //    d["Securities_A"] = adviser.AdviceSecurities ? "X" : null;
+            d["LongTermDeposits_A"] = advisor.AdviceLTDeposits ? "X" : null;
 
-        //    d["Securities_S"] = adviser.SupervisedSecurities ? "X" : null;
+            d["LongTermDeposits_S"] = advisor.SupervisedLTDeposits ? "X" : null;
 
-        //    d["HedgeFunds_A"] = adviser.AdviceParticipatoryInterestHedge ? "X" : null;
 
-        //    d["HedgeFunds_S"] = adviser.SupervisedParticipatoryInterestHedge ? "X" : null;
+            d["ShortTermDeposits_A"] = advisor.AdviceSTDeposits ? "X" : null;
 
-        //    //CPA Options
-        //    if (disclosure.AlumaOffers)
-        //        d["cpaDis1Y"] = "X";
-        //    else
-        //        d["cpaDis1N"] = "X";
-
-        //    if (disclosure.OtherOffers)
-        //        d["cpaDis2Y"] = "X";
-        //    else
-        //        d["cpaDis2N"] = "X";
-
-        //    if (disclosure.ReputableOrg)
-        //        d["cpaDis3Y"] = "X";
-        //    else
-        //        d["cpaDis3N"] = "X";
-
-        //    if (disclosure.MethodOfCommunication != null)
-        //        d["comm" + disclosure.MethodOfCommunication] = "X";
-
-        //    if (disclosure.OtherMethodOfCommunication)
-        //        d["cpaDis4Y"] = "X";
-        //    else
-        //        d["cpaDis4N"] = "X";
-
-        //    //Service Level Agreement
-        //    d["clientName"] = disclosure.ClientName + " " + disclosure.ClientSurname;
-        //    d["clientID"] = disclosure.ClientIDNumber;
-        //    d["clientCapacity"] = disclosure.ClientCapacity;
-
-        //    d["authUsers"] = disclosure.AuthorisedUsers ?? string.Empty;
-
-        //    d["date"] = DateTime.Now.ToString("yyyy/MM/dd");
-
-        //    //Broker Appointment
-        //    if (disclosure.AdvisorAuthority != null)
-        //    {
-        //        if (!disclosure.AdvisorAuthority)
-        //            d["authorityAll"] = "X";
-        //        else
-        //        {
-        //            d["authoritySome"] = "X";
-        //            d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
-        //        }
-
-        //        d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
-        //    }
-
-        //    disclosure.DocumentData = appRepo.PopulateDocument("DisclosureLetter.pdf", d);
-        //    disclosure.DocumentType = DocumentTypesEnum.DisclosureLetter;
-        //    disclosure.B64Prefix = "data:application/pdf;base64";
-        //    disclosure.Name = "Disclosure Letter: " + disclosure.ClientName + " " + disclosure.ClientSurname;
-        //    disclosure.DocCreated = true;
-
-        //    _context.Disclosures.Update(disclosure);
-        //    _context.SaveChanges();
-        //}
-        //private void SignDisclosure(DisclosureModel disclosures)
-        //{
-        //    SignatureRepo _signiflow = new SignatureRepo();
-        //    var advisor = _context.Advisors
-        //        .Where(c => c.Id == disclosures.AdvisorID)
-        //        .Include(c => c.BrokerDetails)
-        //        .Include(c => c.User)
-        //        .First();
-
-        //    var pageList = new List<int> { 1, 2, 3 };
-
-        //    var signerList = new List<SignerListItemDto>();
-
-        //    pageList.ForEach(p => signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
-        //    {
-        //        Signature = Convert.ToBase64String(disclosures.ClientSignature),
-        //        FirstName = disclosures.ClientName,
-        //        LastName = disclosures.ClientSurname,
-        //        Email = disclosures.ClientEmail,
-        //        IdNo = disclosures.ClientIDNumber,
-        //        Mobile = disclosures.ClientMobile,
-        //        XField = 450,
-        //        YField = 800,
-        //        HField = 20,
-        //        WField = 60,
-        //        Page = p
-        //    })));
-
-        //    signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
-        //    {
-        //        Signature = Convert.ToBase64String(disclosures.ClientSignature),
-        //        FirstName = disclosures.ClientName,
-        //        LastName = disclosures.ClientSurname,
-        //        Email = disclosures.ClientEmail,
-        //        IdNo = disclosures.ClientIDNumber,
-        //        Mobile = disclosures.ClientMobile,
-        //        XField = 40,
-        //        YField = 400,
-        //        HField = 30,
-        //        WField = 120,
-        //        Page = 4,
-        //    }));
-
-        //    if (disclosures.BrokerAppointment)
-        //    {
-        //        //adviser
-        //        signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
-        //        {
-        //            Signature = Convert.ToBase64String(advisor.User.Signature),
-        //            FirstName = advisor.User.FirstName,
-        //            LastName = advisor.User.LastName,
-        //            Email = advisor.User.Email,
-        //            IdNo = advisor.User.IdNumber,
-        //            Mobile = advisor.User.MobileNumber,
-        //            XField = 40,
-        //            YField = 750,
-        //            HField = 30,
-        //            WField = 120,
-        //            Page = 4,
-        //        }));
-        //        //client
-        //        signerList.Add(_signiflow.CreateSignerListItem(new SignerDto()
-        //        {
-        //            Signature = Convert.ToBase64String(disclosures.ClientSignature),
-        //            FirstName = disclosures.ClientName,
-        //            LastName = disclosures.ClientSurname,
-        //            Email = disclosures.ClientEmail,
-        //            IdNo = disclosures.ClientIDNumber,
-        //            Mobile = disclosures.ClientMobile,
-        //            XField = 270,
-        //            YField = 750,
-        //            HField = 30,
-        //            WField = 120,
-        //            Page = 4,
-        //        }));
-        //    }
-
-        //    var ceremony = _signiflow.CreateMultipleSignersCeremony(disclosures.DocumentData,
-        //        disclosures.Name, signerList);
-
-        //    disclosures.DocumentData = Convert.FromBase64String(
-        //        _signiflow.RunMultiSignerCeremony(ceremony));
-
-        //    _context.Disclosures.Update(disclosures);
-        //    _context.SaveChanges();
-        //    //SendDisclosureLetter(clientUser, advisor, application);
-        //}
+            d["ShortTermDeposits_S"] = advisor.SupervisedSTDeposits ? "X" : null;
+
+
+            d["LongTermSubB2_A"] = advisor.AdviceLTSubCatB2 ? "X" : null;
+
+            d["LongTermSubB2_S"] = advisor.SupervisedLTSubCatB2 ? "X" : null;
+
+
+            d["LongTermSubB2A_A"] = advisor.AdviceLTSubCatB2A ? "X" : null;
+
+            d["LongTermSubB2A_S"] = advisor.SupervisedLTSubCatB2A ? "X" : null;
+
+
+            d["LongTermSubB1A_A"] = advisor.AdviceLTSubCatB1A ? "X" : null;
+
+            d["LongTermSubB1A_S"] = advisor.SupervisedLTSubCatB1A ? "X" : null;
+
+
+            d["ShortTermPersonalA1_A"] = advisor.AdviceSTPersonalA1 ? "X" : null;
+
+            d["ShortTermPersonalA1_S"] = advisor.SupervisedSTPersonalA1 ? "X" : null;
+
+
+            d["StructuredDeposits_A"] = advisor.AdviceStructuredDeposits ? "X" : null;
+
+            d["StructuredDeposits_S"] = advisor.SupervisedStructuredDeposits ? "X" : null;
+
+
+            d["Securities_A"] = advisor.AdviceSecurities ? "X" : null;
+
+            d["Securities_S"] = advisor.SupervisedSecurities ? "X" : null;
+
+
+            d["HedgeFunds_A"] = advisor.AdviceParticipatoryInterestHedge ? "X" : null;
+
+            d["HedgeFunds_S"] = advisor.SupervisedParticipatoryInterestHedge ? "X" : null;
+
+
+            //CPA Options
+            if (cpa.InformProducts)
+                d["cpaDis1Y"] = "X";
+            else
+                d["cpaDis1N"] = "X";
+
+            if (cpa.InformOffers)
+                d["cpaDis2Y"] = "X";
+            else
+                d["cpaDis2N"] = "X";
+
+            if (cpa.RequestResearch)
+                d["cpaDis3Y"] = "X";
+            else
+                d["cpaDis3N"] = "X";
+
+            if (cpa.PreferredComm != null)
+                d["comm" + cpa.PreferredComm] = "X";
+
+            if (cpa.OtherCommMethods)
+                d["cpaDis4Y"] = "X";
+            else
+                d["cpaDis4N"] = "X";
+
+
+            //Service Level Agreement
+            d["clientName"] = client.User.FirstName + " " + client.User.LastName;
+            d["clientID"] = client.User.RSAIdNumber;
+            d["clientCapacity"] = "self";
+
+            //d["authUsers"] = disclosure.AuthorisedUsers ?? string.Empty;
+
+            d["date"] = DateTime.Now.ToString("yyyy/MM/dd");
+            //d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+
+            //Broker Appointment
+            if (disclosure.AdvisorAuthority != null)
+            {
+                if (!disclosure.AdvisorAuthority)
+                    d["authorityAll"] = "X";
+                else
+                {
+                    d["authoritySome"] = "X";
+                    d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
+                }
+
+                d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+            }
+
+            byte[] doc = dh.PopulateDocument("DisclosureLetter.pdf", d, _host);
+
+            UserDocumentModel udm = new UserDocumentModel()
+            {
+                DocumentType = DocumentTypesEnum.DisclosureLetter,
+                FileType = FileTypesEnum.Pdf,
+                Name = $"Aluma Capital - Disclosure Letter - {client.User.FirstName + " " + client.User.LastName} .pdf",
+                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
+                UserId = client.User.Id
+            };
+
+            _context.UserDocuments.Add(udm);
+            _context.SaveChanges();
+        }
+
+        public void GenerateClientConsent(ClientModel client, AdvisorModel advisor)
+        {
+            Dictionary<string, string> d = new Dictionary<string, string>();
+
+            d["fullName"] = $"{client.User.FirstName} {client.User.LastName}";
+            d["idNumber"] = client.User.RSAIdNumber;
+            d["onBehalfOf"] = "Self";
+
+            d["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
+
+            d["listedAbove"] = "x";
+
+
+            d["signAt"] = client.User.Address.First().City;
+
+            d["signedOnDay"] = DateTime.UtcNow.Day.ToString();
+            d["signedOnMonth"] = DateTime.UtcNow.Month.ToString();
+            d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
+
+            d["clientContact"] = "Self";
+
+            if (client.isSmoker)
+                d["smokerTrue"] = "x";
+            else
+                d["smokerFalse"] = "x";
+
+            if (client.LeadType == "Own")
+                d["leadType"] = "x";
+
+            d[$"education_{client.Education}"] = "x";
+
+            byte[] doc = dh.PopulateDocument("ClientConsent.pdf", d, _host);
+
+            UserDocumentModel udm = new UserDocumentModel()
+            {
+                DocumentType = DocumentTypesEnum.ClientConsent,
+                FileType = FileTypesEnum.Pdf,
+                Name = $"Aluma Capital - Client Consent - {client.User.FirstName + " " + client.User.LastName} .pdf",
+                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
+                UserId = client.User.Id
+            };
+
+            _context.UserDocuments.Add(udm);
+            _context.SaveChanges();
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DataService.Model
 {
     [Table("kyc_data")]
-    public class KycDataModel : BaseModel
+    public class KYCDataModel : BaseModel
     {
         public ClientModel Client { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

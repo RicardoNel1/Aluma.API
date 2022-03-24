@@ -174,9 +174,9 @@ namespace Aluma.API.Repositories
 
             UserDocumentModel udm = new UserDocumentModel()
             {
-                DocumentType = DataService.Enum.DocumentTypesEnum.FSPMandate,
+                DocumentType = DataService.Enum.DocumentTypesEnum.RecordOfAdvice,
                 FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital Record of Advice - {client.User.FirstName + " " + client.User.LastName}.pdf",
+                Name = $"Aluma Capital - Record of Advice - {client.User.FirstName + " " + client.User.LastName}.pdf",
                 URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
                 UserId = client.User.Id
             };

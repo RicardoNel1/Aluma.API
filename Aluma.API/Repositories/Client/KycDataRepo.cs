@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IKycDataRepo : IRepoBase<KycDataModel>
+    public interface IKYCDataRepo : IRepoBase<KYCDataModel>
     {
         public List<KycDataDto> GetAllKycEvents();
 
@@ -26,14 +26,14 @@ namespace Aluma.API.Repositories
         bool DeleteKycEvent(ClientDto dto);
     }
 
-    public class KycDataRepo : RepoBase<KycDataModel>, IKycDataRepo
+    public class KYCDataRepo : RepoBase<KYCDataModel>, IKYCDataRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public KycDataRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
+        public KYCDataRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
         {
             _context = context;
             _host = host;
@@ -43,7 +43,7 @@ namespace Aluma.API.Repositories
 
         public List<KycDataDto> GetAllKycEvents()
         {
-            List<KycDataModel> kycs = _context.KycData.Include(c => c.Client).ToList();
+            List<KYCDataModel> kycs = _context.KycData.Include(c => c.Client).ToList();
             return _mapper.Map<List<KycDataDto>>(kycs);
         }
 
@@ -54,7 +54,7 @@ namespace Aluma.API.Repositories
 
         public KycDataDto GetClientKycEvent(ClientDto dto)
         {
-            KycDataModel kyc = _context.KycData.Where(k => k.ClientId == dto.Id).First();
+            KYCDataModel kyc = _context.KycData.Where(k => k.ClientId == dto.Id).First();
             return _mapper.Map<KycDataDto>(kyc);
         }
 
