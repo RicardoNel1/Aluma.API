@@ -14,7 +14,7 @@ namespace Aluma.API.Repositories
 {
     public interface IFNARepo : IRepoBase<FNAModel>
     {
-        void GenerateFNA(UserModel user, AdvisorModel advisor, RiskProfileModel riskProfile);
+        void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
     }
 
     public class FNARepo : RepoBase<FNAModel>, IFNARepo
@@ -32,7 +32,7 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
-        public void GenerateFNA(UserModel user, AdvisorModel advisor, FNAModel fna)
+        public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
         {
             //var data = new Dictionary<string, string>();
 

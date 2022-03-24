@@ -210,7 +210,7 @@ namespace Aluma.API.Repositories
 
             //FSP Mandate
             FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
-            fspRepo.GenerateFSP(client,advisor,fsp);
+            fspRepo.GenerateMandate(client,advisor,fsp);
 
             //FNA
             FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper);

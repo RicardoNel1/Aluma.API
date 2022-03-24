@@ -23,7 +23,7 @@ namespace Aluma.API.Repositories
         RiskProfileDto UpdateRiskProfile(RiskProfileDto dto);
 
         bool DeleteRiskProfile(RiskProfileDto dto);
-        void GenerateRiskProfile(UserModel user, AdvisorModel advisor, RiskProfileModel riskProfile);
+        void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
     }
 
     public class RiskProfileRepo : RepoBase<RiskProfileModel>, IRiskProfileRepo

@@ -221,14 +221,15 @@ namespace Aluma.API.Repositories
 
         public void GenerateApplicationDocuments(int applicationId)
         {
-            ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-            ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
-            AdvisorModel ad = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == c.AdvisorId);
-            RiskProfileModel r = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == c.Id);
+            ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+            RecordOfAdviceModel roa = _context.RecordOfAdvice.SingleOrDefault(a => a.Id == applicationId);
+            ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == application.ClientId);
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == client.AdvisorId);
+            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
 
             //ROA only application document thus far
             RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
-            roaRepo.GenerateRecordOfAdvice(c.User, ad, r);
+            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
         }
         
     }
