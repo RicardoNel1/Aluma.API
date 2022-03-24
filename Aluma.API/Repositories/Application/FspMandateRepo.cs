@@ -125,33 +125,34 @@ namespace Aluma.API.Repositories
             d["taxNo"] = client.TaxResidency.TaxNumber ?? " ";
 
 
-            if (client.User.Address.Count > 1)
+            if (client.User.Address.Count > 0)
             {
-                var addressList = client.User.Address.ToList();
-
-                for (int i = 0; i < addressList.Count; i++)
+                foreach (var item in client.User.Address)
                 {
-                    if (addressList[i].Type == DataService.Enum.AddressTypesEnum.Residential)
+                    if (item.Type == DataService.Enum.AddressTypesEnum.Residential)
                     {
-                        signCity = addressList[i].City;
+                        signCity = item.City;
 
-                        d[$"address1"] = $"{addressList[i].StreetNumber} " + $"{addressList[i].StreetName}, " +
-                    $"{addressList[i].UnitNumber} " + $"{addressList[i].ComplexName}";
+                        d[$"address1"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
+                            $"{item.UnitNumber} " + $"{item.ComplexName}";
 
-                        d["postalCode"] = addressList[i].PostalCode;
+                        d["postalCode"] = item.PostalCode;
 
-                        d["yearsAtAddress"] = addressList[i].YearsAtAddress.ToString();
+                        d["yearsAtAddress"] = item.YearsAtAddress.ToString();
                     }
 
-                    if (addressList[i].Type == DataService.Enum.AddressTypesEnum.Postal)
+                    if (item.Type == DataService.Enum.AddressTypesEnum.Postal)
                     {
-                        d["p_address"] = $"{addressList[i].StreetNumber} " + $"{addressList[i].StreetName}, " +
-               $"{addressList[i].UnitNumber} " + $"{addressList[i].ComplexName}, " + $"{addressList[i].Suburb}, " + $"{addressList[i].City}, " +
-               $"{addressList[i].Country}";
-                        d["p_postalCode"] = addressList[i].PostalCode;
+                        d["p_address"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
+                           $"{item.UnitNumber} " + $"{item.ComplexName}, " + $"{item.Suburb}, " + $"{item.City}, " +
+                           $"{item.Country}";
+                        d["p_postalCode"] = item.PostalCode;
                     }
+                    
                 }
+                
             }
+            
 
 
             d["businessTel"] = client.WorkNumber;
