@@ -148,28 +148,24 @@ namespace Aluma.API.Repositories
                            $"{item.Country}";
                         d["p_postalCode"] = item.PostalCode;
                     }
-                    
+
                 }
-                
+
             }
-            
 
 
-            d["businessTel"] = client.WorkNumber;
+
+            d["businessTel"] = client.WorkNumber ?? String.Empty;
             d["mobile"] = "0" + client.User.MobileNumber ?? string.Empty;
             d["email"] = client.User.Email;
 
 
-            if (client.MaritalStatus == "Single")
-                d["single"] = "x";
 
-            else if (client.MaritalStatus == "MarriedInCommunity")
-                d["inCommunity"] = "x";
+            d[$"{client.MaritalStatus}"] = "x";
 
-            else if (client.MaritalStatus == "MarriedOutCommunity")
-                d["outCommunity"] = "x";
 
-            if (client.MaritalStatus != "Single")
+
+            if (client.MaritalStatus != "single")
             {
                 d["dateOfMarriage"] = client.DateOfMarriage;
                 //d["dateOfMarriage_month"] = clientDetails.DateOfMarriage.ToString().Substring(5, 2);
@@ -214,18 +210,18 @@ namespace Aluma.API.Repositories
                 bv = client.BankDetails.First();
             }
 
-              
-            d["accountHolder"] = $"{bv.Initials ?? string.Empty} {bv.Surname ?? string.Empty}";
+            UtilityHelper uh = new UtilityHelper();
+            d["accountHolder"] = $"{uh.Initials(client.User.FirstName)}";
             d["bank"] = bv.BankName ?? string.Empty;
             d["branchNo"] = bv.BranchCode ?? string.Empty;
-            d["branchName"] = bv.BranchCode ?? string.Empty;
+            d["branchName"] = string.Empty;
             d["accountNo"] = bv.AccountNumber ?? string.Empty;
             d["accountType"] = bv.AccountType ?? string.Empty;
 
 
             //General Terms and Conditions
 
-            if (fsp.DiscretionType == "full")
+            if (fsp.DiscretionType == "Full Discretion")
             {
                 d["dividendInstruction_full"] = fsp.DividendInstruction ?? string.Empty;
                 d["monthlyFee_full"] = fsp.PortfolioManagementFee ?? string.Empty;
@@ -233,16 +229,16 @@ namespace Aluma.API.Repositories
                 d["initialFee_full"] = fsp.ForeignInvestmentInitialFee ?? string.Empty;
                 d["annualFee_full"] = fsp.ForeignInvestmentAnnualFee ?? string.Empty;
 
-                if (fsp.InvestmentObjective == "IncomeGeneration")
+                if (fsp.InvestmentObjective == "incomeGeneration")
                     d["maximumDividend"] = "x";
-                else if (fsp.InvestmentObjective == "CapitalGrowth")
+                else if (fsp.InvestmentObjective == "capitalGrowth")
                     d["maximumCapital"] = "x";
 
                 d["date_full"] = DateTime.UtcNow.ToString();
 
             }
 
-            else if (fsp.DiscretionType == "limited_DE")
+            else if (fsp.DiscretionType == "Limited Discretion - Deal and Execution")
             {
                 d["dealAndExecution"] = "x";
 
@@ -263,7 +259,7 @@ namespace Aluma.API.Repositories
                 d["annualFee_limited"] = fsp.AdditionalAdvisorFee ?? string.Empty;
 
             }
-            else if (fsp.DiscretionType == "limited_RM")
+            else if (fsp.DiscretionType == "Limited Discretion - Referral Managed")
             {
                 d["referralManaged"] = "x";
 
@@ -291,7 +287,7 @@ namespace Aluma.API.Repositories
             //signature details
             d["clientSignAt"] = signCity;
             d["witnessSignName"] = ad.User.FirstName + " " + ad.User.LastName;
-           
+
 
             d["date"] = DateTime.UtcNow.ToString();
             d["signedOnDay"] = DateTime.UtcNow.Day.ToString();

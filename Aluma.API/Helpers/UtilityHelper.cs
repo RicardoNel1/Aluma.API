@@ -5,7 +5,7 @@ namespace Aluma.API.Helpers
 {
     public class UtilityHelper
     {
-        private Dictionary<string, int> BanksDictionary = new Dictionary<string, int>()
+        public Dictionary<string, int> BanksDictionary = new Dictionary<string, int>()
                 {
                     {"FNB",250655},
                     {"NEDBANK",198765},
@@ -21,7 +21,7 @@ namespace Aluma.API.Helpers
                     {"TYMEBANK",678910},
                 };
 
-        Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
+        public Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
                 {
                     {"00","Unknown"},
                     {"01","Current / Cheque Account"},

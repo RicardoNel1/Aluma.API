@@ -222,14 +222,17 @@ namespace Aluma.API.Repositories
         public void GenerateApplicationDocuments(int applicationId)
         {
             ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-            RecordOfAdviceModel roa = _context.RecordOfAdvice.Include( r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
-            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).SingleOrDefault(c => c.Id == application.ClientId);
+            //RecordOfAdviceModel roa = _context.RecordOfAdvice.Include( r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
-            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
-
+            //RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
+            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(c => c.ClientId == application.ClientId);
             //ROA only application document thus far
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
-            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+            //RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
+            //roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+
+            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
+            fspRepo.GenerateMandate(client, advisor, fsp);
         }
         
     }

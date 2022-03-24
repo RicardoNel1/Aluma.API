@@ -7,6 +7,7 @@ using DataService.Dto;
 using DataService.Model;
 using System;
 using System.Linq;
+using Aluma.API.Helpers;
 
 namespace Aluma.API.Repositories
 {
@@ -108,6 +109,9 @@ namespace Aluma.API.Repositories
             //Todo: create bankdetails record, check if skipped, send through for AVS to pbverify
 
             BankDetailsModel details = _mapper.Map<BankDetailsModel>(dto);
+            UtilityHelper uh = new UtilityHelper();
+            details.BranchCode = uh.BanksDictionary[details.Name].ToString();
+
             _context.BankDetails.Add(details);
             _context.SaveChanges();
             dto = _mapper.Map<BankDetailsDto>(details);
@@ -404,11 +408,14 @@ namespace Aluma.API.Repositories
         {
             //BankDetailsModel details = _mapper.Map<BankDetailsModel>(dto);
             BankDetailsModel details = _context.BankDetails.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            UtilityHelper uh = new UtilityHelper();
+
 
             //set user fields to be updated
             details.BankName = dto.BankName;
             details.AccountType = dto.AccountType;
             details.AccountNumber = dto.AccountNumber;
+            details.BranchCode = uh.BanksDictionary[dto.BankName].ToString();
 
             _context.BankDetails.Update(details);
             _context.SaveChanges();
