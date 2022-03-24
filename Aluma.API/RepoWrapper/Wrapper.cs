@@ -35,7 +35,7 @@ namespace Aluma.API.RepoWrapper
         private ITaxResidencyRepo _taxResidency;
         private IConsumerProtectionRepo _consumerProtection;
         private IClientRepo _client;
-        private IKycDataRepo _kycData;
+        private IKYCDataRepo _kycData;
         private IRiskProfileRepo _riskProfile;
 
         private IDisclosureRepo _disclosures;
@@ -140,9 +140,9 @@ namespace Aluma.API.RepoWrapper
             get { return _consumerProtection == null ? new ConsumerProtectionRepo(_dbContext, _host, _config, _mapper) : _consumerProtection; }
         }
 
-        public IKycDataRepo KycData
+        public IKYCDataRepo KycData
         {
-            get { return _kycData == null ? new KycDataRepo(_dbContext, _host, _config, _mapper) : _kycData; }
+            get { return _kycData == null ? new KYCDataRepo(_dbContext, _host, _config, _mapper) : _kycData; }
         }
 
         public IRiskProfileRepo RiskProfile

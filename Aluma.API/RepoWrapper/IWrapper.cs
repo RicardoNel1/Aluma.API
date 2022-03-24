@@ -29,7 +29,7 @@ namespace Aluma.API.RepoWrapper
         //Client
         IClientRepo Client { get; }
         IBankDetailsRepo BankDetails { get; }
-        IKycDataRepo KycData { get; }
+        IKYCDataRepo KycData { get; }
         IRiskProfileRepo RiskProfile { get; }
         ITaxResidencyRepo TaxResidency { get; }
         IConsumerProtectionRepo ConsumerProtection { get; }
