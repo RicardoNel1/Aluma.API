@@ -226,13 +226,19 @@ namespace Aluma.API.Repositories
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
             //RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
-            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(c => c.ClientId == application.ClientId);
+
+
             //ROA only application document thus far
             //RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
             //roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
 
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
-            fspRepo.GenerateMandate(client, advisor, fsp);
+
+            ConsumerProtectionModel cpa = _context.ConsumerProtection.SingleOrDefault(c => c.ClientId == client.Id);
+            DisclosureModel disc = _context.Disclosures.SingleOrDefault(d => d.ClientId == client.Id);
+
+            DisclosureRepo disclosureRepo = new DisclosureRepo(_context, _mapper, null);
+            disclosureRepo.GenerateClientConsent(client, advisor);
+            disclosureRepo.GenerateDisclosure(client, advisor, cpa, disc);
         }
         
     }

@@ -80,7 +80,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet("list"), AllowAnonymous]
         public IActionResult GetProductList()
         {
             try

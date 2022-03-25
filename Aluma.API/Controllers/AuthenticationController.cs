@@ -138,6 +138,9 @@ namespace Aluma.API.Controllers
 
                 AuthResponseDto response = new AuthResponseDto();
                 UserDto user = new UserDto();
+                RoleEnum role = RoleEnum.Advisor;
+                var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+                string token = String.Empty;
 
                 loginExists = _repo.User.DoesUserNameExist(dto);
 
@@ -156,20 +159,33 @@ namespace Aluma.API.Controllers
                 registrationVerified = _repo.User.IsRegistrationVerified(dto);
 
                 user = _repo.User.GetUser(dto);
-                if (!registrationVerified)
+                token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+
+                response = new AuthResponseDto()
                 {
-                    //Re-send Verification OTP
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
-                    response.Message = "verifyRegistration";
-                    return StatusCode(401, response);
-                }
-                else
-                {
-                    //Send Two-Factor Auth OTP
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
-                    response.Message = "verifyLogin";
-                    return Ok(response);
-                }
+                    Token = token,
+                    AdvisorId = advisor.Id,
+                    TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
+                    User = user,
+                    Message = "OtpVerified",
+                };
+                return Ok(response);
+
+                //if (!registrationVerified)
+                //{
+                //    //Re-send Verification OTP
+                //    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                //    response.Message = "verifyRegistration";
+                //    return StatusCode(401, response);
+                //}
+                //else
+                //{
+                //    //Send Two-Factor Auth OTP
+                //    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                //    response.Message = "verifyLogin";
+                //    return Ok(response);
+                //}
 
             }
             catch (Exception e)
