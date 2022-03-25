@@ -13,6 +13,7 @@ namespace DataService.Dto
         public string Institute { get; set; }
         public string ProductType { get; set; }
         public string ProductCategory { get; set; }
+        public string PaymentType { get; set; }
 
         //to be added
         //variable rates

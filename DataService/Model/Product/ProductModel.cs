@@ -14,6 +14,7 @@ namespace DataService.Model
         public string Institute { get; set; }
         public string ProductType { get; set; }
         public string ProductCategory { get; set; }
+        public string PaymentType { get; set; }
         public bool IsActive { get; set; }
 
         //to be added
@@ -33,6 +34,7 @@ namespace DataService.Model
                 Institute = "Standard Bank",
                 ProductType = "Investment",
                 ProductCategory = "Category 2",
+                PaymentType = "Lumpsum",
                 IsActive = true,
             });
             mb.HasData(new ProductModel()
@@ -45,6 +47,7 @@ namespace DataService.Model
                 Institute = "Standard Bank",
                 ProductType = "Investment",
                 ProductCategory = "Category 2",
+                PaymentType = "Recurring",
                 IsActive = true
             });
             mb.HasData(new ProductModel()
@@ -55,6 +58,7 @@ namespace DataService.Model
                 Institute = "Standard Bank",
                 ProductType = "Investment",
                 ProductCategory = "Category 2",
+                PaymentType = "Recurring",
                 IsActive = true
             });
             mb.HasData(new ProductModel()
@@ -65,18 +69,33 @@ namespace DataService.Model
                 Institute = "Standard Bank",
                 ProductType = "Investment",
                 ProductCategory = "Category 2",
+                PaymentType = "Recurring",
                 IsActive = true
             });
             mb.HasData(new ProductModel()
             {
                 Id = 5,
-                Name = "Private Equity Fund",
+                Name = "Private Equity Fund - Growth",
                 Description = @"Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.
                                 The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate
                                 general partner of the Partnership, to reject any application in whole or in part.",
                 Institute = "Aluma Capital",
                 ProductType = "Investment",
                 ProductCategory = "Category 2",
+                PaymentType = "Lumpsum",
+                IsActive = true
+            });
+            mb.HasData(new ProductModel()
+            {
+                Id = 6,
+                Name = "Private Equity Fund - Income",
+                Description = @"Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.
+                                The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate
+                                general partner of the Partnership, to reject any application in whole or in part.",
+                Institute = "Aluma Capital",
+                ProductType = "Investment",
+                ProductCategory = "Category 2",
+                PaymentType = "Lumpsum",
                 IsActive = true
             });
 
