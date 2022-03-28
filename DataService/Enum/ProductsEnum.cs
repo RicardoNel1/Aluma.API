@@ -10,4 +10,22 @@
         PE1,
         PE2
     }
+
+    public enum PaymentTypesEnum
+    {
+        Lumpsum, 
+        Recurringsum
+    }
+
+    public enum ProductTypesEnum
+    {
+        Investment
+    }
+
+    public enum ProductCategoriesEnum
+    {
+        Category1, 
+        Category2,
+    }
+
 }

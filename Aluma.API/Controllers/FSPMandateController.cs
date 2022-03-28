@@ -43,7 +43,7 @@ namespace Aluma.API.Controllers
             try
             {
                 bool mandateExist = _repo.FSPMandate.DoesApplicationHaveMandate(dto);
-                if (mandateExist)
+                if (!mandateExist)
                 {
                     return BadRequest("FSP Does Not Exist");
                 }

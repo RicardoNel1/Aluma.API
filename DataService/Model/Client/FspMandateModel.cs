@@ -15,8 +15,7 @@ namespace DataService.Model
         //Discretion
         public string DiscretionType { get; set; }              
         public string InvestmentObjective { get; set; }
-        public bool onClientInstruction { get; set; }
-        public bool onAdvisorInstruction { get; set; }
+        public string LimitedInstruction { get; set; }
 
         //Voting
         public string VoteInstruction { get; set; }

@@ -221,7 +221,7 @@ namespace Aluma.API.Repositories
 
             //General Terms and Conditions
 
-            if (fsp.DiscretionType == "Full Discretion")
+            if (fsp.DiscretionType == "full")
             {
                 d["dividendInstruction_full"] = fsp.DividendInstruction ?? string.Empty;
                 d["monthlyFee_full"] = fsp.PortfolioManagementFee ?? string.Empty;
@@ -238,14 +238,21 @@ namespace Aluma.API.Repositories
 
             }
 
-            else if (fsp.DiscretionType == "Limited Discretion - Deal and Execution")
+            else if (fsp.DiscretionType == "limited_DE")
             {
                 d["dealAndExecution"] = "x";
 
-                if (fsp.onClientInstruction)
-                    d["instruction_personal_DE"] = "x";
-                else if (fsp.onAdvisorInstruction)
-                    d["instruction_advisor_DE"] = "x";
+
+                if (fsp.LimitedInstruction != "instructionBoth")
+                {
+                    d[$"{fsp.LimitedInstruction}_DE"] = "x";
+                }
+                else
+                {
+                    d[$"instructionPersonal_DE"] = "x";
+                    d[$"instructionAdvisor_DE"] = "x";
+                }
+                
 
                 d["dividendInstruction_limited"] = fsp.DividendInstruction ?? string.Empty;
 
@@ -259,14 +266,22 @@ namespace Aluma.API.Repositories
                 d["annualFee_limited"] = fsp.AdditionalAdvisorFee ?? string.Empty;
 
             }
-            else if (fsp.DiscretionType == "Limited Discretion - Referral Managed")
+            else if (fsp.DiscretionType == "limited_RM")
             {
                 d["referralManaged"] = "x";
 
-                if (fsp.onClientInstruction)
-                    d["instruction_personal_RM"] = "x";
-                else if (fsp.onAdvisorInstruction)
-                    d["instruction_adviser_RM"] = "x";
+                
+                
+
+                if (fsp.LimitedInstruction != "instructionBoth")
+                {
+                    d[$"{fsp.LimitedInstruction}_RM"] = "x";
+                }
+                else
+                {
+                    d[$"instructionPersonal_RM"] = "x";
+                    d[$"instructionAdvisor_RM"] = "x";
+                }
 
                 d["dividendInstruction_limited"] = fsp.DividendInstruction ?? string.Empty;
 
