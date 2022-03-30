@@ -3,6 +3,7 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -63,8 +64,8 @@ namespace Aluma.API.Repositories
                 RecordOfAdviceDto result = _mapper.Map<RecordOfAdviceDto>(roa.Include(r => r.SelectedProducts).First());
 
                 foreach (var product in result.SelectedProducts)
-                {
-                    product.ProductName = _context.Products.First(p => p.Id == product.ProductId).Name;
+                {                    
+                    product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
                 }
 
                 return result;
@@ -92,6 +93,10 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
+            foreach (var product in dto.SelectedProducts)
+            {
+                product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
+            }
 
             return dto;
         }

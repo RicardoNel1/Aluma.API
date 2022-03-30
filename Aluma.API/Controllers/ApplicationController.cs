@@ -80,14 +80,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetApplication(ApplicationDto dto)
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetApplication(int applicationId)
         {
             try
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                var application = _repo.Applications.GetApplication(dto);
+                var application = _repo.Applications.GetApplication(new ApplicationDto() { Id = applicationId});
 
                 return Ok(application);
             }

@@ -40,7 +40,7 @@ namespace Aluma.API.Controllers
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
             if (role == RoleEnum.Client)
             {
-                ClientDto client = _repo.Client.GetClient(user.Id);
+                ClientDto client = _repo.Client.GetClientByUserId(user.Id);
                 response.ClientId = client.Id;
             }
             else if (role == RoleEnum.Advisor || role == RoleEnum.Admin)
@@ -78,7 +78,7 @@ namespace Aluma.API.Controllers
             string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
             if (role == RoleEnum.Client)
             {
-                ClientDto client = _repo.Client.GetClient(user.Id);
+                ClientDto client = _repo.Client.GetClientByUserId(user.Id);
                 response.ClientId = client.Id;
             }
             else if (role == RoleEnum.Advisor)

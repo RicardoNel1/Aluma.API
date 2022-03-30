@@ -7,6 +7,7 @@ using DataService.Enum;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,6 @@ namespace Aluma.API.Repositories
     public interface IDisclosureRepo : IRepoBase<DisclosureModel>
     {
         public DisclosureDto GetDisclosure(DisclosureDto dto);
-
-        public DisclosureDto GetDisclosureDocument(DisclosureDto dto);
 
         public List<DisclosureDto> GetDisclosureListByAdvisor(AdvisorDto dto);
 
@@ -42,11 +41,14 @@ namespace Aluma.API.Repositories
         private readonly IMapper _mapper;
         private readonly IUserDocumentsRepo _userDocuments;
         private readonly IWebHostEnvironment _host;
+        private readonly IConfiguration _config;
         DocumentHelper dh = new DocumentHelper();
 
-        public DisclosureRepo(AlumaDBContext databaseContext, IMapper mapper, IUserDocumentsRepo userDocuments) : base(databaseContext)
+        public DisclosureRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IUserDocumentsRepo userDocuments) : base(databaseContext)
         {
             _context = databaseContext;
+            _config = config;
+            _host = host;
             _mapper = mapper;
             _userDocuments = userDocuments;
         }
@@ -77,13 +79,7 @@ namespace Aluma.API.Repositories
             bool exists = _context.Disclosures.Where(c => c.ClientId == dto.Id).Any();
 
             return exists;
-        }
-
-        public DisclosureDto GetDisclosureDocument(DisclosureDto dto)
-        {
-            DisclosureModel disclosure = _context.Disclosures.Where(c => c.Id == dto.Id).Include(c => c.Document).First();
-            return _mapper.Map<DisclosureDto>(disclosure);
-        }
+        }        
 
         public DisclosureDto GetDisclosure(DisclosureDto dto)
         {
@@ -311,18 +307,16 @@ namespace Aluma.API.Repositories
             //d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
 
             //Broker Appointment
-            if (disclosure.AdvisorAuthority != null)
+            if (!disclosure.AdvisorAuthority)
+                d["authorityAll"] = "X";
+            else
             {
-                if (!disclosure.AdvisorAuthority)
-                    d["authorityAll"] = "X";
-                else
-                {
-                    d["authoritySome"] = "X";
-                    d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
-                }
-
-                d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+                d["authoritySome"] = "X";
+                d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
             }
+
+            d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+
 
             byte[] doc = dh.PopulateDocument("DisclosureLetter.pdf", d, _host);
 
@@ -368,7 +362,10 @@ namespace Aluma.API.Repositories
             if (client.LeadType == "Own")
                 d["leadType"] = "x";
 
-            d[$"education_{client.Education}"] = "x";
+            if (client.Education != null)
+            {
+                d[$"education_{client.Education}"] = "x";
+            }
 
             byte[] doc = dh.PopulateDocument("ClientConsent.pdf", d, _host);
 

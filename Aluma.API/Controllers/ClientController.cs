@@ -19,11 +19,26 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetClient(int userId)
+        public IActionResult GetClient(int clientId)
         {
             try
             {
-                ClientDto client = _repo.Client.GetClient(userId);
+                ClientDto client = _repo.Client.GetClient(new ClientDto() { Id = clientId});
+
+                return Ok(client);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("getClientByUserID"), AllowAnonymous]
+        public IActionResult GetClientByUserId(int userId)
+        {
+            try
+            {
+                ClientDto client = _repo.Client.GetClientByUserId(userId);
 
                 return Ok(client);
             }

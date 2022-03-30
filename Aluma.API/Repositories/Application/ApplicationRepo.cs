@@ -3,6 +3,7 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
 using iText.Forms;
 using iText.Forms.Fields;
@@ -105,9 +106,13 @@ namespace Aluma.API.Repositories
 
             //remove when productID is implemented
             List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper);
             foreach (var app in result)
             {
                 app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
+                app.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(app.Id);
+                app.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == app.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
+
             }
 
             return result;
@@ -122,7 +127,15 @@ namespace Aluma.API.Repositories
         public ApplicationDto GetApplication(ApplicationDto dto)
         {
             ApplicationModel application = _context.Applications.Where(a => a.Id == dto.Id).First();
-            return _mapper.Map<ApplicationDto>(application);
+
+            ApplicationDto response = _mapper.Map<ApplicationDto>(application);
+
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
+
+            response.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(response.Id);
+            response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
+
+            return response;
         }
 
         public ApplicationDto UpdateApplication(ApplicationDto dto)
@@ -222,25 +235,45 @@ namespace Aluma.API.Repositories
         public void GenerateApplicationDocuments(int applicationId)
         {
             ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-            //RecordOfAdviceModel roa = _context.RecordOfAdvice.Include( r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
+            RecordOfAdviceModel roa = _context.RecordOfAdvice.Include(r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
-            //RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
+            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
+            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
+            ConsumerProtectionModel cp = _context.ConsumerProtection.SingleOrDefault(r => r.ClientId == client.Id);
+            DisclosureModel disc = _context.Disclosures.SingleOrDefault(r => r.ClientId == client.Id);
 
 
             //ROA only application document thus far
-            //RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
+            //RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper);
             //roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
 
+            //RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper);
+            //riskRepo.GenerateRiskProfile(client, advisor, risk);
 
-            ConsumerProtectionModel cpa = _context.ConsumerProtection.SingleOrDefault(c => c.ClientId == client.Id);
-            DisclosureModel disc = _context.Disclosures.SingleOrDefault(d => d.ClientId == client.Id);
+            //FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper);
+            //fspMandateRepo.GenerateMandate(client, advisor, fsp);
 
-            DisclosureRepo disclosureRepo = new DisclosureRepo(_context, _mapper, null);
-            disclosureRepo.GenerateClientConsent(client, advisor);
-            disclosureRepo.GenerateDisclosure(client, advisor, cpa, disc);
+            DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
+            //disclosure.GenerateClientConsent(client, advisor);
+            disclosure.GenerateDisclosure(client, advisor, cp, disc); 
+
+            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper);
+            foreach (var product in roa.SelectedProducts)
+            {
+                if (product.ProductId == ProductsEnum.PE1 || product.ProductId == ProductsEnum.PE2)
+                {
+                    pefRepo.GenerateDOA(client, advisor, product);
+                    pefRepo.GenerateQuote(client, advisor, roa);
+                }
+            }
+            
+
+
+
+
         }
-        
+
     }
 
 }

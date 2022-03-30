@@ -152,7 +152,7 @@ namespace Aluma.API.RepoWrapper
 
         public IDisclosureRepo Disclosures
         {
-            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _mapper, _userDocuments) : _disclosures; }
+            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _userDocuments) : _disclosures; }
         }
 
         //Product

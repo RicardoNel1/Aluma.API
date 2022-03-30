@@ -9,6 +9,7 @@ namespace DataService.Dto
         public int Id { get; set; }
         public int UserId { get; set; }
         public System.Nullable<int> AdvisorId { get; set; }
+        public string AdvisorName { get; set; }
         public string ClientType { get; set; }
         public string Title { get; set; }
         //public string Initials { get; set; }
@@ -30,5 +31,8 @@ namespace DataService.Dto
         public string SpouseDateOfBirth { get; set; }
         public bool PowerOfAttorney { get; set; }
         public bool NonResidentialAccount { get; set; }
+        public bool hasDisclosure { get; set; }
+        public DateTime DisclosureDate { get; set; }
+        public int ApplicationCount { get; set; }
     }
 }

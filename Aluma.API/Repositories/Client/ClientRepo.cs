@@ -14,7 +14,9 @@ namespace Aluma.API.Repositories
 {
     public interface IClientRepo : IRepoBase<ClientModel>
     {
-        public ClientDto GetClient(int userId);
+        public ClientDto GetClientByUserId(int userId);
+        public ClientDto GetClient(ClientDto dto);
+
         public List<ClientDto> GetClients();
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId);
@@ -49,13 +51,57 @@ namespace Aluma.API.Repositories
         public List<ClientDto> GetClients()
         {
             List<ClientModel> clients = _context.Clients.Where(c => c.isDeleted == true).ToList();
-            return _mapper.Map<List<ClientDto>>(clients);
+            List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
+            foreach (var dto in response)
+            {
+
+                if (dto.AdvisorId != null)
+                {
+                    var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
+
+                    dto.AdvisorName = advisor.User.FirstName + " " + advisor.User.LastName;
+                }
+
+                dto.ApplicationCount = _context.Applications.Where(a => a.ClientId == dto.Id).Count();
+
+                var discExists = _context.Disclosures.Where(d => d.ClientId == dto.Id);
+                if (discExists.Any())
+                {
+                    dto.DisclosureDate = discExists.First().Created;
+                }
+
+                dto.hasDisclosure = discExists.Any();
+            }
+
+
+            return response ;
         }
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId)
         {
             List<ClientModel> clients = _context.Clients.Include(c => c.User).Where(c => c.AdvisorId == advisorId).ToList();
-            return _mapper.Map<List<ClientDto>>(clients);
+            List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
+            foreach (var dto in response)
+            {
+
+                if (dto.AdvisorId != null)
+                {
+                    var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
+
+                    dto.AdvisorName = advisor.User.FirstName + " " + advisor.User.LastName;
+                }
+
+                dto.ApplicationCount = _context.Applications.Where(a => a.ClientId == dto.Id).Count();
+
+                var discExists = _context.Disclosures.Where(d => d.ClientId == dto.Id);
+                if (discExists.Any())
+                {
+                    dto.DisclosureDate = discExists.First().Created;
+                }
+
+                dto.hasDisclosure = discExists.Any();
+            }
+            return response;
         }
 
         public bool DeleteClient(ClientDto dto)
@@ -76,10 +122,49 @@ namespace Aluma.API.Repositories
             }
         }
 
-        public ClientDto GetClient(int userId)
+        public ClientDto GetClient(ClientDto dto)
+        {
+            ClientModel client = _context.Clients.Where(c => c.Id == dto.Id).First();
+            dto = _mapper.Map<ClientDto>(client);
+
+            if (dto.AdvisorId != null)
+            {
+                var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
+
+                dto.AdvisorName = advisor.User.FirstName + " " + advisor.User.LastName;
+            }
+
+            dto.ApplicationCount = _context.Applications.Where(a => a.ClientId == dto.Id).Count();
+
+            var discExists = _context.Disclosures.Where(d => d.ClientId == dto.Id);
+            if (discExists.Any())
+            {
+                dto.DisclosureDate = discExists.First().Created;
+            }
+
+
+            dto.hasDisclosure = discExists.Any();
+
+            return dto;
+        }
+
+        public ClientDto GetClientByUserId(int userId)
         {
             ClientModel client = _context.Clients.Where(c => c.UserId == userId).First();
-            return _mapper.Map<ClientDto>(client);
+            ClientDto response = _mapper.Map<ClientDto>(client);
+
+            response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
+
+            var discExists = _context.Disclosures.Where(d => d.ClientId == response.Id);
+            if (discExists.Any())
+            {
+                response.DisclosureDate = discExists.First().Created;
+            }
+
+
+            response.hasDisclosure = discExists.Any();
+
+            return response;
         }
 
         public bool DoesClientExist(RegistrationDto dto)
@@ -100,15 +185,18 @@ namespace Aluma.API.Repositories
         public bool DoesClientExist(ClientDto dto)
         {
             bool clientExists = false;
-            
+
             clientExists = _context.Clients.Where(a => a.Id == dto.Id).Any();
-            
+
             return clientExists;
         }
 
         public ClientDto CreateClient(ClientDto dto)
         {
             ClientModel client = _mapper.Map<ClientModel>(dto);
+            //TODO: change asap
+            client.AdvisorId = 1;
+
             _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
@@ -117,7 +205,7 @@ namespace Aluma.API.Repositories
 
         public ClientDto UpdateClient(ClientDto dto)
         {
-            UserModel user  = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
+            UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
             ClientModel client = _mapper.Map<ClientModel>(dto);           //can't map address
             //ClientModel client = _context.Clients.Where(x => x.Id == dto.Id).FirstOrDefault();
 
@@ -198,7 +286,7 @@ namespace Aluma.API.Repositories
         {
             ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.BankDetails).Include(c => c.TaxResidency).SingleOrDefault(c => c.Id == clientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == client.AdvisorId);
-            
+
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
             FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
@@ -210,11 +298,11 @@ namespace Aluma.API.Repositories
 
             //FSP Mandate
             FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
-            fspRepo.GenerateMandate(client,advisor,fsp);
+            fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
             FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper);
-            fnaRepo.GenerateFNA(client,advisor,fna);
+            fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 

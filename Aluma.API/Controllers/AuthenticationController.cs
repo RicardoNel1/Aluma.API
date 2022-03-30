@@ -108,7 +108,9 @@ namespace Aluma.API.Controllers
 
                     token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
-                    ClientDto client = _repo.Client.GetClient(user.Id);
+
+
+                    ClientDto client = _repo.Client.GetClientByUserId(user.Id);
 
                     response = new AuthResponseDto()
                     {

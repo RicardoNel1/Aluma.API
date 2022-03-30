@@ -92,22 +92,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("download")]
-        public IActionResult DownloadDisclosure(DisclosureDto dto)
-        {
-            try
-            {
-                //get base64 string document
-                var disclosure = _repo.Disclosures.GetDisclosureDocument(dto);
-
-                return Ok(disclosure);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+               
 
         [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
         public IActionResult ListAdvisorDisclosures(AdvisorDto dto)

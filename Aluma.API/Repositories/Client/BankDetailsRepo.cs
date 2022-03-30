@@ -110,7 +110,7 @@ namespace Aluma.API.Repositories
 
             BankDetailsModel details = _mapper.Map<BankDetailsModel>(dto);
             UtilityHelper uh = new UtilityHelper();
-            details.BranchCode = uh.BanksDictionary[details.Name].ToString();
+            details.BranchCode = uh.BanksDictionary[details.BankName].ToString();
 
             _context.BankDetails.Add(details);
             _context.SaveChanges();
