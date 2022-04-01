@@ -19,7 +19,7 @@ namespace Aluma.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public IActionResult CreateAdvisor([FromBody] AdvisorDto dto)
         {
             try
@@ -48,7 +48,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateAdvisor([FromBody] AdvisorDto dto)
         {
             try
@@ -70,14 +70,29 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetAdvisor([FromBody] AdvisorDto dto)
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetAdvisor(int advisorId)
         {
             try
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                var advisor = _repo.Advisor.GetAdvisor(dto.UserId);
+                var advisor = _repo.Advisor.GetAdvisor(new AdvisorDto() { Id = advisorId });
+
+                return Ok(advisor);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list"), AllowAnonymous]
+        public IActionResult GetAllAdvisors()
+        {
+            try
+            {
+                var advisor = _repo.Advisor.GetAllAdvisors();
 
                 return Ok(advisor);
             }

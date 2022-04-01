@@ -254,16 +254,16 @@ namespace Aluma.API.Repositories
             //FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper);
             //fspMandateRepo.GenerateMandate(client, advisor, fsp);
 
-            DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
+            //DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
             //disclosure.GenerateClientConsent(client, advisor);
-            disclosure.GenerateDisclosure(client, advisor, cp, disc); 
+            //disclosure.GenerateDisclosure(client, advisor, cp, disc); 
 
             PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper);
             foreach (var product in roa.SelectedProducts)
             {
                 if (product.ProductId == ProductsEnum.PE1 || product.ProductId == ProductsEnum.PE2)
                 {
-                    pefRepo.GenerateDOA(client, advisor, product);
+                    //pefRepo.GenerateDOA(client, advisor, product);
                     pefRepo.GenerateQuote(client, advisor, roa);
                 }
             }

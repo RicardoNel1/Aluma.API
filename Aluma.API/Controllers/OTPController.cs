@@ -45,7 +45,7 @@ namespace Aluma.API.Controllers
             }
             else if (role == RoleEnum.Advisor || role == RoleEnum.Admin)
             {
-                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
                 response.AdvisorId = advisor.Id;
             }
 
@@ -83,7 +83,7 @@ namespace Aluma.API.Controllers
             }
             else if (role == RoleEnum.Advisor)
             {
-                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
                 response.AdvisorId = advisor.Id;
             }
 

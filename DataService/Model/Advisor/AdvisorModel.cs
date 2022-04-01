@@ -13,7 +13,6 @@ namespace DataService.Model
         public UserModel User { get; set; }
         public List<ApplicationModel> Applications { get; set; }
         public List<ClientModel> Clients { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -153,6 +152,9 @@ namespace DataService.Model
     {
         public void Configure(EntityTypeBuilder<AdvisorModel> mb)
         {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
             mb.HasIndex(c => c.UserId).IsUnique();
 
             mb.HasMany(c => c.Applications)
@@ -216,6 +218,7 @@ namespace DataService.Model
                 SupervisedRetailPension = true,
                 SupervisedPensionFunds = true,
                 SupervisedSecurities = true,
+                isActive = true
             });
         }
     }

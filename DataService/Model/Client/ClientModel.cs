@@ -22,7 +22,7 @@ namespace DataService.Model
         public ICollection<BankDetailsModel> BankDetails { get; set; }
         public ICollection<PassportModel> Passports { get; set; }
 
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public int Id { get; set; }
 
         [Required]
