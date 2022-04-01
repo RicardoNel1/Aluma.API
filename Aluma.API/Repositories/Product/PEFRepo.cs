@@ -16,8 +16,14 @@ namespace Aluma.API.Repositories
     public interface IPEFRepo : IRepoBase<ProductModel>
     {
         void GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
-        void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
+        //void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
+        //void PEQuoteCalc(RecordOfAdviceItemsModel product);
+
+        void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+
+
     }
+
 
     public class PEFRepo : RepoBase<ProductModel>, IPEFRepo
     {
@@ -107,8 +113,9 @@ namespace Aluma.API.Repositories
             _context.UserDocuments.Add(udm);
             _context.SaveChanges();
         }
+                
 
-        public void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa)
+        public void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -116,26 +123,115 @@ namespace Aluma.API.Repositories
             string docName = string.Empty;
             string fileName = string.Empty;
 
-            //d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
 
-            //Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
+            Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
             
-            //if (parsedProduct == ProductsEnum.PE1)
-            //{               
-            //    docName = "PEFQuote.pdf";
-            //    fileName = $"Aluma Capital - Private Equity Fund Growth - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
-                
-            //}
+            if (parsedProduct == ProductsEnum.PE1)
+            {               
+                docName = "PEFQuote.pdf";
+                fileName = $"Aluma Capital - Private Equity Fund Growth - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
 
-            //if (parsedProduct == ProductsEnum.PE2)
-            //{                
-            //    docName = "PEF2Quote.pdf";
-            //    fileName = $"Aluma Capital - Private Equity Fund Income - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";                
-            //}
+
+                //Calculations
+                double i = product.AcceptedLumpSum;
+                double r1 = .129;
+                double r2 = .1895;
+                double dividendYear1Gross1 = i * r1;
+                double dividendYear2Gross1 = (i + dividendYear1Gross1) * r1;
+                double dividendYear3Gross1 = (i + dividendYear1Gross1 + dividendYear2Gross1) * r1;
+                double dividendYear4Gross1 = (i + dividendYear1Gross1 + dividendYear2Gross1 + dividendYear3Gross1) * r1;
+                double dividendYear5Gross1 = (i + dividendYear1Gross1 + dividendYear2Gross1 + dividendYear3Gross1 + dividendYear4Gross1) * r1;
+                double totalCumulativeDividendGross1 = dividendYear1Gross1 + dividendYear2Gross1 + dividendYear3Gross1 + dividendYear4Gross1 + dividendYear5Gross1;
+                double totalPayoutMaturityGross1 = totalCumulativeDividendGross1 + i;
+
+                double dividendYear1Gross2 = i * r2;
+                double dividendYear2Gross2 = (i + dividendYear1Gross2) * r2;
+                double dividendYear3Gross2 = (i + dividendYear1Gross2 + dividendYear2Gross2) * r2;
+                double dividendYear4Gross2 = (i + dividendYear1Gross2 + dividendYear2Gross2 + dividendYear3Gross2) * r2;
+                double dividendYear5Gross2 = (i + dividendYear1Gross2 + dividendYear2Gross2 + dividendYear3Gross2 + dividendYear4Gross2) * r2;
+                double totalCumulativeDividendGross2 = dividendYear1Gross2 + dividendYear2Gross2 + dividendYear3Gross2 + dividendYear4Gross2 + dividendYear5Gross2;
+                double totalPayoutMaturityGross2 = totalCumulativeDividendGross2 + i;
+
+
+                d[$"initialInvestment"] = "R " + i.ToString("F");
+                d[$"1dividendYear1Gross"] = "R " + dividendYear1Gross1.ToString("F");
+                d[$"1dividendYear2Gross"] = "R " + dividendYear2Gross1.ToString("F");
+                d[$"1dividendYear3Gross"] = "R " + dividendYear3Gross1.ToString("F");
+                d[$"1dividendYear4Gross"] = "R " + dividendYear4Gross1.ToString("F");
+                d[$"1dividendYear5Gross"] = "R " + dividendYear5Gross1.ToString("F");
+                d[$"1totalCumulativeDividendGross"] = "R " + totalCumulativeDividendGross1.ToString("F");
+                d[$"1totalPayoutMaturityGross"] = "R " + totalPayoutMaturityGross1.ToString("F");
+
+                d[$"2dividendYear1Gross"] = "R " + dividendYear1Gross2.ToString("F");
+                d[$"2dividendYear2Gross"] = "R " + dividendYear2Gross2.ToString("F");
+                d[$"2dividendYear3Gross"] = "R " + dividendYear3Gross2.ToString("F");
+                d[$"2dividendYear4Gross"] = "R " + dividendYear4Gross2.ToString("F");
+                d[$"2dividendYear5Gross"] = "R " + dividendYear5Gross2.ToString("F");
+                d[$"2totalCumulativeDividendGross"] = "R " + totalCumulativeDividendGross2.ToString("F");
+                d[$"2totalPayoutMaturityGross"] = "R " + totalPayoutMaturityGross2.ToString("F");
+            }
+
+            if (parsedProduct == ProductsEnum.PE2)
+            {                
+                docName = "PEF2Quote.pdf";
+                fileName = $"Aluma Capital - Private Equity Fund Income - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
+
+
+                //Calculations                
+                double i = product.AcceptedLumpSum;
+                double r = .129;
+                double ab = .025;
+                double dt = .2;
+                double t = 5;
+
+                double monthlyDividendGross = i * (r / 12);
+                double monthlyDividendNett = monthlyDividendGross - (monthlyDividendGross * dt);
+                double monthlyDividendAnnualGross = i * r;
+                double monthlyDividendAnnualNett = monthlyDividendAnnualGross - (monthlyDividendAnnualGross * dt);
+                double annualBonusGross = i * ab;
+                double annualBonusNet = annualBonusGross - (annualBonusGross * dt);
+                double dividendPayoutGross = (monthlyDividendAnnualGross * t) + (annualBonusGross * t);
+                double dividendPayoutNett = dividendPayoutGross - (dividendPayoutGross * dt);
+
+
+                d[$"initialInvestment"] = "R " + i.ToString("F");
+
+                d[$"monthlyDividendGross"] = "R " + monthlyDividendGross.ToString("F");
+                d[$"monthlyDividendNett"] = "R " + monthlyDividendNett.ToString("F");
+                d[$"monthlyDividendAnnualGross"] = "R " + monthlyDividendAnnualGross.ToString("F");
+                d[$"monthlyDividendAnnualNett"] = "R " + monthlyDividendAnnualNett.ToString("F");
+                d[$"annualBonusGross"] = "R " + annualBonusGross.ToString("F");
+                d[$"annualBonusNet"] = "R " + annualBonusNet.ToString("F");
+                d[$"dividendPayoutGross"] = "R " + dividendPayoutGross.ToString("F");
+                d[$"dividendPayoutNett"] = "R " + dividendPayoutNett.ToString("F");
+
+            }
+
+            d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
+            d["identityNumber"] = client.User.RSAIdNumber;
+            d["contactNumber"] = "0" + client.User.MobileNumber;
+            d["emailAddress"] = client.User.Email;
+
+            d["quotationDate"] = DateTime.Now.ToString("dd MMMM yyyy");
+            d["signedDate"] = DateTime.Now.ToString("ddMMyyyy");
+            d["commencementDate"] = DateTime.Now.ToString("dd MMMM yyyy"); //TODO today's date?
+
+            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; //TODO breaks
+            //quoteNumber
+            //quotationVersion
+
+            int expiryDate = DateTime.UtcNow.Day + 1827;
+            d["expiryDate"] = expiryDate.ToString("dd MMMM yyyy");
+
+            
+
+
+            docType = docName == "PEFQuote.pdf" ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
+
 
             byte[] doc = dh.PopulateDocument(docName, d, _host);
 
-            docType = docName == "PEFQuote.pdf" ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
+            
 
             UserDocumentModel udm = new UserDocumentModel()
             {
