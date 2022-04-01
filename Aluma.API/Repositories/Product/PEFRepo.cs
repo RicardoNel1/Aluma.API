@@ -216,7 +216,7 @@ namespace Aluma.API.Repositories
             d["signedDate"] = DateTime.Now.ToString("ddMMyyyy");
             d["commencementDate"] = DateTime.Now.ToString("dd MMMM yyyy"); //TODO today's date?
 
-            //d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
+            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; //TODO breaks
             //quoteNumber
             //quotationVersion
 

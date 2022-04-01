@@ -263,7 +263,7 @@ namespace Aluma.API.Repositories
             {
                 if (product.ProductId == ProductsEnum.PE1 || product.ProductId == ProductsEnum.PE2)
                 {
-                    //pefRepo.GenerateDOA(client, advisor, product);
+                    pefRepo.GenerateDOA(client, advisor, product);
                     pefRepo.GenerateQuote(client, advisor, product);
                 }
             }
