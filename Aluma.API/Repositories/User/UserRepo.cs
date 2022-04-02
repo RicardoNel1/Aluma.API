@@ -43,7 +43,8 @@ namespace Aluma.API.Repositories
         public AddressDto CreateUserAddress(AddressDto dto);
         public AddressDto UpdateUserAddress(AddressDto dto);
 
-        string GetUserSignature(int userId);
+        //string GetUserSignature(int userId);
+        public UserDto GetUserSignature(int userId);
 
         public UserDto EditUserSignature(UserDto dto);//(UserDto dto);
 
@@ -67,7 +68,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
         public bool DoesUserExist(UserDto dto)
         {
             bool exists = _context.Users.Where(c => (c.Email == dto.Email || c.RSAIdNumber == dto.RSAIdNumber || c.MobileNumber == dto.MobileNumber)).Any();
@@ -147,7 +148,7 @@ namespace Aluma.API.Repositories
             if (DoesUserNameExist(dto))
             {
                 var user = _context.Users.Where(u => (u.Email == dto.UserName)).FirstOrDefault();
-                return  _mapper.Map<UserDto>(user);
+                return _mapper.Map<UserDto>(user);
             }
 
             return null;
@@ -164,11 +165,22 @@ namespace Aluma.API.Repositories
             return null;
         }
 
-        public string GetUserSignature(int userId)               
-        {
-            byte[] signature = _context.Users.Where(u => u.Id == userId).First().Signature;
+        //public string GetUserSignature(int userId)               
+        //{
+        //    byte[] signature = _context.Users.Where(u => u.Id == userId).First().Signature;
 
-            return Convert.ToBase64String(signature);
+        //    return Convert.ToBase64String(signature);
+
+        //}
+
+        public UserDto GetUserSignature(int userId)
+        {
+            UserModel user = _context.Users.Where(a => a.Id == userId).First();
+
+            //byte[] signature = _context.Users.Where(u => u.Id == userId).First().Signature;
+
+            return _mapper.Map<UserDto>(user);  //Convert.ToBase64String(signature);
+
         }
 
         //public bool EditUserSignature(int userId, string signature)
@@ -261,14 +273,14 @@ namespace Aluma.API.Repositories
             }
 
             user.Role = RoleEnum.Client;
-            user.Password =  dto.Password != null ? str.CreateHash(dto.Password) : null;
+            user.Password = dto.Password != null ? str.CreateHash(dto.Password) : null;
             _context.Users.Add(user);
             _context.SaveChanges();
 
             return _mapper.Map<UserDto>(user);
         }
         public UserDto CreateAdvisorUser(RegistrationDto dto)
-        {                       
+        {
             StringHasherRepo str = new StringHasherRepo();
 
             //Create User
@@ -290,15 +302,15 @@ namespace Aluma.API.Repositories
             addressExist = _context.Address.Where(a => a.UserId == dto.UserId && a.Type == parsedType).Any();
             return addressExist;
         }
-        public AddressDto CreateUserAddress(AddressDto dto) 
+        public AddressDto CreateUserAddress(AddressDto dto)
         {
             AddressModel details = _mapper.Map<AddressModel>(dto);
 
             _context.Address.Add(details);
             _context.SaveChanges();
 
-            dto = _mapper.Map<AddressDto>(details);        
-            
+            dto = _mapper.Map<AddressDto>(details);
+
             return dto;
         }
 
@@ -312,7 +324,7 @@ namespace Aluma.API.Repositories
 
         }
 
-        public AddressDto UpdateUserAddress(AddressDto dto) 
+        public AddressDto UpdateUserAddress(AddressDto dto)
         {
             Enum.TryParse(dto.Type, true, out AddressTypesEnum parsedType);
             AddressModel details = _context.Address.Where(a => a.UserId == dto.UserId && a.Type == parsedType).FirstOrDefault();
@@ -331,7 +343,7 @@ namespace Aluma.API.Repositories
             details.InCareName = dto.InCareName;
             details.YearsAtAddress = dto.YearsAtAddress;
             details.AddressSameAs = dto.AddressSameAs;
-            
+
             _context.Address.Update(details);
             _context.SaveChanges();
             dto = _mapper.Map<AddressDto>(dto);

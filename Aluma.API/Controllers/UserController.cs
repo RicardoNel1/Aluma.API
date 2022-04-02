@@ -38,9 +38,10 @@ namespace Aluma.API.Controllers
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                string signature = _repo.User.GetUserSignature(userId);
+                // string signature = _repo.User.GetUserSignature(userId);
+                UserDto dto = _repo.User.GetUserSignature(userId);
 
-                return Ok(signature);
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -71,7 +72,7 @@ namespace Aluma.API.Controllers
             try
             {
 
-               _repo.User.EditUserSignature(dto);
+                _repo.User.EditUserSignature(dto);
 
                 return Ok("Signature Updated");
             }
