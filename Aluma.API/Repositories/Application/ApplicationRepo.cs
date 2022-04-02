@@ -254,7 +254,7 @@ namespace Aluma.API.Repositories
             //FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper);
             //fspMandateRepo.GenerateMandate(client, advisor, fsp);
 
-            DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
+            //DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
             //disclosure.GenerateClientConsent(client, advisor);
             //disclosure.GenerateDisclosure(client, advisor, cp, disc); 
 

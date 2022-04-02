@@ -5,9 +5,11 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using StringHasher;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -16,13 +18,15 @@ namespace Aluma.API.Repositories
     {
         public bool DoesAdvisorExist(UserDto dto);
 
-        public AdvisorDto GetAdvisor(int userId);
+        public AdvisorDto GetAdvisor(AdvisorDto dto);
+        public AdvisorDto GetAdvisorByUserId(int userId);
 
         public AdvisorDto CreateAdvisor(AdvisorDto dto);
 
         public bool DeleteAdvisor(AdvisorDto dto);
 
-        object UpdateAdvisor(AdvisorDto dto);
+        public AdvisorDto UpdateAdvisor(AdvisorDto dto);
+        public List<AdvisorDto> GetAllAdvisors();
     }
 
     public class AdvisorRepo : RepoBase<AdvisorModel>, IAdvisorRepo
@@ -55,13 +59,19 @@ namespace Aluma.API.Repositories
             return advisorExists;
         }
 
-        public AdvisorDto GetAdvisor(int userId)
+        public AdvisorDto GetAdvisor(AdvisorDto dto)
+        {
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
+            return _mapper.Map<AdvisorDto>(advisor);
+        }
+
+        public AdvisorDto GetAdvisorByUserId(int userId)
         {
             AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).First();
             return _mapper.Map<AdvisorDto>(advisor);
         }
 
-        
+
         public AdvisorDto CreateAdvisor(AdvisorDto dto)
         {
             try
@@ -111,9 +121,16 @@ namespace Aluma.API.Repositories
             }
         }
 
-        public object UpdateAdvisor(AdvisorDto dto)
+        public AdvisorDto UpdateAdvisor(AdvisorDto dto)
         {
             throw new NotImplementedException();
+        }
+
+        public List<AdvisorDto> GetAllAdvisors()
+        {
+            List<AdvisorModel> advisors = _context.Advisors.Include(c => c.User).Where(c => c.isActive == true).ToList();
+            List<AdvisorDto> response = _mapper.Map<List<AdvisorDto>>(advisors);
+            return response;
         }
     }
 }

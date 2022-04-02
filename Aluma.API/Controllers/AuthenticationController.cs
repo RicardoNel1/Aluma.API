@@ -162,7 +162,7 @@ namespace Aluma.API.Controllers
 
                 user = _repo.User.GetUser(dto);
                 token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-                AdvisorDto advisor = _repo.Advisor.GetAdvisor(user.Id);
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
 
                 response = new AuthResponseDto()
                 {

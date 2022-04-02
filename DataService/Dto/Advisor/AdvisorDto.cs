@@ -9,8 +9,8 @@ namespace DataService.Dto
         public int Id { get; set; }
         public int UserId { get; set; }
         public DateTime AppointmentDate { get; set; }
-        public bool Supervised { get; set; }
-
+        
+        public string Title { get; set; }
         public string BusinessTel { get; set; }
         public string HomeTel { get; set; }
         public string Fax { get; set; }
@@ -70,5 +70,8 @@ namespace DataService.Dto
         public bool AdviceParticipatoryInterestHedge { get; set; }
         public bool SupervisedParticipatoryInterestHedge { get; set; }
         public bool isExternalBroker { get; set; }
+        public bool isSupervised { get; set; }
+        public bool isActive { get; set; }
+
     }
 }
