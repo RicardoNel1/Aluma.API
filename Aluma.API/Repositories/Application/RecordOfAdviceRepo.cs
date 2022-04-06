@@ -5,6 +5,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,14 +36,16 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        DocumentHelper dh = new DocumentHelper();
+        private readonly IFileStorageRepo _fileStorage;
 
-        public RecordOfAdviceRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+
+        public RecordOfAdviceRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _host = host;
             _config = config;
             _mapper = mapper;
             _context = databaseContext;
+            _fileStorage = fileStorage;
         }
 
         public bool DoesApplicationHaveRecordOfAdice(int applicationId)
@@ -175,19 +178,9 @@ namespace Aluma.API.Repositories
                 data[$"{product.Name}_deviationReason"] = item.DeviationReason ?? string.Empty; ;
             }
 
-            byte[] doc = dh.PopulateDocument("ROA.pdf", data, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DataService.Enum.DocumentTypesEnum.RecordOfAdvice,
-                FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital - Record of Advice - {client.User.FirstName + " " + client.User.LastName}.pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User);
         }
     }
 }

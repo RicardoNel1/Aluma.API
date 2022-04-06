@@ -3,6 +3,7 @@ using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,13 +40,14 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-
-        public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        private readonly IFileStorageRepo _fileStorage;
+        public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public List<ClientDto> GetClients()
@@ -291,17 +293,18 @@ namespace Aluma.API.Repositories
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
             FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
 
+            
 
             //Risk Profile
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper);
+            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
             riskRepo.GenerateRiskProfile(client, advisor, risk);
 
             //FSP Mandate
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
+            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper);
+            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
             fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
