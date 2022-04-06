@@ -5,6 +5,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
@@ -66,14 +67,16 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IFileStorageRepo _fileStorage;
         
 
-        public ApplicationRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        public ApplicationRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public bool DeleteApplication(ApplicationDto dto)
@@ -106,7 +109,7 @@ namespace Aluma.API.Repositories
 
             //remove when productID is implemented
             List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper);
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
             foreach (var app in result)
             {
                 app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
@@ -130,7 +133,7 @@ namespace Aluma.API.Repositories
 
             ApplicationDto response = _mapper.Map<ApplicationDto>(application);
 
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper);
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context,_host,_config,_mapper, _fileStorage);
 
             response.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(response.Id);
             response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
@@ -245,20 +248,20 @@ namespace Aluma.API.Repositories
 
 
             //ROA only application document thus far
-            //RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper);
-            //roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
+            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
 
-            //RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper);
-            //riskRepo.GenerateRiskProfile(client, advisor, risk);
+            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
+            riskRepo.GenerateRiskProfile(client, advisor, risk);
 
-            //FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper);
-            //fspMandateRepo.GenerateMandate(client, advisor, fsp);
+            FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
+            fspMandateRepo.GenerateMandate(client, advisor, fsp);
 
-            //DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, null);
-            //disclosure.GenerateClientConsent(client, advisor);
-            //disclosure.GenerateDisclosure(client, advisor, cp, disc); 
+            DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
+            disclosure.GenerateClientConsent(client, advisor);
+            disclosure.GenerateDisclosure(client, advisor, cp, disc);
 
-            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper);
+            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
             foreach (var product in roa.SelectedProducts)
             {
                 if (product.ProductId == ProductsEnum.PE1 || product.ProductId == ProductsEnum.PE2)
@@ -267,10 +270,6 @@ namespace Aluma.API.Repositories
                     pefRepo.GenerateQuote(client, advisor, product);
                 }
             }
-            
-
-
-
 
         }
 

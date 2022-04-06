@@ -165,9 +165,10 @@ namespace Aluma.API.Controllers
             {
                 _repo.Applications.GenerateApplicationDocuments(applicationId);
 
-                List<ApplicationDocumentDto> appDocs = _repo.Applications.GetApplicationDocuments(applicationId);
+                //List<ApplicationDocumentDto> appDocs = _repo.Applications.GetApplicationDocuments(applicationId);
 
-                return Ok(appDocs);
+                //return Ok(appDocs);
+                return Ok(); 
             }
             catch (Exception e)
             {

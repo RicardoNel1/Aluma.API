@@ -3,7 +3,9 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -33,14 +35,14 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        DocumentHelper dh = new DocumentHelper();
-
-        public FspMandateRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
+        private readonly IFileStorageRepo _fileStorage;
+        public FspMandateRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(context)
         {
             _context = context;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public FSPMandateDto CreateFSPMandate(FSPMandateDto dto)
@@ -252,7 +254,7 @@ namespace Aluma.API.Repositories
                     d[$"instructionPersonal_DE"] = "x";
                     d[$"instructionAdvisor_DE"] = "x";
                 }
-                
+
 
                 d["dividendInstruction_limited"] = fsp.DividendInstruction ?? string.Empty;
 
@@ -270,8 +272,8 @@ namespace Aluma.API.Repositories
             {
                 d["referralManaged"] = "x";
 
-                
-                
+
+
 
                 if (fsp.LimitedInstruction != "instructionBoth")
                 {
@@ -310,19 +312,9 @@ namespace Aluma.API.Repositories
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
 
-            byte[] doc = dh.PopulateDocument("FspMandate.pdf", d, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DataService.Enum.DocumentTypesEnum.FSPMandate,
-                FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital Discretionary Mandate - {client.User.FirstName + " " + client.User.LastName}.pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }
     }
 }

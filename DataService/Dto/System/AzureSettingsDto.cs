@@ -2,7 +2,7 @@
 {
     public class AzureSettingsDto
     {
-        public string DocumentPath { get; set; }
+        public string DocumentsRootPath { get; set; }
         public string AzureFileStorageConnection { get; set; }
     }
 }

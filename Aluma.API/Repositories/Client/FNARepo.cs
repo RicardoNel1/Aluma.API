@@ -4,6 +4,7 @@ using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -23,13 +24,14 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        private DocumentHelper dh = new DocumentHelper();
-        public FNARepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        private readonly IFileStorageRepo _fileStorage;
+        public FNARepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
