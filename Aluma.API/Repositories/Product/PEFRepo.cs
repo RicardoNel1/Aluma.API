@@ -5,6 +5,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -31,22 +32,21 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        DocumentHelper dh = new DocumentHelper();
-        public PEFRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        private readonly IFileStorageRepo _fileStorage;
+        DocumentHelper _dh;
+        public PEFRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _dh = new DocumentHelper(_context, _config, _fileStorage, _host);
         }
 
         public void GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
-            DocumentTypesEnum docType;
-            string docName = string.Empty;
-            string fileName = string.Empty;
 
             //change when incorporating entities
             d["individual"] = "x";
@@ -56,15 +56,11 @@ namespace Aluma.API.Repositories
             //check for pe fund product
             if (parsedProduct == ProductsEnum.PE1 || parsedProduct == ProductsEnum.PE2)
             {
-                docName = "DOA.pdf";
-                fileName = $"Aluma Capital - Private Equity Fund Growth - Deed of Adherence - {client.User.FirstName + " " + client.User.LastName}.pdf";
                 d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
             }
 
             if (parsedProduct == ProductsEnum.PE2)
             {
-                docName = "DOA2.pdf";
-                fileName = $"Aluma Capital - Private Equity Fund Income - Deed of Adherence - {client.User.FirstName + " " + client.User.LastName}.pdf";
                 d[$"zarCapital"] = product.AcceptedLumpSum.ToString();
             }
 
@@ -97,21 +93,9 @@ namespace Aluma.API.Repositories
             d["signDate_3"] = DateTime.Today.ToString("yyyyMMdd");
             d["signAt_3"] = advisor.User.Address.First().City;
 
-            docType = docName == "DOA.pdf" ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2Quote;
 
-            byte[] doc = dh.PopulateDocument(docName, d, _host);
-
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = docType,
-                FileType = FileTypesEnum.Pdf,
-                Name = fileName,
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
+            _dh.PopulateAndSaveDocument(type, d, client.User);
         }
                 
 
@@ -119,19 +103,12 @@ namespace Aluma.API.Repositories
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
-            DocumentTypesEnum docType;
-            string docName = string.Empty;
-            string fileName = string.Empty;
 
 
             Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
             
             if (parsedProduct == ProductsEnum.PE1)
-            {               
-                docName = "PEFQuote.pdf";
-                fileName = $"Aluma Capital - Private Equity Fund Growth - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
-
-
+            {     
                 //Calculations
                 double i = product.AcceptedLumpSum;
                 double r1 = .129;
@@ -173,10 +150,6 @@ namespace Aluma.API.Repositories
 
             if (parsedProduct == ProductsEnum.PE2)
             {                
-                docName = "PEF2Quote.pdf";
-                fileName = $"Aluma Capital - Private Equity Fund Income - Quote - {client.User.FirstName + " " + client.User.LastName}.pdf";
-
-
                 //Calculations                
                 double i = product.AcceptedLumpSum;
                 double r = .129;
@@ -223,27 +196,8 @@ namespace Aluma.API.Repositories
             int expiryDate = DateTime.UtcNow.Day + 1827;
             d["expiryDate"] = expiryDate.ToString("dd MMMM yyyy");
 
-            
-
-
-            docType = docName == "PEFQuote.pdf" ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
-
-
-            byte[] doc = dh.PopulateDocument(docName, d, _host);
-
-            
-
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = docType,
-                FileType = FileTypesEnum.Pdf,
-                Name = fileName,
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
+            _dh.PopulateAndSaveDocument(type, d, client.User);
         }
 
     }

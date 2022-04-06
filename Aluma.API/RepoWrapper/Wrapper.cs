@@ -83,7 +83,7 @@ namespace Aluma.API.RepoWrapper
 
         public IApplicationRepo Applications
         {
-            get { return _application == null ? new ApplicationRepo(_dbContext, _host, _config, _mapper) : _application; }
+            get { return _application == null ? new ApplicationRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _application; }
         }
 
         //public IDividendTaxRepo DividendTax
@@ -92,12 +92,12 @@ namespace Aluma.API.RepoWrapper
         //}
         public IFspMandateRepo FSPMandate
         {
-            get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper) : _fspMandate; }
+            get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fspMandate; }
         }
 
         public IFNARepo FNA
         {
-            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper) : _fna; }
+            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
         }
 
         public IIRSW8Repo IRSW8
@@ -117,12 +117,12 @@ namespace Aluma.API.RepoWrapper
 
         public IRecordOfAdviceRepo RecordOfAdvice
         {
-            get { return _recordOfAdvice == null ? new RecordOfAdviceRepo(_dbContext, _host, _config, _mapper) : _recordOfAdvice; }
+            get { return _recordOfAdvice == null ? new RecordOfAdviceRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _recordOfAdvice; }
         }
 
         public IClientRepo Client
         {
-            get { return _client == null ? new ClientRepo(_dbContext, _host, _config, _mapper) : _client; }
+            get { return _client == null ? new ClientRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _client; }
         }
 
         public IBankDetailsRepo BankDetails
@@ -147,12 +147,12 @@ namespace Aluma.API.RepoWrapper
 
         public IRiskProfileRepo RiskProfile
         {
-            get { return _riskProfile == null ? new RiskProfileRepo(_dbContext, _host, _config, _mapper) : _riskProfile; }
+            get { return _riskProfile == null ? new RiskProfileRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _riskProfile; }
         }
 
         public IDisclosureRepo Disclosures
         {
-            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _userDocuments) : _disclosures; }
+            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _fileStorage, _userDocuments) : _disclosures; }
         }
 
         //Product
