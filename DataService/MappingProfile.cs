@@ -84,6 +84,10 @@ namespace DataService
             CreateMap<ProductModel, ProductDto>()
                 .ReverseMap();
 
+            //FNA
+            CreateMap<AssetsModel, AssetsDto>()
+                .ReverseMap();
+
 
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()
