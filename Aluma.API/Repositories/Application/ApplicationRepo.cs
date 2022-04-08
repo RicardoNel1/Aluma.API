@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -23,7 +24,7 @@ namespace Aluma.API.Repositories
     {
         public ApplicationDto GetApplication(ApplicationDto dto);
 
-        public List<ApplicationDocumentDto> GetApplicationDocuments(int applicationId);
+        public Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId);
 
         public List<ApplicationDto> GetApplications();
 
@@ -68,7 +69,9 @@ namespace Aluma.API.Repositories
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IFileStorageRepo _fileStorage;
-        
+        DocumentHelper _dh;
+
+
 
         public ApplicationRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
@@ -77,6 +80,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
             _fileStorage = fileStorage;
+            _dh = new DocumentHelper(_context,_config,_fileStorage,_host);
         }
 
         public bool DeleteApplication(ApplicationDto dto)
@@ -211,28 +215,16 @@ namespace Aluma.API.Repositories
             //throw new NotImplementedException();
         }
 
-        public List<ApplicationDocumentDto> GetApplicationDocuments(int applicationId)
-        {
-            ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-            ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
-            //List<ApplicationDocumentModel> result = _context.ApplicationDocuments.Where(d => d.ApplicationId == applicationId).ToList();
-            List<UserDocumentModel> result = _context.UserDocuments.Where(d => d.UserId == c.User.Id).ToList();
-            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
-            foreach (var doc in result)
-            {
-                ApplicationDocumentDto dto = new ApplicationDocumentDto()
-                {
-                    Id = doc.Id,
-                    DocumentName = doc.Name,
-                    b64 = doc.URL
-                };
+        //public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
+        //{
+        //    ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+        //    ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
+            
+        //    //List<UserDocumentDto> response = await _dh.GetAllUserDocuments(c.User);
 
-                response.Add(dto);
-            }
+        //    return response;
 
-            return response;
-
-        }
+        //}
 
 
         public void GenerateApplicationDocuments(int applicationId)
@@ -273,6 +265,14 @@ namespace Aluma.API.Repositories
 
         }
 
+        public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
+        {
+            ApplicationModel a = _context.Applications.First(c => c.Id == applicationId);
+
+            List<ApplicationDocumentDto> response = await _dh.GetAllApplicationDocuments(a);
+
+            return response;
+        }
     }
 
 }
