@@ -87,7 +87,7 @@ namespace Aluma.API.Controllers
             try
             {
                 // actual documents, just list of base64 strings
-                var docList = _repo.UserDocuments.GetDocuments(dto);
+                var docList = _repo.UserDocuments.GetDocuments(dto.Id);
 
                 return Ok(docList);
             }
