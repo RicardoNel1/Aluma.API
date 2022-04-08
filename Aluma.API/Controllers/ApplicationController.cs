@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -159,16 +160,15 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("documents"), AllowAnonymous]
-        public IActionResult DownloadAllApplicationDocuments(int applicationId)
+        public async Task<IActionResult> DownloadAllApplicationDocuments(int applicationId)
         {
             try
             {
                 _repo.Applications.GenerateApplicationDocuments(applicationId);
+               
+                List<UserDocumentDto> appDocs = await _repo.UserDocuments.GetDocuments(applicationId);
 
-                //List<ApplicationDocumentDto> appDocs = _repo.Applications.GetApplicationDocuments(applicationId);
-
-                //return Ok(appDocs);
-                return Ok(); 
+                return Ok(appDocs);
             }
             catch (Exception e)
             {

@@ -1,13 +1,16 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
@@ -24,7 +27,7 @@ namespace Aluma.API.Repositories
 
         ICollection<UserDocumentDto> GetDocumentsList(UserDto dto);
 
-        ICollection<UserDocumentDto> GetDocuments(UserDto dto);
+        Task<List<UserDocumentDto>> GetDocuments(int userId);
 
         Task<UserDocumentDto> GetDocument(UserDocumentDto dto);
 
@@ -40,6 +43,7 @@ namespace Aluma.API.Repositories
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IFileStorageRepo _fileStorage;
+        DocumentHelper _dh;
 
         public UserDocumentsRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(context)
         {
@@ -48,6 +52,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
             _fileStorage = fileStorage;
+            _dh = new DocumentHelper(_context, _config, _fileStorage, _host);
         }
 
         public UserDocumentModel CreateClientBankVerification(BankDetailsModel model)
@@ -74,9 +79,15 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public ICollection<UserDocumentDto> GetDocuments(UserDto dto)
+        public async Task<List<UserDocumentDto>> GetDocuments(int userId)
         {
-            throw new System.NotImplementedException();
+            int client = _context.Applications.First(a => a.Id == a.Id).ClientId;
+            UserModel u = _context.Clients.Include(c => c.User).First(a => a.Id == a.Id).User;
+
+            List<UserDocumentDto> response = await _dh.GetAllUserDocuments(u);
+
+            return response;
+
         }
 
         public ICollection<UserDocumentDto> GetDocumentsList(UserDto dto)
