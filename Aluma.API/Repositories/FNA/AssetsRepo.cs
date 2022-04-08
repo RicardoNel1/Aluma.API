@@ -78,10 +78,16 @@ namespace Aluma.API.Repositories
         public AssetsDto UpdateAssets(AssetsDto dto)
         {
             AssetsModel data = _context.Assets.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-            Enum.TryParse(dto.AssetType, true, out DataService.Enum.AddressTypesEnum parsedAssetType);
+            Enum.TryParse(dto.AssetType, true, out DataService.Enum.AssetTypesEnum parsedAssetType);
+            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
             //set fields to be updated            
+            data.AssetType = parsedAssetType;
             data.Description = dto.Description;
+            data.AllocateTo = parsedAllocation;
+            data.Value = dto.Value;
+            data.BaseCost = dto.BaseCost;
+
 
             _context.Assets.Update(data);
             _context.SaveChanges();
