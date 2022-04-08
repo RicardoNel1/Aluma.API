@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using DataService.Model;
 using DataService.Enum;
 using Azure.Storage.Files.Shares;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Helpers
 {
@@ -183,6 +184,72 @@ namespace Aluma.API.Helpers
             await storage.UploadAsync(dto);
 
 
+        }
+
+        internal async Task<List<ApplicationDocumentDto>> GetAllApplicationDocuments(ApplicationModel application)
+        {
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+
+            List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == application.Id).ToList();
+
+            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
+            foreach (var doc in appDocs)
+            {
+
+                FileStorageDto fileDto = new FileStorageDto()
+                {
+                    BaseDocumentPath = azureSettings.DocumentsRootPath,
+                    BaseShare = "alumaportal",
+                    FileDirectory = doc.URL,
+                    FileName = doc.Name
+                };
+
+                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
+
+                ApplicationDocumentDto dto = new ApplicationDocumentDto()
+                {
+                    Id = doc.Id,
+                    DocumentName = doc.Name,
+                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                };
+
+                response.Add(dto);
+            }
+
+            return response;
+        }
+
+        internal async Task<List<UserDocumentDto>> GetAllUserDocuments(UserModel user)
+        {
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+
+            List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == user.Id).ToList();
+
+            List<UserDocumentDto> response = new List<UserDocumentDto>();
+            foreach (var doc in userDocs)
+            {
+
+                FileStorageDto fileDto = new FileStorageDto()
+                {
+                    BaseDocumentPath = azureSettings.DocumentsRootPath,
+                    BaseShare = "alumaportal",
+                    FileDirectory = doc.URL,
+                    FileName = doc.Name
+                };
+
+                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
+
+                UserDocumentDto dto = new UserDocumentDto()
+                {
+                    Id = doc.Id,
+                    DocumentName = doc.Name,
+                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                };
+
+                response.Add(dto);
+            }
+
+            return response;
         }
     }
 }
