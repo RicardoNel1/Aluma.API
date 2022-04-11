@@ -16,9 +16,7 @@ namespace Aluma.API.Repositories
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
 
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
-
-        //AssetDto GetAssets(int clientId);
-
+        PrimaryResidenceDto GetPrimaryResidence(int clientId);
         PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
 
         //bool DeleteAsset(int id);
@@ -52,7 +50,6 @@ namespace Aluma.API.Repositories
             dto = _mapper.Map<PrimaryResidenceDto>(primaryResidence);
 
             return dto;
-
         }
 
 
@@ -64,15 +61,12 @@ namespace Aluma.API.Repositories
 
         }
 
-        //public TaxResidencyDto GetTaxResidency(int clientId)
-        //{
-        //    TaxResidencyModel taxResidencyModel = _context.TaxResidency.Where(a => a.ClientId == clientId).FirstOrDefault();
-        //    taxResidencyModel.TaxResidencyItems = _context.TaxResidencyItems.Where(a => a.TaxResidencyId == taxResidencyModel.Id).ToList();
+        public PrimaryResidenceDto GetPrimaryResidence(int clientId)
+        {
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.ClientId == clientId).First();
+            return _mapper.Map<PrimaryResidenceDto>(data);
 
-
-        //    return _mapper.Map<TaxResidencyDto>(taxResidencyModel);
-
-        //}
+        }
 
         public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {

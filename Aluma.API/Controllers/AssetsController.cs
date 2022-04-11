@@ -63,21 +63,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-        //[HttpGet, AllowAnonymous]
-        //public IActionResult GetAsset(int clientId)
-        //{
-        //    try
-        //    {
-        //        ConsumerProtectionDto consumerProtection = _repo.ConsumerProtection.GetConsumerProtection(clientId);
+        [HttpGet("primary_residence"), AllowAnonymous]
+        public IActionResult GetPrimaryResidence(int clientId)
+        {
+            try
+            {
+                PrimaryResidenceDto dto = _repo.PrimaryResidence.GetPrimaryResidence(clientId);
 
-        //        return Ok(consumerProtection);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
-               
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
     }
 }
