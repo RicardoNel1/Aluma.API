@@ -256,7 +256,7 @@ namespace Aluma.API.Repositories
             PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
             foreach (var product in roa.SelectedProducts)
             {
-                if (product.ProductId == ProductsEnum.PE1 || product.ProductId == ProductsEnum.PE2)
+                if (product.ProductId == 5 || product.ProductId == 6)
                 {
                     pefRepo.GenerateDOA(client, advisor, product);
                     pefRepo.GenerateQuote(client, advisor, product);

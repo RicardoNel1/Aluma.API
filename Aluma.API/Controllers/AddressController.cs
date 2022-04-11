@@ -70,14 +70,7 @@ namespace Aluma.API.Controllers
             {
                 _repo.User.UpdateUserAddress(dto);
             }
-            return Ok("Address Updated");
+            return Ok(dto);
         }
-
-       
-
-
-        
-
-        
     }
 }

@@ -338,7 +338,7 @@ namespace Aluma.API.Repositories
             details.City = dto.City;
             details.PostalCode = dto.PostalCode;
             details.Country = dto.Country;
-
+            details.Type = parsedType;
             details.InCareAddress = dto.InCareAddress;
             details.InCareName = dto.InCareName;
             details.YearsAtAddress = dto.YearsAtAddress;
