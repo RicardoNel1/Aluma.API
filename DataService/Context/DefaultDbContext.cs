@@ -34,7 +34,7 @@ namespace DataService.Context
 
 
             //FNA
-            mb.ApplyConfiguration(new AssetsModelBuilder());
+            mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             
         }
 
@@ -70,7 +70,7 @@ namespace DataService.Context
         public DbSet<ProductModel> Products { get; set; }
 
         //FNA
-        public DbSet<AssetsModel> Assets { get; set; }
+        public DbSet<PrimaryResidenceModel> PrimaryResidence { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }

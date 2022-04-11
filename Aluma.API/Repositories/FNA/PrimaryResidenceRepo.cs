@@ -11,15 +11,15 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IAssetsRepo : IRepoBase<AssetsModel>
+    public interface IPrimaryResidenceRepo : IRepoBase<PrimaryResidenceModel>
     {
-        AssetsDto CreateAssets(AssetsDto dto);
+        PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
 
-        //bool DoesAssetsExist(AssetsDto dto);
+        bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
 
         //AssetDto GetAssets(int clientId);
 
-        AssetsDto UpdateAssets(AssetsDto dto);
+        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
 
         //bool DeleteAsset(int id);
 
@@ -27,16 +27,15 @@ namespace Aluma.API.Repositories
     }
 
     /// <summary>
-    /// /<3
     /// </summary>
-    public class AssetsRepo : RepoBase<AssetsModel>, IAssetsRepo
+    public class PrimaryResidenceRepo : RepoBase<PrimaryResidenceModel>, IPrimaryResidenceRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public AssetsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        public PrimaryResidenceRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
@@ -44,26 +43,26 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
-        public AssetsDto CreateAssets(AssetsDto dto)
+        public PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto)
         {
 
-            AssetsModel assets = _mapper.Map<AssetsModel>(dto);
-            _context.Assets.Add(assets);
+            PrimaryResidenceModel primaryResidence = _mapper.Map<PrimaryResidenceModel>(dto);
+            _context.PrimaryResidence.Add(primaryResidence);
             _context.SaveChanges();
-            dto = _mapper.Map<AssetsDto>(assets);
+            dto = _mapper.Map<PrimaryResidenceDto>(primaryResidence);
 
             return dto;
 
         }
 
 
-        //public bool DoesTaxResidencyExist(TaxResidencyDto dto)
-        //{
-        //    bool taxResidencyExist = false;
-        //    taxResidencyExist = _context.TaxResidency.Where(a => a.ClientId == dto.ClientId).Any();
-        //    return taxResidencyExist;
+        public bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto)
+        {
+            bool primaryResidenceExist = false;
+            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).Any();
+            return primaryResidenceExist;
 
-        //}
+        }
 
         //public TaxResidencyDto GetTaxResidency(int clientId)
         //{
@@ -75,23 +74,21 @@ namespace Aluma.API.Repositories
 
         //}
 
-        public AssetsDto UpdateAssets(AssetsDto dto)
+        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {
-            AssetsModel data = _context.Assets.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-            Enum.TryParse(dto.AssetType, true, out DataService.Enum.AssetTypesEnum parsedAssetType);
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
             Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
-            //set fields to be updated            
-            data.AssetType = parsedAssetType;
+            //set fields to be updated       
             data.Description = dto.Description;
             data.AllocateTo = parsedAllocation;
             data.Value = dto.Value;
             data.BaseCost = dto.BaseCost;
 
 
-            _context.Assets.Update(data);
+            _context.PrimaryResidence.Update(data);
             _context.SaveChanges();
-            dto = _mapper.Map<AssetsDto>(data);
+            dto = _mapper.Map<PrimaryResidenceDto>(data);
             return dto;
 
         }

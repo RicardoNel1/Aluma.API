@@ -39,7 +39,7 @@ namespace Aluma.API.RepoWrapper
         IProductRepo ProductRepo { get; }
 
         //FNA
-        IAssetsRepo Assets { get; }
+        IPrimaryResidenceRepo PrimaryResidence { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }

@@ -85,7 +85,7 @@ namespace DataService
                 .ReverseMap();
 
             //FNA
-            CreateMap<AssetsModel, AssetsDto>()
+            CreateMap<PrimaryResidenceModel, PrimaryResidenceDto>()
                 .ReverseMap();
 
 
