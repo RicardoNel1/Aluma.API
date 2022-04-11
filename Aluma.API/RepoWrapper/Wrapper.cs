@@ -41,6 +41,7 @@ namespace Aluma.API.RepoWrapper
         private IDisclosureRepo _disclosures;
 
         private IProductRepo _product;
+        private IPrimaryResidenceRepo _primaryResidence;
 
 
         private IOtpRepo _otp;
@@ -156,11 +157,17 @@ namespace Aluma.API.RepoWrapper
         }
 
         //Product
-
         public IProductRepo ProductRepo
         {
             get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product; }
         }
+
+        //FNA
+        public IPrimaryResidenceRepo PrimaryResidence
+        {
+            get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
+        }
+
 
 
         //User

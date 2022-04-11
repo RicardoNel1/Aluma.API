@@ -31,6 +31,10 @@ namespace DataService.Context
             //User
             mb.ApplyConfiguration(new UserModelBuilder());
             mb.ApplyConfiguration(new AddressModelBuilder());
+
+
+            //FNA
+            mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             
         }
 
@@ -63,8 +67,10 @@ namespace DataService.Context
         public DbSet<FNAModel> FNA { get; set; }
 
         //Product
-
         public DbSet<ProductModel> Products { get; set; }
+
+        //FNA
+        public DbSet<PrimaryResidenceModel> PrimaryResidence { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
