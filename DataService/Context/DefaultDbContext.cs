@@ -35,7 +35,10 @@ namespace DataService.Context
 
             //FNA
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
-            
+            mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
+            mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
+            mb.ApplyConfiguration(new LiquidAssetsModelBuilder());
+
         }
 
         //Advisor
@@ -71,6 +74,9 @@ namespace DataService.Context
 
         //FNA
         public DbSet<PrimaryResidenceModel> PrimaryResidence { get; set; }
+        public DbSet<AssetsAttractingCGTModel> AssetsAttractingCGT { get; set; }
+        public DbSet<AssetsExemptFromCGTModel> AssetsExemptFromCGT { get; set; }
+        public DbSet<LiquidAssetsModel> LiquidAssets { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
