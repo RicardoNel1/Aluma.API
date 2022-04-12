@@ -60,10 +60,7 @@ namespace Aluma.API.Repositories
             try
             {
                 DisclosureModel disclosure = _mapper.Map<DisclosureModel>(dto);
-                //Create Document
 
-                UserDocumentModel DisclosureDocument = _userDocuments.CreateClientDisclosure(disclosure);
-                //Create Disclosure
                 _context.Disclosures.Add(disclosure);
                 _context.SaveChanges();
 
@@ -309,20 +306,20 @@ namespace Aluma.API.Repositories
             //d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
 
             //Broker Appointment
-            if (disclosure != null)
-            {
-                if (disclosure.AdvisorAuthority)
-                {
-                    d["authorityAll"] = "X";
-                }
-                else
-                {
-                    d["authoritySome"] = "X";
-                    d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
-                }
+            //if (disclosure != null)
+            //{
+            //    if (disclosure.AdvisorAuthority)
+            //    {
+            //        d["authorityAll"] = "X";
+            //    }
+            //    else
+            //    {
+            //        d["authoritySome"] = "X";
+            //        d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
+            //    }
 
-                d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
-            }
+            //    d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+            //}
 
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);

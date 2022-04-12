@@ -32,6 +32,7 @@ namespace Aluma.API.Repositories
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
+        void UpdateClientPassports(List<PassportDto> dto);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -309,5 +310,16 @@ namespace Aluma.API.Repositories
 
         }
 
+        public void UpdateClientPassports(List<PassportDto> dto)
+        {
+            foreach (PassportDto passport in dto)
+            {
+                var pModel = _mapper.Map<PassportModel>(passport);
+                _context.Passports.Add(pModel);
+            }
+            _context.SaveChanges();
+
+            
+        }
     }
 }

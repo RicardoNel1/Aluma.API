@@ -94,6 +94,18 @@ namespace Aluma.API.Repositories
             _context.Clients.Update(client);
             _context.SaveChanges();
 
+            DisclosureRepo discRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
+
+            var discDto = new DisclosureDto()
+            {
+                ClientId = client.Id,
+                AdvisorId = newRoa.AdvisorId
+            };
+
+            discRepo.CreateDisclosure(discDto);
+
+
+
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
             return dto;
@@ -105,6 +117,12 @@ namespace Aluma.API.Repositories
 
             _context.RecordOfAdvice.Update(newRoa);
             _context.SaveChanges();
+
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
+            app.ApplicationStatus = ApplicationStatusEnum.Completed;
+            _context.Applications.Update(app);
+            _context.SaveChanges();
+
 
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
             foreach (var product in dto.SelectedProducts)
@@ -167,7 +185,7 @@ namespace Aluma.API.Repositories
 
             foreach (var item in roa.SelectedProducts)
             {
-                ProductModel product = _context.Products.Where(c => c.Id == item.Id).FirstOrDefault();
+                ProductModel product = _context.Products.Where(c => c.Id == item.ProductId).FirstOrDefault();
 
                 data[$"{product.Name.Trim().Replace(" ","")}_productName"] = product.Name; //not used?
 
