@@ -13,14 +13,9 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsExemptFromCGTRepo : IRepoBase<AssetsExemptFromCGTModel>
     {
-        AssetsExemptFromCGTDto CreateAssetsExemptFromCGT(AssetsExemptFromCGTDto dto);
         bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto);
-        AssetsExemptFromCGTDto GetAssetsExemptFromCGT(int clientId);
-        AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto dto);
-        
-
-        //bool DeleteAsset(int id);
-
+        List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId);
+        AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray);
 
     }
 
@@ -40,53 +35,78 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-
-        public AssetsExemptFromCGTDto CreateAssetsExemptFromCGT(AssetsExemptFromCGTDto dto)
-        {
-
-            AssetsExemptFromCGTModel assetsExemptFromCGT = _mapper.Map<AssetsExemptFromCGTModel>(dto);
-            _context.AssetsExemptFromCGT.Add(assetsExemptFromCGT);
-            _context.SaveChanges();
-            dto = _mapper.Map<AssetsExemptFromCGTDto>(assetsExemptFromCGT);
-
-            return dto;
-        }
-
+                
 
         public bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto)
         {
-            bool assetsExemptFromCGTExist = false;
+           bool assetsExemptFromCGTExist = false;
             assetsExemptFromCGTExist = _context.AssetsExemptFromCGT.Where(a => a.ClientId == dto.ClientId).Any();
             return assetsExemptFromCGTExist;
 
         }
 
-        public AssetsExemptFromCGTDto GetAssetsExemptFromCGT(int clientId)
+        public List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId)
         {
-            AssetsExemptFromCGTModel data = _context.AssetsExemptFromCGT.Where(c => c.ClientId == clientId).First();
-            return _mapper.Map<AssetsExemptFromCGTDto>(data);
+            ICollection<AssetsExemptFromCGTModel> data = _context.AssetsExemptFromCGT.Where(c => c.ClientId == clientId).ToList();
+            List<AssetsExemptFromCGTDto> assets = new List<AssetsExemptFromCGTDto>();
 
+            foreach (var item in data)
+            {
+                AssetsExemptFromCGTDto asset = new AssetsExemptFromCGTDto();
+
+                asset.Id = item.Id;
+                asset.ClientId = item.ClientId;
+                asset.Description = item.Description;
+                asset.Value = item.Value;
+                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
+
+                assets.Add(asset);
+
+            }
+
+            return assets;
         }
 
-        public AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto dto)
+        public AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray)
         {
-            AssetsExemptFromCGTModel data = _context.AssetsExemptFromCGT.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
-            //set fields to be updated       
-            data.Description = dto.Description;
-            data.AllocateTo = parsedAllocation;
-            data.Value = dto.Value;
+            foreach (var item in dtoArray)
+            {
 
+                bool existingItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).Any();
 
-            _context.AssetsExemptFromCGT.Update(data);
+                if (existingItem)
+                {
+                    AssetsExemptFromCGTModel updateItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).FirstOrDefault();
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.AllocateTo = parsedAllocation;
+
+                    _context.AssetsExemptFromCGT.Update(updateItem);
+
+                }
+                else
+                {
+                    AssetsExemptFromCGTModel newItem = new AssetsExemptFromCGTModel();
+
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    newItem.ClientId = item.ClientId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.AllocateTo = parsedAllocation;
+
+                    _context.AssetsExemptFromCGT.Add(newItem);
+
+                }
+            }
+
             _context.SaveChanges();
-            dto = _mapper.Map<AssetsExemptFromCGTDto>(data);
-            return dto;
+            return null;
 
         }
 
-       
+
 
     }
 }

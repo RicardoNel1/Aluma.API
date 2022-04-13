@@ -83,8 +83,8 @@ namespace Aluma.API.Controllers
 
 
         //Assets Attracting CGT
-        [HttpPost("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) //might not use
+        [HttpPost("assets_attracting_cgt"), AllowAnonymous] //might never use
+        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) 
         {
             try
             {
@@ -104,7 +104,7 @@ namespace Aluma.API.Controllers
             try
             {
                 _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
-                return Ok("Assets AttractingCGT Updated");
+                return Ok("Assets Attracting CGT Updated");
             }
             catch (Exception e)
             {
@@ -128,47 +128,15 @@ namespace Aluma.API.Controllers
         }
 
 
-        //Assets Exempt from CGT
-        [HttpPost("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult CreateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto dto)
-        {
-            try
-            {
-                bool assetsExemptFromCGTExists = _repo.AssetsExemptFromCGT.DoesAssetsExemptFromCGTExist(dto);
-
-                if (assetsExemptFromCGTExists)
-                {
-                    return BadRequest("Assets Exempt From CGT Exists");
-                }
-                else
-                {
-                    _repo.AssetsExemptFromCGT.CreateAssetsExemptFromCGT(dto);
-                }
-                return Ok(dto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        //Assets Exempt from CGT       
 
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto dto)
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
         {
             try
             {
-                bool assetsExemptFromCGTExist = _repo.AssetsExemptFromCGT.DoesAssetsExemptFromCGTExist(dto);
-
-                if (!assetsExemptFromCGTExist)
-                {
-                    CreateAssetsExemptFromCGT(dto);
-                }
-                else
-                {
-                    _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dto);
-                }
-
-                return Ok("Primary Residence Updated");
+                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+                return Ok("Assets Exempt From CGT Updated");
             }
             catch (Exception e)
             {
@@ -181,9 +149,9 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                AssetsExemptFromCGTDto dto = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(clientId);
+                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(clientId);
 
-                return Ok(dto);
+                return Ok(dtoList);
             }
             catch (Exception e)
             {
