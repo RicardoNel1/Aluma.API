@@ -100,18 +100,42 @@ namespace Aluma.API.Repositories
 
         public AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
         {
-            //AssetsAttractingCGTModel data = _context.AssetsAttractingCGT.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-            //Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            
+            foreach (var item in dtoArray)
+            {
 
-            ////set fields to be updated       
-            //data.Description = dto.Description;
-            //data.AllocateTo = parsedAllocation;
-            //data.Value = dto.Value;
-            //data.BaseCost = dto.BaseCost;
+                bool existingItem = _context.AssetsAttractingCGT.Where(a => a.Id == item.Id).Any();
 
+                if (existingItem)
+                {
+                    AssetsAttractingCGTModel updateItem = _context.AssetsAttractingCGT.Where(a => a.Id == item.Id).FirstOrDefault();
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.AllocateTo = parsedAllocation;
+                    updateItem.BaseCost = item.BaseCost;
+
+                    _context.AssetsAttractingCGT.Update(updateItem);
+
+                }
+                else
+                {
+                    AssetsAttractingCGTModel newItem = new AssetsAttractingCGTModel();
+
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    newItem.ClientId = item.ClientId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.AllocateTo = parsedAllocation;
+                    newItem.BaseCost = item.BaseCost;
+
+                    _context.AssetsAttractingCGT.Add(newItem);
+
+                }
+            }
 
             //_context.AssetsAttractingCGT.Update(data);
-            //_context.SaveChanges();
+            _context.SaveChanges();
             //dto = _mapper.Map<AssetsAttractingCGTDto>(data);
             //return dto;
             return null;

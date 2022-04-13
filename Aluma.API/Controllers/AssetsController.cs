@@ -84,20 +84,12 @@ namespace Aluma.API.Controllers
 
         //Assets Attracting CGT
         [HttpPost("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
+        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) //might not use
         {
             try
             {
-                //bool assetsAttractingCGTExists = _repo.AssetsAttractingCGT.DoesAssetsAttractingCGTExist(dtoArray);
-
-               // if (assetsAttractingCGTExists)
-              //  {
-              //      return BadRequest("Assets AttractingCGT Exists");
-              //  }
-              //  else
-              //  {
                     _repo.AssetsAttractingCGT.CreateAssetsAttractingCGT(dtoArray);
-            //    }
+           
                 return Ok(dtoArray);
             }
             catch (Exception e)
@@ -111,17 +103,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-           //     bool assetsAttractingCGTExist = _repo.AssetsAttractingCGT.DoesAssetsAttractingCGTExist(dtoArray);
-
-           //     if (!assetsAttractingCGTExist)
-          //      {
-                    CreateAssetsAttractingCGT(dtoArray);
-          //      }
-           //     else
-          //      {
-           //         _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
-            //    }
-
+                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
                 return Ok("Assets AttractingCGT Updated");
             }
             catch (Exception e)
@@ -136,7 +118,6 @@ namespace Aluma.API.Controllers
             try
             {
                 List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
-                //AssetsAttractingCGTDto[] dtoArray = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
 
                 return Ok(dtoList);
             }
