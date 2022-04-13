@@ -20,13 +20,8 @@ namespace Aluma.API.Repositories
         List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
         AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
 
-        //bool DeleteAsset(int id);
-
-
     }
 
-    /// <summary>
-    /// </summary>
     public class AssetsAttractingCGTRepo : RepoBase<AssetsAttractingCGTModel>, IAssetsAttractingCGTRepo
     {
         private readonly AlumaDBContext _context;
@@ -46,9 +41,7 @@ namespace Aluma.API.Repositories
         {
             foreach (var item in dtoArray)
             {
-
-                AssetsAttractingCGTModel newItem = new();
-                //newItem = _mapper.Map<AssetsAttractingCGTModel>(item);
+                AssetsAttractingCGTModel asset = new AssetsAttractingCGTModel();
 
                 Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
                 asset.ClientId = item.ClientId;
@@ -58,7 +51,6 @@ namespace Aluma.API.Repositories
                 asset.BaseCost = item.BaseCost;
 
                 _context.AssetsAttractingCGT.Add(asset);
-                //return _mapper.Map<AssetsAttractingCGTDto>(asset);
             }
             _context.SaveChanges();
             return dtoArray;
@@ -105,7 +97,6 @@ namespace Aluma.API.Repositories
             foreach (var item in data)
             {                
                 AssetsAttractingCGTDto asset = new AssetsAttractingCGTDto();
-                //newItem = _mapper.Map<AssetsAttractingCGTModel>(item);
 
                 asset.Id = item.Id;
                 asset.ClientId = item.ClientId;
@@ -114,13 +105,10 @@ namespace Aluma.API.Repositories
                 asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
                 asset.BaseCost = item.BaseCost;
 
-                //_context.AssetsAttractingCGT.Add(asset);
-                //return _mapper.Map<AssetsAttractingCGTDto>(asset);
                 assets.Add(asset);
 
             }
 
-            //return _mapper.Map<AssetsAttractingCGTDto[]>(data);
             return assets;
         }
 
@@ -160,10 +148,7 @@ namespace Aluma.API.Repositories
                 }
             }
 
-            //_context.AssetsAttractingCGT.Update(data);
             _context.SaveChanges();
-            //dto = _mapper.Map<AssetsAttractingCGTDto>(data);
-            //return dto;
             return null;
 
         }
