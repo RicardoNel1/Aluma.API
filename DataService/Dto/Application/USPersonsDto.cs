@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DataService.Dto
+﻿namespace DataService.Dto
 {
     public class USPersonsDto
     {

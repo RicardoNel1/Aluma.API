@@ -1,7 +1,4 @@
-﻿using DataService.Enum;
-using System;
-
-namespace DataService.Dto
+﻿namespace DataService.Dto
 {
     public class RecordOfAdviceItemsDto
     {

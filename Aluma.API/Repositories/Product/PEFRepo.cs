@@ -2,7 +2,6 @@
 using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
-using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
 using FileStorageService;
@@ -93,11 +92,14 @@ namespace Aluma.API.Repositories
             d["signDate_3"] = DateTime.Today.ToString("yyyyMMdd");
             d["signAt_3"] = advisor.User.Address.First().City;
 
+            RecordOfAdviceModel roa = _context.RecordOfAdvice.SingleOrDefault(r => r.Id == product.RecordOfAdviceId);
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
+
 
             DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
-            _dh.PopulateAndSaveDocument(type, d, client.User);
+            _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
-                
+
 
         public void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
@@ -106,9 +108,9 @@ namespace Aluma.API.Repositories
 
 
             Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
-            
+
             if (parsedProduct == ProductsEnum.PE1)
-            {     
+            {
                 //Calculations
                 double i = product.AcceptedLumpSum;
                 double r1 = .129;
@@ -149,7 +151,7 @@ namespace Aluma.API.Repositories
             }
 
             if (parsedProduct == ProductsEnum.PE2)
-            {                
+            {
                 //Calculations                
                 double i = product.AcceptedLumpSum;
                 double r = .129;
@@ -196,8 +198,11 @@ namespace Aluma.API.Repositories
             int expiryDate = DateTime.UtcNow.Day + 1827;
             d["expiryDate"] = expiryDate.ToString("dd MMMM yyyy");
 
+            RecordOfAdviceModel roa = _context.RecordOfAdvice.SingleOrDefault(r => r.Id == product.RecordOfAdviceId);
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
+
             DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
-            _dh.PopulateAndSaveDocument(type, d, client.User);
+            _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 
     }

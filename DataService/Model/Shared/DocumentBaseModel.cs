@@ -1,5 +1,4 @@
 ﻿using DataService.Enum;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
@@ -16,5 +15,6 @@ namespace DataService.Model
         public string Name { get; set; }
         public int Size { get; set; }
         public DocumentTypesEnum DocumentType { get; set; }
+        public bool IsSigned { get; set; }
     }
 }

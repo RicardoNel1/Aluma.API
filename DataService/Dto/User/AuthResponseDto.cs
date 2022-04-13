@@ -1,6 +1,4 @@
-﻿using DataService.Model;
-
-namespace DataService.Dto
+﻿namespace DataService.Dto
 {
     public class AuthResponseDto
     {

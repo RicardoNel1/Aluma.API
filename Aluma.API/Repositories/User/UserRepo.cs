@@ -9,7 +9,7 @@ using System;
 using System.Linq;
 using StringHasher;
 using DataService.Enum;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aluma.API.Repositories
 {
@@ -52,6 +52,7 @@ namespace Aluma.API.Repositories
 
         void ForgotPassword(LoginDto dto);
         void VerifyUser(UserDto user);
+        UserDto GetUserByApplicationID(int applicationId);
     }
 
     public class UserRepo : RepoBase<UserModel>, IUserRepo
@@ -369,6 +370,14 @@ namespace Aluma.API.Repositories
 
             _context.Users.Update(um);
             _context.SaveChanges();
+        }
+
+        public UserDto GetUserByApplicationID(int applicationId)
+        {
+            ApplicationModel app = _context.Applications.Include(a => a.Client).ThenInclude(c => c.User).SingleOrDefault(a => a.Id == applicationId);
+            UserDto result = _mapper.Map<UserDto>(app.Client.User);
+            return result;
+
         }
     }
 }

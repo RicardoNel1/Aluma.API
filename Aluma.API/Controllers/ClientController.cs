@@ -3,7 +3,6 @@ using DataService.Dto;
 using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -190,7 +189,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/admin"), Authorize(Roles = "Admin")]
+        [HttpGet("list/admin"), AllowAnonymous]
         public IActionResult ListAllClients()
         {
             try

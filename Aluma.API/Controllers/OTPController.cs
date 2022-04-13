@@ -1,7 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -96,18 +95,23 @@ namespace Aluma.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("verify/signature")]
-        public IActionResult VerifySignatureOtp(LoginDto dto)
+        [HttpGet("verify/signature")]
+        public IActionResult VerifySignatureOtp(int applicationId, string otp)
         {
-            UserDto user = _repo.User.GetUser(dto);
-            string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
+            UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+            AuthResponseDto response = new AuthResponseDto();
+
+            string isOtpVerified = _repo.Otp.VerifyOTP(otp, user.Id, applicationId);
 
             if (isOtpVerified != "Validated")
             {
                 return StatusCode(401, "Invalid OTP");
             }
 
-            return Ok();
+            response.Message = "SignatureVerified";
+            _repo.Applications.SignDocuments(applicationId);
+
+            return Ok(response);
         }
 
 

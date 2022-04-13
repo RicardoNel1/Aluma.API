@@ -18,7 +18,9 @@ namespace Aluma.API.Helpers.Extensions
                     sqlServerOptionsAction: so =>
                     {
                         so.EnableRetryOnFailure();
+                        so.CommandTimeout(150);
                     }
+                    
                 );
             });
         }

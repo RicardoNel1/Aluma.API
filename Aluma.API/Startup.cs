@@ -1,4 +1,3 @@
-using AutoMapper;
 using Aluma.API.Helpers.Extensions;
 using DataService.Context;
 using FileStorageService;
@@ -75,16 +74,16 @@ namespace Aluma.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1"));
-
-                app.UseHangfireDashboard();
             }
             else
             {
                 app.UseHsts();
             }
+            //dev only move back
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1"));
+
+            app.UseHangfireDashboard();
 
             //app.UseHttpsRedirection();
 

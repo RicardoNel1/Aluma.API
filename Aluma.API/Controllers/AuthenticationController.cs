@@ -1,7 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
-using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;

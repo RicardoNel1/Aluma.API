@@ -1,7 +1,6 @@
 ﻿using DataService.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model

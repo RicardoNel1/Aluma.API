@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using StringHasher;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model

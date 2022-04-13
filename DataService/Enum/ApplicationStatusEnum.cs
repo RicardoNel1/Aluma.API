@@ -4,6 +4,7 @@
     {
         Deleted,
         InProgress,
-        Completed
+        Completed,
+        Submitted,
     }
 }

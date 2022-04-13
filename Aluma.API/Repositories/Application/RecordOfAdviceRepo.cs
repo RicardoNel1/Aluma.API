@@ -119,7 +119,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
-            app.ApplicationStatus = ApplicationStatusEnum.Completed;
+            app.ApplicationStatus = ApplicationStatusEnum.Submitted;
             _context.Applications.Update(app);
             _context.SaveChanges();
 
@@ -209,7 +209,9 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User);
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
+
+            dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User,app);
         }
     }
 }
