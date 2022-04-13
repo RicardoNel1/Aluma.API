@@ -13,9 +13,9 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsAttractingCGTRepo : IRepoBase<AssetsAttractingCGTModel>
     {
-        AssetsAttractingCGTDto CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
+        AssetsAttractingCGTDto[] CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
         bool DoesAssetsAttractingCGTExist(AssetsAttractingCGTDto dto);
-        AssetsAttractingCGTDto GetAssetsAttractingCGT(int clientId);
+        List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
         AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
 
         //bool DeleteAsset(int id);
@@ -40,30 +40,25 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
-        public AssetsAttractingCGTDto CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
+        public AssetsAttractingCGTDto[] CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
         {
             foreach (var item in dtoArray)
             {
-
-                AssetsAttractingCGTModel newItem = new AssetsAttractingCGTModel();
+                AssetsAttractingCGTModel asset = new AssetsAttractingCGTModel();
                 //newItem = _mapper.Map<AssetsAttractingCGTModel>(item);
 
                 Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                //newItem.Id = item.Id;
-                newItem.ClientId = item.ClientId;
-                newItem.Description = item.Description;
-                newItem.Value = item.Value;
-                newItem.AllocateTo = parsedAllocation;
-                newItem.BaseCost = item.BaseCost;
+                asset.ClientId = item.ClientId;
+                asset.Description = item.Description;
+                asset.Value = item.Value;
+                asset.AllocateTo = parsedAllocation;
+                asset.BaseCost = item.BaseCost;
 
-
-                //_context.AssetsAttractingCGT.Add(assetsAttractingCGT);
-                _context.AssetsAttractingCGT.Add(newItem);
-                //_context.SaveChanges();
-                //return _mapper.Map<AssetsAttractingCGTDto>(newItem);
+                _context.AssetsAttractingCGT.Add(asset);
+                //return _mapper.Map<AssetsAttractingCGTDto>(asset);
             }
             _context.SaveChanges();
-            return null;
+            return dtoArray;
 
         }
 
@@ -76,11 +71,31 @@ namespace Aluma.API.Repositories
 
         }
 
-        public AssetsAttractingCGTDto GetAssetsAttractingCGT(int clientId)
+        public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId)
         {
-            AssetsAttractingCGTModel data = _context.AssetsAttractingCGT.Where(c => c.ClientId == clientId).First();
-            return _mapper.Map<AssetsAttractingCGTDto>(data);
+            ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.ClientId == clientId).ToList();
+            List<AssetsAttractingCGTDto> assets = new List<AssetsAttractingCGTDto>();
 
+            foreach (var item in data)
+            {                
+                AssetsAttractingCGTDto asset = new AssetsAttractingCGTDto();
+                //newItem = _mapper.Map<AssetsAttractingCGTModel>(item);
+
+                asset.Id = item.Id;
+                asset.ClientId = item.ClientId;
+                asset.Description = item.Description;
+                asset.Value = item.Value;
+                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
+                asset.BaseCost = item.BaseCost;
+
+                //_context.AssetsAttractingCGT.Add(asset);
+                //return _mapper.Map<AssetsAttractingCGTDto>(asset);
+                assets.Add(asset);
+
+            }
+
+            //return _mapper.Map<AssetsAttractingCGTDto[]>(data);
+            return assets;
         }
 
         public AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)

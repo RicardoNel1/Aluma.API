@@ -3,6 +3,7 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
@@ -131,12 +132,13 @@ namespace Aluma.API.Controllers
 
         [HttpGet("assets_attracting_cgt"), AllowAnonymous]
         public IActionResult GetAssetsAttractingCGT(int clientId)
-        {
+        {            
             try
             {
-                AssetsAttractingCGTDto dtoArray = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
+                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
+                //AssetsAttractingCGTDto[] dtoArray = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
 
-                return Ok(dtoArray);
+                return Ok(dtoList);
             }
             catch (Exception e)
             {
