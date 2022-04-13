@@ -80,24 +80,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-
-
-        //Assets Attracting CGT
-        [HttpPost("assets_attracting_cgt"), AllowAnonymous] //might never use
-        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) 
-        {
-            try
-            {
-                    _repo.AssetsAttractingCGT.CreateAssetsAttractingCGT(dtoArray);
-           
-                return Ok(dtoArray);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
+        //Assets Attracting CGT       
         [HttpPut("assets_attracting_cgt"), AllowAnonymous]
         public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
         {
@@ -129,7 +112,6 @@ namespace Aluma.API.Controllers
 
 
         //Assets Exempt from CGT       
-
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
         public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
         {
@@ -160,47 +142,13 @@ namespace Aluma.API.Controllers
         }
 
 
-
-        //Liquid Assets
-        [HttpPost("liquid_assets"), AllowAnonymous]
-        public IActionResult CreateLiquidAssets([FromBody] LiquidAssetsDto dto)
-        {
-            try
-            {
-                bool liquidAssetsExists = _repo.LiquidAssets.DoesLiquidAssetsExist(dto);
-
-                if (liquidAssetsExists)
-                {
-                    return BadRequest("Liquid Assets Exists");
-                }
-                else
-                {
-                    _repo.LiquidAssets.CreateLiquidAssets(dto);
-                }
-                return Ok(dto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
+        //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
-        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto dto)
+        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
         {
             try
             {
-                bool liquidAssetsExist = _repo.LiquidAssets.DoesLiquidAssetsExist(dto);
-
-                if (!liquidAssetsExist)
-                {
-                    CreateLiquidAssets(dto);
-                }
-                else
-                {
-                    _repo.LiquidAssets.UpdateLiquidAssets(dto);
-                }
-
+                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
                 return Ok("Liquid Assets Updated");
             }
             catch (Exception e)
@@ -209,14 +157,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("liquid assets"), AllowAnonymous]
+        [HttpGet("liquid_assets"), AllowAnonymous]
         public IActionResult GetLiquidAssets(int clientId)
         {
             try
             {
-                LiquidAssetsDto dto = _repo.LiquidAssets.GetLiquidAssets(clientId);
+                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(clientId);
 
-                return Ok(dto);
+                return Ok(dtoList);
             }
             catch (Exception e)
             {
