@@ -2,7 +2,9 @@
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Dto.FNA;
 using DataService.Model;
+using DataService.Model.FNA;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -44,7 +46,8 @@ namespace Aluma.API.Repositories
         {
             foreach (var item in dtoArray)
             {
-                AssetsAttractingCGTModel asset = new AssetsAttractingCGTModel();
+
+                AssetsAttractingCGTModel newItem = new();
                 //newItem = _mapper.Map<AssetsAttractingCGTModel>(item);
 
                 Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
@@ -60,6 +63,29 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             return dtoArray;
 
+        }
+
+        public InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray)
+        {
+            foreach (var item in dtoArray)
+            {
+                InsuranceModel newItem = new();
+                Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                newItem.ClientId = item.ClientId;
+                newItem.Description = item.Description;
+                newItem.Owner = item.Owner;
+                newItem.LifeCover = item.LifeCover;
+                newItem.Disability = item.Disability;
+                newItem.DreadDisease = item.DreadDisease;
+                newItem.AbsoluteIpPm = item.AbsoluteIpPm;
+                newItem.ExtendedIpPm = item.ExtendedIpPm;
+                newItem.AllocateTo = parsedAllocation;
+
+                _context.Insurance.Add(newItem);
+            }
+            _context.SaveChanges();
+
+            return null;
         }
 
 

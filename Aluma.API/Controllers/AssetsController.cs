@@ -1,5 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
+using DataService.Dto.FNA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -80,6 +81,12 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut("update_insurance"), AllowAnonymous]
+        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        {
+
+            return null;
+        }
 
 
         //Assets Attracting CGT
