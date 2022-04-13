@@ -134,7 +134,7 @@ namespace Aluma.API.Repositories
                 }
                 else
                 {
-                    AssetsAttractingCGTModel newItem = new AssetsAttractingCGTModel();
+                    AssetsAttractingCGTModel newItem = new();
 
                     Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
                     newItem.ClientId = item.ClientId;
