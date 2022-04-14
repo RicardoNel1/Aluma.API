@@ -10,16 +10,17 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
     public interface IPEFRepo : IRepoBase<ProductModel>
     {
-        void GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+        Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
         //void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
         //void PEQuoteCalc(RecordOfAdviceItemsModel product);
 
-        void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+        Task GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
 
 
     }
@@ -42,7 +43,7 @@ namespace Aluma.API.Repositories
             _dh = new DocumentHelper(_context, _config, _fileStorage, _host);
         }
 
-        public void GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
+        public async Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -97,11 +98,11 @@ namespace Aluma.API.Repositories
 
 
             DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
-            _dh.PopulateAndSaveDocument(type, d, client.User, app);
+            await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 
 
-        public void GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
+        public async Task GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -202,7 +203,7 @@ namespace Aluma.API.Repositories
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
             DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
-            _dh.PopulateAndSaveDocument(type, d, client.User, app);
+            await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 
     }

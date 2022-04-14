@@ -188,7 +188,7 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.Applications.GenerateApplicationDocuments(applicationId);
+                    await _repo.Applications.GenerateApplicationDocuments(applicationId);
                 }
                 return Ok();
             }
@@ -215,11 +215,11 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.Applications.SignDocuments(applicationId);
+                    _repo.Applications.ConsentToSign(applicationId);
+                    UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
+                    response.Message = "verifySignature";
 
-                    //UserDto user = _repo.User.GetUserByApplicationID(applicationId);
-                    //_repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
-                    //response.Message = "verifySignature";
                     return Ok(response);
                 }
             }

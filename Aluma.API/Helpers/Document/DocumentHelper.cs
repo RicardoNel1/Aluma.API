@@ -58,11 +58,11 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
                 };
 
-        public void PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null)
+        public async Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null)
         {
             byte[] docPopulated = PopulateDocument(fileType, formData);
 
-            UploadFile(docPopulated, fileType, user, application);
+            await UploadFile(docPopulated, fileType, user, application);
         }
 
         private byte[] PopulateDocument(DocumentTypesEnum documentType, Dictionary<string, string> formData)
@@ -114,19 +114,19 @@ namespace Aluma.API.Helpers
         }
 
 
-        public async void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document)
+        public async Task UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
             string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{document.UserId}";
 
-            if (document.URL != fileDirectory)
-            {
-                document.URL = fileDirectory;
-                document.Modified = DateTime.UtcNow;
-                document.Size = fileBytes.Length;
-                _context.UserDocuments.Update(document);
-            }
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.UserDocuments.Update(document);
+
             _context.SaveChanges();
 
             var dtoNew = new FileStorageDto()
@@ -156,19 +156,19 @@ namespace Aluma.API.Helpers
         }
 
 
-        public async void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        public async Task UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
-            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.Id}";
+            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
 
-            if (document.URL != fileDirectory)
-            {
-                document.URL = fileDirectory;
-                document.Modified = DateTime.UtcNow;
-                document.Size = fileBytes.Length;
-                _context.ApplicationDocuments.Update(document);
-            }
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.ApplicationDocuments.Update(document);
+
             _context.SaveChanges();
 
             var dtoNew = new FileStorageDto()
@@ -195,9 +195,11 @@ namespace Aluma.API.Helpers
             }
 
             await storage.UploadAsync(dtoNew);
+
+
         }
 
-        private async void UploadFile(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application)
+        private async Task UploadFile(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 

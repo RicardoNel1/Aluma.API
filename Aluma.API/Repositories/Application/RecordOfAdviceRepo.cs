@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -27,7 +28,7 @@ namespace Aluma.API.Repositories
 
         bool DeleteRecordOfAdvice(RecordOfAdviceDto dto);
 
-        void GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk);
+        Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk);
     }
 
     public class RecordOfAdviceRepo : RepoBase<RecordOfAdviceModel>, IRecordOfAdviceRepo
@@ -138,7 +139,7 @@ namespace Aluma.API.Repositories
             throw new System.NotImplementedException();
         }
 
-        public void GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk)
+        public async Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk)
         {
             var data = new Dictionary<string, string>();
             var date = DateTime.Today.ToString("yyyy/MM/dd");
@@ -211,7 +212,7 @@ namespace Aluma.API.Repositories
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User,app);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User,app);
         }
     }
 }

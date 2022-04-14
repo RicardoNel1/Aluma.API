@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -26,7 +27,7 @@ namespace Aluma.API.Repositories
 
         bool DeleteFSPMandate(FSPMandateDto dto);
 
-        void GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
+        Task GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
     }
 
     public class FspMandateRepo : RepoBase<FSPMandateModel>, IFspMandateRepo
@@ -96,7 +97,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
+        public async Task GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -314,7 +315,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }
     }
 }

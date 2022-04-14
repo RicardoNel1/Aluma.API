@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using SignatureService;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -46,8 +47,9 @@ namespace Aluma.API.Repositories
 
         bool ApplicationInProgress(ApplicationDto dto);
 
-        void GenerateApplicationDocuments(int applicationId);
-        void SignDocuments(int applicationId);
+        Task GenerateApplicationDocuments(int applicationId);
+        Task SignDocuments(int applicationId);
+        void ConsentToSign(int applicationId);
         //ApplicationDocumentsModel PopulateTestDocument();
 
         //void CreateDocuments(Guid applicationId);
@@ -71,8 +73,6 @@ namespace Aluma.API.Repositories
         private readonly IMapper _mapper;
         private readonly IFileStorageRepo _fileStorage;
         DocumentHelper _dh;
-
-
 
         public ApplicationRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
@@ -178,7 +178,7 @@ namespace Aluma.API.Repositories
 
             //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
 
-            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == DataService.Enum.ApplicationStatusEnum.InProgress && a.ProductId == productId).Any();
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == ApplicationStatusEnum.InProgress && a.ProductId == productId).Any();
 
 
             return applicationInProgress;
@@ -214,7 +214,7 @@ namespace Aluma.API.Repositories
             SendNewApplicationEmail(client);
 
             return dto;
-            
+
         }
 
         //public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
@@ -229,7 +229,7 @@ namespace Aluma.API.Repositories
         //}
 
 
-        public void GenerateApplicationDocuments(int applicationId)
+        public async Task GenerateApplicationDocuments(int applicationId)
         {
             ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
             RecordOfAdviceModel roa = _context.RecordOfAdvice.Include(r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
@@ -243,19 +243,17 @@ namespace Aluma.API.Repositories
 
             //ROA only application document thus far
             RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
-            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
-
             RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
-            riskRepo.GenerateRiskProfile(client, advisor, risk);
-
-            //FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
-            //fspMandateRepo.GenerateMandate(client, advisor, fsp);
-
+            FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
             DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
+            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
+
+            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+            riskRepo.GenerateRiskProfile(client, advisor, risk);
+            fspMandateRepo.GenerateMandate(client, advisor, fsp);
             disclosure.GenerateClientConsent(client, advisor);
             disclosure.GenerateDisclosure(client, advisor, cp, disc);
 
-            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
             foreach (var product in roa.SelectedProducts)
             {
                 if (product.ProductId == 5 || product.ProductId == 6)
@@ -264,6 +262,10 @@ namespace Aluma.API.Repositories
                     pefRepo.GenerateQuote(client, advisor, product);
                 }
             }
+
+            application.DocumentsCreated = true;
+            _context.Applications.Update(application);
+            _context.SaveChanges();
 
         }
 
@@ -291,7 +293,7 @@ namespace Aluma.API.Repositories
             pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
             {
                 //  initial
-                Signature = Convert.ToBase64String(client.User.Signature),
+                Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                 FirstName = client.User.FirstName,
                 LastName = client.User.LastName,
                 Email = client.User.Email,
@@ -324,7 +326,7 @@ namespace Aluma.API.Repositories
             signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
             {
                 // client (all)
-                Signature = Convert.ToBase64String(client.User.Signature),
+                Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                 FirstName = client.User.FirstName,
                 LastName = client.User.LastName,
                 Email = client.User.Email,
@@ -340,7 +342,7 @@ namespace Aluma.API.Repositories
             signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
             {
                 // advisor as witness
-                Signature = Convert.ToBase64String(advisor.User.Signature),
+                Signature = System.Text.Encoding.ASCII.GetString(advisor.User.Signature),
                 FirstName = advisor.User.FirstName,
                 LastName = advisor.User.LastName,
                 Email = advisor.User.Email,
@@ -359,7 +361,7 @@ namespace Aluma.API.Repositories
                 signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
                 {
                     // client (full)
-                    Signature = Convert.ToBase64String(client.User.Signature),
+                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                     FirstName = client.User.FirstName,
                     LastName = client.User.LastName,
                     Email = client.User.Email,
@@ -377,7 +379,7 @@ namespace Aluma.API.Repositories
                 signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
                 {
                     // client (limited DE)
-                    Signature = Convert.ToBase64String(client.User.Signature),
+                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                     FirstName = client.User.FirstName,
                     LastName = client.User.LastName,
                     Email = client.User.Email,
@@ -395,7 +397,7 @@ namespace Aluma.API.Repositories
                 signerList.Add(_signRepo.CreateSignerListItem(new SignerDto()
                 {
                     // client (limited RM)
-                    Signature = Convert.ToBase64String(client.User.Signature),
+                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                     FirstName = client.User.FirstName,
                     LastName = client.User.LastName,
                     Email = client.User.Email,
@@ -536,17 +538,21 @@ namespace Aluma.API.Repositories
             }
         }
 
-        public async void SignDocuments(int applicationId)
+        public async Task SignDocuments(int applicationId)
         {
             SignatureRepo _signRepo = new SignatureRepo();
 
-            ApplicationModel application = _context.Applications.Include(a => a.Documents).SingleOrDefault(a => a.Id == applicationId);
-            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
+            ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).Include(c => c.FspMandate).SingleOrDefault(c => c.Id == application.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
 
             List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == client.UserId && !d.IsSigned).ToList();
+            List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == applicationId && !d.IsSigned).ToList();
+
 
             List<DocumentTypesEnum> docTypeRequireSignature = new List<DocumentTypesEnum>();
+            Console.WriteLine("User docs to sign : " + userDocs.Count);
+            Console.WriteLine("Application docs to sign: " + appDocs.Count);
 
             if (application.ApplicationType == ApplicationTypesEnum.Individual)
             {
@@ -556,94 +562,29 @@ namespace Aluma.API.Repositories
                             DocumentTypesEnum.DisclosureLetter,
                             DocumentTypesEnum.RiskProfile,
                             DocumentTypesEnum.RecordOfAdvice,
+                            DocumentTypesEnum.FSPMandate,
                             DocumentTypesEnum.PEFDOA,
                             DocumentTypesEnum.PEFQuote,
                             DocumentTypesEnum.PEF2DOA,
                             DocumentTypesEnum.PEF2Quote,
-                            DocumentTypesEnum.FSPMandate,
                         };
             }
 
-            if (application.Documents.Count > 0)
+            if (appDocs.Count > 0)
             {
+                Console.WriteLine("Application docs started");
+
                 foreach (var item in application.Documents)
                 {
                     if (docTypeRequireSignature.Contains(item.DocumentType))
                     {
                         List<SignerListItemDto> signers = item.DocumentType switch
                         {
-                            DocumentTypesEnum.ClientConsent => new List<SignerListItemDto>()
-                    {
-                         _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 110,//134,//142,//40,
-                                    YField = 543,//357,//735,//720,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 3//2
-                                })
-                    },
-                            DocumentTypesEnum.RiskProfile => new List<SignerListItemDto>()
-                            {
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 18,
-                                    YField = 777,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 18,
-                                    YField = 769,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 115,//38,//60,
-                                    YField = 436,//360,//352,//345,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 2
-                                })
-                            },
                             DocumentTypesEnum.RecordOfAdvice => new List<SignerListItemDto>()
                             {
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -657,7 +598,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(advisor.User.Signature),
                                     FirstName = advisor.User.FirstName,
                                     LastName = advisor.User.LastName,
                                     Email = advisor.User.Email,
@@ -669,158 +610,20 @@ namespace Aluma.API.Repositories
                                     WField = 120,
                                     Page = 4
                                 }),
-                                //initials
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 1
-                                //}),
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 2
-                                //}),
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 3
-                                //})
                             },
-                            DocumentTypesEnum.DisclosureLetter => new List<SignerListItemDto>()
-                            {
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 98,
-                                    YField = 463,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 4,
-                                }),
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 25,
-                                    YField = 770,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 25,
-                                    YField = 770,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 25,
-                                    YField = 770,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                // _signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = advisor.User.FirstName,
-                                //    LastName = advisor.User.LastName,
-                                //    Email = advisor.User.Email,
-                                //    IdNo = advisor.User.RSAIdNumber,
-                                //    Mobile = advisor.User.MobileNumber,
-                                //    XField = 80,
-                                //    YField = 718,
-                                //    HField = 30,
-                                //    WField = 120,
-                                //    Page = 4,
-                                //}),
-                                //  _signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 280,
-                                //    YField = 718,
-                                //    HField = 30,
-                                //    WField = 120,
-                                //    Page = 4,
-                                //}),
-                            },
-                            DocumentTypesEnum.FSPMandate => FspMandateSigningList(application, client, advisor),
                             DocumentTypesEnum.PEFDOA => new List<SignerListItemDto>()
                             {
                                 //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -828,14 +631,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -843,14 +646,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -858,14 +661,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -873,14 +676,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -888,14 +691,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -903,14 +706,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -918,14 +721,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -933,7 +736,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -946,10 +749,10 @@ namespace Aluma.API.Repositories
                                     IncludeSignedBy = false,
                                     Page = 9
                                 }),
-
+                                //client full
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -964,7 +767,7 @@ namespace Aluma.API.Repositories
 
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(advisor.User.Signature),
                                     FirstName = advisor.User.FirstName,
                                     LastName = advisor.User.LastName,
                                     Email = advisor.User.Email,
@@ -982,14 +785,14 @@ namespace Aluma.API.Repositories
                                 //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -997,14 +800,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1012,14 +815,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1027,14 +830,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1042,14 +845,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1057,14 +860,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1072,14 +875,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1087,14 +890,14 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
+                                    XField = 529,
+                                    YField = 788,
                                     HField = 20,
                                     WField = 60,
                                     IncludeSignedBy = false,
@@ -1102,7 +905,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1115,10 +918,10 @@ namespace Aluma.API.Repositories
                                     IncludeSignedBy = false,
                                     Page = 9
                                 }),
-
+                                //client full
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1133,7 +936,7 @@ namespace Aluma.API.Repositories
 
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(advisor.User.Signature),
                                     FirstName = advisor.User.FirstName,
                                     LastName = advisor.User.LastName,
                                     Email = advisor.User.Email,
@@ -1148,361 +951,73 @@ namespace Aluma.API.Repositories
                             },
                             DocumentTypesEnum.PEFQuote => new List<SignerListItemDto>()
                             {
-                                //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
+                                    XField = 190,//217,
+                                    YField = 597,//215,
                                     HField = 30,
                                     WField = 120,
-                                    Page = 10//11,
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
+                                    Page = 1//11,
                                 }),
                             },
                             DocumentTypesEnum.PEF2Quote => new List<SignerListItemDto>()
                             {
-                                //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
+                                    XField = 175,//217,
+                                    YField = 587,//215,
                                     HField = 30,
                                     WField = 120,
-                                    Page = 10//11,
+                                    Page = 1//11,
                                 }),
 
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
+
                             },
                         };
 
-                        byte[] docB64 = await _dh.GetDocumentData(item.URL, item.Name);
 
+                        byte[] docB64 = await _dh.GetDocumentData(item.URL, item.Name);
+                        Console.WriteLine("Signing - " + item.Name);
                         var ceremony = _signRepo.CreateMultipleSignersCeremony(docB64,
-                                "testdocument.pdf", signers);
+                                item.Name, signers);
 
                         docB64 = Convert.FromBase64String(
                             _signRepo.RunMultiSignerCeremony(ceremony));
 
-                        _dh.UploadSignedApplicationFile(docB64, item, client.User);
+
+                        if (docB64.Length > 0)
+                        {
+                            Console.WriteLine("Signed - " + item.Name);
+                            await _dh.UploadSignedApplicationFile(docB64, item, client.User);
+                            Console.WriteLine("Uploaded - " + item.Name);
+
+                        }
 
                     }
                 }
+
             }
+            Console.WriteLine("Application Docs done");
+
             if (userDocs.Count > 0)
             {
+                //old foreach
+                var time = Stopwatch.StartNew();
                 foreach (var item in userDocs)
                 {
+                    Console.WriteLine("Application docs started");
                     if (docTypeRequireSignature.Contains(item.DocumentType))
                     {
                         List<SignerListItemDto> signers = item.DocumentType switch
@@ -1511,17 +1026,17 @@ namespace Aluma.API.Repositories
                     {
                          _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature =  System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
                                     IdNo = client.User.RSAIdNumber,
                                     Mobile = client.User.MobileNumber,
-                                    XField = 110,//134,//142,//40,
-                                    YField = 543,//357,//735,//720,
+                                    XField = 99,//134,//142,//40,
+                                    YField = 677,//357,//735,//720,
                                     HField = 30,
                                     WField = 120,
-                                    Page = 3//2
+                                    Page = 1//2
                                 })
                     },
                             DocumentTypesEnum.RiskProfile => new List<SignerListItemDto>()
@@ -1529,7 +1044,7 @@ namespace Aluma.API.Repositories
                                 //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1544,7 +1059,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1561,7 +1076,7 @@ namespace Aluma.API.Repositories
 
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1574,88 +1089,11 @@ namespace Aluma.API.Repositories
                                     Page = 2
                                 })
                             },
-                            DocumentTypesEnum.RecordOfAdvice => new List<SignerListItemDto>()
-                            {
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 99,//121,//118,//109,//120,
-                                    YField = 560,//417,//649,//635,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 385,//403,//417,//412,//410,
-                                    YField = 560,//567,//417,//648,//635,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 4
-                                }),
-                                //initials
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 1
-                                //}),
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 2
-                                //}),
-                                //_signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 28,
-                                //    YField = 766,
-                                //    HField = 20,
-                                //    WField = 60,
-                                //    IncludeSignedBy = false,
-                                //    Page = 3
-                                //})
-                            },
                             DocumentTypesEnum.DisclosureLetter => new List<SignerListItemDto>()
                             {
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1670,7 +1108,7 @@ namespace Aluma.API.Repositories
                                 //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1685,7 +1123,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1700,7 +1138,7 @@ namespace Aluma.API.Repositories
                                 }),
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
+                                    Signature = System.Text.Encoding.ASCII.GetString(client.User.Signature),
                                     FirstName = client.User.FirstName,
                                     LastName = client.User.LastName,
                                     Email = client.User.Email,
@@ -1743,704 +1181,48 @@ namespace Aluma.API.Repositories
                                 //}),
                             },
                             DocumentTypesEnum.FSPMandate => FspMandateSigningList(application, client, advisor),
-                            DocumentTypesEnum.PEFDOA => new List<SignerListItemDto>()
-                            {
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-                            },
-                            DocumentTypesEnum.PEF2DOA => new List<SignerListItemDto>()
-                            {
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-                            },
-                            DocumentTypesEnum.PEFQuote => new List<SignerListItemDto>()
-                            {
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-                            },
-                            DocumentTypesEnum.PEF2Quote => new List<SignerListItemDto>()
-                            {
-                                //initials
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 1
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 2
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 3
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 4
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 5
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 6
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 7
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 8
-                                }),
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 520,
-                                    YField = 790,
-                                    HField = 20,
-                                    WField = 60,
-                                    IncludeSignedBy = false,
-                                    Page = 9
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(client.User.Signature),
-                                    FirstName = client.User.FirstName,
-                                    LastName = client.User.LastName,
-                                    Email = client.User.Email,
-                                    IdNo = client.User.RSAIdNumber,
-                                    Mobile = client.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 299,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-
-                                _signRepo.CreateSignerListItem(new SignerDto()
-                                {
-                                    Signature = Convert.ToBase64String(advisor.User.Signature),
-                                    FirstName = advisor.User.FirstName,
-                                    LastName = advisor.User.LastName,
-                                    Email = advisor.User.Email,
-                                    IdNo = advisor.User.RSAIdNumber,
-                                    Mobile = advisor.User.MobileNumber,
-                                    XField = 170,//217,
-                                    YField = 703,//215,
-                                    HField = 30,
-                                    WField = 120,
-                                    Page = 10//11,
-                                }),
-                            },
                         };
 
                         byte[] docB64 = await _dh.GetDocumentData(item.URL, item.Name);
-
+                        Console.WriteLine("Signing - " + item.Name);
                         var ceremony = _signRepo.CreateMultipleSignersCeremony(docB64,
                                 item.Name, signers);
 
                         docB64 = Convert.FromBase64String(
                             _signRepo.RunMultiSignerCeremony(ceremony));
 
-                        _dh.UploadSignedUserFile(docB64, item);
+                        if (docB64.Length > 0)
+                        {
+                            Console.WriteLine("Signed - " + item.Name);
+                            await _dh.UploadSignedUserFile(docB64, item);
+                            Console.WriteLine("Uploaded - " + item.Name);
+
+                        }
 
                     }
                 }
+
             }
 
+            Console.WriteLine("User Docs done");
+
+            application.ApplicationStatus = ApplicationStatusEnum.Completed;
             application.DocumentsSigned = true;
             _context.Applications.Update(application);
             _context.SaveChanges();
 
 
-            SendApplicationDocumentsToBroker(application, advisor, client);
+            //SendApplicationDocumentsToBroker(application, advisor, client);
+        }
+
+        public void ConsentToSign(int applicationId)
+        {
+            ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+
+            application.SignatureConsent = true;
+            application.SignatureConsentDate = DateTime.UtcNow;
+            _context.Applications.Update(application);
+            _context.SaveChanges();
         }
     }
 

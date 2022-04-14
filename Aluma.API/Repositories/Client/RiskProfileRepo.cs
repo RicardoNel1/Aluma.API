@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -25,7 +26,7 @@ namespace Aluma.API.Repositories
         RiskProfileDto UpdateRiskProfile(RiskProfileDto dto);
 
         bool DeleteRiskProfile(RiskProfileDto dto);
-        void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
+        Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
     }
 
     public class RiskProfileRepo : RepoBase<RiskProfileModel>, IRiskProfileRepo
@@ -97,7 +98,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public async void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
+        public async Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -130,7 +131,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context,_config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
             
         }
     }

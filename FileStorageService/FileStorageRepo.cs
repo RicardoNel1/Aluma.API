@@ -49,19 +49,42 @@ namespace FileStorageService
 
             // Upload file
             using MemoryStream stream = new MemoryStream(dto.FileBytes, 0, dto.FileBytes.Length);
-
-            try
             {
-                if (await file.ExistsAsync() == false)
+                try
                 {
-                    await file.CreateAsync(dto.FileBytes.Length);
-                    await file.UploadRangeAsync(new HttpRange(0, stream.Length), stream);
+                    if (file.Exists() == false)
+                    {
+                        await file.CreateAsync(stream.Length);
+
+                        //file.UploadRange(new HttpRange(0, stream.Length), stream);
+
+                        int blockSize = 1 * 1024;
+                        long offset = 0;//Define http range offset
+                        BinaryReader reader = new BinaryReader(stream);
+                        while (true)
+                        {
+                            byte[] buffer = reader.ReadBytes(blockSize);
+                            if (buffer.Length == 0)
+                                break;
+
+                            MemoryStream uploadChunk = new MemoryStream();
+                            uploadChunk.Write(buffer, 0, buffer.Length);
+                            uploadChunk.Position = 0;
+
+                            HttpRange httpRange = new HttpRange(offset, buffer.Length);
+                            await file.UploadRangeAsync(httpRange, uploadChunk); 
+                            offset += buffer.Length;//Shift the offset by number of bytes already written
+                        }
+
+                        reader.Close();
+
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                var error = ex.Message;
-                throw new Exception(error, ex);
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    throw new Exception(error, ex);
+                }
             }
         }
 

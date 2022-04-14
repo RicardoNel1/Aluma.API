@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -113,7 +114,7 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public void GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
+        public async Task GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
         {
             var d = new Dictionary<string, string>();
             //Advisor Details
@@ -324,10 +325,10 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
         }
 
-        public void GenerateClientConsent(ClientModel client, AdvisorModel advisor)
+        public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -363,7 +364,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
         }
     }
 }

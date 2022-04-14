@@ -109,6 +109,7 @@ namespace Aluma.API.Controllers
             }
 
             response.Message = "SignatureVerified";
+            
             _repo.Applications.SignDocuments(applicationId);
 
             return Ok(response);
