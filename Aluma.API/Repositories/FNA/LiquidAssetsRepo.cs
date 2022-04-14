@@ -13,13 +13,9 @@ namespace Aluma.API.Repositories
 {
     public interface ILiquidAssetsRepo : IRepoBase<LiquidAssetsModel>
     {
-        LiquidAssetsDto CreateLiquidAssets(LiquidAssetsDto dto);
-
         bool DoesLiquidAssetsExist(LiquidAssetsDto dto);
-        LiquidAssetsDto GetLiquidAssets(int clientId);
-        LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto dto);
-
-        //bool DeleteAsset(int id);
+        List<LiquidAssetsDto> GetLiquidAssets(int clientId);
+        LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray);
 
 
     }
@@ -40,18 +36,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-
-        public LiquidAssetsDto CreateLiquidAssets(LiquidAssetsDto dto)
-        {
-
-            LiquidAssetsModel liquidAssets = _mapper.Map<LiquidAssetsModel>(dto);
-            _context.LiquidAssets.Add(liquidAssets);
-            _context.SaveChanges();
-            dto = _mapper.Map<LiquidAssetsDto>(liquidAssets);
-
-            return dto;
-        }
-
+               
 
         public bool DoesLiquidAssetsExist(LiquidAssetsDto dto)
         {
@@ -61,32 +46,68 @@ namespace Aluma.API.Repositories
 
         }
 
-        public LiquidAssetsDto GetLiquidAssets(int clientId)
+        public List<LiquidAssetsDto> GetLiquidAssets(int clientId)
         {
-            LiquidAssetsModel data = _context.LiquidAssets.Where(c => c.ClientId == clientId).First();
-            return _mapper.Map<LiquidAssetsDto>(data);
+            ICollection<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.ClientId == clientId).ToList();
+            List<LiquidAssetsDto> assets = new List<LiquidAssetsDto>();
 
+            foreach (var item in data)
+            {
+                LiquidAssetsDto asset = new LiquidAssetsDto();
+
+                asset.Id = item.Id;
+                asset.ClientId = item.ClientId;
+                asset.Description = item.Description;
+                asset.Value = item.Value;
+                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
+
+                assets.Add(asset);
+
+            }
+
+            return assets;
         }
 
-        public LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto dto)
+        public LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray)
         {
-            LiquidAssetsModel data = _context.LiquidAssets.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
-            //set fields to be updated       
-            data.Description = dto.Description;
-            data.AllocateTo = parsedAllocation;
-            data.Value = dto.Value;
+            foreach (var item in dtoArray)
+            {
 
+                bool existingItem = _context.LiquidAssets.Where(a => a.Id == item.Id).Any();
 
-            _context.LiquidAssets.Update(data);
+                if (existingItem)
+                {
+                    LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.AllocateTo = parsedAllocation;
+
+                    _context.LiquidAssets.Update(updateItem);
+
+                }
+                else
+                {
+                    LiquidAssetsModel newItem = new LiquidAssetsModel();
+
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    newItem.ClientId = item.ClientId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.AllocateTo = parsedAllocation;
+
+                    _context.LiquidAssets.Add(newItem);
+
+                }
+            }
+
             _context.SaveChanges();
-            dto = _mapper.Map<LiquidAssetsDto>(data);
-            return dto;
+            return null;
 
         }
 
-       
+
 
     }
 }
