@@ -68,7 +68,7 @@ namespace Aluma.API.Repositories
                 RecordOfAdviceDto result = _mapper.Map<RecordOfAdviceDto>(roa.Include(r => r.SelectedProducts).First());
 
                 foreach (var product in result.SelectedProducts)
-                {                    
+                {
                     product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
                 }
 
@@ -187,14 +187,23 @@ namespace Aluma.API.Repositories
             foreach (var item in roa.SelectedProducts)
             {
                 ProductModel product = _context.Products.Where(c => c.Id == item.ProductId).FirstOrDefault();
-
-                data[$"{product.Name.Trim().Replace(" ","")}_productName"] = product.Name; //not used?
-
-                data[$"{product.Name.Trim().Replace(" ", "")}_recommendedLumpSum"] = item.RecommendedLumpSum > 0 ?
+                //data[$"{product.Name.Trim().Replace(" ","").ToLower()}_productName"] = product.Name; 
+                if (product.Id == 5 || product.Id == 6)
+                {
+                    data["privateequityfund_recommendedLumpSum"] = item.RecommendedLumpSum > 0 ?
                     item.RecommendedLumpSum.ToString() : string.Empty;
 
-                data[$"{product.Name.Trim().Replace(" ", "")}_acceptedLumpSum"] = item.AcceptedLumpSum > 0 ?
-                    item.AcceptedLumpSum.ToString() : string.Empty;
+                    data["privateequityfund_acceptedLumpSum"] = item.AcceptedLumpSum > 0 ?
+                        item.AcceptedLumpSum.ToString() : string.Empty;
+                }
+                else
+                {
+                    data[$"{product.Name.Trim().Replace(" ", "").ToLower()}_recommendedLumpSum"] = item.RecommendedLumpSum > 0 ?
+                                        item.RecommendedLumpSum.ToString() : string.Empty;
+
+                    data[$"{product.Name.Trim().Replace(" ", "").ToLower()}_acceptedLumpSum"] = item.AcceptedLumpSum > 0 ?
+                        item.AcceptedLumpSum.ToString() : string.Empty;
+                }
 
                 if (item.RecommendedRecurringPremium > 0)
                 {
@@ -212,7 +221,7 @@ namespace Aluma.API.Repositories
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
-            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User,app);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User, app);
         }
     }
 }

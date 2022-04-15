@@ -351,5 +351,17 @@ namespace Aluma.API.Helpers
 
             return response;
         }
+
+        internal void DeleteAllDocuments()
+        {
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+            FileStorageDto fileDto = new FileStorageDto()
+            {
+                BaseDocumentPath = azureSettings.DocumentsRootPath,
+                BaseShare = "alumaportal",
+            };
+
+            _fileStorageRepo.DeleteAllAsync(fileDto);
+        }
     }
 }

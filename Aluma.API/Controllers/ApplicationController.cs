@@ -199,7 +199,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("signDocuments"), AllowAnonymous]
-        public IActionResult SignDocuments(int applicationId)
+        public async Task<IActionResult> SignDocuments(int applicationId)
         {
             try
             {
@@ -215,10 +215,11 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.Applications.ConsentToSign(applicationId);
-                    UserDto user = _repo.User.GetUserByApplicationID(applicationId);
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
-                    response.Message = "verifySignature";
+                    await _repo.Applications.SignDocuments(applicationId);
+                    //_repo.Applications.ConsentToSign(applicationId);
+                    //UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+                    //_repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
+                    //response.Message = "verifySignature";
 
                     return Ok(response);
                 }
