@@ -1212,7 +1212,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
 
-            //SendApplicationDocumentsToBroker(application, advisor, client);
+            SendApplicationDocumentsToBroker(application, advisor, client);
         }
 
         public void ConsentToSign(int applicationId)

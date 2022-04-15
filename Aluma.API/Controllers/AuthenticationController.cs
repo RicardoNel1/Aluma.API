@@ -72,7 +72,7 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, "Invalid");
                 }
 
-                socialLoginVerified = true;// _repo.User.IsSocialLoginVerified(dto); 
+                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto); 
 
                 if (!socialLoginVerified)
                 {

@@ -4,6 +4,7 @@ using DataService.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -96,7 +97,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("verify/signature")]
-        public IActionResult VerifySignatureOtp(int applicationId, string otp)
+        public async Task<IActionResult> VerifySignatureOtp(int applicationId, string otp)
         {
             UserDto user = _repo.User.GetUserByApplicationID(applicationId);
             AuthResponseDto response = new AuthResponseDto();
@@ -110,7 +111,7 @@ namespace Aluma.API.Controllers
 
             response.Message = "SignatureVerified";
             
-            _repo.Applications.SignDocuments(applicationId);
+            await _repo.Applications.SignDocuments(applicationId);
 
             return Ok(response);
         }
