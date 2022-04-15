@@ -248,20 +248,20 @@ namespace Aluma.API.Repositories
             DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
             PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
 
-            //roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
             riskRepo.GenerateRiskProfile(client, advisor, risk);
-            //fspMandateRepo.GenerateMandate(client, advisor, fsp);
-            //disclosure.GenerateClientConsent(client, advisor);
-            //disclosure.GenerateDisclosure(client, advisor, cp, disc);
+            fspMandateRepo.GenerateMandate(client, advisor, fsp);
+            disclosure.GenerateClientConsent(client, advisor);
+            disclosure.GenerateDisclosure(client, advisor, cp, disc);
 
-            //foreach (var product in roa.SelectedProducts)
-            //{
-            //    if (product.ProductId == 5 || product.ProductId == 6)
-            //    {
-            //        pefRepo.GenerateDOA(client, advisor, product);
-            //        pefRepo.GenerateQuote(client, advisor, product);
-            //    }
-            //}
+            foreach (var product in roa.SelectedProducts)
+            {
+                if (product.ProductId == 5 || product.ProductId == 6)
+                {
+                    pefRepo.GenerateDOA(client, advisor, product);
+                    pefRepo.GenerateQuote(client, advisor, product);
+                }
+            }
 
             application.DocumentsCreated = true;
             _context.Applications.Update(application);

@@ -51,19 +51,26 @@ namespace Aluma.API.Repositories
             //change when incorporating entities
             d["individual"] = "x";
 
-
-            Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
             //check for pe fund product
-            if (parsedProduct == ProductsEnum.PE1 || parsedProduct == ProductsEnum.PE2)
-            {
-                d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
-            }
+            d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
 
-            if (parsedProduct == ProductsEnum.PE2)
+
+            if (product.ProductId == 6)
             {
                 d[$"zarCapital"] = product.AcceptedLumpSum.ToString();
             }
 
+
+            if (client.User.Address.Count > 0)
+            {
+                AddressModel item = client.User.Address.First(a => a.Type == AddressTypesEnum.Residential);
+                signCity = item.City;
+                string street = $"{item.StreetNumber} {item.StreetName}";
+                string unitComplex = $"{item.UnitNumber} {item.ComplexName}";
+                d[$"address"] = unitComplex != " " ? $"{street}, {unitComplex}, {item.Suburb}, { item.City}" : $"{street}, {item.Suburb}, { item.City}";
+
+            }
+            d["country"] = client.CountryOfResidence;
 
             d["taxpayer_True"] = "x";
             d["taxNo"] = client.TaxResidency.TaxNumber ?? " ";
@@ -75,29 +82,30 @@ namespace Aluma.API.Repositories
 
             BankDetailsModel bv = client.BankDetails.First();
             d["bank"] = bv.BankName;
-            d["accountHolder"] = $"{bv.Initials} {bv.Surname}";
+            d["accountHolder"] = bv.Surname == " " ? $"{bv.Initials} {bv.Surname}" : $"{client.User.FirstName} {client.User.LastName}";
             d["accountNo"] = bv.AccountNumber;
 
 
             d["idNo"] = client.User.RSAIdNumber;
 
             // signature
-            d["onBehalfOf"] = "self";
-            d["signDate_1"] = DateTime.Today.ToString("yyyyMMdd");
+            d["onBehalfOf"] = "Self";
             d["signAt_1"] = signCity;
-            d["nameSurname_2"] = "";
-            d["signDate_2"] = "";
-            d["signAt_2"] = "";
+            d["signDate_1"] = DateTime.Today.ToString("yyyyMMdd");
 
-            d["nameSurname_3"] = $"{advisor.User.FirstName} {advisor.User.LastName}";  //Aluma signatory
-            d["signDate_3"] = DateTime.Today.ToString("yyyyMMdd");
-            d["signAt_3"] = advisor.User.Address.First().City;
+            d["nameSurname_2"] = "";
+            d["signAt_2"] = "";
+            d["signDate_2"] = "";
+
+
+
+            d["nameSurname_3"] = $"{advisor.User.FirstName} {advisor.User.LastName}";  //Advisor 
 
             RecordOfAdviceModel roa = _context.RecordOfAdvice.SingleOrDefault(r => r.Id == product.RecordOfAdviceId);
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
 
-            DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
+            DocumentTypesEnum type = product.ProductId == 5 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 
@@ -107,10 +115,22 @@ namespace Aluma.API.Repositories
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
 
+            
 
-            Enum.TryParse(product.ProductId.ToString(), out ProductsEnum parsedProduct);
+            d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
+            d["identityNumber"] = client.User.RSAIdNumber;
+            d["contactNumber"] = "0" + client.User.MobileNumber;
+            d["emailAddress"] = client.User.Email;
 
-            if (parsedProduct == ProductsEnum.PE1)
+            d["quotationDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
+            d["signedDate"] = DateTime.UtcNow.ToString("ddMMyyyy");
+            d["commencementDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
+            d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
+
+
+            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; 
+
+            if (product.ProductId == 5)
             {
                 //Calculations
                 double i = product.AcceptedLumpSum;
@@ -151,7 +171,7 @@ namespace Aluma.API.Repositories
                 d[$"2totalPayoutMaturityGross"] = "R " + totalPayoutMaturityGross2.ToString("F");
             }
 
-            if (parsedProduct == ProductsEnum.PE2)
+            if (product.ProductId == 6)
             {
                 //Calculations                
                 double i = product.AcceptedLumpSum;
@@ -182,17 +202,6 @@ namespace Aluma.API.Repositories
                 d[$"dividendPayoutNett"] = "R " + dividendPayoutNett.ToString("F");
 
             }
-
-            d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
-            d["identityNumber"] = client.User.RSAIdNumber;
-            d["contactNumber"] = "0" + client.User.MobileNumber;
-            d["emailAddress"] = client.User.Email;
-
-            d["quotationDate"] = DateTime.Now.ToString("dd MMMM yyyy");
-            d["signedDate"] = DateTime.Now.ToString("ddMMyyyy");
-            d["commencementDate"] = DateTime.Now.ToString("dd MMMM yyyy"); //TODO today's date?
-
-            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; //TODO breaks
             //quoteNumber
             //quotationVersion
 
@@ -202,7 +211,7 @@ namespace Aluma.API.Repositories
             RecordOfAdviceModel roa = _context.RecordOfAdvice.SingleOrDefault(r => r.Id == product.RecordOfAdviceId);
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
-            DocumentTypesEnum type = parsedProduct == ProductsEnum.PE1 ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
+            DocumentTypesEnum type = product.ProductId == 5 ? DocumentTypesEnum.PEFQuote : DocumentTypesEnum.PEF2Quote;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 

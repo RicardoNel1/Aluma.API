@@ -87,6 +87,9 @@ namespace Aluma.API.Repositories
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
             app.AdvisorId = newRoa.AdvisorId;
+
+            app.ProductId = newRoa.SelectedProducts.First().ProductId;
+
             _context.Applications.Update(app);
             _context.SaveChanges();
 

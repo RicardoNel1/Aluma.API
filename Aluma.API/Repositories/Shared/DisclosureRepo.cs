@@ -33,7 +33,7 @@ namespace Aluma.API.Repositories
         void UpdateDisclosure(ClientDto dto);
 
         bool DeleteDisclosure(DisclosureDto dto);
-
+        Task GenerateClientConsent(ClientModel client, AdvisorModel advisor);
 
     }
 
@@ -299,7 +299,7 @@ namespace Aluma.API.Repositories
             //Service Level Agreement
             d["clientName"] = client.User.FirstName + " " + client.User.LastName;
             d["clientID"] = client.User.RSAIdNumber;
-            d["clientCapacity"] = "self";
+            d["clientCapacity"] = "Self";
 
             //d["authUsers"] = disclosure.AuthorisedUsers ?? string.Empty;
 

@@ -132,12 +132,17 @@ namespace Aluma.API.Repositories
             {
                 foreach (var item in client.User.Address)
                 {
+                    string street = string.Empty;
+                    string unitComplex = string.Empty;
                     if (item.Type == DataService.Enum.AddressTypesEnum.Residential)
                     {
                         signCity = item.City;
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
 
-                        d[$"address1"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                            $"{item.UnitNumber} " + $"{item.ComplexName}";
+                        d[$"address1"] = unitComplex != " " ? $"{street}, {unitComplex}": street ;
+
+                        d[$"address2"] = $"{item.Suburb} " + $"{item.City} ";
 
                         d["postalCode"] = item.PostalCode;
 
@@ -146,9 +151,10 @@ namespace Aluma.API.Repositories
 
                     if (item.Type == DataService.Enum.AddressTypesEnum.Postal)
                     {
-                        d["p_address"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                           $"{item.UnitNumber} " + $"{item.ComplexName}, " + $"{item.Suburb}, " + $"{item.City}, " +
-                           $"{item.Country}";
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
+
+                        d["p_address"] = unitComplex != " " ? $"{street}, {unitComplex}, {item.Suburb}, {item.City}, {item.Country}" : $"{street}, {item.Suburb}, {item.City}, {item.Country}";
                         d["p_postalCode"] = item.PostalCode;
                     }
 
