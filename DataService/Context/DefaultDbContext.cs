@@ -38,6 +38,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
             mb.ApplyConfiguration(new LiquidAssetsModelBuilder());
+            mb.ApplyConfiguration(new LiabilitiesModelBuilder());
 
         }
 
@@ -77,6 +78,7 @@ namespace DataService.Context
         public DbSet<AssetsAttractingCGTModel> AssetsAttractingCGT { get; set; }
         public DbSet<AssetsExemptFromCGTModel> AssetsExemptFromCGT { get; set; }
         public DbSet<LiquidAssetsModel> LiquidAssets { get; set; }
+        public DbSet<LiabilitiesModel> Liabilities { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
