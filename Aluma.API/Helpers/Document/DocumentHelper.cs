@@ -99,7 +99,22 @@ namespace Aluma.API.Helpers
             return file;
         }
 
-        public async Task<byte[]> GetDocumentData(string url, string name)
+
+        public byte[] GetDocumentData(string url, string name)
+        {
+            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+            var dto = new FileStorageDto()
+            {
+                BaseDocumentPath = storageSettings.DocumentsRootPath,
+                BaseShare = "alumaportal",
+                FileName = name,
+                FileDirectory = url,
+            };
+
+            return _fileStorageRepo.DownloadAsync(dto).Result;
+        }
+
+        public async Task<byte[]> GetDocumentDataAsync(string url, string name)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
             var dto = new FileStorageDto()
@@ -113,8 +128,48 @@ namespace Aluma.API.Helpers
             return await _fileStorageRepo.DownloadAsync(dto);
         }
 
+        public void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document)
+        {
+            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
-        public async Task UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document)
+            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{document.UserId}";
+
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.UserDocuments.Update(document);
+
+            _context.SaveChanges();
+
+            var dtoNew = new FileStorageDto()
+            {
+                FileName = document.Name,
+                FileBytes = fileBytes,
+                FileDirectory = fileDirectory,
+                BaseDocumentPath = storageSettings.DocumentsRootPath,
+                BaseShare = "alumaportal"
+            };
+
+            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+
+            if (document.URL == fileDirectory)
+            {
+                var dtoOld = new FileStorageDto()
+                {
+                    BaseDocumentPath = storageSettings.DocumentsRootPath,
+                    BaseShare = "alumaportal",
+                    FileName = document.Name,
+                    FileDirectory = document.URL,
+                };
+                storage.DeleteAsync(dtoOld).Wait();
+            }
+
+            storage.UploadAsync(dtoNew).Wait();
+        }
+
+        public async Task UploadSignedUserFileAsync(byte[] fileBytes, UserDocumentModel document)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
@@ -156,7 +211,49 @@ namespace Aluma.API.Helpers
         }
 
 
-        public async Task UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        public void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        {
+            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+
+            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
+
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.ApplicationDocuments.Update(document);
+
+            _context.SaveChanges();
+
+            var dtoNew = new FileStorageDto()
+            {
+                FileName = document.Name,
+                FileBytes = fileBytes,
+                FileDirectory = fileDirectory,
+                BaseDocumentPath = storageSettings.DocumentsRootPath,
+                BaseShare = "alumaportal"
+            };
+
+            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+
+            if (document.URL == fileDirectory)
+            {
+                var dtoOld = new FileStorageDto()
+                {
+                    BaseDocumentPath = storageSettings.DocumentsRootPath,
+                    BaseShare = "alumaportal",
+                    FileName = document.Name,
+                    FileDirectory = document.URL,
+                };
+                storage.DeleteAsync(dtoOld).Wait();
+            }
+
+            storage.UploadAsync(dtoNew).Wait();
+        }
+
+
+        public async Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 

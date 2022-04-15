@@ -492,7 +492,7 @@ namespace Aluma.API.Repositories
 
                 foreach (var doc in userDocs)
                 {
-                    byte[] data = await _dh.GetDocumentData(doc.URL, doc.Name);
+                    byte[] data = await _dh.GetDocumentDataAsync(doc.URL, doc.Name);
                     var stream = new MemoryStream(data);
 
                     var attachment = new Attachment(stream, doc.Name);
@@ -502,7 +502,7 @@ namespace Aluma.API.Repositories
 
                 foreach (var doc in app.Documents)
                 {
-                    byte[] data = await _dh.GetDocumentData(doc.URL, doc.Name);
+                    byte[] data = await _dh.GetDocumentDataAsync(doc.URL, doc.Name);
                     var stream = new MemoryStream(data);
 
                     var attachment = new Attachment(stream, doc.Name);
@@ -569,12 +569,13 @@ namespace Aluma.API.Repositories
                             DocumentTypesEnum.PEF2Quote,
                         };
             }
-
+            
+            var time = Stopwatch.StartNew();
             if (appDocs.Count > 0)
             {
                 Console.WriteLine("Application docs started");
 
-                foreach (var item in application.Documents)
+                Parallel.ForEach(appDocs, item =>
                 {
                     if (docTypeRequireSignature.Contains(item.DocumentType))
                     {
@@ -988,7 +989,7 @@ namespace Aluma.API.Repositories
                         };
 
 
-                        byte[] docB64 = await _dh.GetDocumentData(item.URL, item.Name);
+                        byte[] docB64 = _dh.GetDocumentData(item.URL, item.Name);
                         Console.WriteLine("Signing - " + item.Name);
                         var ceremony = _signRepo.CreateMultipleSignersCeremony(docB64,
                                 item.Name, signers);
@@ -1000,29 +1001,34 @@ namespace Aluma.API.Repositories
                         if (docB64.Length > 0)
                         {
                             Console.WriteLine("Signed - " + item.Name);
-                            await _dh.UploadSignedApplicationFile(docB64, item, client.User);
+                            _dh.UploadSignedApplicationFile(docB64, item, client.User);
                             Console.WriteLine("Uploaded - " + item.Name);
 
                         }
 
                     }
-                }
+                });
+                
+                time.Stop();
+                Console.WriteLine(" App Docs: new for each: " + time.Elapsed.TotalMinutes + " minutes");
 
             }
+           
             Console.WriteLine("Application Docs done");
 
+            time.Restart();
             if (userDocs.Count > 0)
             {
-                //old foreach
-                var time = Stopwatch.StartNew();
-                foreach (var item in userDocs)
-                {
-                    Console.WriteLine("Application docs started");
-                    if (docTypeRequireSignature.Contains(item.DocumentType))
-                    {
-                        List<SignerListItemDto> signers = item.DocumentType switch
-                        {
-                            DocumentTypesEnum.ClientConsent => new List<SignerListItemDto>()
+                Console.WriteLine("User Docs started");
+
+                Parallel.ForEach(userDocs, item =>
+                 {
+                     Console.WriteLine("Application docs started");
+                     if (docTypeRequireSignature.Contains(item.DocumentType))
+                     {
+                         List<SignerListItemDto> signers = item.DocumentType switch
+                         {
+                             DocumentTypesEnum.ClientConsent => new List<SignerListItemDto>()
                     {
                          _signRepo.CreateSignerListItem(new SignerDto()
                                 {
@@ -1039,7 +1045,7 @@ namespace Aluma.API.Repositories
                                     Page = 1//2
                                 })
                     },
-                            DocumentTypesEnum.RiskProfile => new List<SignerListItemDto>()
+                             DocumentTypesEnum.RiskProfile => new List<SignerListItemDto>()
                             {
                                 //initials
                                 _signRepo.CreateSignerListItem(new SignerDto()
@@ -1089,7 +1095,7 @@ namespace Aluma.API.Repositories
                                     Page = 2
                                 })
                             },
-                            DocumentTypesEnum.DisclosureLetter => new List<SignerListItemDto>()
+                             DocumentTypesEnum.DisclosureLetter => new List<SignerListItemDto>()
                             {
                                 _signRepo.CreateSignerListItem(new SignerDto()
                                 {
@@ -1151,61 +1157,35 @@ namespace Aluma.API.Repositories
                                     IncludeSignedBy = false,
                                     Page = 3
                                 }),
-                                // _signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = advisor.User.FirstName,
-                                //    LastName = advisor.User.LastName,
-                                //    Email = advisor.User.Email,
-                                //    IdNo = advisor.User.RSAIdNumber,
-                                //    Mobile = advisor.User.MobileNumber,
-                                //    XField = 80,
-                                //    YField = 718,
-                                //    HField = 30,
-                                //    WField = 120,
-                                //    Page = 4,
-                                //}),
-                                //  _signRepo.CreateSignerListItem(new SignerDto()
-                                //{
-                                //    Signature = Convert.ToBase64String(client.User.Signature),
-                                //    FirstName = client.User.FirstName,
-                                //    LastName = client.User.LastName,
-                                //    Email = client.User.Email,
-                                //    IdNo = client.User.RSAIdNumber,
-                                //    Mobile = client.User.MobileNumber,
-                                //    XField = 280,
-                                //    YField = 718,
-                                //    HField = 30,
-                                //    WField = 120,
-                                //    Page = 4,
-                                //}),
                             },
-                            DocumentTypesEnum.FSPMandate => FspMandateSigningList(application, client, advisor),
-                        };
+                             DocumentTypesEnum.FSPMandate => FspMandateSigningList(application, client, advisor),
+                         };
 
-                        byte[] docB64 = await _dh.GetDocumentData(item.URL, item.Name);
-                        Console.WriteLine("Signing - " + item.Name);
-                        var ceremony = _signRepo.CreateMultipleSignersCeremony(docB64,
-                                item.Name, signers);
+                         byte[] docB64 = _dh.GetDocumentData(item.URL, item.Name);
+                         Console.WriteLine("Signing - " + item.Name);
+                         var ceremony = _signRepo.CreateMultipleSignersCeremony(docB64,
+                                 item.Name, signers);
 
-                        docB64 = Convert.FromBase64String(
-                            _signRepo.RunMultiSignerCeremony(ceremony));
+                         docB64 = Convert.FromBase64String(
+                             _signRepo.RunMultiSignerCeremony(ceremony));
 
-                        if (docB64.Length > 0)
-                        {
-                            Console.WriteLine("Signed - " + item.Name);
-                            await _dh.UploadSignedUserFile(docB64, item);
-                            Console.WriteLine("Uploaded - " + item.Name);
+                         if (docB64.Length > 0)
+                         {
+                             Console.WriteLine("Signed - " + item.Name);
+                             _dh.UploadSignedUserFile(docB64, item);
+                             Console.WriteLine("Uploaded - " + item.Name);
+                         }
 
-                        }
+                     }
+                 });
 
-                    }
-                }
+                time.Stop();
+                Console.WriteLine(" App Docs: new for each: " + time.Elapsed.TotalMinutes + " minutes");
 
             }
-
+            
             Console.WriteLine("User Docs done");
-
+            
             application.ApplicationStatus = ApplicationStatusEnum.Completed;
             application.DocumentsSigned = true;
             _context.Applications.Update(application);
@@ -1229,7 +1209,7 @@ namespace Aluma.API.Repositories
         {
             _dh.DeleteAllDocuments();
         }
-        
+
     }
 
 }
