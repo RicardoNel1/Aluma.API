@@ -88,7 +88,7 @@ namespace DataService
             CreateMap<PrimaryResidenceModel, PrimaryResidenceDto>()
                 .ReverseMap();
 
-            CreateMap<LiabilitiesModel, LiabilitiesDto>()
+            CreateMap<EstateExpensesModel, EstateExpensesDto>()
                 .ReverseMap();
 
 
