@@ -45,6 +45,8 @@ namespace Aluma.API.RepoWrapper
         ILiquidAssetsRepo LiquidAssets { get; }
         ILiabilitiesRepo Liabilities { get; }
         IEstateExpensesRepo EstateExpenses { get; }
+        IRetirementPensionFundsRepo RetirementPensionFunds { get; }
+        IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }

@@ -196,6 +196,16 @@ namespace Aluma.API.RepoWrapper
             get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
         }
 
+        public IRetirementPensionFundsRepo RetirementPensionFunds
+        {
+            get { return _retirementPensionFunds == null ? new RetirementPensionFundsRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
+        public IRetirementPreservationFundsRepo RetirementPreservationFunds
+        {
+            get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
 
 
         //User
