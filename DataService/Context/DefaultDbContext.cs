@@ -39,6 +39,10 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
             mb.ApplyConfiguration(new LiquidAssetsModelBuilder());
+            mb.ApplyConfiguration(new LiabilitiesModelBuilder());
+            mb.ApplyConfiguration(new EstateExpensesModelBuilder());
+            mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
+            mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
 
         }
 
@@ -79,6 +83,10 @@ namespace DataService.Context
         public DbSet<AssetsExemptFromCGTModel> AssetsExemptFromCGT { get; set; }
         public DbSet<LiquidAssetsModel> LiquidAssets { get; set; }
         public DbSet<InsuranceModel> Insurance { get; set; }
+        public DbSet<LiabilitiesModel> Liabilities { get; set; }
+        public DbSet<EstateExpensesModel> EstateExpenses { get; set; }
+        public DbSet<RetirementPensionFundsModel> RetirementPensionFunds { get; set; }
+        public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }

@@ -45,6 +45,10 @@ namespace Aluma.API.RepoWrapper
         private IAssetsAttractingCGTRepo _assetsAttractingCGT;
         private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
         private ILiquidAssetsRepo _liquidAssets;
+        private ILiabilitiesRepo _liabilities;
+        private IEstateExpensesRepo _estateExpenses;
+        private IRetirementPensionFundsRepo _retirementPensionFunds;
+        private IRetirementPreservationFundsRepo _retirementPreservationFunds;
 
 
 
@@ -182,7 +186,27 @@ namespace Aluma.API.RepoWrapper
         public ILiquidAssetsRepo LiquidAssets
         {
             get { return _liquidAssets == null ? new LiquidAssetsRepo(_dbContext, _host, _config, _mapper) : _liquidAssets; }
-        }  
+        }
+
+        public ILiabilitiesRepo Liabilities
+        {
+            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+        }
+
+        public IEstateExpensesRepo EstateExpenses
+        {
+            get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
+        public IRetirementPensionFundsRepo RetirementPensionFunds
+        {
+            get { return _retirementPensionFunds == null ? new RetirementPensionFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPensionFunds; }
+        }
+
+        public IRetirementPreservationFundsRepo RetirementPreservationFunds
+        {
+            get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
+        }
 
 
 
