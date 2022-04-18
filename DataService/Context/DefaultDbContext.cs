@@ -1,5 +1,4 @@
 ﻿using DataService.Model;
-using DataService.Model.FNA;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataService.Context

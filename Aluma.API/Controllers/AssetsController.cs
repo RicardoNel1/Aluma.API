@@ -1,6 +1,5 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
-using DataService.Dto.FNA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -80,14 +79,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpPut("update_insurance"), AllowAnonymous]
-        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
-        {
-
-            return null;
-        }
-
+                
 
         //Assets Attracting CGT
         [HttpPost("assets_attracting_cgt"), AllowAnonymous] //might never use
@@ -166,6 +158,36 @@ namespace Aluma.API.Controllers
         }
 
 
+        //Insurance      
+        [HttpPut("insurance"), AllowAnonymous]
+        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        {
+            try
+            {
+                _repo.Insurance.UpdateInsurance(dtoArray);
+                return Ok("Insurance Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("insurance"), AllowAnonymous]
+        public IActionResult GetInsurance(int clientId)
+        {
+            try
+            {
+                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
         public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
@@ -195,6 +217,9 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+
+
 
     }
 }

@@ -2,9 +2,7 @@
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
-using DataService.Dto.FNA;
 using DataService.Model;
-using DataService.Model.FNA;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
