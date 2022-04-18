@@ -40,6 +40,14 @@ namespace Aluma.API.RepoWrapper
 
         //FNA
         IPrimaryResidenceRepo PrimaryResidence { get; }
+        IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
+        IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
+        ILiquidAssetsRepo LiquidAssets { get; }
+        IInsuranceRepo Insurance { get; }
+        ILiabilitiesRepo Liabilities { get; }
+        IEstateExpensesRepo EstateExpenses { get; }
+        IRetirementPensionFundsRepo RetirementPensionFunds { get; }
+        IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }

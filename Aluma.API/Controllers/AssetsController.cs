@@ -3,6 +3,7 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
@@ -16,6 +17,7 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
+        //Primary Residence
         [HttpPost("primary_residence"), AllowAnonymous]
         public IActionResult CreatePrimaryResidence([FromBody] PrimaryResidenceDto dto)
         {
@@ -77,6 +79,146 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+                
+
+        //Assets Attracting CGT
+        [HttpPost("assets_attracting_cgt"), AllowAnonymous] //might never use
+        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) 
+        {
+            try
+            {
+                    _repo.AssetsAttractingCGT.CreateAssetsAttractingCGT(dtoArray);
+           
+                return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("assets_attracting_cgt"), AllowAnonymous]
+        public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
+        {
+            try
+            {
+                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
+                return Ok("Assets Attracting CGT Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("assets_attracting_cgt"), AllowAnonymous]
+        public IActionResult GetAssetsAttractingCGT(int clientId)
+        {            
+            try
+            {
+                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        //Assets Exempt from CGT       
+        [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
+        {
+            try
+            {
+                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+                return Ok("Assets Exempt From CGT Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("assets_exempt_from_cgt"), AllowAnonymous]
+        public IActionResult GetAssetsExemptFromCGT(int clientId)
+        {
+            try
+            {
+                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        //Insurance      
+        [HttpPut("insurance"), AllowAnonymous]
+        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        {
+            try
+            {
+                _repo.Insurance.UpdateInsurance(dtoArray);
+                return Ok("Insurance Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("insurance"), AllowAnonymous]
+        public IActionResult GetInsurance(int clientId)
+        {
+            try
+            {
+                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        //Liquid Assets      
+        [HttpPut("liquid_assets"), AllowAnonymous]
+        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
+        {
+            try
+            {
+                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
+                return Ok("Liquid Assets Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("liquid_assets"), AllowAnonymous]
+        public IActionResult GetLiquidAssets(int clientId)
+        {
+            try
+            {
+                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
 
 
     }
