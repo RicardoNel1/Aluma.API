@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using DataService.Dto;
 using DataService.Model;
-using System;
 using System.Linq;
 
 namespace Aluma.API.Repositories

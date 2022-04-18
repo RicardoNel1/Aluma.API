@@ -1,7 +1,6 @@
 ﻿using DataService.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
@@ -52,7 +51,7 @@ namespace DataService.Model
                 ProductCategory = ProductCategoriesEnum.Category2,
                 PaymentType = PaymentTypesEnum.Lumpsum,
                 AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
-                IsActive = true
+                IsActive = false
             });
             mb.HasData(new ProductModel()
             {
@@ -64,7 +63,7 @@ namespace DataService.Model
                 ProductCategory = ProductCategoriesEnum.Category2,
                 PaymentType = PaymentTypesEnum.Recurringsum,
                 AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
-                IsActive = true
+                IsActive = false
             });
             mb.HasData(new ProductModel()
             {
@@ -76,7 +75,7 @@ namespace DataService.Model
                 ProductCategory = ProductCategoriesEnum.Category2,
                 PaymentType = PaymentTypesEnum.Recurringsum,
                 AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
-                IsActive = true
+                IsActive = false
             });
             mb.HasData(new ProductModel()
             {
@@ -105,6 +104,18 @@ namespace DataService.Model
                 PaymentType = PaymentTypesEnum.Lumpsum,
                 AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
                 IsActive = true
+            });
+            mb.HasData(new ProductModel()
+            {
+                Id = 7,
+                Name = "Fixed Income",
+                Description = @" ",
+                Institute = "Vanguard",
+                ProductType = ProductTypesEnum.Investment,
+                ProductCategory = ProductCategoriesEnum.Category2,
+                PaymentType = PaymentTypesEnum.Lumpsum,
+                AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
+                IsActive = false
             });
 
         }

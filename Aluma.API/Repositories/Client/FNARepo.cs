@@ -1,15 +1,10 @@
-﻿using Aluma.API.Helpers;
-using Aluma.API.RepoWrapper;
+﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
-using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Aluma.API.Repositories
 {

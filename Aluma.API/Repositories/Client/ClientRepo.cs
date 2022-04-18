@@ -32,6 +32,7 @@ namespace Aluma.API.Repositories
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
+        void UpdateClientPassports(List<PassportDto> dto);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -52,7 +53,7 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Where(c => c.isDeleted == true).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
@@ -126,8 +127,10 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClient(ClientDto dto)
         {
-            ClientModel client = _context.Clients.Where(c => c.Id == dto.Id).First();
+            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
+
+            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -196,9 +199,7 @@ namespace Aluma.API.Repositories
         public ClientDto CreateClient(ClientDto dto)
         {
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            //TODO: change asap
-            client.AdvisorId = 1;
-
+            
             _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
@@ -309,5 +310,16 @@ namespace Aluma.API.Repositories
 
         }
 
+        public void UpdateClientPassports(List<PassportDto> dto)
+        {
+            foreach (PassportDto passport in dto)
+            {
+                var pModel = _mapper.Map<PassportModel>(passport);
+                _context.Passports.Add(pModel);
+            }
+            _context.SaveChanges();
+
+            
+        }
     }
 }

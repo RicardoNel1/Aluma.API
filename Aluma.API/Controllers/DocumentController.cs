@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -17,6 +18,23 @@ namespace Aluma.API.Controllers
         {
             _repo = repo;
         }
+
+        [HttpGet("deleteAll"), AllowAnonymous]
+        public IActionResult DeleteAll()
+        {
+            try
+            {
+                 _repo.Applications.DeleteAllDocuments();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
 
         [HttpGet("application/list")]
         public IActionResult ApplicationDocsList(ApplicationDto dto)

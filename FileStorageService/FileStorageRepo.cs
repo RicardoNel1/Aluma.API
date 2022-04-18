@@ -15,6 +15,8 @@ namespace FileStorageService
         Task<byte[]> DownloadAsync(FileStorageDto dto);
 
         Task DeleteAsync(FileStorageDto dto);
+
+        Task DeleteAllAsync(FileStorageDto dto);
     }
 
     public class FileStorageRepo : IFileStorageRepo
@@ -49,19 +51,42 @@ namespace FileStorageService
 
             // Upload file
             using MemoryStream stream = new MemoryStream(dto.FileBytes, 0, dto.FileBytes.Length);
-
-            try
             {
-                if (await file.ExistsAsync() == false)
+                try
                 {
-                    await file.CreateAsync(dto.FileBytes.Length);
-                    await file.UploadRangeAsync(new HttpRange(0, stream.Length), stream);
+                    if (file.Exists() == false)
+                    {
+                        await file.CreateAsync(stream.Length);
+
+                        //file.UploadRange(new HttpRange(0, stream.Length), stream);
+
+                        int blockSize = 1 * 1024;
+                        long offset = 0;//Define http range offset
+                        BinaryReader reader = new BinaryReader(stream);
+                        while (true)
+                        {
+                            byte[] buffer = reader.ReadBytes(blockSize);
+                            if (buffer.Length == 0)
+                                break;
+
+                            MemoryStream uploadChunk = new MemoryStream();
+                            uploadChunk.Write(buffer, 0, buffer.Length);
+                            uploadChunk.Position = 0;
+
+                            HttpRange httpRange = new HttpRange(offset, buffer.Length);
+                            await file.UploadRangeAsync(httpRange, uploadChunk);
+                            offset += buffer.Length;//Shift the offset by number of bytes already written
+                        }
+
+                        reader.Close();
+
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                var error = ex.Message;
-                throw new Exception(error, ex);
+                catch (Exception ex)
+                {
+                    var error = ex.Message;
+                    throw new Exception(error, ex);
+                }
             }
         }
 
@@ -109,6 +134,80 @@ namespace FileStorageService
                 ShareDirectoryClient directory = share.GetDirectoryClient(dto.FileDirectory);
                 ShareFileClient file = directory.GetFileClient(dto.FileName);
                 await file.DeleteIfExistsAsync();
+            }
+            catch (Exception ex)
+            {
+                var error = ex.Message;
+                throw new Exception(error, ex);
+            }
+        }
+
+        public async Task DeleteAllAsync(FileStorageDto dto)
+        {
+            try
+            {
+                ShareClient share = _shareServiceClient.GetShareClient(dto.BaseShare.ToLower());
+                ShareDirectoryClient directory = share.GetRootDirectoryClient();
+
+                await foreach (ShareFileItem item in directory.GetFilesAndDirectoriesAsync())
+                {
+                    if (item.IsDirectory)
+                    {
+                        var subDir = directory.GetSubdirectoryClient(item.Name);
+
+                        await foreach (ShareFileItem subitem in subDir.GetFilesAndDirectoriesAsync())
+                        {
+                            if (!subitem.IsDirectory)
+                            {
+                                await subDir.DeleteFileAsync(subitem.Name);
+                            }
+                            else
+                            {
+                                var subDir1 = subDir.GetSubdirectoryClient(subitem.Name);
+                                await foreach (ShareFileItem subitem1 in subDir1.GetFilesAndDirectoriesAsync())
+                                {
+                                    if (!subitem1.IsDirectory)
+                                    {
+                                        await subDir1.DeleteFileAsync(subitem.Name);
+                                    }
+                                    else
+                                    {
+                                        var subDir2 = subDir1.GetSubdirectoryClient(subitem1.Name);
+                                        await foreach (ShareFileItem subitem2 in subDir2.GetFilesAndDirectoriesAsync())
+                                        {
+                                            if (!subitem2.IsDirectory)
+                                            {
+                                                await subDir2.DeleteFileAsync(subitem2.Name);
+
+                                            }
+                                            else
+                                            {
+                                                var subDir3 = subDir2.GetSubdirectoryClient(subitem2.Name);
+                                                await foreach (ShareFileItem subitem3 in subDir3.GetFilesAndDirectoriesAsync())
+                                                {
+
+                                                    await subDir3.DeleteFileAsync(subitem3.Name);
+
+
+                                                }
+                                                await subDir3.DeleteAsync();
+                                            }
+                                        }
+                                        await subDir2.DeleteAsync();
+
+                                    }
+                                }
+                                await subDir1.DeleteAsync();
+                            }
+                        }
+                        await subDir.DeleteAsync();
+                    }
+                    else
+                    {
+                        await directory.DeleteFileAsync(item.Name);
+                    }
+                }
+
             }
             catch (Exception ex)
             {

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -26,7 +27,7 @@ namespace Aluma.API.Repositories
 
         bool DeleteFSPMandate(FSPMandateDto dto);
 
-        void GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
+        Task GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
     }
 
     public class FspMandateRepo : RepoBase<FSPMandateModel>, IFspMandateRepo
@@ -96,7 +97,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
+        public async Task GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -131,12 +132,17 @@ namespace Aluma.API.Repositories
             {
                 foreach (var item in client.User.Address)
                 {
+                    string street = string.Empty;
+                    string unitComplex = string.Empty;
                     if (item.Type == DataService.Enum.AddressTypesEnum.Residential)
                     {
                         signCity = item.City;
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
 
-                        d[$"address1"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                            $"{item.UnitNumber} " + $"{item.ComplexName}";
+                        d[$"address1"] = unitComplex != " " ? $"{street}, {unitComplex}": street ;
+
+                        d[$"address2"] = $"{item.Suburb} " + $"{item.City} ";
 
                         d["postalCode"] = item.PostalCode;
 
@@ -145,9 +151,10 @@ namespace Aluma.API.Repositories
 
                     if (item.Type == DataService.Enum.AddressTypesEnum.Postal)
                     {
-                        d["p_address"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                           $"{item.UnitNumber} " + $"{item.ComplexName}, " + $"{item.Suburb}, " + $"{item.City}, " +
-                           $"{item.Country}";
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
+
+                        d["p_address"] = unitComplex != " " ? $"{street}, {unitComplex}, {item.Suburb}, {item.City}, {item.Country}" : $"{street}, {item.Suburb}, {item.City}, {item.Country}";
                         d["p_postalCode"] = item.PostalCode;
                     }
 
@@ -314,7 +321,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }
     }
 }

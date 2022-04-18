@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DataService.Enum;
-using System;
 
 namespace DataService.Dto
 {

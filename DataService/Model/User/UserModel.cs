@@ -118,7 +118,7 @@ namespace DataService.Model
                 FirstName = "Dev",
                 RSAIdNumber = "9012245555088",
                 LastName = "Tester",
-                MobileNumber = "843334444",
+                MobileNumber = "0843334444",
                 isRegistrationVerified = true,
                 Role = RoleEnum.Admin,
                 Password = _hasher.CreateHash("AlumaDev"),

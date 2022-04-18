@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -32,7 +33,7 @@ namespace Aluma.API.Repositories
         void UpdateDisclosure(ClientDto dto);
 
         bool DeleteDisclosure(DisclosureDto dto);
-
+        Task GenerateClientConsent(ClientModel client, AdvisorModel advisor);
 
     }
 
@@ -60,10 +61,7 @@ namespace Aluma.API.Repositories
             try
             {
                 DisclosureModel disclosure = _mapper.Map<DisclosureModel>(dto);
-                //Create Document
 
-                UserDocumentModel DisclosureDocument = _userDocuments.CreateClientDisclosure(disclosure);
-                //Create Disclosure
                 _context.Disclosures.Add(disclosure);
                 _context.SaveChanges();
 
@@ -116,7 +114,7 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public void GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
+        public async Task GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
         {
             var d = new Dictionary<string, string>();
             //Advisor Details
@@ -301,7 +299,7 @@ namespace Aluma.API.Repositories
             //Service Level Agreement
             d["clientName"] = client.User.FirstName + " " + client.User.LastName;
             d["clientID"] = client.User.RSAIdNumber;
-            d["clientCapacity"] = "self";
+            d["clientCapacity"] = "Self";
 
             //d["authUsers"] = disclosure.AuthorisedUsers ?? string.Empty;
 
@@ -309,28 +307,28 @@ namespace Aluma.API.Repositories
             //d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
 
             //Broker Appointment
-            if (disclosure != null)
-            {
-                if (disclosure.AdvisorAuthority)
-                {
-                    d["authorityAll"] = "X";
-                }
-                else
-                {
-                    d["authoritySome"] = "X";
-                    d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
-                }
+            //if (disclosure != null)
+            //{
+            //    if (disclosure.AdvisorAuthority)
+            //    {
+            //        d["authorityAll"] = "X";
+            //    }
+            //    else
+            //    {
+            //        d["authoritySome"] = "X";
+            //        d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
+            //    }
 
-                d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
-            }
+            //    d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+            //}
 
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
         }
 
-        public void GenerateClientConsent(ClientModel client, AdvisorModel advisor)
+        public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -366,7 +364,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
         }
     }
 }

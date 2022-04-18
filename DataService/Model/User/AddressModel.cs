@@ -2,12 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using StringHasher;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("address")]
+    [Table("addresses")]
     public class AddressModel : BaseModel
     {
         public UserModel User { get; set; }

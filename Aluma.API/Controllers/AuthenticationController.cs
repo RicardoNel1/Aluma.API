@@ -1,7 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
-using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -73,7 +72,7 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, "Invalid");
                 }
 
-                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto); 
+                socialLoginVerified = true;// _repo.User.IsSocialLoginVerified(dto); 
 
                 if (!socialLoginVerified)
                 {

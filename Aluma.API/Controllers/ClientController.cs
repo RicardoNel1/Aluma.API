@@ -3,8 +3,8 @@ using DataService.Dto;
 using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
@@ -23,7 +23,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                ClientDto client = _repo.Client.GetClient(new ClientDto() { Id = clientId});
+                ClientDto client = _repo.Client.GetClient(new ClientDto() { Id = clientId });
 
                 return Ok(client);
             }
@@ -69,6 +69,22 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut("passports"), AllowAnonymous]
+        public IActionResult UpdateClientPassports(List<PassportDto> dto)
+        {
+            try
+            {
+
+                _repo.Client.UpdateClientPassports(dto);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPut, AllowAnonymous]
         public IActionResult UpdateClient(ClientDto dto)
         {
@@ -81,9 +97,10 @@ namespace Aluma.API.Controllers
                 {
                     return BadRequest("Client Does Not Exist");
                 }
-                else { 
+                else
+                {
 
-                _repo.Client.UpdateClient(dto);
+                    _repo.Client.UpdateClient(dto);
                 }
                 return Ok(dto);
             }
@@ -98,7 +115,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool isDeleted = _repo.Client.DeleteClient(dto); 
+                bool isDeleted = _repo.Client.DeleteClient(dto);
                 if (!isDeleted)
                 {
                     return BadRequest("Client Not Deleted");
@@ -112,8 +129,8 @@ namespace Aluma.API.Controllers
         }
 
 
-        [HttpPost("register"), AllowAnonymous] 
-        public IActionResult RegisterClient(RegistrationDto dto) 
+        [HttpPost("register"), AllowAnonymous]
+        public IActionResult RegisterClient(RegistrationDto dto)
         {
             AuthResponseDto response = new AuthResponseDto();
             UserDto user = null;
@@ -122,7 +139,7 @@ namespace Aluma.API.Controllers
             try
             {
                 bool userExists = _repo.Client.DoesClientExist(dto);
-              
+
                 if (userExists)
                 {
                     response.Message = "Client already exists. Please sign in.";
@@ -138,9 +155,9 @@ namespace Aluma.API.Controllers
                     client = _repo.Client.CreateClient(client);
 
                     //Send Verification OTP
-                    string sendResult = _repo.Otp.SendOTP(user,OtpTypesEnum.Registration);
+                    string sendResult = _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
 
-                    if (sendResult != "Success" )
+                    if (sendResult != "Success")
                     {
                         response.Message = sendResult;
                         return StatusCode(403, response);
@@ -172,7 +189,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/admin"), Authorize(Roles = "Admin")]
+        [HttpGet("list/admin"), AllowAnonymous]
         public IActionResult ListAllClients()
         {
             try

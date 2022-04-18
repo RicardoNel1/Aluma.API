@@ -1,7 +1,6 @@
 ﻿using Aluma.API.Helpers;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
-using Azure.Storage.Files.Shares;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -26,7 +26,7 @@ namespace Aluma.API.Repositories
         RiskProfileDto UpdateRiskProfile(RiskProfileDto dto);
 
         bool DeleteRiskProfile(RiskProfileDto dto);
-        void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
+        Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
     }
 
     public class RiskProfileRepo : RepoBase<RiskProfileModel>, IRiskProfileRepo
@@ -98,7 +98,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public async void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
+        public async Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -106,7 +106,7 @@ namespace Aluma.API.Repositories
             d["IdNo"] = client.User.RSAIdNumber;
             d["Advisor"] = $"{advisor.User.FirstName ?? string.Empty} {advisor.User.LastName ?? string.Empty}";
             d["Created"] = DateTime.Today.ToString("yyyy/MM/dd");
-            d["Goal"] = riskProfile.Goal ?? string.Empty;
+            d["Goal"] = riskProfile.Goal ?? "Capital Growth";
 
             d["RiskAge_" + riskProfile.RiskAge] = "x";
             d["RiskTerm_" + riskProfile.RiskTerm] = "x";
@@ -131,7 +131,7 @@ namespace Aluma.API.Repositories
 
             DocumentHelper dh = new DocumentHelper(_context,_config, _fileStorage, _host);
 
-            dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
             
         }
     }

@@ -400,8 +400,11 @@ namespace Aluma.API.Repositories
 
         public BankDetailsDto GetBankDetails(int clientId)
         {
-            BankDetailsModel bankDetails = _context.BankDetails.Where(c => c.ClientId == clientId).First();
-            return _mapper.Map<BankDetailsDto>(bankDetails);
+            var bankDetails = _context.BankDetails.Where(c => c.ClientId == clientId);
+
+            var result = bankDetails.Any() ? _mapper.Map<BankDetailsDto>(bankDetails.First()) : new BankDetailsDto();
+
+            return result;
         }
 
         public BankDetailsDto UpdateClientBankDetails(BankDetailsDto dto)
