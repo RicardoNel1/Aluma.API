@@ -41,6 +41,16 @@ namespace Aluma.API.RepoWrapper
         private IDisclosureRepo _disclosures;
 
         private IProductRepo _product;
+        private IPrimaryResidenceRepo _primaryResidence;
+        private IAssetsAttractingCGTRepo _assetsAttractingCGT;
+        private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
+        private ILiquidAssetsRepo _liquidAssets;
+        private IInsuranceRepo _insurance;
+        private ILiabilitiesRepo _liabilities;
+        private IEstateExpensesRepo _estateExpenses;
+        private IRetirementPensionFundsRepo _retirementPensionFunds;
+        private IRetirementPreservationFundsRepo _retirementPreservationFunds;
+
 
 
         private IOtpRepo _otp;
@@ -156,11 +166,54 @@ namespace Aluma.API.RepoWrapper
         }
 
         //Product
-
         public IProductRepo ProductRepo
         {
             get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product; }
         }
+
+        //FNA
+        public IPrimaryResidenceRepo PrimaryResidence
+        {
+            get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
+        }
+        public IAssetsAttractingCGTRepo AssetsAttractingCGT
+        {
+            get { return _assetsAttractingCGT == null ? new AssetsAttractingCGTRepo(_dbContext, _host, _config, _mapper) : _assetsAttractingCGT; }
+        }
+        public IAssetsExemptFromCGTRepo AssetsExemptFromCGT
+        {
+            get { return _assetsExemptFromCGT == null ? new AssetsExemptFromCGTRepo(_dbContext, _host, _config, _mapper) : _assetsExemptFromCGT; }
+        }
+        public ILiquidAssetsRepo LiquidAssets
+        {
+            get { return _liquidAssets == null ? new LiquidAssetsRepo(_dbContext, _host, _config, _mapper) : _liquidAssets; }
+        }
+
+        public ILiabilitiesRepo Liabilities
+        {
+            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+        }
+
+        public IInsuranceRepo Insurance
+        {
+            get { return _insurance == null ? new InsuranceRepo(_dbContext, _host, _config, _mapper) : _insurance; }
+        }
+
+        public IEstateExpensesRepo EstateExpenses
+        {
+            get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
+        public IRetirementPensionFundsRepo RetirementPensionFunds
+        {
+            get { return _retirementPensionFunds == null ? new RetirementPensionFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPensionFunds; }
+        }
+
+        public IRetirementPreservationFundsRepo RetirementPreservationFunds
+        {
+            get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
+        }
+
 
 
         //User

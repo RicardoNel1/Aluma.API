@@ -21,6 +21,7 @@ namespace Aluma.API.RepoWrapper
         IFNARepo FNA { get; }
 
 
+
         IIRSW8Repo IRSW8 { get; }
         IIRSW9Repo IRSW9 { get; }
         IPurposeAndFundingRepo PurposeAndFunding { get; }
@@ -36,6 +37,17 @@ namespace Aluma.API.RepoWrapper
 
         //Product
         IProductRepo ProductRepo { get; }
+
+        //FNA
+        IPrimaryResidenceRepo PrimaryResidence { get; }
+        IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
+        IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
+        ILiquidAssetsRepo LiquidAssets { get; }
+        IInsuranceRepo Insurance { get; }
+        ILiabilitiesRepo Liabilities { get; }
+        IEstateExpensesRepo EstateExpenses { get; }
+        IRetirementPensionFundsRepo RetirementPensionFunds { get; }
+        IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
