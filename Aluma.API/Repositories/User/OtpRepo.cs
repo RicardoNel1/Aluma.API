@@ -73,6 +73,11 @@ namespace Aluma.API.Repositories
                     UserId = user.Id
                 };
 
+                if (applicationId > 0)
+                {
+                    newOtp.ApplicationId = applicationId;
+                }
+
                 _context.Otp.Add(newOtp);
                 _context.SaveChanges();
 
@@ -106,6 +111,15 @@ namespace Aluma.API.Repositories
 
                 if (hasOtp.Any())
                 {
+                    if (applicationId > 0)
+                    {
+                        if(hasOtp.Where(o => o.OtpType == OtpTypesEnum.SignDocument).Any() == false)
+                        {
+                            result = "No Otp for signing.";
+                            return result;
+                        };
+                    }
+
                     List<OtpModel> otpList = hasOtp.ToList();
 
 

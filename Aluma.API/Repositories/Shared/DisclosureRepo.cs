@@ -5,12 +5,14 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -31,7 +33,7 @@ namespace Aluma.API.Repositories
         void UpdateDisclosure(ClientDto dto);
 
         bool DeleteDisclosure(DisclosureDto dto);
-
+        Task GenerateClientConsent(ClientModel client, AdvisorModel advisor);
 
     }
 
@@ -42,15 +44,16 @@ namespace Aluma.API.Repositories
         private readonly IUserDocumentsRepo _userDocuments;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
-        DocumentHelper dh = new DocumentHelper();
+        private readonly IFileStorageRepo _fileStorage;
 
-        public DisclosureRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IUserDocumentsRepo userDocuments) : base(databaseContext)
+        public DisclosureRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage, IUserDocumentsRepo userDocuments) : base(databaseContext)
         {
             _context = databaseContext;
             _config = config;
             _host = host;
             _mapper = mapper;
             _userDocuments = userDocuments;
+            _fileStorage = fileStorage;
         }
 
         public DisclosureDto CreateDisclosure(DisclosureDto dto)
@@ -58,10 +61,7 @@ namespace Aluma.API.Repositories
             try
             {
                 DisclosureModel disclosure = _mapper.Map<DisclosureModel>(dto);
-                //Create Document
 
-                UserDocumentModel DisclosureDocument = _userDocuments.CreateClientDisclosure(disclosure);
-                //Create Disclosure
                 _context.Disclosures.Add(disclosure);
                 _context.SaveChanges();
 
@@ -79,7 +79,7 @@ namespace Aluma.API.Repositories
             bool exists = _context.Disclosures.Where(c => c.ClientId == dto.Id).Any();
 
             return exists;
-        }        
+        }
 
         public DisclosureDto GetDisclosure(DisclosureDto dto)
         {
@@ -114,7 +114,7 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public void GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
+        public async Task GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
         {
             var d = new Dictionary<string, string>();
             //Advisor Details
@@ -299,7 +299,7 @@ namespace Aluma.API.Repositories
             //Service Level Agreement
             d["clientName"] = client.User.FirstName + " " + client.User.LastName;
             d["clientID"] = client.User.RSAIdNumber;
-            d["clientCapacity"] = "self";
+            d["clientCapacity"] = "Self";
 
             //d["authUsers"] = disclosure.AuthorisedUsers ?? string.Empty;
 
@@ -307,33 +307,28 @@ namespace Aluma.API.Repositories
             //d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
 
             //Broker Appointment
-            if (!disclosure.AdvisorAuthority)
-                d["authorityAll"] = "X";
-            else
-            {
-                d["authoritySome"] = "X";
-                d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
-            }
+            //if (disclosure != null)
+            //{
+            //    if (disclosure.AdvisorAuthority)
+            //    {
+            //        d["authorityAll"] = "X";
+            //    }
+            //    else
+            //    {
+            //        d["authoritySome"] = "X";
+            //        d["authorityProducts"] = disclosure.AdvisorAuthorityProducts;
+            //    }
 
-            d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+            //    d["date2"] = DateTime.Now.ToString("yyyy/MM/dd");
+            //}
 
 
-            byte[] doc = dh.PopulateDocument("DisclosureLetter.pdf", d, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DocumentTypesEnum.DisclosureLetter,
-                FileType = FileTypesEnum.Pdf,
-                Name = $"Aluma Capital - Disclosure Letter - {client.User.FirstName + " " + client.User.LastName} .pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
         }
 
-        public void GenerateClientConsent(ClientModel client, AdvisorModel advisor)
+        public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -367,19 +362,9 @@ namespace Aluma.API.Repositories
                 d[$"education_{client.Education}"] = "x";
             }
 
-            byte[] doc = dh.PopulateDocument("ClientConsent.pdf", d, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DocumentTypesEnum.ClientConsent,
-                FileType = FileTypesEnum.Pdf,
-                Name = $"Aluma Capital - Client Consent - {client.User.FirstName + " " + client.User.LastName} .pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
         }
     }
 }

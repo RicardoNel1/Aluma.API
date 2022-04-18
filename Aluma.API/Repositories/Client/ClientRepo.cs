@@ -3,6 +3,7 @@ using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,7 @@ namespace Aluma.API.Repositories
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
+        void UpdateClientPassports(List<PassportDto> dto);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -39,18 +41,19 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-
-        public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        private readonly IFileStorageRepo _fileStorage;
+        public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Where(c => c.isDeleted == true).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
@@ -124,8 +127,10 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClient(ClientDto dto)
         {
-            ClientModel client = _context.Clients.Where(c => c.Id == dto.Id).First();
+            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
+
+            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -194,9 +199,7 @@ namespace Aluma.API.Repositories
         public ClientDto CreateClient(ClientDto dto)
         {
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            //TODO: change asap
-            client.AdvisorId = 1;
-
+            
             _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
@@ -291,20 +294,32 @@ namespace Aluma.API.Repositories
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
             FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
 
+            
 
             //Risk Profile
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper);
+            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
             riskRepo.GenerateRiskProfile(client, advisor, risk);
 
             //FSP Mandate
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper);
+            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper);
+            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
             fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 
+        public void UpdateClientPassports(List<PassportDto> dto)
+        {
+            foreach (PassportDto passport in dto)
+            {
+                var pModel = _mapper.Map<PassportModel>(passport);
+                _context.Passports.Add(pModel);
+            }
+            _context.SaveChanges();
+
+            
+        }
     }
 }

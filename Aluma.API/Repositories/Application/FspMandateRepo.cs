@@ -3,12 +3,15 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -24,7 +27,7 @@ namespace Aluma.API.Repositories
 
         bool DeleteFSPMandate(FSPMandateDto dto);
 
-        void GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
+        Task GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
     }
 
     public class FspMandateRepo : RepoBase<FSPMandateModel>, IFspMandateRepo
@@ -33,14 +36,14 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        DocumentHelper dh = new DocumentHelper();
-
-        public FspMandateRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
+        private readonly IFileStorageRepo _fileStorage;
+        public FspMandateRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(context)
         {
             _context = context;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public FSPMandateDto CreateFSPMandate(FSPMandateDto dto)
@@ -94,7 +97,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
+        public async Task GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
         {
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
@@ -129,12 +132,17 @@ namespace Aluma.API.Repositories
             {
                 foreach (var item in client.User.Address)
                 {
+                    string street = string.Empty;
+                    string unitComplex = string.Empty;
                     if (item.Type == DataService.Enum.AddressTypesEnum.Residential)
                     {
                         signCity = item.City;
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
 
-                        d[$"address1"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                            $"{item.UnitNumber} " + $"{item.ComplexName}";
+                        d[$"address1"] = unitComplex != " " ? $"{street}, {unitComplex}": street ;
+
+                        d[$"address2"] = $"{item.Suburb} " + $"{item.City} ";
 
                         d["postalCode"] = item.PostalCode;
 
@@ -143,9 +151,10 @@ namespace Aluma.API.Repositories
 
                     if (item.Type == DataService.Enum.AddressTypesEnum.Postal)
                     {
-                        d["p_address"] = $"{item.StreetNumber} " + $"{item.StreetName}, " +
-                           $"{item.UnitNumber} " + $"{item.ComplexName}, " + $"{item.Suburb}, " + $"{item.City}, " +
-                           $"{item.Country}";
+                        street = $"{item.StreetNumber} {item.StreetName}";
+                        unitComplex = $"{item.UnitNumber} {item.ComplexName}";
+
+                        d["p_address"] = unitComplex != " " ? $"{street}, {unitComplex}, {item.Suburb}, {item.City}, {item.Country}" : $"{street}, {item.Suburb}, {item.City}, {item.Country}";
                         d["p_postalCode"] = item.PostalCode;
                     }
 
@@ -252,7 +261,7 @@ namespace Aluma.API.Repositories
                     d[$"instructionPersonal_DE"] = "x";
                     d[$"instructionAdvisor_DE"] = "x";
                 }
-                
+
 
                 d["dividendInstruction_limited"] = fsp.DividendInstruction ?? string.Empty;
 
@@ -270,8 +279,8 @@ namespace Aluma.API.Repositories
             {
                 d["referralManaged"] = "x";
 
-                
-                
+
+
 
                 if (fsp.LimitedInstruction != "instructionBoth")
                 {
@@ -310,19 +319,9 @@ namespace Aluma.API.Repositories
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
 
-            byte[] doc = dh.PopulateDocument("FspMandate.pdf", d, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DataService.Enum.DocumentTypesEnum.FSPMandate,
-                FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital Discretionary Mandate - {client.User.FirstName + " " + client.User.LastName}.pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }
     }
 }

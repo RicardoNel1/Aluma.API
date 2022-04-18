@@ -51,9 +51,9 @@ namespace Aluma.API.Controllers
             }
             else
             {
-                _repo.BankDetails.UpdateClientBankDetails(dto);
+               dto = _repo.BankDetails.UpdateClientBankDetails(dto);
             }
-            return Ok("Bank Details Updated");
+            return Ok(dto);
         }
 
         [HttpGet, AllowAnonymous]

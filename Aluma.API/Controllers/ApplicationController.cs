@@ -1,10 +1,12 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Dto;
+using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -87,7 +89,7 @@ namespace Aluma.API.Controllers
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                var application = _repo.Applications.GetApplication(new ApplicationDto() { Id = applicationId});
+                var application = _repo.Applications.GetApplication(new ApplicationDto() { Id = applicationId });
 
                 return Ok(application);
             }
@@ -159,15 +161,68 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("documents"), AllowAnonymous]
-        public IActionResult DownloadAllApplicationDocuments(int applicationId)
+        public async Task<IActionResult> DownloadAllApplicationDocuments(int applicationId)
         {
             try
             {
-                _repo.Applications.GenerateApplicationDocuments(applicationId);
-
-                List<ApplicationDocumentDto> appDocs = _repo.Applications.GetApplicationDocuments(applicationId);
+                List<ApplicationDocumentDto> appDocs = await _repo.Applications.GetApplicationDocuments(applicationId);
 
                 return Ok(appDocs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("createDocuments"), AllowAnonymous]
+        public async Task<IActionResult> GenerateDocuments(int applicationId)
+        {
+            try
+            {
+                bool applicationExist = _repo.Applications.DoesApplicationExist(new ApplicationDto() { Id = applicationId });
+
+                if (!applicationExist)
+                {
+                    return BadRequest("Application does not exist");
+                }
+                else
+                {
+                    await _repo.Applications.GenerateApplicationDocuments(applicationId);
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("signDocuments"), AllowAnonymous]
+        public async Task<IActionResult> SignDocuments(int applicationId)
+        {
+            try
+            {
+                AuthResponseDto response = new AuthResponseDto();
+                ApplicationDto dto = new ApplicationDto() { Id = applicationId };
+
+
+                bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
+
+                if (!applicationExist)
+                {
+                    return BadRequest("Application does not exist");
+                }
+                else
+                {
+                    await _repo.Applications.SignDocuments(applicationId);
+                    //_repo.Applications.ConsentToSign(applicationId);
+                    //UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+                    //_repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
+                    //response.Message = "verifySignature";
+
+                    return Ok(response);
+                }
             }
             catch (Exception e)
             {

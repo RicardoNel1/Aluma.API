@@ -6,7 +6,6 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -63,8 +62,9 @@ namespace Aluma.API.Repositories
 
         public ConsumerProtectionDto GetConsumerProtection(int clientId)
         {
-            ConsumerProtectionModel consumerProtectionModel = _context.ConsumerProtection.Where(a => a.ClientId == clientId).First();
-            return _mapper.Map<ConsumerProtectionDto>(consumerProtectionModel);
+            var consumerProtectionModel = _context.ConsumerProtection.Where(a => a.ClientId == clientId);
+            var result = consumerProtectionModel.Any() ? _mapper.Map<ConsumerProtectionDto>(consumerProtectionModel.First()) : new ConsumerProtectionDto();
+            return result;
 
         }
 

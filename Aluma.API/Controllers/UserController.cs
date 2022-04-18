@@ -3,6 +3,8 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -48,6 +50,22 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("documents"), AllowAnonymous]
+        public async Task<IActionResult> DownloadAllUserDocuments(int userId)
+        {
+            try
+            {
+                List<UserDocumentDto> appDocs = await _repo.UserDocuments.GetDocuments(userId);
+
+                return Ok(appDocs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
         //[HttpPut("edit/signature"), AllowAnonymous]
         //public IActionResult EditUserSignature([FromBody] int userId, string signature)

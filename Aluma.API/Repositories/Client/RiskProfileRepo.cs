@@ -3,12 +3,15 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -23,7 +26,7 @@ namespace Aluma.API.Repositories
         RiskProfileDto UpdateRiskProfile(RiskProfileDto dto);
 
         bool DeleteRiskProfile(RiskProfileDto dto);
-        void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
+        Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
     }
 
     public class RiskProfileRepo : RepoBase<RiskProfileModel>, IRiskProfileRepo
@@ -32,13 +35,14 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        private DocumentHelper dh = new DocumentHelper();
-        public RiskProfileRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        private readonly IFileStorageRepo _fileStorage;
+        public RiskProfileRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _fileStorage = fileStorage;
         }
 
         public RiskProfileDto CreateRiskProfile(RiskProfileDto dto)
@@ -94,7 +98,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
+        public async Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
         {
             Dictionary<string, string> d = new Dictionary<string, string>();
 
@@ -102,7 +106,7 @@ namespace Aluma.API.Repositories
             d["IdNo"] = client.User.RSAIdNumber;
             d["Advisor"] = $"{advisor.User.FirstName ?? string.Empty} {advisor.User.LastName ?? string.Empty}";
             d["Created"] = DateTime.Today.ToString("yyyy/MM/dd");
-            d["Goal"] = riskProfile.Goal ?? string.Empty;
+            d["Goal"] = riskProfile.Goal ?? "Capital Growth";
 
             d["RiskAge_" + riskProfile.RiskAge] = "x";
             d["RiskTerm_" + riskProfile.RiskTerm] = "x";
@@ -125,19 +129,10 @@ namespace Aluma.API.Repositories
             //advisor notes
             d["advisorNotes"] = riskProfile.AdvisorNotes ?? string.Empty;
 
-            byte[] doc = dh.PopulateDocument("RiskProfile.pdf", d, _host);
+            DocumentHelper dh = new DocumentHelper(_context,_config, _fileStorage, _host);
 
-            UserDocumentModel udm = new UserDocumentModel()
-            {
-                DocumentType = DataService.Enum.DocumentTypesEnum.RiskProfile,
-                FileType = DataService.Enum.FileTypesEnum.Pdf,
-                Name = $"Aluma Capital Risk Profile - {client.User.FirstName + " " + client.User.LastName} .pdf",
-                URL = "data:application/pdf;base64," + Convert.ToBase64String(doc, 0, doc.Length),
-                UserId = client.User.Id
-            };
-
-            _context.UserDocuments.Add(udm);
-            _context.SaveChanges();
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
+            
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,17 +9,7 @@ namespace DataService.Model
     [Table("clients")]
     public class ClientModel : BaseModel
     {
-        public UserModel User { get; set; }
-
-        public AdvisorModel Advisor { get; set; }
-        public KYCDataModel KycData { get; set; }
-        public TaxResidencyModel TaxResidency { get; set; }
-        public RiskProfileModel RiskProfile { get; set; }
-        public FSPMandateModel FspMandate { get; set; }
-
-        public ICollection<ApplicationModel> Applications { get; set; }
-        public ICollection<BankDetailsModel> BankDetails { get; set; }
-        public ICollection<PassportModel> Passports { get; set; }
+        
 
         
         public int Id { get; set; }
@@ -54,6 +43,18 @@ namespace DataService.Model
         public string LeadType { get; set; }
         public string Education { get; set; }
         public bool isDeleted { get; set; }
+
+        public UserModel User { get; set; }
+
+        public AdvisorModel Advisor { get; set; }
+        public KYCDataModel KycData { get; set; }
+        public TaxResidencyModel TaxResidency { get; set; }
+        public RiskProfileModel RiskProfile { get; set; }
+        public FSPMandateModel FspMandate { get; set; }
+
+        public ICollection<ApplicationModel> Applications { get; set; }
+        public ICollection<BankDetailsModel> BankDetails { get; set; }
+        public ICollection<PassportModel> Passports { get; set; }
     }
 
     public class ClientModelBuilder : IEntityTypeConfiguration<ClientModel>
@@ -65,6 +66,8 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.UserId).IsUnique();
+
+            
 
             mb.HasOne(c => c.TaxResidency)
                 .WithOne(c => c.Client)

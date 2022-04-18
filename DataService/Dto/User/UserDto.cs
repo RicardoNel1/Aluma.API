@@ -1,5 +1,4 @@
-﻿using System;
-using DataService.Enum;
+﻿using DataService.Enum;
 using System.Collections.Generic;
 
 namespace DataService.Dto

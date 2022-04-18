@@ -20,7 +20,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public IActionResult CreateAdvisor([FromBody] AdvisorDto dto)
+        public IActionResult CreateAdvisor(AdvisorDto dto)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace Aluma.API.Controllers
                     }
 
                     var advisor = _repo.Advisor.CreateAdvisor(dto);
-                    return Ok("Advisor Created");
+                    return Ok(advisor);
                 }
             }
             catch (Exception e)
@@ -49,7 +49,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateAdvisor([FromBody] AdvisorDto dto)
+        public IActionResult UpdateAdvisor(AdvisorDto dto)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace Aluma.API.Controllers
                 else
                 {
                     var advisor = _repo.Advisor.UpdateAdvisor(dto);
-                    return Ok("Advisor Updated");
+                    return Ok(advisor);
                 }
             }
             catch (Exception e)

@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("fsp_mandate")]
+    [Table("mandates")]
     public class FSPMandateModel : BaseModel
     {
         public ClientModel Client { get; set; }

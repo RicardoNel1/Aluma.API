@@ -1,6 +1,4 @@
-﻿using DataService.Enum;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
@@ -10,7 +8,7 @@ namespace DataService.Model
         public RecordOfAdviceModel RecordOfAdvice { get; set; }
         public int Id { get; set; }
         public int RecordOfAdviceId { get; set; }
-        public ProductsEnum ProductId { get; set; }
+        public int ProductId { get; set; }
         public double RecommendedLumpSum { get; set; }
         public double AcceptedLumpSum { get; set; }
         public double RecommendedRecurringPremium { get; set; }
