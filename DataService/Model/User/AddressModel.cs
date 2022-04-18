@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("address")]
+    [Table("addresses")]
     public class AddressModel : BaseModel
     {
         public UserModel User { get; set; }
