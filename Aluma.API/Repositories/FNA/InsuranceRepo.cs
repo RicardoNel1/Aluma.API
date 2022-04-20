@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         List<InsuranceDto> GetInsurance(int clientId);
         InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray);
-
+        bool DeleteInsuranceItem(int id);
 
     }
 
@@ -111,7 +111,15 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteInsuranceItem(int id)
+        {
+            InsuranceModel item = _context.Insurance.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.Insurance.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }

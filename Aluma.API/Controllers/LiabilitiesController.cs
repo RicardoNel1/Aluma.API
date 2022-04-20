@@ -47,6 +47,20 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpDelete("liabilities"), AllowAnonymous]
+        public IActionResult DeleteLiabilitiesItem(int id)
+        {
+            try
+            {
+                bool deleted = _repo.Liabilities.DeleteLiabilitiesItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
 
         //Estate Expenses    

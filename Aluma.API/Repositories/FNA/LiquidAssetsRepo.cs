@@ -17,11 +17,10 @@ namespace Aluma.API.Repositories
         List<LiquidAssetsDto> GetLiquidAssets(int clientId);
         LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray);
 
+        bool DeleteLiquidAssetsItem(int id);
 
     }
 
-    /// <summary>
-    /// </summary>
     public class LiquidAssetsRepo : RepoBase<LiquidAssetsModel>, ILiquidAssetsRepo
     {
         private readonly AlumaDBContext _context;
@@ -107,7 +106,15 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteLiquidAssetsItem(int id)
+        {
+            LiquidAssetsModel item = _context.LiquidAssets.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.LiquidAssets.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }

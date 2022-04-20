@@ -17,10 +17,10 @@ namespace Aluma.API.Repositories
         List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId);
         AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray);
 
+        bool DeleteAssetsExemptFromCGTItem(int id);
     }
 
-    /// <summary>
-    /// </summary>
+
     public class AssetsExemptFromCGTRepo : RepoBase<AssetsExemptFromCGTModel>, IAssetsExemptFromCGTRepo
     {
         private readonly AlumaDBContext _context;
@@ -106,7 +106,14 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteAssetsExemptFromCGTItem(int id)
+        {
+            AssetsExemptFromCGTModel item = _context.AssetsExemptFromCGT.Where(a => a.Id == id).First();
+            _context.AssetsExemptFromCGT.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }
