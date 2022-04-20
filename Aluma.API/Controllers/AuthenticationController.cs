@@ -69,7 +69,9 @@ namespace Aluma.API.Controllers
                         return Ok(response);
                     }
 
-                    return StatusCode(401, "Invalid");
+                    response.Message = "Invalid-NotExist";
+
+                    return StatusCode(401, response);
                 }
 
                 socialLoginVerified = _repo.User.IsSocialLoginVerified(dto); 
@@ -79,7 +81,7 @@ namespace Aluma.API.Controllers
                     passwordMatched = _repo.User.IsPasswordVerified(dto);
                     if (!passwordMatched)
                     {
-                        response.Message = "Invalid";
+                        response.Message = "Invalid-Credentials";
                         return StatusCode(401, response);
                     }
 

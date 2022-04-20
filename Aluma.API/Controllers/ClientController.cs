@@ -142,7 +142,7 @@ namespace Aluma.API.Controllers
 
                 if (userExists)
                 {
-                    response.Message = "Client already exists. Please sign in.";
+                    response.Message = "Invalid-Exists";
                     return StatusCode(403, response);
                 }
                 else
@@ -169,7 +169,8 @@ namespace Aluma.API.Controllers
             }
             catch (Exception e)
             {
-                response.Message = e.Message;
+                response.Message = "InternalError";
+                Console.WriteLine(e.Message);
                 return StatusCode(500, response);
             }
         }
