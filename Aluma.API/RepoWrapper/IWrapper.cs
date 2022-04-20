@@ -1,4 +1,5 @@
-﻿using Aluma.API.Repositories;
+﻿using Aluma.API.Helpers;
+using Aluma.API.Repositories;
 using BankValidationService;
 using FileStorageService;
 using JwtService;
@@ -20,7 +21,10 @@ namespace Aluma.API.RepoWrapper
         IFspMandateRepo FSPMandate { get; }
         IFNARepo FNA { get; }
 
-
+        IFIRepo FI { get; }
+        IPEFRepo PEF { get; }
+        IDocumentHelper DocumentHelper { get; }
+        IDocumentSignHelper SignHelper { get; }
 
         IIRSW8Repo IRSW8 { get; }
         IIRSW9Repo IRSW9 { get; }

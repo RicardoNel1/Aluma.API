@@ -1,10 +1,12 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Dto;
+using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
@@ -19,12 +21,68 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
+
+        [HttpPost, AllowAnonymous]
+        public IActionResult GetDocument(DocumentListDto dto)
+        {
+            try
+            {
+                if(dto.DocumentType == "UserDocument")
+                {
+                    var document = _repo.UserDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.UserId == dto.UserId);
+                    if (document.Any())
+                    {
+                        UserDocumentModel model = document.First();
+
+                        byte[] bytes = _repo.DocumentHelper.GetDocumentData(model.URL, dto.DocumentName);
+
+                        UserDocumentDto response = new UserDocumentDto()
+                        {
+                            Id = model.Id,
+                            DocumentName = model.Name,
+                            b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                        };
+                        return Ok(response);
+
+                    }
+
+                }
+                else if(dto.DocumentType == "ApplicationDocument")
+                {
+                    var document = _repo.ApplicationDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.ApplicationId == dto.ApplicationId);
+
+                    if (document.Any())
+                    {
+                        ApplicationDocumentModel model = document.First();
+                        byte[] bytes = _repo.DocumentHelper.GetDocumentData(model.URL, dto.DocumentName);
+
+                        ApplicationDocumentDto response = new ApplicationDocumentDto()
+                        {
+                            Id = model.Id,
+                            DocumentName = model.Name,
+                            b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                        };
+                        return Ok(response);
+                    }
+                }
+
+                return BadRequest("Document couldn't be downloaded");
+
+                
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
         [HttpGet("deleteAll"), AllowAnonymous]
         public IActionResult DeleteAll()
         {
             try
             {
-                 _repo.Applications.DeleteAllDocuments();
+                 _repo.DocumentHelper.DeleteAllDocuments();
 
                 return Ok();
             }
@@ -36,15 +94,15 @@ namespace Aluma.API.Controllers
 
 
 
-        [HttpGet("application/list")]
-        public IActionResult ApplicationDocsList(ApplicationDto dto)
+        [HttpGet("application/list"), AllowAnonymous]
+        public async Task<IActionResult> ApplicationDocsList(int applicationId,int userId)
         {
             try
             {
                 //not actual documents just list
-                dto.Documents = _repo.ApplicationDocuments.GetDocumentsList(dto);
+                List<DocumentListDto> docs = await _repo.DocumentHelper.GetApplicationDocListAsync(applicationId, userId);
 
-                return Ok(dto);
+                return Ok(docs);
             }
             catch (Exception e)
             {
@@ -83,15 +141,15 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("user/list")]
-        public IActionResult UserDocsList(UserDto dto)
+        [HttpGet("user/list"), AllowAnonymous]
+        public async Task<IActionResult> UserDocsList(int userId)
         {
             try
             {
                 //not actual documents just list
-                dto.Documents = _repo.UserDocuments.GetDocumentsList(dto);
+                List<DocumentListDto> docs = await _repo.DocumentHelper.GetUserDocListAsync(userId);
 
-                return Ok(dto);
+                return Ok(docs);
             }
             catch (Exception e)
             {

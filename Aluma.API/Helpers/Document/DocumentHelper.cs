@@ -14,10 +14,26 @@ using DataService.Model;
 using DataService.Enum;
 using Azure.Storage.Files.Shares;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aluma.API.Helpers
 {
-    public class DocumentHelper
+
+    public interface IDocumentHelper
+    {
+        Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
+        byte[] GetDocumentData(string url, string name);
+        Task<byte[]> GetDocumentDataAsync(string url, string name);
+        void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document);
+        Task UploadSignedUserFileAsync(byte[] fileBytes, UserDocumentModel document);
+        void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
+        Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
+        void DeleteAllDocuments();
+        Task<List<DocumentListDto>> GetUserDocListAsync(int userId);
+        Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId);
+    }
+
+    public class DocumentHelper : IDocumentHelper
     {
         private readonly AlumaDBContext _context;
         private readonly IConfiguration _config;
@@ -57,6 +73,41 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
                 };
+
+        public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
+        {
+            List<DocumentListDto> doc = new List<DocumentListDto>();
+
+            ApplicationModel app = _context.Applications.Include(a => a.Client).Where(a => a.Id == applicationId).FirstOrDefault();
+
+            if (app.Client.UserId == userId)
+            {
+                foreach (var item in _context.ApplicationDocuments.Where(d => d.ApplicationId == app.Id))
+                {
+                    doc.Add(new DocumentListDto() { ApplicationId = app.Id, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "ApplicationDocument" });
+                }
+            }
+
+            return doc;
+        }
+
+        public async Task<List<DocumentListDto>> GetUserDocListAsync(int userId)
+        {
+            List<DocumentListDto> doc = new List<DocumentListDto>();
+
+            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
+
+            if (user != null)
+            {
+                foreach (var item in _context.UserDocuments.Where(d => d.UserId == user.Id))
+                {
+                    doc.Add(new DocumentListDto() { ApplicationId = 0, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "UserDocument" });
+                }
+            }
+
+            return doc;
+        }
+
 
         public async Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null)
         {
@@ -449,7 +500,7 @@ namespace Aluma.API.Helpers
             return response;
         }
 
-        internal void DeleteAllDocuments()
+        public void DeleteAllDocuments()
         {
             var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
             FileStorageDto fileDto = new FileStorageDto()
