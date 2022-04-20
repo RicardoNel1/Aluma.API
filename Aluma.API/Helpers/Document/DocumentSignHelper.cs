@@ -55,7 +55,7 @@ namespace Aluma.API.Helpers
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 113, 205, 30, 120, 11)));
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 400, 205, 120, 120, 11)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 400, 205, 30, 120, 11)));
 
             if (client.FspMandate.DiscretionType == "full")
             {
@@ -100,12 +100,14 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new SignatureRepo();
             var signerList = new List<SignerListItemDto>();
 
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var pageList = new List<int> { 1, 2, 3 };
 
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 770, 20, 60, p))));
+
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 25, 770, 20, 60, p))));
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 98, 463, 30, 120, 4)));
-
+                                
             //when broker appointment is added.
             //signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 98, 463, 30, 120, 4)));
 
@@ -259,7 +261,7 @@ namespace Aluma.API.Helpers
                         {
                             DocumentTypesEnum.RecordOfAdvice => RecordOfAdviceSigningList(application, client, advisor),
                             DocumentTypesEnum.PEFDOA => PEFDOASigningList(application, client, advisor),
-                            DocumentTypesEnum.PEF2DOA => PEFDOASigningList(application, client, advisor),
+                            DocumentTypesEnum.PEF2DOA => PEF2DOASigningList(application, client, advisor),
                             DocumentTypesEnum.PEFQuote => PEFQuoteSigningList(application, client, advisor),
                             DocumentTypesEnum.PEF2Quote => PEF2QuoteSigningList(application, client, advisor),
                             DocumentTypesEnum.FIDOA => FIDOASigningList(application, client, advisor),

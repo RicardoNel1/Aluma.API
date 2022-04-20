@@ -265,7 +265,7 @@ namespace Aluma.API.Repositories
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
             ConsumerProtectionModel cp = _context.ConsumerProtection.SingleOrDefault(r => r.ClientId == client.Id);
-            DisclosureModel disc = _context.Disclosures.SingleOrDefault(r => r.ClientId == client.Id);
+            DisclosureModel disc = _context.Disclosures.First(r => r.ClientId == client.Id);
 
 
             //ROA only application document thus far

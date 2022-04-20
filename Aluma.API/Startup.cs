@@ -74,17 +74,17 @@ namespace Aluma.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //dev only move back
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1.0.0"));
+
+                app.UseHangfireDashboard();
+
             }
             else
             {
                 app.UseHsts();
             }
-            //dev only move back
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1.0.0"));
-
-            app.UseHangfireDashboard();
-
             //app.UseHttpsRedirection();
 
             app.UseStaticFiles();

@@ -157,7 +157,7 @@ namespace Aluma.API.Helpers
             var dto = new FileStorageDto()
             {
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal",
+                BaseShare = storageSettings.BaseShare,
                 FileName = name,
                 FileDirectory = url,
             };
@@ -171,7 +171,7 @@ namespace Aluma.API.Helpers
             var dto = new FileStorageDto()
             {
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal",
+                BaseShare = storageSettings.BaseShare,
                 FileName = name,
                 FileDirectory = url,
             };
@@ -200,7 +200,7 @@ namespace Aluma.API.Helpers
                 FileBytes = fileBytes,
                 FileDirectory = fileDirectory,
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal"
+                BaseShare = storageSettings.BaseShare
             };
 
             FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
@@ -210,7 +210,7 @@ namespace Aluma.API.Helpers
                 var dtoOld = new FileStorageDto()
                 {
                     BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = storageSettings.BaseShare,
                     FileName = document.Name,
                     FileDirectory = document.URL,
                 };
@@ -241,7 +241,7 @@ namespace Aluma.API.Helpers
                 FileBytes = fileBytes,
                 FileDirectory = fileDirectory,
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal"
+                BaseShare = storageSettings.BaseShare
             };
 
             FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
@@ -251,7 +251,7 @@ namespace Aluma.API.Helpers
                 var dtoOld = new FileStorageDto()
                 {
                     BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = storageSettings.BaseShare,
                     FileName = document.Name,
                     FileDirectory = document.URL,
                 };
@@ -283,7 +283,7 @@ namespace Aluma.API.Helpers
                 FileBytes = fileBytes,
                 FileDirectory = fileDirectory,
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal"
+                BaseShare = storageSettings.BaseShare
             };
 
             FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
@@ -293,7 +293,7 @@ namespace Aluma.API.Helpers
                 var dtoOld = new FileStorageDto()
                 {
                     BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = storageSettings.BaseShare,
                     FileName = document.Name,
                     FileDirectory = document.URL,
                 };
@@ -325,7 +325,7 @@ namespace Aluma.API.Helpers
                 FileBytes = fileBytes,
                 FileDirectory = fileDirectory,
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal"
+                BaseShare = storageSettings.BaseShare
             };
 
             FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
@@ -335,7 +335,7 @@ namespace Aluma.API.Helpers
                 var dtoOld = new FileStorageDto()
                 {
                     BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = storageSettings.BaseShare,
                     FileName = document.Name,
                     FileDirectory = document.URL,
                 };
@@ -424,7 +424,7 @@ namespace Aluma.API.Helpers
                 FileBytes = fileBytes,
                 FileDirectory = fileDirectory,
                 BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = "alumaportal"
+                BaseShare = storageSettings.BaseShare
             };
 
             FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
@@ -447,7 +447,7 @@ namespace Aluma.API.Helpers
                 FileStorageDto fileDto = new FileStorageDto()
                 {
                     BaseDocumentPath = azureSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = azureSettings.BaseShare,
                     FileDirectory = doc.URL,
                     FileName = doc.Name
                 };
@@ -480,7 +480,7 @@ namespace Aluma.API.Helpers
                 FileStorageDto fileDto = new FileStorageDto()
                 {
                     BaseDocumentPath = azureSettings.DocumentsRootPath,
-                    BaseShare = "alumaportal",
+                    BaseShare = azureSettings.BaseShare,
                     FileDirectory = doc.URL,
                     FileName = doc.Name
                 };
@@ -506,7 +506,7 @@ namespace Aluma.API.Helpers
             FileStorageDto fileDto = new FileStorageDto()
             {
                 BaseDocumentPath = azureSettings.DocumentsRootPath,
-                BaseShare = "alumaportal",
+                BaseShare = azureSettings.BaseShare,
             };
 
             _fileStorageRepo.DeleteAllAsync(fileDto);

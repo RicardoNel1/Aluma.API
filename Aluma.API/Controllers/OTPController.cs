@@ -99,21 +99,32 @@ namespace Aluma.API.Controllers
         [HttpGet("verify/signature")]
         public async Task<IActionResult> VerifySignatureOtp(int applicationId, string otp)
         {
-            UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+            
             AuthResponseDto response = new AuthResponseDto();
 
-            string isOtpVerified = _repo.Otp.VerifyOTP(otp, user.Id, applicationId);
-
-            if (isOtpVerified != "Validated")
+            try
             {
-                return StatusCode(401, "Invalid OTP");
+                UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+
+                string isOtpVerified = _repo.Otp.VerifyOTP(otp, user.Id, applicationId);
+
+                if (isOtpVerified != "Validated")
+                {
+                    return StatusCode(401, "Invalid OTP");
+                }
+
+                response.Message = "SignatureVerified";
+
+                await _repo.SignHelper.SignDocuments(applicationId);
+
+                return Ok(response);
             }
-
-            response.Message = "SignatureVerified";
-            
-            await _repo.SignHelper.SignDocuments(applicationId);
-
-            return Ok(response);
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                response.Message = "InternalError";
+                return StatusCode(500,response); ;
+            }
         }
 
 

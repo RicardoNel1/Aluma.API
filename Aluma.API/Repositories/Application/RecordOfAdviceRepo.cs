@@ -98,17 +98,20 @@ namespace Aluma.API.Repositories
             _context.Clients.Update(client);
             _context.SaveChanges();
 
-            DisclosureRepo discRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
 
-            var discDto = new DisclosureDto()
+            var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id && d.AdvisorId == newRoa.AdvisorId);
+            if (!disclosureExists.Any())
             {
-                ClientId = client.Id,
-                AdvisorId = newRoa.AdvisorId
-            };
+                DisclosureRepo discRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
 
-            discRepo.CreateDisclosure(discDto);
+                var discDto = new DisclosureDto()
+                {
+                    ClientId = client.Id,
+                    AdvisorId = newRoa.AdvisorId
+                };
 
-
+                discRepo.CreateDisclosure(discDto);
+            }
 
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
