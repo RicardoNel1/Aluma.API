@@ -15,6 +15,8 @@
         PEFDOA,
         PEF2DOA, 
         PEFQuote,
-        PEF2Quote        
+        PEF2Quote,
+        FIDOA,
+        FIQuote
     }
 }
