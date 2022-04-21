@@ -57,8 +57,10 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"Aluma Capital - Disclosure Letter.pdf"},
                     {DocumentTypesEnum.PEFDOA,          "Aluma Capital - Private Equity - Growth - Deed of Adherence.pdf"},
                     {DocumentTypesEnum.PEF2DOA,         "Aluma Capital - Private Equity - Income - Deed of Adherence.pdf"},
+                    {DocumentTypesEnum.FIDOA,         "Aluma Capital - Fixed Income - Deed of Adherence.pdf"},
                     {DocumentTypesEnum.PEFQuote,        "Aluma Capital - Private Equity - Growth - Quote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,       "Aluma Capital - Private Equity - Income - Quote.pdf"},
+                    {DocumentTypesEnum.FIQuote,       "Aluma Capital - Fixed Income - Quote.pdf"},
                 };
 
         public Dictionary<DocumentTypesEnum, string> DocumentTemplates = new Dictionary<DocumentTypesEnum, string>()
@@ -70,8 +72,10 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"DisclosureLetter.pdf"},
                     {DocumentTypesEnum.PEFDOA,"DOA.pdf"},
                     {DocumentTypesEnum.PEF2DOA,"DOA2.pdf"},
+                    {DocumentTypesEnum.PEF2DOA,"FIDOA.pdf"},
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
+                    {DocumentTypesEnum.FIQuote,"FIQuote.pdf"},
                 };
 
         public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
