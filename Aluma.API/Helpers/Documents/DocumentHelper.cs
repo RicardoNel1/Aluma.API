@@ -72,7 +72,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"DisclosureLetter.pdf"},
                     {DocumentTypesEnum.PEFDOA,"DOA.pdf"},
                     {DocumentTypesEnum.PEF2DOA,"DOA2.pdf"},
-                    {DocumentTypesEnum.PEF2DOA,"FIDOA.pdf"},
+                    {DocumentTypesEnum.FIDOA,"DOA.pdf"}, // Change when FI DOA arrives.
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
                     {DocumentTypesEnum.FIQuote,"FIQuote.pdf"},

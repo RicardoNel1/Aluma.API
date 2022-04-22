@@ -353,7 +353,13 @@ namespace Aluma.API.Repositories
 
         public void ResetPassword(LoginDto dto)
         {
-            throw new NotImplementedException();
+            StringHasherRepo str = new StringHasherRepo();
+            UserModel user = _context.Users.Where(u => u.Email == dto.UserName).First();
+
+            user.Password = str.CreateHash(dto.NewPassword);
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
         }
 
         public void ForgotPassword(LoginDto dto)
