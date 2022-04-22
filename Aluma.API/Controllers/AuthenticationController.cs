@@ -84,7 +84,7 @@ namespace Aluma.API.Controllers
                 }
 
 
-                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
+                socialLoginVerified = true;// _repo.User.IsSocialLoginVerified(dto);
 
                 if (!socialLoginVerified)
                 {
@@ -182,8 +182,6 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, response);
                 }
 
-
-
                 //token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
                 //AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
 
@@ -200,9 +198,7 @@ namespace Aluma.API.Controllers
                 registrationVerified = _repo.User.IsRegistrationVerified(dto);
 
                 if (!registrationVerified)
-                {
-                    //Re-send Verification OTP
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                {                    
                     response.Message = "verifyRegistration";
                     return StatusCode(401, response);
                 }
@@ -259,26 +255,54 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost("reset/password"), Authorize]
+        [HttpPost("reset-password"), AllowAnonymous]
         public IActionResult ResetPassword([FromBody] LoginDto dto)
         {
+            AuthResponseDto response = new AuthResponseDto();
+
             try
             {
+                bool loginExists = false;
+                bool socialLoginVerified = false;
                 bool passwordMatched = false;
+                bool registrationVerified = false;
+
+                UserDto user = new UserDto();
+                RoleEnum role = RoleEnum.Client;
+                var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+                string token = String.Empty;
+
+                loginExists = _repo.User.DoesUserNameExist(dto);
+
+                if (!loginExists)
+                {
+                    response.Status = "Failure";
+                    response.Message = "Invalid-NotExist";
+                    return StatusCode(401, response);
+                }
 
                 passwordMatched = _repo.User.IsPasswordVerified(dto);
 
                 if (!passwordMatched)
                 {
-                    return StatusCode(401, "Invalid");
+                    response.Status = "Failure";
+                    response.Message = "Invalid-Credentials";
+                    return StatusCode(401, response);
                 }
 
-                _repo.User.ResetPassword(dto);
-                return Ok("Updated");
+                user = _repo.User.GetUser(dto);
+
+                _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                response.Status = "Success";
+                response.Message = "verifyResetPassword";
+                
+                return Ok(response);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
             }
         }
     }

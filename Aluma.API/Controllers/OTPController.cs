@@ -96,6 +96,50 @@ namespace Aluma.API.Controllers
             return Ok(response);
         }
 
+        [HttpPost("verify/reset-password")]
+        public IActionResult VerifyResetPasswordOtp(LoginDto dto)
+        {
+            UserDto user = _repo.User.GetUser(dto);
+            AuthResponseDto response = new AuthResponseDto();
+
+            string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
+
+            if (isOtpVerified != "Validated")
+            {
+                response.Message = "Invalid OTP";
+                return StatusCode(401, response);
+            }
+
+            if (user.Role == RoleEnum.Admin || user.Role == RoleEnum.Advisor || user.Role == RoleEnum.External)
+            {
+                _repo.User.VerifyUser(user);
+            }
+
+            _repo.User.ResetPassword(dto);
+
+            RoleEnum role = user.Role;
+            var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+            string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+            if (role == RoleEnum.Client)
+            {
+                ClientDto client = _repo.Client.GetClientByUserId(user.Id);
+                response.ClientId = client.Id;
+            }
+            else if (role == RoleEnum.Advisor)
+            {
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+                response.AdvisorId = advisor.Id;
+            }
+            response.Status = "Success";
+            response.Message = "OtpVerified";
+            response.Token = token;
+            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
+            response.User = user;
+
+
+            return Ok(response);
+        }
+
         [HttpGet("verify/signature")]
         public async Task<IActionResult> VerifySignatureOtp(int applicationId, string otp)
         {
