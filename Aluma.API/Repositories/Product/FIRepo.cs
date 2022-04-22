@@ -50,13 +50,6 @@ namespace Aluma.API.Repositories
             //check for pe fund product
             d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
 
-
-            if (product.ProductId == 6)
-            {
-                d[$"zarCapital"] = product.AcceptedLumpSum.ToString();
-            }
-
-
             if (client.User.Address.Count > 0)
             {
                 AddressModel item = client.User.Address.First(a => a.Type == AddressTypesEnum.Residential);
@@ -101,7 +94,7 @@ namespace Aluma.API.Repositories
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 
 
-            DocumentTypesEnum type = product.ProductId == 5 ? DocumentTypesEnum.PEFDOA : DocumentTypesEnum.PEF2DOA;
+            DocumentTypesEnum type = DocumentTypesEnum.FIDOA;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
 
@@ -119,7 +112,7 @@ namespace Aluma.API.Repositories
             d["quotationDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
             d["signedDate"] = DateTime.UtcNow.ToString("ddMMyyyy");
             d["commencementDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
-            d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
+            //d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
 
 
             d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
@@ -128,31 +121,27 @@ namespace Aluma.API.Repositories
             {
                 //Calculations                
                 double i = product.AcceptedLumpSum;
-                double r = .129;
+                double r0 = .1133;
+                double r50 = 0.0977;
+                double r75 = 0.0898;
+                double r100 = .082;
+
                 double ab = .025;
                 double dt = .2;
                 double t = 5;
 
-                double monthlyDividendGross = i * (r / 12);
-                double monthlyDividendNett = monthlyDividendGross - (monthlyDividendGross * dt);
-                double monthlyDividendAnnualGross = i * r;
-                double monthlyDividendAnnualNett = monthlyDividendAnnualGross - (monthlyDividendAnnualGross * dt);
-                double annualBonusGross = i * ab;
-                double annualBonusNet = annualBonusGross - (annualBonusGross * dt);
-                double dividendPayoutGross = (monthlyDividendAnnualGross * t) + (annualBonusGross * t);
-                double dividendPayoutNett = dividendPayoutGross - (dividendPayoutGross * dt);
+                double monthlyDividendGross0 = i * (r0 / 12);
+                double monthlyDividendGross50 = i * (r50 / 12);
+                double monthlyDividendGross75 = i * (r75 / 12);
+                double monthlyDividendGross100 = i * (r100 / 12);
 
 
                 d[$"initialInvestment"] = "R " + i.ToString("F");
 
-                d[$"monthlyDividendGross"] = "R " + monthlyDividendGross.ToString("F");
-                d[$"monthlyDividendNett"] = "R " + monthlyDividendNett.ToString("F");
-                d[$"monthlyDividendAnnualGross"] = "R " + monthlyDividendAnnualGross.ToString("F");
-                d[$"monthlyDividendAnnualNett"] = "R " + monthlyDividendAnnualNett.ToString("F");
-                d[$"annualBonusGross"] = "R " + annualBonusGross.ToString("F");
-                d[$"annualBonusNet"] = "R " + annualBonusNet.ToString("F");
-                d[$"dividendPayoutGross"] = "R " + dividendPayoutGross.ToString("F");
-                d[$"dividendPayoutNett"] = "R " + dividendPayoutNett.ToString("F");
+                d[$"zerocp"] = "R " + monthlyDividendGross0.ToString("F");
+                d[$"fiftycp"] = "R " + monthlyDividendGross50.ToString("F");
+                d[$"seventyfivecp"] = "R " + monthlyDividendGross75.ToString("F");
+                d[$"hundredcp"] = "R " + monthlyDividendGross100.ToString("F");
 
             }
             //quoteNumber
