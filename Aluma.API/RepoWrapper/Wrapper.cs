@@ -51,6 +51,9 @@ namespace Aluma.API.RepoWrapper
         private IEstateExpensesRepo _estateExpenses;
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
+        private IRetirementPlanningRepo _retirementPlanning;
+        private IAssumptionsRepo _assumptions;
+
 
         private IFIRepo _fi;
         private IPEFRepo _pef;
@@ -220,6 +223,21 @@ namespace Aluma.API.RepoWrapper
             get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
         }
 
+        public IRetirementPlanningRepo RetirementPlanning
+        {
+            get { return _retirementPlanning == null ? new RetirementPlanningRepo(_dbContext, _host, _config, _mapper) : _retirementPlanning; }
+        }
+
+        public IAssumptionsRepo Assumptions
+        {
+            get { return _assumptions == null ? new AssumptionsRepo(_dbContext, _host, _config, _mapper) : _assumptions; }
+        }
+
+
+
+
+
+        //Products and Documents
         public IFIRepo FI
         {
             get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }

@@ -33,7 +33,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AddressModelBuilder());
 
 
-            //FNA
+            //FNA   //necessary?
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
@@ -86,6 +86,9 @@ namespace DataService.Context
         public DbSet<EstateExpensesModel> EstateExpenses { get; set; }
         public DbSet<RetirementPensionFundsModel> RetirementPensionFunds { get; set; }
         public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
+        public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
+
+        public DbSet<AssumptionsModel> Assumptions { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }

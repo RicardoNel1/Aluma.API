@@ -50,9 +50,9 @@ namespace Aluma.API.Repositories
 
         public bool DoesEstateExpensesExist(EstateExpensesDto dto)
         {
-            bool estaeExpensesExist = false;
-            estaeExpensesExist = _context.EstateExpenses.Where(a => a.ClientId == dto.ClientId).Any();
-            return estaeExpensesExist;
+            bool estateExpensesExist = false;
+            estateExpensesExist = _context.EstateExpenses.Where(a => a.ClientId == dto.ClientId).Any();
+            return estateExpensesExist;
 
         }
 
