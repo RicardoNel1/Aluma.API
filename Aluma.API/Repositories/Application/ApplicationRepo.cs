@@ -238,7 +238,7 @@ namespace Aluma.API.Repositories
             dto = _mapper.Map<ApplicationDto>(application);
             dto.ProductName = product.Name;
 
-            _ms.SendNewApplicationEmail(client);
+            _ms.SendNewApplicationEmail(client, product.Name);
 
             return dto;
 

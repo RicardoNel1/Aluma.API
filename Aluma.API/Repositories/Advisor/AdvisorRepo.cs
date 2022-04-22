@@ -5,6 +5,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,13 +39,15 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-
+        private readonly IFileStorageRepo _fileStorage;
+        MailSender _ms;
         public AdvisorRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
         public bool DoesAdvisorExist(UserDto dto)
@@ -127,7 +130,7 @@ namespace Aluma.API.Repositories
 
 
                 //Done
-                //SendWelcomeEmail(advisor);
+                _ms.SendAdvisorWelcomeEmail(advisor);
 
                 return _mapper.Map<AdvisorDto>(advisor);
             }

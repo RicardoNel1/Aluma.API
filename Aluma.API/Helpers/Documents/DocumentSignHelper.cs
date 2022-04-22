@@ -23,6 +23,8 @@ namespace Aluma.API.Helpers
     public interface IDocumentSignHelper
     {
         Task SignDocuments(int applicationId);
+
+        Task SendAdvisorEmails();
     }
 
     public class DocumentSignHelper : IDocumentSignHelper
@@ -42,6 +44,17 @@ namespace Aluma.API.Helpers
             _host = host;
             _dh = new DocumentHelper(_context, _config, _fileStorageRepo, _host);
             _ms = new MailSender(_context, _config, _fileStorageRepo, _host);
+        }
+
+        public async Task SendAdvisorEmails()
+        {
+            //var advisors = _context.Advisors.Include(a => a.User).ToList();
+            var clients = _context.Clients.Include(c => c.User).ToList();
+            foreach (var item in clients)
+            {
+                //await _ms.SendAdvisorWelcomeEmail(item);
+                await _ms.SendClientWelcomeEmail(item);
+            }
         }
 
         private List<SignerListItemDto> FspMandateSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)

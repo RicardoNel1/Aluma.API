@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Helpers
 {
@@ -30,7 +31,7 @@ namespace Aluma.API.Helpers
             _dh = new DocumentHelper(_context, _config, _fileStorageRepo, _host);
         }
 
-        public async void SendNewApplicationEmail(ClientModel client)
+        public async void SendNewApplicationEmail(ClientModel client, string productName)
         {
             var mailSettings = _config.GetSection("MailServerSettings").Get<MailServerSettingsDto>();
 
@@ -46,8 +47,23 @@ namespace Aluma.API.Helpers
                 //message.To.Add(new MailAddress("sales@aluma.co.za"));
                 message.To.Add(new MailAddress("system@aluma.co.za"));
 
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}NewApplication.html";
 
-                message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                bb.HtmlBody = string.Format(bb.HtmlBody, $"{_host.WebRootPath}{slash}img{slash}email-banner-insurance.jpg", client.User.FirstName + " " + client.User.LastName, productName);
+
+                message.Body = bb.HtmlBody;
+
+                //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
 
                 var smtpClient = new SmtpClient
                 {
@@ -153,7 +169,76 @@ namespace Aluma.API.Helpers
         }
 
 
-        public async void SendWelcomeEmail(AdvisorModel advisor)
+
+        public async Task SendClientWelcomeEmail(ClientModel client)
+        {
+            var mailSettings = _config.GetSection("MailServerSettings").Get<MailServerSettingsDto>();
+
+            UserMail um = new UserMail()
+            {
+                Email = client.User.Email,
+                Name = client.User.FirstName + " " + client.User.LastName,
+                Subject = "Aluma Capital: Welcome letter for " + client.User.FirstName + " " + client.User.LastName,
+                Template = "ClientWelcome"
+            };
+
+            try
+            {
+                var message = new MailMessage
+                {
+                    From = new MailAddress(mailSettings.Username),
+                    Subject = um.Subject,
+                    IsBodyHtml = true
+                };
+
+                //message.To.Add(new MailAddress(advisor.User.Email));
+                message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
+                //message.Bcc.Add(new MailAddress("system@aluma.co.za"));
+
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                bb.HtmlBody = string.Format(bb.HtmlBody, $"{_host.WebRootPath}{slash}img{slash}email-banner-investments.jpg", client.User.FirstName);
+
+                message.Body = bb.HtmlBody;
+
+
+                var smtpClient = new SmtpClient
+                {
+                    Host = "mail.administr8it.co.za",
+                    Port = 25,
+                    EnableSsl = false,
+                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                    Timeout = 1000000
+                };
+
+
+                smtpClient.Send(message);
+
+                return;
+
+            }
+            catch (System.Exception ex)
+            {
+                return;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
+        }
+
+        public async Task SendAdvisorWelcomeEmail(AdvisorModel advisor)
         {
             var mailSettings = _config.GetSection("MailServerSettings").Get<MailServerSettingsDto>();
 
@@ -175,10 +260,25 @@ namespace Aluma.API.Helpers
                 };
 
                 message.To.Add(new MailAddress(advisor.User.Email));
-                //message.Bcc.Add(new MailAddress("johan@fintegratetech.co.za"));
+                //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
                 message.Bcc.Add(new MailAddress("system@aluma.co.za"));
 
-                message.Body = "Application Completed: " + um.Name;
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                bb.HtmlBody = string.Format(bb.HtmlBody, $"{_host.WebRootPath}{slash}img{slash}email-banner-private-equity.jpg", advisor.User.FirstName , advisor.User.FirstName , advisor.User.LastName, advisor.User.Email, advisor.User.MobileNumber, advisor.User.Email, $"Aluma{advisor.User.FirstName.Trim()}");
+
+                message.Body = bb.HtmlBody;
+
 
                 var smtpClient = new SmtpClient
                 {

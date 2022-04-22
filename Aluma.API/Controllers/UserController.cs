@@ -51,6 +51,21 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("emails"), AllowAnonymous]
+        public async Task<IActionResult> SendAlumaWelcomeEmails()
+        {
+            try
+            {
+                await _repo.SignHelper.SendAdvisorEmails();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("documents"), AllowAnonymous]
         public async Task<IActionResult> DownloadAllUserDocuments(int userId)
         {
