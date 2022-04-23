@@ -94,6 +94,9 @@ namespace DataService
             CreateMap<AssumptionsModel, AssumptionsDto>()
                 .ReverseMap();
 
+            CreateMap<RetirementPlanningModel, RetirementPlanningDto>()
+                .ReverseMap();
+
 
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()
