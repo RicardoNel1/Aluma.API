@@ -81,8 +81,7 @@ namespace Aluma.API.Repositories
 
         public async Task<List<UserDocumentDto>> GetDocuments(int userId)
         {
-            int client = _context.Applications.First(a => a.Id == a.Id).ClientId;
-            UserModel u = _context.Clients.Include(c => c.User).First(a => a.Id == a.Id).User;
+            UserModel u = _context.Users.First(a => a.Id == userId);
 
             List<UserDocumentDto> response = await _dh.GetAllUserDocuments(u);
 

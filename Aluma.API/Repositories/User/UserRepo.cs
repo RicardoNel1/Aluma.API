@@ -10,6 +10,9 @@ using System.Linq;
 using StringHasher;
 using DataService.Enum;
 using Microsoft.EntityFrameworkCore;
+using Aluma.API.Helpers;
+using FileStorageService;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Aluma.API.Repositories
 {
@@ -48,11 +51,12 @@ namespace Aluma.API.Repositories
 
         public UserDto EditUserSignature(UserDto dto);//(UserDto dto);
 
-        void ResetPassword(LoginDto dto);
+        void ResetPassword(int userId, string password);
 
         void ForgotPassword(LoginDto dto);
         void VerifyUser(UserDto user);
         UserDto GetUserByApplicationID(int applicationId);
+        int DecryptUserId(string userId);
     }
 
     public class UserRepo : RepoBase<UserModel>, IUserRepo
@@ -60,14 +64,17 @@ namespace Aluma.API.Repositories
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
+        private readonly IFileStorageRepo _fileStorage;
         private readonly IMapper _mapper;
-
-        public UserRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        MailSender _ms;
+        public UserRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IFileStorageRepo filestorage, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
+            _fileStorage = filestorage;
             _mapper = mapper;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
         public bool DoesUserExist(UserDto dto)
@@ -135,11 +142,11 @@ namespace Aluma.API.Repositories
 
         public UserDto GetUser(UserDto dto)
         {
-            if (DoesUserExist(dto))
-            {
+            //if (DoesUserExist(dto))
+            //{
                 var user = _context.Users.Where(u => (u.Id == dto.Id)).FirstOrDefault();
                 return _mapper.Map<UserDto>(user);
-            }
+            //}
 
             return null;
         }
@@ -215,7 +222,17 @@ namespace Aluma.API.Repositories
 
         public bool DoesUserNameExist(LoginDto dto)
         {
-            bool exists = _context.Users.Where(c => (c.Email == dto.UserName)).Any();
+            bool exists = false;
+            if (dto.UserId > 0)
+            {
+                exists = _context.Users.Where(c => (c.Id == dto.UserId)).Any();
+
+            }
+            else
+            {
+                exists = _context.Users.Where(c => (c.Email == dto.UserName)).Any();
+
+            }
 
             return exists;
         }
@@ -351,25 +368,36 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void ResetPassword(LoginDto dto)
+        public void ResetPassword(int userId, string password)
         {
-            throw new NotImplementedException();
+            StringHasherRepo str = new StringHasherRepo();
+            UserModel user = _context.Users.Where(u => u.Id == userId).First();
+
+            user.Password = str.CreateHash(password);
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
         }
 
         public void ForgotPassword(LoginDto dto)
         {
-            throw new NotImplementedException();
+            UserModel user = _context.Users.Where(u => u.Email == dto.UserName).First();
+            _ms.SendForgotPasswordMail(user);
+
         }
 
         public void VerifyUser(UserDto user)
         {
             UserModel um = _context.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+            if (!um.isRegistrationVerified)
+            {
+                um.isRegistrationVerified = true;
+                um.RegistrationVerifiedDate = DateTime.UtcNow;
 
-            um.isRegistrationVerified = true;
-            um.RegistrationVerifiedDate = DateTime.UtcNow;
+                _context.Users.Update(um);
+                _context.SaveChanges();
+            }
 
-            _context.Users.Update(um);
-            _context.SaveChanges();
         }
 
         public UserDto GetUserByApplicationID(int applicationId)
@@ -378,6 +406,13 @@ namespace Aluma.API.Repositories
             UserDto result = _mapper.Map<UserDto>(app.Client.User);
             return result;
 
+        }
+
+        public int DecryptUserId(string userId)
+        {
+            string key = _config.GetSection("SystemSettings").Get<SystemSettingsDto>().EncryptionKey;
+            string decryption = UtilityHelper.DecryptString(key, Base64UrlEncoder.Decode(userId));
+            return Int32.Parse(decryption);
         }
     }
 }

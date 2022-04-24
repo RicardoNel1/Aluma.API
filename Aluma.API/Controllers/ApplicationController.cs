@@ -215,11 +215,19 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    await _repo.Applications.SignDocuments(applicationId);
-                    //_repo.Applications.ConsentToSign(applicationId);
-                    //UserDto user = _repo.User.GetUserByApplicationID(applicationId);
-                    //_repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
-                    //response.Message = "verifySignature";
+                    if (_repo.Applications.CheckSignConsent(applicationId))
+                    {
+                        response.Message = "consentedSignature";
+
+                        await _repo.SignHelper.SignDocuments(applicationId);
+                    }
+                    else
+                    {
+                        _repo.Applications.ConsentToSign(applicationId);
+                        UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+                        _repo.Otp.SendOTP(user, OtpTypesEnum.SignDocument, applicationId);
+                        response.Message = "verifySignature";
+                    }
 
                     return Ok(response);
                 }

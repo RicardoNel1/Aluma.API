@@ -4,6 +4,7 @@ using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Net.Http.Headers;
 using System;
 
 namespace Aluma.API.Controllers
@@ -24,6 +25,8 @@ namespace Aluma.API.Controllers
         [HttpPost("client/login")]
         public IActionResult AuthenticateClient(LoginDto dto)
         {
+            AuthResponseDto response = new AuthResponseDto();
+
             try
             {
                 bool loginExists = false;
@@ -31,7 +34,6 @@ namespace Aluma.API.Controllers
                 bool passwordMatched = false;
                 bool registrationVerified = false;
 
-                AuthResponseDto response = new AuthResponseDto();
                 UserDto user = new UserDto();
                 RoleEnum role = RoleEnum.Client;
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
@@ -69,17 +71,29 @@ namespace Aluma.API.Controllers
                         return Ok(response);
                     }
 
-                    return StatusCode(401, "Invalid");
+                    response.Message = "Invalid-NotExist";
+
+                    return StatusCode(401, response);
                 }
 
-                socialLoginVerified = true;// _repo.User.IsSocialLoginVerified(dto); 
+                user = _repo.User.GetUser(dto);
+
+                if (user.Role != RoleEnum.Client && user.Role != RoleEnum.Guest)
+                {
+                    response.Message = "Invalid-Credentials";
+                    return StatusCode(401, response);
+                }
+
+
+                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
 
                 if (!socialLoginVerified)
                 {
+
                     passwordMatched = _repo.User.IsPasswordVerified(dto);
                     if (!passwordMatched)
                     {
-                        response.Message = "Invalid";
+                        response.Message = "Invalid-Credentials";
                         return StatusCode(401, response);
                     }
 
@@ -103,11 +117,9 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    user = _repo.User.GetUser(dto);
+
 
                     token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-
-
 
                     ClientDto client = _repo.Client.GetClientByUserId(user.Id);
 
@@ -124,20 +136,22 @@ namespace Aluma.API.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                response.Message = "InternalError";
+                return StatusCode(401, response);
             }
         }
 
         [HttpPost("advisor/login")]
         public IActionResult AuthenticateAdmin(LoginDto dto)
         {
+            AuthResponseDto response = new AuthResponseDto();
             try
             {
                 bool loginExists = false;
                 bool passwordMatched = false;
                 bool registrationVerified = false;
 
-                AuthResponseDto response = new AuthResponseDto();
+
                 UserDto user = new UserDto();
                 RoleEnum role = RoleEnum.Advisor;
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
@@ -147,151 +161,147 @@ namespace Aluma.API.Controllers
 
                 if (!loginExists)
                 {
-                    return StatusCode(401, "Invalid");
+                    response.Message = "Invalid-NotExist";
+                    return StatusCode(401, response);
+
+                }
+
+                user = _repo.User.GetUser(dto);
+
+                if (user.Role != RoleEnum.Advisor && user.Role != RoleEnum.External && user.Role != RoleEnum.Admin)
+                {
+                    response.Message = "Invalid-Credentials";
+                    return StatusCode(401, response);
                 }
 
                 passwordMatched = _repo.User.IsPasswordVerified(dto);
                 if (!passwordMatched)
                 {
-                    response.Message = "Invalid";
+                    response.Message = "Invalid-Credentials";
                     return StatusCode(401, response);
                 }
 
+                //token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+                //AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+
+                //response = new AuthResponseDto()
+                //{
+                //    Token = token,
+                //    AdvisorId = advisor.Id,
+                //    TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
+                //    User = user,
+                //    Message = "OtpVerified",
+                //};
+                //return Ok(response);
+
                 registrationVerified = _repo.User.IsRegistrationVerified(dto);
 
-                user = _repo.User.GetUser(dto);
-                token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
-
-                response = new AuthResponseDto()
+                if (!registrationVerified)
                 {
-                    Token = token,
-                    AdvisorId = advisor.Id,
-                    TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
-                    User = user,
-                    Message = "OtpVerified",
-                };
-                return Ok(response);
+                    response.Message = "verifyRegistration";
+                    return StatusCode(401, response);
+                }
+                else
+                {
+                    //Send Two-Factor Auth OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                    response.Message = "verifyLogin";
+                    return Ok(response);
+                }
 
-                //if (!registrationVerified)
-                //{
-                //    //Re-send Verification OTP
-                //    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
-                //    response.Message = "verifyRegistration";
-                //    return StatusCode(401, response);
-                //}
-                //else
-                //{
-                //    //Send Two-Factor Auth OTP
-                //    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
-                //    response.Message = "verifyLogin";
-                //    return Ok(response);
-                //}
 
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                response.Message = "InternalError";
+                return StatusCode(401, response);
             }
         }
 
-        //[HttpPost("client/register"), AllowAnonymous] //move to clientcontroller
-        //public IActionResult RegisterClient(RegistrationDto dto) //create client
-        //{
-        //    try
-        //    {
-        //        //bool userExists = _repo.Client.DoesClientExist(dto.);
 
-        //        //bool validId = false;
-
-        //        /*validId = _repo.User.ValidateID(dto.IdNumber);        //register page doesn't ask for ID
-
-        //        check if valid id number has been entered
-        //        if (validId == false)
-        //        {
-        //            return StatusCode(403, "Invalid ID");
-        //        }*/
-
-
-
-        //        //userExists = _repo.User.DoesUserExist(dto);
-
-        //        //if (userExists)
-        //        //{
-        //        //    return StatusCode(403, "Duplicate");
-        //        //}
-
-        //        _repo.User.CreateClientUser(dto);
-
-        //        //Send Verification OTP
-        //        //_repo.Otp.SendRegisterOTP();
-        //        return Ok("TwoFactor");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
-
-
-
-
-
-        [HttpPost("forgot/password")]
+        [HttpPost("forgot-password")]
         public IActionResult ForgotPassword([FromBody] LoginDto dto)
         {
+            AuthResponseDto response = new AuthResponseDto();
+
             try
             {
                 bool loginExists = false;
-                bool registrationVerified = false;
-                AuthResponseDto response = new AuthResponseDto();
                 UserDto user = new UserDto();
 
                 loginExists = _repo.User.DoesUserNameExist(dto);
 
                 if (!loginExists)
                 {
-                    return StatusCode(401, "Invalid");
-                }
-
-                registrationVerified = _repo.User.IsRegistrationVerified(dto);
-
-                if (!registrationVerified)
-                {
-                    //Re-send Verification OTP
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.ResetPassword);
-                    return StatusCode(401, "Register Verify");
+                    response.Status = "Failure";
+                    response.Message = "Invalid-NotExist";
+                    return StatusCode(401, response);
                 }
 
                 _repo.User.ForgotPassword(dto);
-                return Ok();
+
+                response.Status = "Success";
+                response.Message = "RequestSent";
+                return Ok(response);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
             }
         }
 
-        [HttpPost("reset/password"), Authorize]
-        public IActionResult ResetPassword([FromBody] LoginDto dto)
+        [HttpPost("reset-password"), AllowAnonymous]
+        public IActionResult ResetPassword(ResetPasswordDto dto)
         {
+            AuthResponseDto response = new AuthResponseDto();
+
             try
             {
-                bool passwordMatched = false;
+                UserDto user = new UserDto();
 
-                passwordMatched = _repo.User.IsPasswordVerified(dto);
+                int userId = _repo.User.DecryptUserId(dto.UserId);
+                user.Id = userId;
+                user = _repo.User.GetUser(user);
 
-                if (!passwordMatched)
-                {
-                    return StatusCode(401, "Invalid");
-                }
 
-                _repo.User.ResetPassword(dto);
-                return Ok("Updated");
+                _repo.Otp.SendOTP(user, OtpTypesEnum.ResetPassword);
+                response.Status = "Success";
+                response.Message = "verifyResetPassword";
+
+                return Ok(response);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost("reset-advisor-password"), AllowAnonymous]
+        public IActionResult ResetPassword(LoginDto dto)
+        {
+                AuthResponseDto response = new AuthResponseDto();
+
+            try
+            {
+                UserDto user = new UserDto();
+
+                user = _repo.User.GetUser(dto);
+
+                _repo.Otp.SendOTP(user, OtpTypesEnum.ResetPassword);
+                response.Status = "Success";
+                response.Message = "verifyResetPassword";
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
             }
         }
     }

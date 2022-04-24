@@ -1,4 +1,5 @@
-﻿using Aluma.API.Repositories;
+﻿using Aluma.API.Helpers;
+using Aluma.API.Repositories;
 using AutoMapper;
 using Azure.Storage.Files.Shares;
 using BankValidationService;
@@ -51,7 +52,10 @@ namespace Aluma.API.RepoWrapper
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
 
-
+        private IFIRepo _fi;
+        private IPEFRepo _pef;
+        private IDocumentHelper _documentHelper;
+        private IDocumentSignHelper _signHelper;
 
         private IOtpRepo _otp;
         private IUserRepo _user;
@@ -63,6 +67,8 @@ namespace Aluma.API.RepoWrapper
         private IBankValidationServiceRepo _bankValidation;
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
+
+
 
         private IStringHasher _hasher;
 
@@ -214,7 +220,22 @@ namespace Aluma.API.RepoWrapper
             get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
         }
 
-
+        public IFIRepo FI
+        {
+            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }
+        }
+        public IPEFRepo PEF
+        {
+            get { return _pef == null ? new PEFRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _pef; }
+        }
+        public IDocumentHelper DocumentHelper
+        {
+            get { return _documentHelper == null ? new DocumentHelper(_dbContext,_config,_fileStorage,_host) : _documentHelper; }
+        }
+        public IDocumentSignHelper SignHelper
+        {
+            get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
+        }
 
         //User
         public IOtpRepo Otp
@@ -224,7 +245,7 @@ namespace Aluma.API.RepoWrapper
 
         public IUserRepo User
         {
-            get { return _user == null ? new UserRepo(_dbContext, _host, _config, _mapper) : _user; }
+            get { return _user == null ? new UserRepo(_dbContext, _host, _config, _fileStorage, _mapper) : _user; }
         }
 
         public IUserDocumentsRepo UserDocuments

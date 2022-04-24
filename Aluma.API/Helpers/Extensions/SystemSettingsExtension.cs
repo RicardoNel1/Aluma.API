@@ -9,7 +9,7 @@ namespace Aluma.API.Helpers.Extensions
         public static void ConfigureSystemSettings(this IServiceCollection services,
             IConfiguration config)
         {
-            services.AddSingleton(config.GetSection("SystemSettingsDto").Get<SystemSettingsDto>());
+            services.AddSingleton(config.GetSection("SystemSettings").Get<SystemSettingsDto>());
         }
     }
 }

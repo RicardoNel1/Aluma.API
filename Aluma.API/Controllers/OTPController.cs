@@ -91,7 +91,71 @@ namespace Aluma.API.Controllers
             response.Token = token;
             response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
-           
+
+
+            return Ok(response);
+        }
+
+        [HttpPost("verify/reset-password")]
+        public IActionResult VerifyResetPasswordOtp(ResetPasswordDto dto)
+        {
+
+            AuthResponseDto response = new AuthResponseDto();
+            UserDto user = new UserDto();
+
+            if (dto.UserName != "" && dto.UserName != null)
+            {
+                LoginDto login = new LoginDto();
+                login.UserName = dto.UserName;
+                login.Password = dto.Password;
+
+                if (_repo.User.DoesUserNameExist(login))
+                {
+                    user = _repo.User.GetUser(login);
+                }
+                else
+                {
+                    response.Message = "Invalid-NotExists";
+                    return StatusCode(401, response);
+                }
+            }
+            else
+            {
+                int userId = _repo.User.DecryptUserId(dto.UserId);
+                user.Id = userId;
+                user = _repo.User.GetUser(user);
+            }
+
+            string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
+
+            if (isOtpVerified != "Validated")
+            {
+                response.Message = "Invalid OTP";
+                return StatusCode(401, response);
+            }
+
+
+            if (user.Role == RoleEnum.Admin || user.Role == RoleEnum.Advisor || user.Role == RoleEnum.External)
+            {
+                _repo.User.VerifyUser(user);
+            }
+
+            _repo.User.ResetPassword(user.Id, dto.Password);
+
+            RoleEnum role = user.Role;
+
+            if (role == RoleEnum.Client)
+            {
+                ClientDto client = _repo.Client.GetClientByUserId(user.Id);
+                response.ClientId = client.Id;
+            }
+            else if (role == RoleEnum.Advisor)
+            {
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+                response.AdvisorId = advisor.Id;
+            }
+            response.Status = "Success";
+            response.Message = "OtpVerified";
 
             return Ok(response);
         }
@@ -99,21 +163,32 @@ namespace Aluma.API.Controllers
         [HttpGet("verify/signature")]
         public async Task<IActionResult> VerifySignatureOtp(int applicationId, string otp)
         {
-            UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+
             AuthResponseDto response = new AuthResponseDto();
 
-            string isOtpVerified = _repo.Otp.VerifyOTP(otp, user.Id, applicationId);
-
-            if (isOtpVerified != "Validated")
+            try
             {
-                return StatusCode(401, "Invalid OTP");
+                UserDto user = _repo.User.GetUserByApplicationID(applicationId);
+
+                string isOtpVerified = _repo.Otp.VerifyOTP(otp, user.Id, applicationId);
+
+                if (isOtpVerified != "Validated")
+                {
+                    return StatusCode(401, "Invalid OTP");
+                }
+
+                response.Message = "SignatureVerified";
+
+                await _repo.SignHelper.SignDocuments(applicationId);
+
+                return Ok(response);
             }
-
-            response.Message = "SignatureVerified";
-            
-            await _repo.Applications.SignDocuments(applicationId);
-
-            return Ok(response);
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                response.Message = "InternalError";
+                return StatusCode(500, response); ;
+            }
         }
 
 

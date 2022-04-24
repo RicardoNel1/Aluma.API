@@ -1,4 +1,5 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
@@ -42,6 +43,7 @@ namespace Aluma.API.Repositories
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly IFileStorageRepo _fileStorage;
+        MailSender _ms;
         public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
@@ -49,6 +51,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
             _fileStorage = fileStorage;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
         public List<ClientDto> GetClients()
@@ -175,7 +178,7 @@ namespace Aluma.API.Repositories
         public bool DoesClientExist(RegistrationDto dto)
         {
             bool clientExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _mapper);
+            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)
@@ -203,6 +206,8 @@ namespace Aluma.API.Repositories
             _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
+
+            _ms.SendClientWelcomeEmail(client);
             return dto;
         }
 

@@ -24,6 +24,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
+                AuthResponseDto response = new AuthResponseDto();
                 bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
                 if (advisorExists)
                 {
@@ -35,7 +36,8 @@ namespace Aluma.API.Controllers
                     // check if valid id number has been entered
                     if (checkID == false)
                     {
-                        return StatusCode(403, "Invalid ID");
+                        response.Message = "InvalidID";
+                        return StatusCode(403, response);
                     }
 
                     var advisor = _repo.Advisor.CreateAdvisor(dto);

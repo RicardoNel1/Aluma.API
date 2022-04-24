@@ -31,8 +31,9 @@ namespace DataService.Dto
         public BankDetailsDto AVS { get; set; }
     }
 
-    public class BankDetailsDto
+    public class BankDetailsDto : ApiResponseDto
     {
+        public int Id { get; set; }
         public int ClientId { get; set; }
 
         [JsonProperty("userReference")]
@@ -86,5 +87,6 @@ namespace DataService.Dto
         public string AcceptCredits { get; set; }
 
         public string BankName { get; set; }
+
     }
 }

@@ -5,6 +5,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -38,19 +39,21 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-
+        private readonly IFileStorageRepo _fileStorage;
+        MailSender _ms;
         public AdvisorRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
             _config = config;
             _mapper = mapper;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
         public bool DoesAdvisorExist(UserDto dto)
         {
             bool advisorExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _mapper);
+            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)
@@ -81,8 +84,8 @@ namespace Aluma.API.Repositories
             try
             {
                 StringHasherRepo str = new StringHasherRepo();
-                UserRepo ur = new UserRepo(_context, _host, _config, _mapper);
-                MailSender mailSender = new MailSender();
+                UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+                
 
                 //Create Advisor
                 AdvisorModel advisor = _mapper.Map<AdvisorModel>(dto);
@@ -127,7 +130,7 @@ namespace Aluma.API.Repositories
 
 
                 //Done
-                //SendWelcomeEmail(advisor);
+                _ms.SendAdvisorWelcomeEmail(advisor);
 
                 return _mapper.Map<AdvisorDto>(advisor);
             }
@@ -138,58 +141,7 @@ namespace Aluma.API.Repositories
             }
         }
 
-        private async void SendWelcomeEmail(AdvisorModel advisor)
-        {
-            var mailSettings = _config.GetSection("MailServerSettings").Get<MailServerSettingsDto>();
-
-            UserMail um = new UserMail()
-            {
-                Email = advisor.User.Email,
-                Name = advisor.User.FirstName + " " + advisor.User.LastName,
-                Subject = "Aluma Capital: Welcome letter for " + advisor.User.FirstName + " " + advisor.User.LastName,
-                Template = "AdvisorWelcome"
-            };
-
-            try
-            {
-                var message = new MailMessage
-                {
-                    From = new MailAddress(mailSettings.Username),
-                    Subject = um.Subject,
-                    IsBodyHtml = true
-                };
-
-                message.To.Add(new MailAddress(advisor.User.Email));
-                //message.Bcc.Add(new MailAddress("johan@fintegratetech.co.za"));
-                message.Bcc.Add(new MailAddress("system@aluma.co.za"));
-
-                message.Body = "Application Completed: " + um.Name;
-
-                var smtpClient = new SmtpClient
-                {
-                    Host = "mail.administr8it.co.za",
-                    Port = 25,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                    Timeout = 1000000
-                };
-
-
-                smtpClient.Send(message);
-
-                return;
-
-            }
-            catch (System.Exception ex)
-            {
-                return;
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                NLog.LogManager.Shutdown();
-            }
-        }
+        
 
         public bool DeleteAdvisor(AdvisorDto dto)
         {

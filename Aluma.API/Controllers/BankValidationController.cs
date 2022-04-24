@@ -1,5 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -40,6 +41,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
+        [AutomaticRetry(Attempts = 30, DelaysInSeconds = new int[] { 60 })]
         public IActionResult UpdateClientBankDetails([FromBody] BankDetailsDto dto)
         {
             bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto); 
