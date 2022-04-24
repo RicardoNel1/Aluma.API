@@ -178,7 +178,7 @@ namespace Aluma.API.Repositories
         public bool DoesClientExist(RegistrationDto dto)
         {
             bool clientExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _mapper);
+            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)

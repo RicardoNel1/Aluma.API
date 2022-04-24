@@ -245,7 +245,7 @@ namespace Aluma.API.RepoWrapper
 
         public IUserRepo User
         {
-            get { return _user == null ? new UserRepo(_dbContext, _host, _config, _mapper) : _user; }
+            get { return _user == null ? new UserRepo(_dbContext, _host, _config, _fileStorage, _mapper) : _user; }
         }
 
         public IUserDocumentsRepo UserDocuments
