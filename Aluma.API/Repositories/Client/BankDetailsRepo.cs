@@ -102,82 +102,82 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
                 dto = _mapper.Map<BankDetailsDto>(details);
 
-                //ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
-                //dto.IdNumber = client.User.RSAIdNumber;
-                //BankValidationServiceRepo bvr = new BankValidationServiceRepo();
+                ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
+                dto.IdNumber = client.User.RSAIdNumber;
+                BankValidationServiceRepo bvr = new BankValidationServiceRepo();
 
-                //var jobID = string.Empty;
-                //var validation = bvr.StartBankValidation(dto);
+                var jobID = string.Empty;
+                var validation = bvr.StartBankValidation(dto);
 
-                //if (validation.Status == "Failure")
-                //{
-                //    dto.Status = "Failed";
-                //    dto.Message = txtInfo.ToTitleCase(validation.Error);
-                //    return dto;
-                //}
-                //else
-                //{
-                //    if (validation.Message.Contains("1054"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Invalid branch number");
-                //        return dto;
+                if (validation.Status == "Failure")
+                {
+                    dto.Status = "Failed";
+                    dto.Message = txtInfo.ToTitleCase(validation.Error);
+                    return dto;
+                }
+                else
+                {
+                    if (validation.Message.Contains("1054"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Invalid branch number");
+                        return dto;
 
-                //    }
+                    }
 
-                //    if (validation.Message.Contains("1055"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Invalid account number");
-                //        return dto;
+                    if (validation.Message.Contains("1055"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Invalid account number");
+                        return dto;
 
-                //    }
+                    }
 
-                //    if (validation.Message.Contains("1056"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Account type invalid");
-                //        return dto;
+                    if (validation.Message.Contains("1056"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Account type invalid");
+                        return dto;
 
-                //    }
+                    }
 
-                //    if (validation.Message.Contains("1057"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Institution not on master file");
-                //        return dto;
+                    if (validation.Message.Contains("1057"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Institution not on master file");
+                        return dto;
 
-                //    }
+                    }
 
-                //    if (validation.Message.Contains("1059"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Account number length is not valid");
-                //        return dto;
+                    if (validation.Message.Contains("1059"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Account number length is not valid");
+                        return dto;
 
-                //    }
+                    }
 
-                //    if (validation.Message.Contains("1084"))
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase("Bond account type not allowed for this account");
-                //        return dto;
+                    if (validation.Message.Contains("1084"))
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase("Bond account type not allowed for this account");
+                        return dto;
 
-                //    }
+                    }
 
-                //    else if (validation.JobID == null)
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase(validation.Message);
-                //        return dto;
-                //    }
-                //}
+                    else if (validation.JobID == null)
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase(validation.Message);
+                        return dto;
+                    }
+                }
 
-                //details.JobID = validation.JobID;
-                //BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(jobID), TimeSpan.FromMinutes(2));
+                details.JobID = validation.JobID;
+                BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(validation.JobID), TimeSpan.FromMinutes(2));
 
-                //_context.BankDetails.Update(details);
-                //_context.SaveChanges();
+                _context.BankDetails.Update(details);
+                _context.SaveChanges();
 
                 return dto;
             }
@@ -236,86 +236,87 @@ namespace Aluma.API.Repositories
                 dto = _mapper.Map<BankDetailsDto>(oldDetails);
                 dto.Status = "Success";
                 dto.Message = "Updated";
-                //if (reValidate)
-                //{
-                //    ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
-                //    dto.IdNumber = client.User.RSAIdNumber;
-                //    BankValidationServiceRepo bvr = new BankValidationServiceRepo();
 
-                //    var jobID = string.Empty;
-                //    var validation = bvr.StartBankValidation(dto);
+                if (reValidate)
+                {
+                    ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
+                    dto.IdNumber = client.User.RSAIdNumber;
+                    BankValidationServiceRepo bvr = new BankValidationServiceRepo();
 
-                //    if (validation.Status == "Failure")
-                //    {
-                //        dto.Status = "Failed";
-                //        dto.Message = txtInfo.ToTitleCase(validation.Error);
-                //        return dto;
-                //    }
-                //    else
-                //    {
-                //        if (validation.Message.Contains("1054"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Invalid branch number");
-                //            return dto;
+                    var jobID = string.Empty;
+                    var validation = bvr.StartBankValidation(dto);
 
-                //        }
+                    if (validation.Status == "Failure")
+                    {
+                        dto.Status = "Failed";
+                        dto.Message = txtInfo.ToTitleCase(validation.Error);
+                        return dto;
+                    }
+                    else
+                    {
+                        if (validation.Message.Contains("1054"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Invalid branch number");
+                            return dto;
 
-                //        if (validation.Message.Contains("1055"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Invalid account number");
-                //            return dto;
+                        }
 
-                //        }
+                        if (validation.Message.Contains("1055"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Invalid account number");
+                            return dto;
 
-                //        if (validation.Message.Contains("1056"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Account type invalid");
-                //            return dto;
+                        }
 
-                //        }
+                        if (validation.Message.Contains("1056"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Account type invalid");
+                            return dto;
 
-                //        if (validation.Message.Contains("1057"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Institution not on master file");
-                //            return dto;
+                        }
 
-                //        }
+                        if (validation.Message.Contains("1057"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Institution not on master file");
+                            return dto;
 
-                //        if (validation.Message.Contains("1059"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Account number length is not valid");
-                //            return dto;
+                        }
 
-                //        }
+                        if (validation.Message.Contains("1059"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Account number length is not valid");
+                            return dto;
 
-                //        if (validation.Message.Contains("1084"))
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase("Bond account type not allowed for this account");
-                //            return dto;
+                        }
 
-                //        }
+                        if (validation.Message.Contains("1084"))
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase("Bond account type not allowed for this account");
+                            return dto;
 
-                //        else if (validation.JobID == null)
-                //        {
-                //            dto.Status = "Failed";
-                //            dto.Message = txtInfo.ToTitleCase(validation.Message);
-                //            return dto;
-                //        }
-                //    }
+                        }
 
-                //    oldDetails.JobID = validation.JobID;
-                //    BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(jobID), TimeSpan.FromMinutes(2));
-                //    dto.Status = "Success";
-                //    _context.BankDetails.Update(oldDetails);
-                //    _context.SaveChanges();
+                        else if (validation.JobID == null)
+                        {
+                            dto.Status = "Failed";
+                            dto.Message = txtInfo.ToTitleCase(validation.Message);
+                            return dto;
+                        }
+                    }
 
-                //}
+                    oldDetails.JobID = validation.JobID;
+                    BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(validation.JobID), TimeSpan.FromMinutes(2));
+                    dto.Status = "Success";
+                    _context.BankDetails.Update(oldDetails);
+                    _context.SaveChanges();
+
+                }
                 return dto;
             }
             catch (Exception ex)
