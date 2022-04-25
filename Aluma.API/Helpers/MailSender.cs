@@ -210,9 +210,9 @@ namespace Aluma.API.Helpers
                     IsBodyHtml = true
                 };
 
-                //message.To.Add(new MailAddress(client.User.Email));
-                message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
-                //message.Bcc.Add(new MailAddress("system@aluma.co.za"));
+                message.To.Add(new MailAddress(client.User.Email));
+                //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
+                message.Bcc.Add(new MailAddress("system@aluma.co.za"));
 
                 char slash = Path.DirectorySeparatorChar;
                 string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
