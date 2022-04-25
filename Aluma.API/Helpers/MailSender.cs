@@ -68,15 +68,23 @@ namespace Aluma.API.Helpers
 
                 //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
 
+                //var smtpClient = new SmtpClient
+                //{
+                //    Host = "mail.administr8it.co.za",
+                //    Port = 25,
+                //    EnableSsl = false,
+                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                //    Timeout = 1000000
+                //};
+
                 var smtpClient = new SmtpClient
                 {
-                    Host = "mail.administr8it.co.za",
-                    Port = 25,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
                     Timeout = 1000000
                 };
-
 
                 smtpClient.Send(message);
 
