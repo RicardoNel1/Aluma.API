@@ -48,9 +48,9 @@ namespace Aluma.API.Helpers
 
         public async Task SendAdvisorEmails()
         {
-            //var advisors = _context.Advisors.Include(a => a.User).ToList();
-            var clients = _context.Clients.Include(c => c.User).ToList();
-            foreach (var item in clients)
+            //var items = _context.Advisors.Include(a => a.User).ToList();
+            var items = _context.Clients.Include(c => c.User).ToList();
+            foreach (var item in items)
             {
                 //await _ms.SendAdvisorWelcomeEmail(item);
                 await _ms.SendClientWelcomeEmail(item);
