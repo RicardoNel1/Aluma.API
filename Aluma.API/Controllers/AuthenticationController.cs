@@ -75,8 +75,7 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, response);
                 }
 
-                socialLoginVerified = true;
-                //socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
+                user = _repo.User.GetUser(dto);
 
                 if (user.Role != RoleEnum.Client && user.Role != RoleEnum.Guest)
                 {

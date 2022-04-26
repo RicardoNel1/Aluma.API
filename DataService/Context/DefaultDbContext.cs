@@ -88,6 +88,7 @@ namespace DataService.Context
         public DbSet<RetirementPensionFundsModel> RetirementPensionFunds { get; set; }
         public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
         public DbSet<AccrualModel> Accrual { get; set; }
+        public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
 
         public DbSet<AssumptionsModel> Assumptions { get; set; }
 
