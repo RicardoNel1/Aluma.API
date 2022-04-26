@@ -57,9 +57,10 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public AccrualDto GetAccrual(int id)
+        public AccrualDto GetAccrual(int clientId)
         {
-            throw new NotImplementedException();
+            AccrualModel accrual = _context.Accrual.Where(c => c.ClientId == clientId).FirstOrDefault();
+            return _mapper.Map<AccrualDto>(accrual);
         }
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)

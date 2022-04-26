@@ -31,5 +31,19 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("getAccrual"), AllowAnonymous]
+        public IActionResult GetAccrual(int ClientId)
+        {
+            try
+            {
+                AccrualDto accrual = _repo.Accrual.GetAccrual(ClientId);
+                return Ok(accrual);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
     }
 }
