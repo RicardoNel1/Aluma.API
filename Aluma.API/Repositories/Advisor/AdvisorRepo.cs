@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -25,7 +26,7 @@ namespace Aluma.API.Repositories
         public AdvisorDto GetAdvisor(AdvisorDto dto);
         public AdvisorDto GetAdvisorByUserId(int userId);
 
-        public AdvisorDto CreateAdvisor(AdvisorDto dto);
+        public Task<AdvisorDto> CreateAdvisor(AdvisorDto dto);
 
         public bool DeleteAdvisor(AdvisorDto dto);
 
@@ -79,7 +80,7 @@ namespace Aluma.API.Repositories
         }
 
 
-        public AdvisorDto CreateAdvisor(AdvisorDto dto)
+        public async Task<AdvisorDto> CreateAdvisor(AdvisorDto dto)
         {
             try
             {
@@ -90,6 +91,7 @@ namespace Aluma.API.Repositories
                 //Create Advisor
                 AdvisorModel advisor = _mapper.Map<AdvisorModel>(dto);
                 advisor.User.Password = str.CreateHash("Aluma" + advisor.User.FirstName.Trim());
+                advisor.User.Signature = null;
                 advisor.isActive = true;
                 _context.Advisors.Add(advisor);
                 _context.SaveChanges();
@@ -130,7 +132,7 @@ namespace Aluma.API.Repositories
 
 
                 //Done
-                _ms.SendAdvisorWelcomeEmail(advisor);
+                await _ms.SendAdvisorWelcomeEmail(advisor);
 
                 return _mapper.Map<AdvisorDto>(advisor);
             }

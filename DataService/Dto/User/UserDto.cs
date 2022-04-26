@@ -11,7 +11,7 @@ namespace DataService.Dto
         public RoleEnum Role { get; set; }
         public string ProfilePicture { get; set; }
 
-        
+        public bool HasSignature { get; set; }
     }
 
     

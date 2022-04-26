@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -23,7 +24,7 @@ namespace Aluma.API.Controllers
 
 
         [HttpPost("client/login")]
-        public IActionResult AuthenticateClient(LoginDto dto)
+        public async Task<IActionResult> AuthenticateClient(LoginDto dto)
         {
             AuthResponseDto response = new AuthResponseDto();
 
@@ -56,7 +57,7 @@ namespace Aluma.API.Controllers
                         user = _repo.User.CreateClientUser(regDto);
 
                         ClientDto client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
-                        client = _repo.Client.CreateClient(client);
+                        client = await _repo.Client.CreateClient(client);
                         token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
                         response = new AuthResponseDto()

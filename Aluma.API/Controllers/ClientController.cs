@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -49,7 +50,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public IActionResult CreateClient(ClientDto dto)
+        public async Task<IActionResult> CreateClient(ClientDto dto)
         {
             try
             {
@@ -59,7 +60,7 @@ namespace Aluma.API.Controllers
                     return BadRequest("Client Exists");
                 }
 
-                dto = _repo.Client.CreateClient(dto);
+                dto = await _repo.Client.CreateClient(dto);
 
                 return Ok(dto);
             }
@@ -130,7 +131,7 @@ namespace Aluma.API.Controllers
 
 
         [HttpPost("register"), AllowAnonymous]
-        public IActionResult RegisterClient(RegistrationDto dto)
+        public async Task<IActionResult> RegisterClient(RegistrationDto dto)
         {
             AuthResponseDto response = new AuthResponseDto();
             UserDto user = null;
@@ -152,7 +153,7 @@ namespace Aluma.API.Controllers
 
                     //Create Client
                     client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
-                    client = _repo.Client.CreateClient(client);
+                    client = await _repo.Client.CreateClient(client);
 
                     //Send Verification OTP
                     string sendResult = _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
