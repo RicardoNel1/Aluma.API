@@ -22,7 +22,17 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                _repo.Accrual.CreateAccrual(dto);
+                var exists = _repo.Accrual.Exists(dto.ClientId);
+
+                if (exists)
+                {
+                    _repo.Accrual.UpdateAccrual(dto);
+                }
+                else
+                {
+                    _repo.Accrual.CreateAccrual(dto);
+                }
+                
                 return Ok(dto);
             }
             catch (Exception e)

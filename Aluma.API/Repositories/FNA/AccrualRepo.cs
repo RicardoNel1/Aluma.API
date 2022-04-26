@@ -18,6 +18,7 @@ namespace Aluma.API.Repositories
         AccrualDto GetAccrual(int id);
         AccrualDto UpdateAccrual(AccrualDto accrual);
         AccrualDto DeleteAccrual(int id);
+        bool Exists(int clientId);
     }
 
 
@@ -52,6 +53,11 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
+        public bool Exists(int clientId)
+        {
+            return _context.Accrual.Where(a => a.ClientId == clientId).FirstOrDefault() != null;
+        }
+
         public IQueryable<AccrualModel> FindByCondition(Expression<Func<AccrualModel, bool>> expression)
         {
             throw new NotImplementedException();
@@ -68,12 +74,33 @@ namespace Aluma.API.Repositories
             {
                 return _mapper.Map<AccrualDto>(accrual);
             }
-            
         }
+
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)
         {
-            throw new NotImplementedException();
+            AccrualModel data = _context.Accrual
+                .Where(_ => _.ClientId == accrual.ClientId)
+                .FirstOrDefault();
+
+            data.ClientAssetsCommencement = accrual.ClientAssetsCommencement;
+            data.ClientEstateCurrent = accrual.ClientEstateCurrent;
+            data.ClientExcludedValue = accrual.ClientExcludedValue;
+            data.ClientLiabilities = accrual.ClientLiabilities;
+
+            data.SpouseAssetsCommencement = accrual.SpouseAssetsCommencement;
+            data.SpouseEstateCurrent = accrual.SpouseEstateCurrent;
+            data.SpouseLiabilities = accrual.SpouseLiabilities;
+            data.SpouseExcludedValue = accrual.SpouseExcludedValue;
+
+            data.Cpi = accrual.Cpi;
+            data.Offset = accrual.Offset;
+
+            _context.Accrual.Update(data);
+            _context.SaveChanges();
+
+            accrual = _mapper.Map<AccrualDto>(accrual);
+            return accrual;
         }
     }
 
