@@ -72,24 +72,18 @@ namespace Aluma.API.Helpers
 
                 //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
 
-                //var smtpClient = new SmtpClient
-                //{
-                //    Host = "mail.administr8it.co.za",
-                //    Port = 25,
-                //    EnableSsl = false,
-                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                //    Timeout = 1000000
-                //};
-
                 var smtpClient = new SmtpClient
+
                 {
                     Host = "smtp.office365.com",
                     Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
                     EnableSsl = true,
-                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
-                    Timeout = 1000000
-                };
+                    TargetName = "STARTTLS/smtp.office365.com"
 
+                };
                 smtpClient.Send(message);
 
                 return;
@@ -155,22 +149,17 @@ namespace Aluma.API.Helpers
 
                 message.Body = "Application Completed: " + um.Name;
 
-                //var smtpClient = new SmtpClient
-                //{
-                //    Host = "mail.administr8it.co.za",
-                //    Port = 25,
-                //    EnableSsl = false,
-                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                //    Timeout = 1000000
-                //};
-
                 var smtpClient = new SmtpClient
+
                 {
                     Host = "smtp.office365.com",
                     Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
                     EnableSsl = true,
-                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
-                    Timeout = 1000000
+                    TargetName = "STARTTLS/smtp.office365.com"
+
                 };
 
                 smtpClient.Send(message);
@@ -233,26 +222,17 @@ namespace Aluma.API.Helpers
                 message.Body = bb.HtmlBody;
 
                 var smtpClient = new SmtpClient
+
                 {
-                    Host = "mail.administr8it.co.za",
-                    Port = 25,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                    Timeout = 1000000
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+                    TargetName = "STARTTLS/smtp.office365.com"
+
                 };
-
-                //var smtpClient = new SmtpClient
-
-                //{
-                //    Host = "smtp.office365.com",
-                //    Port = 587,
-                //    UseDefaultCredentials = false,
-                //    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
-                //    DeliveryMethod = SmtpDeliveryMethod.Network,
-                //    EnableSsl = true,
-                //    TargetName = "STARTTLS/smtp.office365.com"
-
-                //};
 
 
 
@@ -316,22 +296,17 @@ namespace Aluma.API.Helpers
 
 
                 var smtpClient = new SmtpClient
-                {
-                    Host = "mail.administr8it.co.za",
-                    Port = 25,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                    Timeout = 1000000
-                };
 
-                //var smtpClient = new SmtpClient
-                //{
-                //    Host = "mail.aluma.co.za",
-                //    Port = 587,
-                //    EnableSsl = false,
-                //    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
-                //    Timeout = 1000000
-                //};
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+                    TargetName = "STARTTLS/smtp.office365.com"
+
+                };
 
                 smtpClient.Send(message);
 
@@ -420,23 +395,29 @@ namespace Aluma.API.Helpers
 
                 message.Body = bb.HtmlBody;
 
-                var smtpClient = new SmtpClient
-                {
-                    Host = "mail.administr8it.co.za",
-                    Port = 25,
-                    EnableSsl = false,
-                    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                    Timeout = 1000000
-                };
-
                 //var smtpClient = new SmtpClient
                 //{
-                //    Host = "smtp.office365.com",
-                //    Port = 587,
-                //    EnableSsl = true,
-                //    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
+                //    Host = "mail.administr8it.co.za",
+                //    Port = 25,
+                //    EnableSsl = false,
+                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
                 //    Timeout = 1000000
                 //};
+
+                var smtpClient = new SmtpClient
+
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+                    TargetName = "STARTTLS/smtp.office365.com"
+
+                };
+
+
 
                 smtpClient.Send(message);
 
