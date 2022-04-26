@@ -85,7 +85,7 @@ namespace Aluma.API
             }
             //dev only move back
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1.0.3"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1.0.4"));
 
             //app.UseHttpsRedirection();
 
