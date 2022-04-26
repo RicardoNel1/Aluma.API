@@ -60,7 +60,15 @@ namespace Aluma.API.Repositories
         public AccrualDto GetAccrual(int clientId)
         {
             AccrualModel accrual = _context.Accrual.Where(c => c.ClientId == clientId).FirstOrDefault();
-            return _mapper.Map<AccrualDto>(accrual);
+            if (accrual == null)
+            {
+                return new AccrualDto();
+            }
+            else
+            {
+                return _mapper.Map<AccrualDto>(accrual);
+            }
+            
         }
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)
