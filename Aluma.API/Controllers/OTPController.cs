@@ -47,6 +47,7 @@ namespace Aluma.API.Controllers
             {
                 AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
                 response.AdvisorId = advisor.Id;
+                user.HasSignature = user.Signature != null && user.Signature.Length > 0;
             }
 
             response.Message = "OtpVerified";

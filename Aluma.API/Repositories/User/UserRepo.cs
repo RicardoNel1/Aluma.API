@@ -148,7 +148,7 @@ namespace Aluma.API.Repositories
                 return _mapper.Map<UserDto>(user);
             //}
 
-            return null;
+            //return null;
         }
 
         public UserDto GetUser(LoginDto dto)

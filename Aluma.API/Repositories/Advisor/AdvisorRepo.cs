@@ -90,6 +90,7 @@ namespace Aluma.API.Repositories
                 //Create Advisor
                 AdvisorModel advisor = _mapper.Map<AdvisorModel>(dto);
                 advisor.User.Password = str.CreateHash("Aluma" + advisor.User.FirstName.Trim());
+                advisor.User.Signature = null;
                 advisor.isActive = true;
                 _context.Advisors.Add(advisor);
                 _context.SaveChanges();
