@@ -51,6 +51,7 @@ namespace Aluma.API.RepoWrapper
         private IEstateExpensesRepo _estateExpenses;
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
+        private IAccrualRepo _accrual;
         private IRetirementPlanningRepo _retirementPlanning;
         private IAssumptionsRepo _assumptions;
 
@@ -253,6 +254,10 @@ namespace Aluma.API.RepoWrapper
         public IDocumentSignHelper SignHelper
         {
             get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
+        }
+        public IAccrualRepo Accrual
+        {
+            get { return _accrual == null ? new AccrualRepo(_dbContext, _host, _config, _mapper) : _accrual; }
         }
 
         //User

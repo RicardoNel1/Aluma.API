@@ -42,6 +42,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new EstateExpensesModelBuilder());
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
+            mb.ApplyConfiguration(new AccrualModelBuilder());
 
         }
 
@@ -86,7 +87,7 @@ namespace DataService.Context
         public DbSet<EstateExpensesModel> EstateExpenses { get; set; }
         public DbSet<RetirementPensionFundsModel> RetirementPensionFunds { get; set; }
         public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
-        public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
+        public DbSet<AccrualModel> Accrual { get; set; }
 
         public DbSet<AssumptionsModel> Assumptions { get; set; }
 
