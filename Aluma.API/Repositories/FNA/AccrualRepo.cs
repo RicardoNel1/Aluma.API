@@ -93,7 +93,7 @@ namespace Aluma.API.Repositories
             data.SpouseLiabilities = accrual.SpouseLiabilities;
             data.SpouseExcludedValue = accrual.SpouseExcludedValue;
 
-            data.Cpi = accrual.Cpi;
+            data.Cpi = (double)accrual.Cpi;
             data.Offset = accrual.Offset;
 
             _context.Accrual.Update(data);
