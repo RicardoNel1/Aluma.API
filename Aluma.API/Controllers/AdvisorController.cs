@@ -4,6 +4,7 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -20,7 +21,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public IActionResult CreateAdvisor(AdvisorDto dto)
+        public async Task<IActionResult> CreateAdvisor(AdvisorDto dto)
         {
             try
             {
@@ -40,7 +41,7 @@ namespace Aluma.API.Controllers
                         return StatusCode(403, response);
                     }
 
-                    var advisor = _repo.Advisor.CreateAdvisor(dto);
+                    var advisor = await _repo.Advisor.CreateAdvisor(dto);
                     return Ok(advisor);
                 }
             }

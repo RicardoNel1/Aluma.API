@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -28,7 +29,7 @@ namespace Aluma.API.Repositories
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
 
-        ClientDto CreateClient(ClientDto dto);
+        Task<ClientDto> CreateClient(ClientDto dto);
 
         ClientDto UpdateClient(ClientDto dto);
 
@@ -199,7 +200,7 @@ namespace Aluma.API.Repositories
             return clientExists;
         }
 
-        public ClientDto CreateClient(ClientDto dto)
+        public async Task<ClientDto> CreateClient(ClientDto dto)
         {
             ClientModel client = _mapper.Map<ClientModel>(dto);
             
@@ -207,7 +208,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            _ms.SendClientWelcomeEmail(client);
+            await _ms.SendClientWelcomeEmail(client);
             return dto;
         }
 
