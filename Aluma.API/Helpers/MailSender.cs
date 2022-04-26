@@ -410,10 +410,10 @@ namespace Aluma.API.Helpers
                     Host = "smtp.office365.com",
                     Port = 587,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password, "aluma.co.za"),
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
                     DeliveryMethod = SmtpDeliveryMethod.Network,
                     EnableSsl = true,
-                    TargetName = "STARTTLS/smtp.office365.com"
+                    //TargetName = "STARTTLS/smtp.office365.com"
 
                 };
 
