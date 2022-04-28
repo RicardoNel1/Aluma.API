@@ -38,22 +38,23 @@ namespace Aluma.API.Repositories
         public List<InsuranceDto> GetInsurance(int clientId)
         {
             ICollection<InsuranceModel> data = _context.Insurance.Where(c => c.ClientId == clientId).ToList();
-            List<InsuranceDto> insurance = new List<InsuranceDto>();
+            List<InsuranceDto> insurance = new();
 
             foreach (var item in data)
             {
-                InsuranceDto insured = new InsuranceDto();
-
-                insured.Id = item.Id;
-                insured.ClientId = item.ClientId;
-                insured.Description = item.Description;
-                insured.Owner = item.Owner;
-                insured.LifeCover = item.LifeCover;
-                insured.Disability = item.Disability;
-                insured.DreadDisease = item.DreadDisease;
-                insured.AbsoluteIpPm = item.AbsoluteIpPm;
-                insured.ExtendedIpPm = item.ExtendedIpPm;
-                insured.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
+                InsuranceDto insured = new()
+                {
+                    Id = item.Id,
+                    ClientId = item.ClientId,
+                    Description = item.Description,
+                    Owner = item.Owner,
+                    LifeCover = item.LifeCover,
+                    Disability = item.Disability,
+                    DreadDisease = item.DreadDisease,
+                    AbsoluteIpPm = item.AbsoluteIpPm,
+                    ExtendedIpPm = item.ExtendedIpPm,
+                    AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo)
+                };
 
                 insurance.Add(insured);
 
