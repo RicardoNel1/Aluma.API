@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DataService.Model
 {
     [Table("accrual")]
-    public class AccrualModel
+    public class AccrualModel : BaseModel
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
@@ -29,6 +29,10 @@ namespace DataService.Model
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            builder.HasIndex(c => c.ClientId).IsUnique();
+
+
         }
     }
 }
