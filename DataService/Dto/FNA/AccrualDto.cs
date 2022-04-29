@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataService.Enum;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,8 @@ namespace DataService.Dto
         public double SpouseLiabilities { get; set; }
         public double ClientExcludedValue { get; set; }
         public double SpouseExcludedValue { get; set; }
-        public System.Nullable<double> Cpi { get; set; }
+        public double? Cpi { get; set; }
         public double Offset { get; set; }
+        public string AllocateTo { get; set; }
     }
 }

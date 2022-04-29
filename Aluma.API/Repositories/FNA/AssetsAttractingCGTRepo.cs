@@ -39,18 +39,19 @@ namespace Aluma.API.Repositories
         public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId)
         {
             ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.ClientId == clientId).ToList();
-            List<AssetsAttractingCGTDto> assets = new List<AssetsAttractingCGTDto>();
+            List<AssetsAttractingCGTDto> assets = new();
 
             foreach (var item in data)
-            {                
-                AssetsAttractingCGTDto asset = new AssetsAttractingCGTDto();
-
-                asset.Id = item.Id;
-                asset.ClientId = item.ClientId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
-                asset.BaseCost = item.BaseCost;
+            {
+                AssetsAttractingCGTDto asset = new()
+                {
+                    Id = item.Id,
+                    ClientId = item.ClientId,
+                    Description = item.Description,
+                    Value = item.Value,
+                    AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo),
+                    BaseCost = item.BaseCost
+                };
 
                 assets.Add(asset);
 

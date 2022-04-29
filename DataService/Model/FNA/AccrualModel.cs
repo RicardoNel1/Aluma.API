@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataService.Enum;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,6 +20,7 @@ namespace DataService.Model
         public double SpouseExcludedValue { get; set; }
         public double Cpi { get; set; }
         public double Offset { get; set; }
+        public EstateAllocationEnum AllocateTo { get; set; }
     }
 
     public class AccrualModelBuilder : IEntityTypeConfiguration<AccrualModel>

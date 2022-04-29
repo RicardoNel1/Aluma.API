@@ -41,6 +41,10 @@ namespace Aluma.API.Repositories
         public AccrualDto CreateAccrual(AccrualDto accrual)
         {
             AccrualModel clientAccrual = _mapper.Map<AccrualModel>(accrual);
+            Enum.TryParse(accrual.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            
+            clientAccrual.AllocateTo = parsedAllocation;
+
             _context.Accrual.Add(clientAccrual);
             _context.SaveChanges();
             accrual = _mapper.Map<AccrualDto>(clientAccrual);
@@ -79,9 +83,8 @@ namespace Aluma.API.Repositories
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)
         {
-            AccrualModel data = _context.Accrual
-                .Where(_ => _.ClientId == accrual.ClientId)
-                .FirstOrDefault();
+            AccrualModel data = _context.Accrual .Where(_ => _.ClientId == accrual.ClientId) .FirstOrDefault();
+            Enum.TryParse(accrual.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
             data.ClientAssetsCommencement = accrual.ClientAssetsCommencement;
             data.ClientEstateCurrent = accrual.ClientEstateCurrent;
@@ -92,6 +95,7 @@ namespace Aluma.API.Repositories
             data.SpouseEstateCurrent = accrual.SpouseEstateCurrent;
             data.SpouseLiabilities = accrual.SpouseLiabilities;
             data.SpouseExcludedValue = accrual.SpouseExcludedValue;
+            data.AllocateTo = parsedAllocation;
 
             data.Cpi = (double)accrual.Cpi;
             data.Offset = accrual.Offset;
