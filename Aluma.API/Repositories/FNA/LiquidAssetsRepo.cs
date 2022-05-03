@@ -17,11 +17,10 @@ namespace Aluma.API.Repositories
         List<LiquidAssetsDto> GetLiquidAssets(int clientId);
         LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray);
 
+        bool DeleteLiquidAssetsItem(int id);
 
     }
 
-    /// <summary>
-    /// </summary>
     public class LiquidAssetsRepo : RepoBase<LiquidAssetsModel>, ILiquidAssetsRepo
     {
         private readonly AlumaDBContext _context;
@@ -49,17 +48,18 @@ namespace Aluma.API.Repositories
         public List<LiquidAssetsDto> GetLiquidAssets(int clientId)
         {
             ICollection<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.ClientId == clientId).ToList();
-            List<LiquidAssetsDto> assets = new List<LiquidAssetsDto>();
+            List<LiquidAssetsDto> assets = new();
 
             foreach (var item in data)
             {
-                LiquidAssetsDto asset = new LiquidAssetsDto();
-
-                asset.Id = item.Id;
-                asset.ClientId = item.ClientId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
+                LiquidAssetsDto asset = new()
+                {
+                    Id = item.Id,
+                    ClientId = item.ClientId,
+                    Description = item.Description,
+                    Value = item.Value,
+                    AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo)
+                };
 
                 assets.Add(asset);
 
@@ -107,7 +107,15 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteLiquidAssetsItem(int id)
+        {
+            LiquidAssetsModel item = _context.LiquidAssets.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.LiquidAssets.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }

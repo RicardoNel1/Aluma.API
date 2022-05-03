@@ -13,10 +13,10 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsAttractingCGTRepo : IRepoBase<AssetsAttractingCGTModel>
     {
-        AssetsAttractingCGTDto[] CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
-        bool DoesAssetsAttractingCGTExist(AssetsAttractingCGTDto dto);
         List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
         AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
+
+        bool DeleteAssetsAttractingCGTItem(int id);
 
     }
 
@@ -34,74 +34,24 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-
-        public AssetsAttractingCGTDto[] CreateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
-        {
-            foreach (var item in dtoArray)
-            {
-                AssetsAttractingCGTModel asset = new AssetsAttractingCGTModel();
-
-                Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                asset.ClientId = item.ClientId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = parsedAllocation;
-                asset.BaseCost = item.BaseCost;
-
-                _context.AssetsAttractingCGT.Add(asset);
-            }
-            _context.SaveChanges();
-            return dtoArray;
-
-        }
-
-        public InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray)
-        {
-            foreach (var item in dtoArray)
-            {
-                InsuranceModel newItem = new();
-                Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                newItem.ClientId = item.ClientId;
-                newItem.Description = item.Description;
-                newItem.Owner = item.Owner;
-                newItem.LifeCover = item.LifeCover;
-                newItem.Disability = item.Disability;
-                newItem.DreadDisease = item.DreadDisease;
-                newItem.AbsoluteIpPm = item.AbsoluteIpPm;
-                newItem.ExtendedIpPm = item.ExtendedIpPm;
-                newItem.AllocateTo = parsedAllocation;
-
-                _context.Insurance.Add(newItem);
-            }
-            _context.SaveChanges();
-
-            return null;
-        }
-
-
-        public bool DoesAssetsAttractingCGTExist(AssetsAttractingCGTDto dto)
-        {
-            bool assetsAttractingCGTExist = false;
-            assetsAttractingCGTExist = _context.AssetsAttractingCGT.Where(a => a.ClientId == dto.ClientId).Any();
-            return assetsAttractingCGTExist;
-
-        }
+                
 
         public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId)
         {
             ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.ClientId == clientId).ToList();
-            List<AssetsAttractingCGTDto> assets = new List<AssetsAttractingCGTDto>();
+            List<AssetsAttractingCGTDto> assets = new();
 
             foreach (var item in data)
-            {                
-                AssetsAttractingCGTDto asset = new AssetsAttractingCGTDto();
-
-                asset.Id = item.Id;
-                asset.ClientId = item.ClientId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
-                asset.BaseCost = item.BaseCost;
+            {
+                AssetsAttractingCGTDto asset = new()
+                {
+                    Id = item.Id,
+                    ClientId = item.ClientId,
+                    Description = item.Description,
+                    Value = item.Value,
+                    AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo),
+                    BaseCost = item.BaseCost
+                };
 
                 assets.Add(asset);
 
@@ -151,7 +101,15 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteAssetsAttractingCGTItem(int id)
+        {
+            AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.AssetsAttractingCGT.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }

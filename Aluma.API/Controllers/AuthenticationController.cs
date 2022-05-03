@@ -84,7 +84,7 @@ namespace Aluma.API.Controllers
                 }
 
 
-                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
+                socialLoginVerified = true;//_repo.User.IsSocialLoginVerified(dto); //TODO put back
 
                 if (!socialLoginVerified)
                 {

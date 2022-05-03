@@ -16,6 +16,7 @@ namespace Aluma.API.Repositories
         List<LiabilitiesDto> GetLiabilities(int clientId);
         LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
 
+        bool DeleteLiabilitiesItem(int id);
     }
 
     public class LiabilitiesRepo : RepoBase<LiabilitiesModel>, ILiabilitiesRepo
@@ -91,7 +92,15 @@ namespace Aluma.API.Repositories
 
         }
 
+        public bool DeleteLiabilitiesItem(int id)
+        {
+            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.Liabilities.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }
