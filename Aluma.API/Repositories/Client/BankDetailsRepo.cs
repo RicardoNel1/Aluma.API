@@ -178,7 +178,8 @@ namespace Aluma.API.Repositories
 
                 _context.BankDetails.Update(details);
                 _context.SaveChanges();
-
+                dto = _mapper.Map<BankDetailsDto>(details);
+                dto.Status = "Success";
                 return dto;
             }
             catch (Exception ex)
@@ -235,8 +236,6 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
                 dto = _mapper.Map<BankDetailsDto>(oldDetails);
                 dto.Status = "Success";
-                dto.Message = "Updated";
-
                 if (reValidate)
                 {
                     ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
@@ -312,7 +311,7 @@ namespace Aluma.API.Repositories
 
                     oldDetails.JobID = validation.JobID;
                     BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(validation.JobID), TimeSpan.FromMinutes(2));
-                    dto.Status = "Success";
+                    
                     _context.BankDetails.Update(oldDetails);
                     _context.SaveChanges();
 
