@@ -2,8 +2,7 @@
 
 namespace DataService.Dto
 {
-    public class ClientDto
-
+    public class ClientDto : ApiResponseDto
     {
         public UserDto User { get; set; }
         public int Id { get; set; }
