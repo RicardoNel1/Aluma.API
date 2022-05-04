@@ -35,6 +35,7 @@ namespace Aluma.API.Repositories
 
         void GenerateClientDocuments(int clientId);
         void UpdateClientPassports(List<PassportDto> dto);
+        bool DoesIDExist(ClientDto dto);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -326,6 +327,23 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
             
+        }
+
+        public bool DoesIDExist(ClientDto dto)
+        {
+            try
+            {
+                bool idExists = false;                
+
+                idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+
+                return idExists;
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return true;
+            }
         }
     }
 }
