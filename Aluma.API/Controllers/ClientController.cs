@@ -94,14 +94,22 @@ namespace Aluma.API.Controllers
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
                 bool clientExist = _repo.Client.DoesClientExist(dto);
+                bool idExists = _repo.Client.DoesIDExist(dto);
                 if (!clientExist)
                 {
                     return BadRequest("Client Does Not Exist");
+                }
+                else if(idExists)
+                {
+                    dto.Status = "Failure";
+                    dto.Message = "Invalid-RSAID";
+                    return StatusCode(405, dto);
                 }
                 else
                 {
 
                     _repo.Client.UpdateClient(dto);
+                    dto.Status = "Success";                    
                 }
                 return Ok(dto);
             }
