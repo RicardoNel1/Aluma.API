@@ -30,9 +30,9 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.BankDetails.CreateClientBankDetails(dto);
+                   dto = _repo.BankDetails.CreateClientBankDetails(dto);
                 }
-                return Ok("Bank Details Created");
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -49,7 +49,7 @@ namespace Aluma.API.Controllers
             if (!bankDetailsExist)
             {
                 //return BadRequest("Bank Details Doesn't Exist");
-                CreateClientBankDetails(dto);
+                dto = _repo.BankDetails.CreateClientBankDetails(dto);
             }
             else
             {
