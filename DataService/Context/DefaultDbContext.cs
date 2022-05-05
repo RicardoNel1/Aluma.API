@@ -1,12 +1,54 @@
 ﻿using DataService.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace DataService.Context
 {
     public class AlumaDBContext : DbContext
     {
+        public AlumaDBContext()
+        {
+
+        }
+
+        private readonly SqlConnection sqlConnectionToUse;
+
+        public AlumaDBContext(SqlConnection existingConnection)
+        {
+            sqlConnectionToUse = existingConnection;
+        }
         public AlumaDBContext(DbContextOptions options) : base(options)
         {
+        }
+
+        private static string connectionString;
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (sqlConnectionToUse != null)
+            {
+                optionsBuilder.UseSqlServer(sqlConnectionToUse);
+                return;
+            }
+            if (optionsBuilder.IsConfigured)
+                return;
+
+            optionsBuilder.UseSqlServer(GetConnectionString());
+        }
+
+        private string GetConnectionString()
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                var config = new ConfigurationBuilder();
+                config.SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", true)
+                    .AddJsonFile($"appsettings.Development.json", true);
+                var configuration = config.Build();
+                connectionString = configuration.GetValue("ConnectionStrings:DefaultConnection", string.Empty);
+            }
+            return connectionString;
         }
 
         protected override void OnModelCreating(ModelBuilder mb)
