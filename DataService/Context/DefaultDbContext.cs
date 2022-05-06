@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 
 namespace DataService.Context
 {
@@ -87,7 +88,19 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
+            mb.ApplyConfiguration(new ClientProductModelBuilder());
+            
 
+            //foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
+            //{
+            //    if (property.GetMaxLength() == null)
+            //    {
+            //        if (property.Name == "Description")
+            //            property.SetColumnType("varchar(MAX)");
+            //        else
+            //            property.SetColumnType("varchar(100)");
+            //    }
+            //}
         }
 
         //Advisor
@@ -117,6 +130,8 @@ namespace DataService.Context
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
         public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
         public DbSet<FNAModel> FNA { get; set; }
+        public DbSet<ClientProductModel> ClientProducts { get; set; }
+
 
         //Product
         public DbSet<ProductModel> Products { get; set; }
@@ -145,6 +160,6 @@ namespace DataService.Context
         public DbSet<UserModel> Users { get; set; }
         public DbSet<UserDocumentModel> UserDocuments { get; set; }
 
-        
+
     }
 }

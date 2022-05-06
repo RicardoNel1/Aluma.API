@@ -36,6 +36,8 @@ namespace Aluma.API.Repositories
         void GenerateClientDocuments(int clientId);
         void UpdateClientPassports(List<PassportDto> dto);
         bool DoesIDExist(ClientDto dto);
+
+        ClientDto CheckForFNA(ClientDto client);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -194,10 +196,10 @@ namespace Aluma.API.Repositories
             return client;
         }
 
-        private ClientDto CheckForFNA(ClientDto client)
+        public ClientDto CheckForFNA(ClientDto client)
         {
 
-            var fnaExists = _context.PrimaryResidence.Where(d => d.ClientId == client.Id);
+            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
 
             if (fnaExists.Any())
             {
