@@ -8,7 +8,7 @@ namespace DataService.Model
     [Table("insurance")]
     public class InsuranceModel : BaseModel
     {
-        public ClientModel Client { get; set; }
+        //public ClientModel Client { get; set; }
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string Description { get; set; }

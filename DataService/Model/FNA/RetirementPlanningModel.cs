@@ -10,7 +10,7 @@ namespace DataService.Model
     [Table("retirement_planning")]
     public class RetirementPlanningModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }        
         public double MonthlyIncome { get; set; }

@@ -10,7 +10,7 @@ namespace DataService.Model
     [Table("assumptions")]
     public class AssumptionsModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int RetirementAge { get; set; }
