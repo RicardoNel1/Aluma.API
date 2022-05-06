@@ -77,7 +77,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AddressModelBuilder());
 
 
-            //FNA   //necessary?
+            //FNA   
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
