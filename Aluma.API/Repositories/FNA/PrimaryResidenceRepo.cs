@@ -14,18 +14,13 @@ namespace Aluma.API.Repositories
     public interface IPrimaryResidenceRepo : IRepoBase<PrimaryResidenceModel>
     {
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
-
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
         PrimaryResidenceDto GetPrimaryResidence(int clientId);
         PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
 
-        //bool DeleteAsset(int id);
-
 
     }
 
-    /// <summary>
-    /// </summary>
     public class PrimaryResidenceRepo : RepoBase<PrimaryResidenceModel>, IPrimaryResidenceRepo
     {
         private readonly AlumaDBContext _context;

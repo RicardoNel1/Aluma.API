@@ -81,21 +81,7 @@ namespace Aluma.API.Controllers
         }
                 
 
-        //Assets Attracting CGT
-        [HttpPost("assets_attracting_cgt"), AllowAnonymous] //might never use
-        public IActionResult CreateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray) 
-        {
-            try
-            {
-                    _repo.AssetsAttractingCGT.CreateAssetsAttractingCGT(dtoArray);
-           
-                return Ok(dtoArray);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        //Assets Attracting CGT        
 
         [HttpPut("assets_attracting_cgt"), AllowAnonymous]
         public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
@@ -119,6 +105,21 @@ namespace Aluma.API.Controllers
                 List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
 
                 return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("assets_attracting_cgt"), AllowAnonymous]
+        public IActionResult DeleteAssetsAttractingCGTItem(int id)
+        {
+            try
+            {
+                bool deleted = _repo.AssetsAttractingCGT.DeleteAssetsAttractingCGTItem(id);
+
+                return Ok(deleted);
             }
             catch (Exception e)
             {
@@ -157,36 +158,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-
-        //Insurance      
-        [HttpPut("insurance"), AllowAnonymous]
-        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        [HttpDelete("assets_exempt_from_cgt"), AllowAnonymous]
+        public IActionResult DeleteAssetsExemptFromCGTItem(int id)
         {
             try
             {
-                _repo.Insurance.UpdateInsurance(dtoArray);
-                return Ok("Insurance Updated");
+                bool deleted = _repo.AssetsExemptFromCGT.DeleteAssetsExemptFromCGTItem(id);
+
+                return Ok(deleted);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("insurance"), AllowAnonymous]
-        public IActionResult GetInsurance(int clientId)
-        {
-            try
-            {
-                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(clientId);
-
-                return Ok(dtoList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+                
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
@@ -218,8 +204,66 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpDelete("liquid_assets"), AllowAnonymous]
+        public IActionResult DeleteLiquidAssets(int id)
+        {
+            try
+            {
+                bool deleted = _repo.LiquidAssets.DeleteLiquidAssetsItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
 
+        //Insurance      
+        [HttpPut("insurance"), AllowAnonymous]
+        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        {
+            try
+            {
+                _repo.Insurance.UpdateInsurance(dtoArray);
+                return Ok("Insurance Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("insurance"), AllowAnonymous]
+        public IActionResult GetInsurance(int clientId)
+        {
+            try
+            {
+                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(clientId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("insurance"), AllowAnonymous]
+        public IActionResult DeleteInsuranceItem(int id)
+        {
+            try
+            {
+                bool deleted = _repo.Insurance.DeleteInsuranceItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
     }
 }

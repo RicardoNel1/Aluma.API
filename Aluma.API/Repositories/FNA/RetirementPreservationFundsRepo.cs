@@ -16,6 +16,8 @@ namespace Aluma.API.Repositories
         List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId);
         RetirementPreservationFundsDto UpdateRetirementPreservationFunds(RetirementPreservationFundsDto[] dtoArray);
 
+        bool DeleteRetirementPreservationFundsItem(int id);
+
     }
 
     public class RetirementPreservationFundsRepo : RepoBase<RetirementPreservationFundsModel>, IRetirementPreservationFundsRepo
@@ -92,6 +94,16 @@ namespace Aluma.API.Repositories
         }
 
 
+
+        public bool DeleteRetirementPreservationFundsItem(int id)
+        {
+            RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.RetirementPreservationFunds.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
     }
 }
