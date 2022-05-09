@@ -10,7 +10,7 @@ namespace DataService.Model
     [Table("providing_on_disability")]
     public class ProvidingOnDisabilityModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }        
         public double ShortTermProtection { get; set; }
