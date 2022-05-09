@@ -81,6 +81,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
+            mb.ApplyConfiguration(new InsuranceModelBuilder());
             mb.ApplyConfiguration(new LiquidAssetsModelBuilder());
             mb.ApplyConfiguration(new LiabilitiesModelBuilder());
             mb.ApplyConfiguration(new EstateExpensesModelBuilder());

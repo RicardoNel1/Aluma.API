@@ -10,7 +10,7 @@ namespace DataService.Model
     [Table("providing_on_death")]
     public class ProvidingOnDeathModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }        
         public double RetirementFunds { get; set; }
