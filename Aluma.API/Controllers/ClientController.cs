@@ -22,15 +22,20 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetClient(int clientId)
         {
+            ClientDto dto = new ClientDto();
             try
             {
-                ClientDto client = _repo.Client.GetClient(new ClientDto() { Id = clientId });
+                dto = _repo.Client.GetClient(new ClientDto() { Id = clientId });
 
-                return Ok(client);
+                dto.Status = "Success";
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
