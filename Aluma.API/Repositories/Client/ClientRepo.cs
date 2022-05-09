@@ -36,6 +36,8 @@ namespace Aluma.API.Repositories
         void GenerateClientDocuments(int clientId);
         void UpdateClientPassports(List<PassportDto> dto);
         bool DoesIDExist(ClientDto dto);
+
+        ClientDto CheckForFNA(ClientDto client);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -60,7 +62,7 @@ namespace Aluma.API.Repositories
         {
             List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
-            foreach (var dto in response)
+            foreach (ClientDto dto in response)
             {
 
                 if (dto.AdvisorId != null)
@@ -79,6 +81,14 @@ namespace Aluma.API.Repositories
                 }
 
                 dto.hasDisclosure = discExists.Any();
+
+                var fnaExists = _context.PrimaryResidence.Where(d => d.ClientId == dto.Id);
+                if (fnaExists.Any())
+                {
+                    dto.FNADate = fnaExists.First().Created;
+                }
+
+                dto.hasFNA = fnaExists.Any();
             }
 
 
@@ -165,16 +175,40 @@ namespace Aluma.API.Repositories
 
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
-            var discExists = _context.Disclosures.Where(d => d.ClientId == response.Id);
-            if (discExists.Any())
-            {
-                response.DisclosureDate = discExists.First().Created;
-            }
-
-
-            response.hasDisclosure = discExists.Any();
+            response = CheckForDisclosures(response);
+            response = CheckForFNA(response);
 
             return response;
+        }
+
+        private ClientDto CheckForDisclosures(ClientDto client)
+        {
+
+            var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id);
+
+            if (disclosureExists.Any())
+            {
+                client.DisclosureDate = disclosureExists.First().Created;
+            }
+
+            client.hasDisclosure = disclosureExists.Any();
+
+            return client;
+        }
+
+        public ClientDto CheckForFNA(ClientDto client)
+        {
+
+            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
+
+            if (fnaExists.Any())
+            {
+                client.FNADate = fnaExists.First().Created;
+            }
+
+            client.hasFNA = fnaExists.Any();
+
+            return client;
         }
 
         public bool DoesClientExist(RegistrationDto dto)
