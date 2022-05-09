@@ -1,16 +1,19 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
+using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
     public interface IFNARepo : IRepoBase<FNAModel>
     {
         void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
+        Task<ClientFNADto> CreateFNA(ClientFNADto dto);
     }
 
     public class FNARepo : RepoBase<FNAModel>, IFNARepo
@@ -27,6 +30,11 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
             _fileStorage = fileStorage;
+        }
+
+        public Task<ClientFNADto> CreateFNA(ClientFNADto dto)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
