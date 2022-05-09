@@ -89,8 +89,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
-            mb.ApplyConfiguration(new ClientProductModelBuilder());
-            
+            mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
 
             //foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             //{
@@ -149,8 +148,8 @@ namespace DataService.Context
         public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
         public DbSet<AccrualModel> Accrual { get; set; }
         public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
-
         public DbSet<AssumptionsModel> Assumptions { get; set; }
+        public DbSet<AdministrationCostsModel> AdministrationCosts { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
