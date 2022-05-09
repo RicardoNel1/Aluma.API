@@ -10,7 +10,7 @@ namespace DataService.Model
     [Table("primary_residence")]
     public class PrimaryResidenceModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string Description { get; set; }
