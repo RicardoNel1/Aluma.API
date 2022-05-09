@@ -54,6 +54,7 @@ namespace Aluma.API.RepoWrapper
         private IAccrualRepo _accrual;
         private IRetirementPlanningRepo _retirementPlanning;
         private IAssumptionsRepo _assumptions;
+        private IAdministrationCostsRepo _administrationCosts;
 
 
         private IFIRepo _fi;
@@ -212,6 +213,11 @@ namespace Aluma.API.RepoWrapper
         public IEstateExpensesRepo EstateExpenses
         {
             get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
+        public IAdministrationCostsRepo AdministrationCosts
+        {
+            get { return _administrationCosts == null ? new AdministrationCostsRepo(_dbContext, _host, _config, _mapper) : _administrationCosts; }
         }
 
         public IRetirementPensionFundsRepo RetirementPensionFunds

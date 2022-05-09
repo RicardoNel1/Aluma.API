@@ -55,6 +55,8 @@ namespace Aluma.API.RepoWrapper
         IAccrualRepo Accrual { get; }
         IRetirementPlanningRepo RetirementPlanning { get; }
 
+        IAdministrationCostsRepo AdministrationCosts { get; }
+
         //Shared
         IDisclosureRepo Disclosures { get; }
 
