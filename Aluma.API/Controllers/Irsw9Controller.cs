@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class Irsw9Controller : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public Irsw9Controller(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost]
         public IActionResult CreateIRSW9([FromBody] IRSW9Dto dto)
@@ -28,6 +38,39 @@ namespace Aluma.API.Controllers
                 }
 
                 IRSW9Dto irsw = _repo.IRSW9.CreateIRSW9(dto);
+
+                return Ok(irsw);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public IActionResult DeleteIRSW9(IRSW9Dto dto)
+        {
+            try
+            {
+                bool isDeleted = _repo.IRSW9.DeleteIRSW9(dto);
+                if (!isDeleted)
+                {
+                    return BadRequest("IRSW9 Not Deleted");
+                }
+                return Ok("IRSW9 Deleted");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetIRSW9([FromBody] IRSW9Dto dto)
+        {
+            try
+            {
+                IRSW9Dto irsw = _repo.IRSW9.GetIRSW9(dto);
 
                 return Ok(irsw);
             }
@@ -58,37 +101,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetIRSW9([FromBody] IRSW9Dto dto)
-        {
-            try
-            {
-                IRSW9Dto irsw = _repo.IRSW9.GetIRSW9(dto);
-
-                return Ok(irsw);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete, Authorize(Roles = "Admin")]
-        public IActionResult DeleteIRSW9(IRSW9Dto dto)
-        {
-            try
-            {
-                bool isDeleted = _repo.IRSW9.DeleteIRSW9(dto);
-                if (!isDeleted)
-                {
-                    return BadRequest("IRSW9 Not Deleted");
-                }
-                return Ok("IRSW9 Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        #endregion Public Methods
     }
 }

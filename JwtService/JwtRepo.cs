@@ -13,10 +13,16 @@ namespace JwtService
 {
     public interface IJwtRepo
     {
+        #region Public Methods
+
         /// <summary>
         /// Creates jwt token used to authenticate a user
         /// </summary>
         string CreateJwtToken(int userId, RoleEnum Role, int minutes = 0);
+
+        void CreateJwtToken(LoginDto dto);
+
+        string CreateJwtTokenB64(string Base64);
 
         /// <summary>
         /// Returns the JWT Token Claimes (userId & Role)
@@ -24,17 +30,20 @@ namespace JwtService
         /// <param name="token"></param>
         /// <returns></returns>
         ClaimsDto GetUserClaims(string token);
-
-        string CreateJwtTokenB64(string Base64);
-
         string GetUserClaimsB64(string token);
 
-        void CreateJwtToken(LoginDto dto);
+        #endregion Public Methods
     }
 
     public class JwtRepo : IJwtRepo
     {
+        #region Public Fields
+
         public readonly JwtSettingsDto _settings;
+
+        #endregion Public Fields
+
+        #region Public Constructors
 
         public JwtRepo()
         {
@@ -46,7 +55,15 @@ namespace JwtService
             _settings = root.GetSection("JwtSettings").Get<JwtSettingsDto>();
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
         public JwtSettingsDto settings { get => _settings; }
+
+        #endregion Public Properties
+
+        #region Public Methods
 
         public string CreateJwtToken(int userId, RoleEnum role, int minutes)
         {
@@ -78,21 +95,9 @@ namespace JwtService
             return handler.WriteToken(token);
         }
 
-        public ClaimsDto GetUserClaims(string token)
+        public void CreateJwtToken(LoginDto dto)
         {
-            string[] broken_str = token.Split(' ');
-
-            var handler = new JwtSecurityTokenHandler();
-            var tokenDetails = handler.ReadToken(broken_str[1]) as JwtSecurityToken;
-
-            var id = Int32.Parse(tokenDetails.Claims.First(c => c.Type == "UserId").Value);
-            //var role = tokenDetails.Claims.First(c => c.Type == ClaimTypes.Role).Value.ToString();
-
-            return new ClaimsDto()
-            {
-                UserId = id,
-                //Role = role
-            };
+            throw new NotImplementedException();
         }
 
         public string CreateJwtTokenB64(string Base64)
@@ -120,6 +125,22 @@ namespace JwtService
             return handler.WriteToken(token);
         }
 
+        public ClaimsDto GetUserClaims(string token)
+        {
+            string[] broken_str = token.Split(' ');
+
+            var handler = new JwtSecurityTokenHandler();
+            var tokenDetails = handler.ReadToken(broken_str[1]) as JwtSecurityToken;
+
+            var id = Int32.Parse(tokenDetails.Claims.First(c => c.Type == "UserId").Value);
+            //var role = tokenDetails.Claims.First(c => c.Type == ClaimTypes.Role).Value.ToString();
+
+            return new ClaimsDto()
+            {
+                UserId = id,
+                //Role = role
+            };
+        }
         public string GetUserClaimsB64(string token)
         {
             string[] broken_str = token.Split(' ');
@@ -130,9 +151,6 @@ namespace JwtService
             return tokenDetails.Claims.First(c => c.Type == "Base64").Value.ToString();
         }
 
-        public void CreateJwtToken(LoginDto dto)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion Public Methods
     }
 }

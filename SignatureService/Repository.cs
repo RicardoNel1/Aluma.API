@@ -11,17 +11,26 @@ namespace SignatureService
 {
     public interface ISignatureRepo
     {
-        SignerListItemDto CreateSignerListItem(SignerDto dto);
+        #region Public Methods
 
         MultipleSignersCeremonyDto CreateMultipleSignersCeremony(byte[] docData,
             string docName, List<SignerListItemDto> signers);
 
+        SignerListItemDto CreateSignerListItem(SignerDto dto);
         string RunMultiSignerCeremony(MultipleSignersCeremonyDto dto);
+
+        #endregion Public Methods
     }
 
     public class SignatureRepo : ISignatureRepo
     {
+        #region Public Fields
+
         public readonly SignatureSettingsDto _settings;
+
+        #endregion Public Fields
+
+        #region Public Constructors
 
         public SignatureRepo()
         {
@@ -33,7 +42,28 @@ namespace SignatureService
             _settings = root.GetSection("SigniflowSettings").Get<SignatureSettingsDto>();
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
         public SignatureSettingsDto settings { get => _settings; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public MultipleSignersCeremonyDto CreateMultipleSignersCeremony(byte[] docData,
+            string docName, List<SignerListItemDto> signers)
+        {
+            return new MultipleSignersCeremonyDto()
+            {
+                DocField = Convert.ToBase64String(docData),
+                DocNameField = docName,
+                LoginPasswordField = _settings.Password,
+                LoginUserNameField = _settings.UserName,
+                SignerListField = signers,
+            };
+        }
 
         public SignerListItemDto CreateSignerListItem(SignerDto dto)
         {
@@ -60,20 +90,6 @@ namespace SignatureService
                 SignerMobileNumberField = dto.Mobile,
             };
         }
-
-        public MultipleSignersCeremonyDto CreateMultipleSignersCeremony(byte[] docData,
-            string docName, List<SignerListItemDto> signers)
-        {
-            return new MultipleSignersCeremonyDto()
-            {
-                DocField = Convert.ToBase64String(docData),
-                DocNameField = docName,
-                LoginPasswordField = _settings.Password,
-                LoginUserNameField = _settings.UserName,
-                SignerListField = signers,
-            };
-        }
-
         public string RunMultiSignerCeremony(MultipleSignersCeremonyDto dto)
         {
             var client = new RestClient($"{_settings.BaseUrl}MultipleSignersSigningCeremony");
@@ -90,5 +106,7 @@ namespace SignatureService
 
             return signedDocData.SignedDocumentField;
         }
+
+        #endregion Public Methods
     }
 }

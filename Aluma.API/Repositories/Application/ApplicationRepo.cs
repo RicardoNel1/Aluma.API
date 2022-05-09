@@ -23,33 +23,39 @@ namespace Aluma.API.Repositories
 {
     public interface IApplicationRepo : IRepoBase<ApplicationModel>
     {
+        #region Public Methods
+
+        bool ApplicationInProgress(ApplicationDto dto);
+
+        bool CheckSignConsent(int applicationId);
+
+        void ConsentToSign(int applicationId);
+
+        public ApplicationDto CreateNewApplication(ApplicationDto dto);
+
+        public bool DeleteApplication(ApplicationDto dto);
+
+        bool DoesApplicationExist(ApplicationDto dto);
+
+        bool DoesApplicationExist(int clientId);
+
+        Task GenerateApplicationDocuments(int applicationId);
+
         public ApplicationDto GetApplication(ApplicationDto dto);
 
         public Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId);
 
         public List<ApplicationDto> GetApplications();
 
-        public List<ApplicationDto> GetApplicationsByClient(string clientId);
-
         public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto);
+
+        public List<ApplicationDto> GetApplicationsByClient(string clientId);
+        public ApplicationDto SoftDeleteApplication(ApplicationDto dto);
 
         public ApplicationDto UpdateApplication(ApplicationDto dto);
 
-        public bool DeleteApplication(ApplicationDto dto);
+        #endregion Public Methods
 
-        public ApplicationDto SoftDeleteApplication(ApplicationDto dto);
-
-        public ApplicationDto CreateNewApplication(ApplicationDto dto);
-
-        bool DoesApplicationExist(ApplicationDto dto);
-
-        bool DoesApplicationExist(int clientId);
-
-        bool ApplicationInProgress(ApplicationDto dto);
-
-        Task GenerateApplicationDocuments(int applicationId);
-        void ConsentToSign(int applicationId);
-        bool CheckSignConsent(int applicationId);
         //ApplicationDocumentsModel PopulateTestDocument();
 
         //void CreateDocuments(Guid applicationId);
@@ -67,13 +73,21 @@ namespace Aluma.API.Repositories
 
     public class ApplicationRepo : RepoBase<ApplicationModel>, IApplicationRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
         DocumentHelper _dh;
         MailSender _ms;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ApplicationRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
@@ -86,28 +100,30 @@ namespace Aluma.API.Repositories
             _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
-        public bool DeleteApplication(ApplicationDto dto)
-        {
-            try
-            {
-                var application = _mapper.Map<ApplicationModel>(dto);
-                application.ApplicationStatus = 0;
-                _context.Applications.Update(application);
-                _context.SaveChanges();
+        #endregion Public Constructors
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return false;
-            }
+        #region Public Methods
+
+        public bool ApplicationInProgress(ApplicationDto dto)
+        {
+            bool applicationInProgress = false;
+
+            //Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
+            int productId = _context.Products.Where(a => a.Name == dto.ProductName).First().Id;
+
+            //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
+
+            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == ApplicationStatusEnum.InProgress && a.ProductId == productId).Any();
+
+
+            return applicationInProgress;
         }
+
         public bool CheckSignConsent(int applicationId)
         {
             try
             {
-                ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == applicationId  );
+                ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
                 if (app.SignatureConsent)
                 {
                     if (app.SignatureConsentDate < DateTime.UtcNow.AddDays(-1))
@@ -129,98 +145,14 @@ namespace Aluma.API.Repositories
             }
         }
 
-        public List<ApplicationDto> GetApplications()
+        public void ConsentToSign(int applicationId)
         {
-            List<ApplicationModel> applications = _context.Applications.Where(a => a.ApplicationStatus != 0).Include(a => a.Client).ToList();
-            return _mapper.Map<List<ApplicationDto>>(applications);
-        }
+            ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
 
-        public List<ApplicationDto> GetApplicationsByClient(string clientId)
-        {
-            List<ApplicationModel> applications = _context.Applications.Where(c => c.ClientId.ToString() == clientId && c.ApplicationStatus != 0).ToList();
-
-            //remove when productID is implemented
-            List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
-            foreach (var app in result)
-            {
-                app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
-                app.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(app.Id);
-                app.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == app.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
-
-            }
-
-            return result;
-        }
-
-        public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto)
-        {
-            List<ApplicationModel> applications = _context.Applications.Where(c => c.AdvisorId == dto.Id).ToList();
-            return _mapper.Map<List<ApplicationDto>>(applications);
-        }
-
-        public ApplicationDto GetApplication(ApplicationDto dto)
-        {
-            ApplicationModel application = _context.Applications.Where(a => a.Id == dto.Id).First();
-
-            ApplicationDto response = _mapper.Map<ApplicationDto>(application);
-
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
-
-            response.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(response.Id);
-            response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
-
-            return response;
-        }
-
-        public ApplicationDto UpdateApplication(ApplicationDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DoesApplicationExist(ApplicationDto dto)
-        {
-            bool applicationExists = false;
-
-            applicationExists = _context.Applications.Where(a => a.Id == dto.Id).Any();
-
-            return applicationExists;
-        }
-
-        public bool DoesApplicationExist(int clientId)
-        {
-            bool applicationExists = false;
-
-            applicationExists = _context.Applications.Where(a => a.ClientId == clientId && a.ApplicationStatus != 0).Any();
-
-            return applicationExists;
-        }
-
-        public bool ApplicationInProgress(ApplicationDto dto)
-        {
-            bool applicationInProgress = false;
-
-            //Enum.TryParse(dto.Product, true, out DataService.Enum.ProductsEnum parsedProduct);
-            int productId = _context.Products.Where(a => a.Name == dto.ProductName).First().Id;
-
-            //applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && Convert.ToString(a.Product) == dto.Product && a.ApplicationStatus == DataService.Enum.StatusEnum.InProgress).Any();
-
-            applicationInProgress = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ApplicationStatus == ApplicationStatusEnum.InProgress && a.ProductId == productId).Any();
-
-
-            return applicationInProgress;
-        }
-
-        public ApplicationDto SoftDeleteApplication(ApplicationDto dto)
-        {
-            ApplicationModel application = _context.Applications.Where(x => x.Id == dto.Id).FirstOrDefault();
-
-            application.ApplicationStatus = 0;
-
+            application.SignatureConsent = true;
+            application.SignatureConsentDate = DateTime.UtcNow;
             _context.Applications.Update(application);
             _context.SaveChanges();
-            dto = _mapper.Map<ApplicationDto>(application);
-            return dto;
         }
 
         public ApplicationDto CreateNewApplication(ApplicationDto dto)
@@ -244,17 +176,40 @@ namespace Aluma.API.Repositories
 
         }
 
-        //public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
-        //{
-        //    ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-        //    ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
+        public bool DeleteApplication(ApplicationDto dto)
+        {
+            try
+            {
+                var application = _mapper.Map<ApplicationModel>(dto);
+                application.ApplicationStatus = 0;
+                _context.Applications.Update(application);
+                _context.SaveChanges();
 
-        //    //List<UserDocumentDto> response = await _dh.GetAllUserDocuments(c.User);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return false;
+            }
+        }
+        public bool DoesApplicationExist(ApplicationDto dto)
+        {
+            bool applicationExists = false;
 
-        //    return response;
+            applicationExists = _context.Applications.Where(a => a.Id == dto.Id).Any();
 
-        //}
+            return applicationExists;
+        }
 
+        public bool DoesApplicationExist(int clientId)
+        {
+            bool applicationExists = false;
+
+            applicationExists = _context.Applications.Where(a => a.ClientId == clientId && a.ApplicationStatus != 0).Any();
+
+            return applicationExists;
+        }
 
         public async Task GenerateApplicationDocuments(int applicationId)
         {
@@ -291,8 +246,8 @@ namespace Aluma.API.Repositories
                 }
                 else if (product.ProductId == 7)
                 {
-                    fiRepo.GenerateDOA (client, advisor, product);
-                    fiRepo.GenerateQuote (client, advisor, product);
+                    fiRepo.GenerateDOA(client, advisor, product);
+                    fiRepo.GenerateQuote(client, advisor, product);
                 }
             }
 
@@ -302,6 +257,21 @@ namespace Aluma.API.Repositories
 
         }
 
+        public ApplicationDto GetApplication(ApplicationDto dto)
+        {
+            ApplicationModel application = _context.Applications.Where(a => a.Id == dto.Id).First();
+
+            ApplicationDto response = _mapper.Map<ApplicationDto>(application);
+
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
+
+            response.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(response.Id);
+            response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
+
+            return response;
+        }
+
+        //}
         public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
         {
             ApplicationModel a = _context.Applications.First(c => c.Id == applicationId);
@@ -311,17 +281,62 @@ namespace Aluma.API.Repositories
             return response;
         }
 
-        
-        public void ConsentToSign(int applicationId)
+        public List<ApplicationDto> GetApplications()
         {
-            ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
-
-            application.SignatureConsent = true;
-            application.SignatureConsentDate = DateTime.UtcNow;
-            _context.Applications.Update(application);
-            _context.SaveChanges();
+            List<ApplicationModel> applications = _context.Applications.Where(a => a.ApplicationStatus != 0).Include(a => a.Client).ToList();
+            return _mapper.Map<List<ApplicationDto>>(applications);
         }
 
+        public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto)
+        {
+            List<ApplicationModel> applications = _context.Applications.Where(c => c.AdvisorId == dto.Id).ToList();
+            return _mapper.Map<List<ApplicationDto>>(applications);
+        }
+
+        public List<ApplicationDto> GetApplicationsByClient(string clientId)
+        {
+            List<ApplicationModel> applications = _context.Applications.Where(c => c.ClientId.ToString() == clientId && c.ApplicationStatus != 0).ToList();
+
+            //remove when productID is implemented
+            List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
+            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
+            foreach (var app in result)
+            {
+                app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
+                app.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(app.Id);
+                app.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == app.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
+
+            }
+
+            return result;
+        }
+        public ApplicationDto SoftDeleteApplication(ApplicationDto dto)
+        {
+            ApplicationModel application = _context.Applications.Where(x => x.Id == dto.Id).FirstOrDefault();
+
+            application.ApplicationStatus = 0;
+
+            _context.Applications.Update(application);
+            _context.SaveChanges();
+            dto = _mapper.Map<ApplicationDto>(application);
+            return dto;
+        }
+
+        public ApplicationDto UpdateApplication(ApplicationDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion Public Methods
+
+        //public async Task<List<ApplicationDocumentDto>> GetApplicationDocuments(int applicationId)
+        //{
+        //    ApplicationModel a = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
+        //    ClientModel c = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == a.ClientId);
+
+        //    //List<UserDocumentDto> response = await _dh.GetAllUserDocuments(c.User);
+
+        //    return response;
     }
 
 }

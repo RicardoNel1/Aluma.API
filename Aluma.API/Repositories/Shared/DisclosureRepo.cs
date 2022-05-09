@@ -18,33 +18,45 @@ namespace Aluma.API.Repositories
 {
     public interface IDisclosureRepo : IRepoBase<DisclosureModel>
     {
+        #region Public Methods
+
+        public DisclosureDto CreateDisclosure(DisclosureDto dto);
+
+        bool DeleteDisclosure(DisclosureDto dto);
+
+        public bool DoesClientHaveDisclosure(ClientDto dto);
+
+        Task GenerateClientConsent(ClientModel client, AdvisorModel advisor);
+
         public DisclosureDto GetDisclosure(DisclosureDto dto);
+
+        DisclosureDto GetDisclosureByClient(ClientDto dto);
 
         public List<DisclosureDto> GetDisclosureListByAdvisor(AdvisorDto dto);
 
         public List<DisclosureDto> GetDisclosureListByClient(ClientDto dto);
-
-        public bool DoesClientHaveDisclosure(ClientDto dto);
-
-        DisclosureDto GetDisclosureByClient(ClientDto dto);
-
-        public DisclosureDto CreateDisclosure(DisclosureDto dto);
-
         void UpdateDisclosure(ClientDto dto);
 
-        bool DeleteDisclosure(DisclosureDto dto);
-        Task GenerateClientConsent(ClientModel client, AdvisorModel advisor);
-
+        #endregion Public Methods
     }
 
     public class DisclosureRepo : RepoBase<DisclosureModel>, IDisclosureRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
+        private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+
         private readonly IMapper _mapper;
         private readonly IUserDocumentsRepo _userDocuments;
-        private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
-        private readonly IFileStorageRepo _fileStorage;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public DisclosureRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage, IUserDocumentsRepo userDocuments) : base(databaseContext)
         {
@@ -55,6 +67,10 @@ namespace Aluma.API.Repositories
             _userDocuments = userDocuments;
             _fileStorage = fileStorage;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public DisclosureDto CreateDisclosure(DisclosureDto dto)
         {
@@ -74,6 +90,11 @@ namespace Aluma.API.Repositories
             }
         }
 
+        public bool DeleteDisclosure(DisclosureDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool DoesClientHaveDisclosure(ClientDto dto)
         {
             bool exists = _context.Disclosures.Where(c => c.ClientId == dto.Id).Any();
@@ -81,37 +102,43 @@ namespace Aluma.API.Repositories
             return exists;
         }
 
-        public DisclosureDto GetDisclosure(DisclosureDto dto)
+        public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
-            DisclosureModel disclosure = _context.Disclosures.Where(c => c.Id == dto.Id).Include(c => c.Client).Include(c => c.Advisor).First();
-            return _mapper.Map<DisclosureDto>(disclosure);
-        }
+            Dictionary<string, string> d = new Dictionary<string, string>();
 
-        public List<DisclosureDto> GetDisclosureListByAdvisor(AdvisorDto dto)
-        {
-            List<DisclosureModel> applications = _context.Disclosures.Where(c => c.AdvisorId == dto.Id).Include(c => c.Client).ToList();
-            return _mapper.Map<List<DisclosureDto>>(applications);
-        }
+            d["fullName"] = $"{client.User.FirstName} {client.User.LastName}";
+            d["idNumber"] = client.User.RSAIdNumber;
+            d["onBehalfOf"] = "Self";
 
-        public List<DisclosureDto> GetDisclosureListByClient(ClientDto dto)
-        {
-            List<DisclosureModel> applications = _context.Disclosures.Where(c => c.ClientId == dto.Id).Include(c => c.Advisor).ToList();
-            return _mapper.Map<List<DisclosureDto>>(applications);
-        }
+            d["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
 
-        public DisclosureDto GetDisclosureByClient(ClientDto dto)
-        {
-            throw new NotImplementedException();
-        }
+            d["listedAbove"] = "x";
 
-        public void UpdateDisclosure(ClientDto dto)
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool DeleteDisclosure(DisclosureDto dto)
-        {
-            throw new NotImplementedException();
+            d["signAt"] = client.User.Address.First().City;
+
+            d["signedOnDay"] = DateTime.UtcNow.Day.ToString();
+            d["signedOnMonth"] = DateTime.UtcNow.Month.ToString();
+            d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
+
+            d["clientContact"] = "Self";
+
+            if (client.isSmoker)
+                d["smokerTrue"] = "x";
+            else
+                d["smokerFalse"] = "x";
+
+            if (client.LeadType == "Own")
+                d["leadType"] = "x";
+
+            if (client.Education != null)
+            {
+                d[$"education_{client.Education}"] = "x";
+            }
+
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+
+            await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
         }
 
         public async Task GenerateDisclosure(ClientModel client, AdvisorModel advisor, ConsumerProtectionModel cpa, DisclosureModel disclosure)
@@ -328,43 +355,33 @@ namespace Aluma.API.Repositories
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
         }
 
-        public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
+        public DisclosureDto GetDisclosure(DisclosureDto dto)
         {
-            Dictionary<string, string> d = new Dictionary<string, string>();
-
-            d["fullName"] = $"{client.User.FirstName} {client.User.LastName}";
-            d["idNumber"] = client.User.RSAIdNumber;
-            d["onBehalfOf"] = "Self";
-
-            d["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
-
-            d["listedAbove"] = "x";
-
-
-            d["signAt"] = client.User.Address.First().City;
-
-            d["signedOnDay"] = DateTime.UtcNow.Day.ToString();
-            d["signedOnMonth"] = DateTime.UtcNow.Month.ToString();
-            d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
-
-            d["clientContact"] = "Self";
-
-            if (client.isSmoker)
-                d["smokerTrue"] = "x";
-            else
-                d["smokerFalse"] = "x";
-
-            if (client.LeadType == "Own")
-                d["leadType"] = "x";
-
-            if (client.Education != null)
-            {
-                d[$"education_{client.Education}"] = "x";
-            }
-
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
-
-            await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
+            DisclosureModel disclosure = _context.Disclosures.Where(c => c.Id == dto.Id).Include(c => c.Client).Include(c => c.Advisor).First();
+            return _mapper.Map<DisclosureDto>(disclosure);
         }
+
+        public DisclosureDto GetDisclosureByClient(ClientDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<DisclosureDto> GetDisclosureListByAdvisor(AdvisorDto dto)
+        {
+            List<DisclosureModel> applications = _context.Disclosures.Where(c => c.AdvisorId == dto.Id).Include(c => c.Client).ToList();
+            return _mapper.Map<List<DisclosureDto>>(applications);
+        }
+
+        public List<DisclosureDto> GetDisclosureListByClient(ClientDto dto)
+        {
+            List<DisclosureModel> applications = _context.Disclosures.Where(c => c.ClientId == dto.Id).Include(c => c.Advisor).ToList();
+            return _mapper.Map<List<DisclosureDto>>(applications);
+        }
+        public void UpdateDisclosure(ClientDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion Public Methods
     }
 }

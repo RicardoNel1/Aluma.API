@@ -17,25 +17,38 @@ namespace Aluma.API.Repositories
 {
     public interface IRiskProfileRepo : IRepoBase<RiskProfileModel>
     {
-        RiskProfileDto GetRiskProfile(int clientId);
-
-        bool DoesClientHaveRiskProfile(RiskProfileDto dto);
+        #region Public Methods
 
         RiskProfileDto CreateRiskProfile(RiskProfileDto dto);
 
+        bool DeleteRiskProfile(RiskProfileDto dto);
+
+        bool DoesClientHaveRiskProfile(RiskProfileDto dto);
+
+        Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
+
+        RiskProfileDto GetRiskProfile(int clientId);
         RiskProfileDto UpdateRiskProfile(RiskProfileDto dto);
 
-        bool DeleteRiskProfile(RiskProfileDto dto);
-        Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile);
+        #endregion Public Methods
     }
 
     public class RiskProfileRepo : RepoBase<RiskProfileModel>, IRiskProfileRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public RiskProfileRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
@@ -44,6 +57,10 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
             _fileStorage = fileStorage;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public RiskProfileDto CreateRiskProfile(RiskProfileDto dto)
         {
@@ -72,30 +89,6 @@ namespace Aluma.API.Repositories
             }
             return false;
 
-        }
-
-        public RiskProfileDto GetRiskProfile(int clientId)
-        {
-            var riskProfileModel = _context.RiskProfiles.Where(r => r.ClientId == clientId);
-
-            if (riskProfileModel.Any())
-            {
-                return _mapper.Map<RiskProfileDto>(riskProfileModel.First());
-            }
-            return null;
-
-        }
-
-        public RiskProfileDto UpdateRiskProfile(RiskProfileDto dto)
-        {
-            RiskProfileModel newRiskProfile = _mapper.Map<RiskProfileModel>(dto);
-
-            _context.RiskProfiles.Update(newRiskProfile);
-            _context.SaveChanges();
-
-            dto = _mapper.Map<RiskProfileDto>(newRiskProfile);
-
-            return dto;
         }
 
         public async Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
@@ -129,10 +122,36 @@ namespace Aluma.API.Repositories
             //advisor notes
             d["advisorNotes"] = riskProfile.AdvisorNotes ?? string.Empty;
 
-            DocumentHelper dh = new DocumentHelper(_context,_config, _fileStorage, _host);
+            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
-            
+
         }
+
+        public RiskProfileDto GetRiskProfile(int clientId)
+        {
+            var riskProfileModel = _context.RiskProfiles.Where(r => r.ClientId == clientId);
+
+            if (riskProfileModel.Any())
+            {
+                return _mapper.Map<RiskProfileDto>(riskProfileModel.First());
+            }
+            return null;
+
+        }
+
+        public RiskProfileDto UpdateRiskProfile(RiskProfileDto dto)
+        {
+            RiskProfileModel newRiskProfile = _mapper.Map<RiskProfileModel>(dto);
+
+            _context.RiskProfiles.Update(newRiskProfile);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<RiskProfileDto>(newRiskProfile);
+
+            return dto;
+        }
+
+        #endregion Public Methods
     }
 }

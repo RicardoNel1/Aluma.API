@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class ConsumerProtectionController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ConsumerProtectionController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateConsumerProtection([FromBody] ConsumerProtectionDto dto)
@@ -32,6 +42,21 @@ namespace Aluma.API.Controllers
                      _repo.ConsumerProtection.CreateConsumerProtection(dto);
                 }
                 return Ok("Consumer Protection Created");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetConsumerProtection(int clientId)
+        {
+            try
+            {
+                ConsumerProtectionDto consumerProtection = _repo.ConsumerProtection.GetConsumerProtection(clientId);
+
+                return Ok(consumerProtection);
             }
             catch (Exception e)
             {
@@ -63,21 +88,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet, AllowAnonymous]
-        public IActionResult GetConsumerProtection(int clientId)
-        {
-            try
-            {
-                ConsumerProtectionDto consumerProtection = _repo.ConsumerProtection.GetConsumerProtection(clientId);
-
-                return Ok(consumerProtection);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-               
-
+        #endregion Public Methods
     }
 }

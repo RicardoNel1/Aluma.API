@@ -10,23 +10,33 @@ namespace Aluma.API.Repositories
 {
     public interface IIRSW8Repo : IRepoBase<IRSW8Model>
     {
-        IRSW8Dto GetIRSW8(IRSW8Dto dto);
-
-        bool DoesApplicationHaveIRSW8(IRSW8Dto dto);
+        #region Public Methods
 
         IRSW8Dto CreateIRSW8(IRSW8Dto dto);
 
+        bool DeleteIRSW8(IRSW8Dto dto);
+
+        bool DoesApplicationHaveIRSW8(IRSW8Dto dto);
+
+        IRSW8Dto GetIRSW8(IRSW8Dto dto);
         IRSW8Dto UpdateIRSW8(IRSW8Dto dto);
 
-        bool DeleteIRSW8(IRSW8Dto dto);
+        #endregion Public Methods
     }
 
     public class IRSW8Repo : RepoBase<IRSW8Model>, IIRSW8Repo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public IRSW8Repo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
         {
@@ -35,6 +45,10 @@ namespace Aluma.API.Repositories
             _host = host;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public IRSW8Dto CreateIRSW8(IRSW8Dto dto)
         {
@@ -60,5 +74,7 @@ namespace Aluma.API.Repositories
         {
             throw new System.NotImplementedException();
         }
+
+        #endregion Public Methods
     }
 }

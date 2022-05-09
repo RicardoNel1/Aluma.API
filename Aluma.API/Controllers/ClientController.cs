@@ -12,11 +12,60 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class ClientController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ClientController(IWrapper repo)
         {
             _repo = repo;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> CreateClient(ClientDto dto)
+        {
+            try
+            {
+                bool clientExist = _repo.Client.DoesClientExist(dto);
+                if (clientExist)
+                {
+                    return BadRequest("Client Exists");
+                }
+
+                dto = await _repo.Client.CreateClient(dto);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public IActionResult DeleteClient(ClientDto dto)
+        {
+            try
+            {
+                bool isDeleted = _repo.Client.DeleteClient(dto);
+                if (!isDeleted)
+                {
+                    return BadRequest("Client Not Deleted");
+                }
+                return Ok("Client Deleted");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet, AllowAnonymous]
@@ -48,21 +97,14 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> CreateClient(ClientDto dto)
+        [HttpGet("list/advisor/{advisorId}"), AllowAnonymous]
+        public IActionResult ListAdvisorClients(int advisorId)
         {
             try
             {
-                bool clientExist = _repo.Client.DoesClientExist(dto);
-                if (clientExist)
-                {
-                    return BadRequest("Client Exists");
-                }
+                var clientList = _repo.Client.GetClientsByAdvisor(advisorId);
 
-                dto = await _repo.Client.CreateClient(dto);
-
-                return Ok(dto);
+                return Ok(clientList);
             }
             catch (Exception e)
             {
@@ -70,73 +112,20 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut("passports"), AllowAnonymous]
-        public IActionResult UpdateClientPassports(List<PassportDto> dto)
+        [HttpGet("list/admin"), AllowAnonymous]
+        public IActionResult ListAllClients()
         {
             try
             {
+                var clientList = _repo.Client.GetClients();
 
-                _repo.Client.UpdateClientPassports(dto);
-
-                return Ok(dto);
+                return Ok(clientList);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpPut, AllowAnonymous]
-        public IActionResult UpdateClient(ClientDto dto)
-        {
-            try
-            {
-                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-                bool clientExist = _repo.Client.DoesClientExist(dto);
-                bool idExists = _repo.Client.DoesIDExist(dto);
-                if (!clientExist)
-                {
-                    return BadRequest("Client Does Not Exist");
-                }
-                else if(idExists)
-                {
-                    dto.Status = "Failure";
-                    dto.Message = "Invalid-RSAID";
-                    return StatusCode(405, dto);
-                }
-                else
-                {
-
-                    _repo.Client.UpdateClient(dto);
-                    dto.Status = "Success";                    
-                }
-                return Ok(dto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete, Authorize(Roles = "Admin")]
-        public IActionResult DeleteClient(ClientDto dto)
-        {
-            try
-            {
-                bool isDeleted = _repo.Client.DeleteClient(dto);
-                if (!isDeleted)
-                {
-                    return BadRequest("Client Not Deleted");
-                }
-                return Ok("Client Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
 
         [HttpPost("register"), AllowAnonymous]
         public async Task<IActionResult> RegisterClient(RegistrationDto dto)
@@ -184,14 +173,32 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/advisor/{advisorId}"), AllowAnonymous]
-        public IActionResult ListAdvisorClients(int advisorId)
+        [HttpPut, AllowAnonymous]
+        public IActionResult UpdateClient(ClientDto dto)
         {
             try
             {
-                var clientList = _repo.Client.GetClientsByAdvisor(advisorId);
+                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                return Ok(clientList);
+                bool clientExist = _repo.Client.DoesClientExist(dto);
+                bool idExists = _repo.Client.DoesIDExist(dto);
+                if (!clientExist)
+                {
+                    return BadRequest("Client Does Not Exist");
+                }
+                else if (idExists)
+                {
+                    dto.Status = "Failure";
+                    dto.Message = "Invalid-RSAID";
+                    return StatusCode(405, dto);
+                }
+                else
+                {
+
+                    _repo.Client.UpdateClient(dto);
+                    dto.Status = "Success";
+                }
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -199,19 +206,22 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/admin"), AllowAnonymous]
-        public IActionResult ListAllClients()
+        [HttpPut("passports"), AllowAnonymous]
+        public IActionResult UpdateClientPassports(List<PassportDto> dto)
         {
             try
             {
-                var clientList = _repo.Client.GetClients();
 
-                return Ok(clientList);
+                _repo.Client.UpdateClientPassports(dto);
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
+        #endregion Public Methods
     }
 }

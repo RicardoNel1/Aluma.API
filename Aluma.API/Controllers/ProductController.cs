@@ -11,14 +11,25 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IWrapper _repo;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ProductController(IWrapper repo, IConfiguration config)
         {
             _repo = repo;
             _config = config;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateProduct(ProductDto dto)
@@ -32,27 +43,6 @@ namespace Aluma.API.Controllers
                 }
 
                 dto = _repo.ProductRepo.CreateProduct(dto);
-
-                return Ok(dto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpPut, AllowAnonymous]
-        public IActionResult UpdateProduct([FromBody] ProductDto dto)
-        {
-            try
-            {
-                bool productExists = _repo.ProductRepo.DoesProductExist(dto);
-                if (!productExists)
-                {
-                    return BadRequest("Product Does Not Exist");
-                }
-
-                dto = _repo.ProductRepo.UpdateProduct(dto);
 
                 return Ok(dto);
             }
@@ -95,5 +85,27 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut, AllowAnonymous]
+        public IActionResult UpdateProduct([FromBody] ProductDto dto)
+        {
+            try
+            {
+                bool productExists = _repo.ProductRepo.DoesProductExist(dto);
+                if (!productExists)
+                {
+                    return BadRequest("Product Does Not Exist");
+                }
+
+                dto = _repo.ProductRepo.UpdateProduct(dto);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        #endregion Public Methods
     }
 }

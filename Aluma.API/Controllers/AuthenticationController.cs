@@ -13,8 +13,15 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IWrapper _repo;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AuthenticationController(IWrapper repo, IConfiguration config)
         {
@@ -22,6 +29,106 @@ namespace Aluma.API.Controllers
             _config = config;
         }
 
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        [HttpPost("advisor/login")]
+        public IActionResult AuthenticateAdmin(LoginDto dto)
+        {
+            AuthResponseDto response = new AuthResponseDto();
+            try
+            {
+                bool loginExists = false;
+                bool passwordMatched = false;
+                bool registrationVerified = false;
+
+
+                UserDto user = new UserDto();
+                RoleEnum role = RoleEnum.Advisor;
+                var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+                string token = String.Empty;
+
+                loginExists = _repo.User.DoesUserNameExist(dto);
+
+                if (!loginExists)
+                {
+                    response.Message = "Invalid-NotExist";
+                    return StatusCode(401, response);
+
+                }
+
+                user = _repo.User.GetUser(dto);
+
+                if (user.Role != RoleEnum.Advisor && user.Role != RoleEnum.External && user.Role != RoleEnum.Admin)
+                {
+                    response.Message = "Invalid-Credentials";
+                    return StatusCode(401, response);
+                }
+
+
+                if (dto.UserName == "dev@aluma.co.za")
+                {
+                    token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+
+                    AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+
+                    response = new AuthResponseDto()
+                    {
+                        Token = token,
+                        AdvisorId = advisor.Id,
+                        TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
+                        User = user,
+                        Message = "OtpVerified",
+                    };
+                    return Ok(response);
+                }
+
+
+                passwordMatched = _repo.User.IsPasswordVerified(dto);
+                if (!passwordMatched)
+                {
+                    response.Message = "Invalid-Credentials";
+                    return StatusCode(401, response);
+                }
+
+                //token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+                //AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+
+                //response = new AuthResponseDto()
+                //{
+                //    Token = token,
+                //    AdvisorId = advisor.Id,
+                //    TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
+                //    User = user,
+                //    Message = "OtpVerified",
+                //};
+                //return Ok(response);
+
+                registrationVerified = _repo.User.IsRegistrationVerified(dto);
+
+                if (!registrationVerified)
+                {
+                    response.Message = "verifyRegistration";
+                    return StatusCode(401, response);
+                }
+                else
+                {
+                    //Send Two-Factor Auth OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                    response.Message = "verifyLogin";
+                    return Ok(response);
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                response.Message = "InternalError";
+                return StatusCode(401, response);
+            }
+        }
 
         [HttpPost("client/login")]
         public async Task<IActionResult> AuthenticateClient(LoginDto dto)
@@ -140,104 +247,6 @@ namespace Aluma.API.Controllers
                 return StatusCode(401, response);
             }
         }
-
-        [HttpPost("advisor/login")]
-        public IActionResult AuthenticateAdmin(LoginDto dto)
-        {
-            AuthResponseDto response = new AuthResponseDto();
-            try
-            {
-                bool loginExists = false;
-                bool passwordMatched = false;
-                bool registrationVerified = false;
-
-
-                UserDto user = new UserDto();
-                RoleEnum role = RoleEnum.Advisor;
-                var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
-                string token = String.Empty;
-
-                loginExists = _repo.User.DoesUserNameExist(dto);
-
-                if (!loginExists)
-                {
-                    response.Message = "Invalid-NotExist";
-                    return StatusCode(401, response);
-
-                }
-
-                user = _repo.User.GetUser(dto);
-
-                if (user.Role != RoleEnum.Advisor && user.Role != RoleEnum.External && user.Role != RoleEnum.Admin)
-                {
-                    response.Message = "Invalid-Credentials";
-                    return StatusCode(401, response);
-                }
-
-
-                if (dto.UserName == "dev@aluma.co.za")
-                {
-                    token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-
-                    AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
-
-                    response = new AuthResponseDto()
-                    {
-                        Token = token,
-                        AdvisorId = advisor.Id,
-                        TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
-                        User = user,
-                        Message = "OtpVerified",
-                    };
-                    return Ok(response);
-                }
-
-
-                passwordMatched = _repo.User.IsPasswordVerified(dto);
-                if (!passwordMatched)
-                {
-                    response.Message = "Invalid-Credentials";
-                    return StatusCode(401, response);
-                }
-
-                //token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
-                //AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
-
-                //response = new AuthResponseDto()
-                //{
-                //    Token = token,
-                //    AdvisorId = advisor.Id,
-                //    TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
-                //    User = user,
-                //    Message = "OtpVerified",
-                //};
-                //return Ok(response);
-
-                registrationVerified = _repo.User.IsRegistrationVerified(dto);
-
-                if (!registrationVerified)
-                {
-                    response.Message = "verifyRegistration";
-                    return StatusCode(401, response);
-                }
-                else
-                {
-                    //Send Two-Factor Auth OTP
-                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
-                    response.Message = "verifyLogin";
-                    return Ok(response);
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                response.Message = "InternalError";
-                return StatusCode(401, response);
-            }
-        }
-
-
         [HttpPost("forgot-password")]
         public IActionResult ForgotPassword([FromBody] LoginDto dto)
         {
@@ -323,5 +332,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, response);
             }
         }
+
+        #endregion Public Methods
     }
 }

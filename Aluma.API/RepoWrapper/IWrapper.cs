@@ -12,66 +12,93 @@ namespace Aluma.API.RepoWrapper
 {
     public interface IWrapper
     {
+        #region Public Properties
+
+        IAccrualRepo Accrual { get; }
+
         IAdvisorRepo Advisor { get; }
 
         IApplicationDocumentsRepo ApplicationDocuments { get; }
         IApplicationRepo Applications { get; }
 
-        //IDividendTaxRepo DividendTax { get; }
-        IFspMandateRepo FSPMandate { get; }
-        IFNARepo FNA { get; }
+        IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
 
-        IFIRepo FI { get; }
-        IPEFRepo PEF { get; }
-        IDocumentHelper DocumentHelper { get; }
-        IDocumentSignHelper SignHelper { get; }
+        IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
 
-        IIRSW8Repo IRSW8 { get; }
-        IIRSW9Repo IRSW9 { get; }
-        IPurposeAndFundingRepo PurposeAndFunding { get; }
-        IRecordOfAdviceRepo RecordOfAdvice { get; }
+        IBankDetailsRepo BankDetails { get; }
+
+        IBankValidationServiceRepo BankValidationRepo { get; }
 
         //Client
         IClientRepo Client { get; }
-        IBankDetailsRepo BankDetails { get; }
-        IKYCDataRepo KycData { get; }
-        IRiskProfileRepo RiskProfile { get; }
-        ITaxResidencyRepo TaxResidency { get; }
+
         IConsumerProtectionRepo ConsumerProtection { get; }
-
-        //Product
-        IProductRepo ProductRepo { get; }
-
-        //FNA
-        IPrimaryResidenceRepo PrimaryResidence { get; }
-        IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
-        IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
-        ILiquidAssetsRepo LiquidAssets { get; }
-        IInsuranceRepo Insurance { get; }
-        ILiabilitiesRepo Liabilities { get; }
-        IEstateExpensesRepo EstateExpenses { get; }
-        IRetirementPensionFundsRepo RetirementPensionFunds { get; }
-        IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
-        IAccrualRepo Accrual { get; }
-        IRetirementPlanningRepo RetirementPlanning { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
 
+        IDocumentHelper DocumentHelper { get; }
+
+        IEstateExpensesRepo EstateExpenses { get; }
+
+        IFIRepo FI { get; }
+
+        IFileStorageRepo FileStorageRepo { get; }
+
+        IFNARepo FNA { get; }
+
+        //IDividendTaxRepo DividendTax { get; }
+        IFspMandateRepo FSPMandate { get; }
+        IInsuranceRepo Insurance { get; }
+
+        IIRSW8Repo IRSW8 { get; }
+
+        IIRSW9Repo IRSW9 { get; }
+
+        IJwtRepo JwtRepo { get; }
+
+        IKYCDataRepo KycData { get; }
+
+        IKycFactoryRepo KycRepo { get; }
+
+        ILiabilitiesRepo Liabilities { get; }
+
+        ILiquidAssetsRepo LiquidAssets { get; }
+
         //User
         IOtpRepo Otp { get; }
 
-        IUserRepo User { get; }
-        IUserDocumentsRepo UserDocuments { get; }
+        IPEFRepo PEF { get; }
+        //FNA
+        IPrimaryResidenceRepo PrimaryResidence { get; }
 
+        //Product
+        IProductRepo ProductRepo { get; }
+
+        IPurposeAndFundingRepo PurposeAndFunding { get; }
+
+        IRecordOfAdviceRepo RecordOfAdvice { get; }
+
+        IRetirementPensionFundsRepo RetirementPensionFunds { get; }
+
+        IRetirementPlanningRepo RetirementPlanning { get; }
+
+        IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
+
+        IRiskProfileRepo RiskProfile { get; }
+
+        ISignatureRepo SignatureRepo { get; }
+
+        IDocumentSignHelper SignHelper { get; }
         // Third Party Services
         ISmsRepo SmsRepo { get; }
 
-        IJwtRepo JwtRepo { get; }
-        IKycFactoryRepo KycRepo { get; }
-        IBankValidationServiceRepo BankValidationRepo { get; }
-        ISignatureRepo SignatureRepo { get; }
-        IFileStorageRepo FileStorageRepo { get; }
         IStringHasher StrHasher { get; }
+
+        ITaxResidencyRepo TaxResidency { get; }
+        IUserRepo User { get; }
+        IUserDocumentsRepo UserDocuments { get; }
+
+        #endregion Public Properties
     }
 }

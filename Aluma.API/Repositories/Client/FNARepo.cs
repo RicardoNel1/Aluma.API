@@ -12,17 +12,31 @@ namespace Aluma.API.Repositories
 {
     public interface IFNARepo : IRepoBase<FNAModel>
     {
-        void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
+        #region Public Methods
+
         Task<ClientFNADto> CreateFNA(ClientFNADto dto);
+
+        void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
+
+        #endregion Public Methods
     }
 
     public class FNARepo : RepoBase<FNAModel>, IFNARepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public FNARepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
@@ -31,6 +45,10 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
             _fileStorage = fileStorage;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public Task<ClientFNADto> CreateFNA(ClientFNADto dto)
         {
@@ -78,5 +96,7 @@ namespace Aluma.API.Repositories
             //_context.UserDocuments.Add(udm);
             //_context.SaveChanges();
         }
+
+        #endregion Public Methods
     }
 }

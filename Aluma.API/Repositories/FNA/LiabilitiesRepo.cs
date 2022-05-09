@@ -13,18 +13,29 @@ namespace Aluma.API.Repositories
 {
     public interface ILiabilitiesRepo : IRepoBase<LiabilitiesModel>
     {
+        #region Public Methods
+
+        bool DeleteLiabilitiesItem(int id);
+
         List<LiabilitiesDto> GetLiabilities(int clientId);
         LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
 
-        bool DeleteLiabilitiesItem(int id);
+        #endregion Public Methods
     }
 
     public class LiabilitiesRepo : RepoBase<LiabilitiesModel>, ILiabilitiesRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public LiabilitiesRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -33,7 +44,21 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        public bool DeleteLiabilitiesItem(int id)
+        {
+            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.Liabilities.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public List<LiabilitiesDto> GetLiabilities(int clientId)
         {
@@ -92,15 +117,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteLiabilitiesItem(int id)
-        {
-            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.Liabilities.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

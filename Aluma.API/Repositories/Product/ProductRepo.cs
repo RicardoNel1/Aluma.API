@@ -12,24 +12,34 @@ namespace Aluma.API.Repositories
 {
     public interface IProductRepo : IRepoBase<ProductModel>
     {
-        List<ProductDto> GetAllProducts();
-        ProductDto GetProduct(int productId);
-
-        bool DoesProductExist(ProductDto dto);
+        #region Public Methods
 
         ProductDto CreateProduct(ProductDto dto);
 
+        bool DeleteProduct(ProductDto dto);
+
+        bool DoesProductExist(ProductDto dto);
+
+        List<ProductDto> GetAllProducts();
+        ProductDto GetProduct(int productId);
         ProductDto UpdateProduct(ProductDto dto);
 
-        bool DeleteProduct(ProductDto dto);
+        #endregion Public Methods
     }
 
     public class ProductRepo : RepoBase<ProductModel>, IProductRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ProductRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -38,6 +48,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public ProductDto CreateProduct(ProductDto dto)
         {
@@ -68,18 +82,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public ProductDto GetProduct(int productId)
-        {
-            var productModel = _context.Products.Where(r => r.Id == productId);
-
-            if (productModel.Any())
-            {
-                return _mapper.Map<ProductDto>(productModel.First());
-            }
-            return null;
-
-        }
-
         public List<ProductDto> GetAllProducts()
         {
             List<ProductModel> products = _context.Products.Where(r => r.IsActive == true).ToList();
@@ -92,6 +94,17 @@ namespace Aluma.API.Repositories
 
         }
 
+        public ProductDto GetProduct(int productId)
+        {
+            var productModel = _context.Products.Where(r => r.Id == productId);
+
+            if (productModel.Any())
+            {
+                return _mapper.Map<ProductDto>(productModel.First());
+            }
+            return null;
+
+        }
         public ProductDto UpdateProduct(ProductDto dto)
         {
             ProductModel newProduct = _mapper.Map<ProductModel>(dto);
@@ -103,5 +116,7 @@ namespace Aluma.API.Repositories
 
             return dto;
         }
+
+        #endregion Public Methods
     }
 }

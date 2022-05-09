@@ -10,12 +10,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class AccrualController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AccrualController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost("accrual"), AllowAnonymous]
         public IActionResult CreateClientAccrual([FromBody] AccrualDto dto)
@@ -54,6 +64,8 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        #endregion Public Methods
 
     }
 }

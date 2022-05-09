@@ -13,14 +13,25 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class ApplicationController : ControllerBase
     {
-        private readonly IWrapper _repo;
+        #region Private Fields
+
         private readonly IMapper _mapper;
+
+        private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ApplicationController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateApplication(ApplicationDto dto)
@@ -44,61 +55,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut("delete"), AllowAnonymous]
-        public IActionResult SoftDeleteApplication(ApplicationDto dto)
-        {
-            try
-            {
-
-                bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
-                if (!applicationExist)
-                {
-                    return BadRequest("Application Does Not Exist");
-                }
-                else
-                {
-                    _repo.Applications.SoftDeleteApplication(dto);
-                }
-                return Ok(dto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpPut]
-        public IActionResult UpdateApplication([FromBody] ApplicationDto dto)
-        {
-            try
-            {
-                var application = _repo.Applications.UpdateApplication(dto);
-
-                return Ok(application);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e);
-            }
-        }
-
-        [HttpGet, AllowAnonymous]
-        public IActionResult GetApplication(int applicationId)
-        {
-            try
-            {
-                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-                var application = _repo.Applications.GetApplication(new ApplicationDto() { Id = applicationId });
-
-                return Ok(application);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
         [HttpDelete, Authorize(Roles = "Admin")]
         public IActionResult DeleteApplication(ApplicationDto dto)
         {
@@ -110,25 +66,6 @@ namespace Aluma.API.Controllers
                     return BadRequest("Application Not Deleted");
                 }
                 return Ok("Application Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("list/client"), AllowAnonymous]
-        //public IActionResult ListClientApplication([FromQuery] ClientDto dto) 
-        public IActionResult ListClientApplications(string clientId)
-        {
-            try
-            {
-                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-                //var applications = _repo.Applications.GetApplicationsByClient(dto);
-                var applications = _repo.Applications.GetApplicationsByClient(clientId);
-
-                return Ok(applications);
             }
             catch (Exception e)
             {
@@ -198,6 +135,72 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetApplication(int applicationId)
+        {
+            try
+            {
+                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var application = _repo.Applications.GetApplication(new ApplicationDto() { Id = applicationId });
+
+                return Ok(application);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
+        public IActionResult ListAdvisorApplications(AdvisorDto dto)
+        {
+            try
+            {
+                var applicationList = _repo.Applications.GetApplicationsByAdvisor(dto);
+
+                return Ok(applicationList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list/admin"), Authorize(Roles = "Admin")]
+        public IActionResult ListAllApplications()
+        {
+            try
+            {
+                var applicationList = _repo.Applications.GetApplications();
+
+                return Ok(applicationList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list/client"), AllowAnonymous]
+        //public IActionResult ListClientApplication([FromQuery] ClientDto dto) 
+        public IActionResult ListClientApplications(string clientId)
+        {
+            try
+            {
+                //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                //var applications = _repo.Applications.GetApplicationsByClient(dto);
+                var applications = _repo.Applications.GetApplicationsByClient(clientId);
+
+                return Ok(applications);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("signDocuments"), AllowAnonymous]
         public async Task<IActionResult> SignDocuments(int applicationId)
         {
@@ -238,14 +241,22 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
-        public IActionResult ListAdvisorApplications(AdvisorDto dto)
+        [HttpPut("delete"), AllowAnonymous]
+        public IActionResult SoftDeleteApplication(ApplicationDto dto)
         {
             try
             {
-                var applicationList = _repo.Applications.GetApplicationsByAdvisor(dto);
 
-                return Ok(applicationList);
+                bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
+                if (!applicationExist)
+                {
+                    return BadRequest("Application Does Not Exist");
+                }
+                else
+                {
+                    _repo.Applications.SoftDeleteApplication(dto);
+                }
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -253,19 +264,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list/admin"), Authorize(Roles = "Admin")]
-        public IActionResult ListAllApplications()
+        [HttpPut]
+        public IActionResult UpdateApplication([FromBody] ApplicationDto dto)
         {
             try
             {
-                var applicationList = _repo.Applications.GetApplications();
+                var application = _repo.Applications.UpdateApplication(dto);
 
-                return Ok(applicationList);
+                return Ok(application);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return StatusCode(500, e);
             }
         }
+
+        #endregion Public Methods
     }
 }

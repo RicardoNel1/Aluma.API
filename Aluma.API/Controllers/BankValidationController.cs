@@ -10,12 +10,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class BankValidationController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public BankValidationController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateClientBankDetails([FromBody] BankDetailsDto dto)
@@ -33,6 +43,40 @@ namespace Aluma.API.Controllers
                    dto = _repo.BankDetails.CreateClientBankDetails(dto);
                 }
                 return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public IActionResult DeleteBankDetails([FromBody] BankDetailsDto dto)
+        {
+            try
+            {
+                bool isDeleted = _repo.BankDetails.DeleteBankDetails(dto);
+                if (!isDeleted)
+                {
+                    return BadRequest("BankDetails Not Deleted");
+                }
+                return Ok("BankDetails Deleted");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet, AllowAnonymous]
+        //public IActionResult GetClientBankDetails([FromBody] ClientDto dto)
+        public IActionResult GetClientBankDetails(int clientId)
+        {
+            try
+            {
+                BankDetailsDto bankDetails = _repo.BankDetails.GetBankDetails(clientId);
+
+                return Ok(bankDetails);
             }
             catch (Exception e)
             {
@@ -58,38 +102,6 @@ namespace Aluma.API.Controllers
             return Ok(dto);
         }
 
-        [HttpGet, AllowAnonymous]
-        //public IActionResult GetClientBankDetails([FromBody] ClientDto dto)
-        public IActionResult GetClientBankDetails(int clientId)
-        {
-            try
-            {
-                BankDetailsDto bankDetails = _repo.BankDetails.GetBankDetails(clientId);
-
-                return Ok(bankDetails);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete, Authorize(Roles = "Admin")]
-        public IActionResult DeleteBankDetails([FromBody] BankDetailsDto dto)
-        {
-            try
-            {
-                bool isDeleted = _repo.BankDetails.DeleteBankDetails(dto);
-                if (!isDeleted)
-                {
-                    return BadRequest("BankDetails Not Deleted");
-                }
-                return Ok("BankDetails Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        #endregion Public Methods
     }
 }

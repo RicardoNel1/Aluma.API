@@ -13,19 +13,29 @@ namespace Aluma.API.Repositories
 {
     public interface IRetirementPreservationFundsRepo : IRepoBase<RetirementPreservationFundsModel>
     {
-        List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId);
-        RetirementPreservationFundsDto UpdateRetirementPreservationFunds(RetirementPreservationFundsDto[] dtoArray);
+        #region Public Methods
 
         bool DeleteRetirementPreservationFundsItem(int id);
 
+        List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId);
+        RetirementPreservationFundsDto UpdateRetirementPreservationFunds(RetirementPreservationFundsDto[] dtoArray);
+
+        #endregion Public Methods
     }
 
     public class RetirementPreservationFundsRepo : RepoBase<RetirementPreservationFundsModel>, IRetirementPreservationFundsRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RetirementPreservationFundsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -35,6 +45,20 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        public bool DeleteRetirementPreservationFundsItem(int id)
+        {
+            RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.RetirementPreservationFunds.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId)
         {
@@ -93,17 +117,6 @@ namespace Aluma.API.Repositories
 
         }
 
-
-
-        public bool DeleteRetirementPreservationFundsItem(int id)
-        {
-            RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.RetirementPreservationFunds.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

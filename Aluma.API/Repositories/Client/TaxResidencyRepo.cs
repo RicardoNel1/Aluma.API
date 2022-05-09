@@ -11,7 +11,11 @@ namespace Aluma.API.Repositories
 {
     public interface ITaxResidencyRepo : IRepoBase<TaxResidencyModel>
     {
+        #region Public Methods
+
         TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto);
+
+        bool DeleteTaxResidencyItem(int id);
 
         bool DoesTaxResidencyExist(TaxResidencyDto dto);
 
@@ -19,17 +23,22 @@ namespace Aluma.API.Repositories
 
         TaxResidencyDto UpdateTaxResidency(TaxResidencyDto dto);
 
-        bool DeleteTaxResidencyItem(int id);
-
-
+        #endregion Public Methods
     }
 
     public class TaxResidencyRepo : RepoBase<TaxResidencyModel>, ITaxResidencyRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public TaxResidencyRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -38,6 +47,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public TaxResidencyDto CreateTaxResidency(TaxResidencyDto dto)
         {
@@ -61,6 +74,16 @@ namespace Aluma.API.Repositories
 
         }
 
+
+        public bool DeleteTaxResidencyItem(int id)
+        {
+            ForeignTaxResidencyModel item = _context.TaxResidencyItems.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.TaxResidencyItems.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public bool DoesTaxResidencyExist(TaxResidencyDto dto)
         {
@@ -123,15 +146,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteTaxResidencyItem(int id)
-        {
-            ForeignTaxResidencyModel item = _context.TaxResidencyItems.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.TaxResidencyItems.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

@@ -14,21 +14,34 @@ namespace Aluma.API.Repositories
 
     public interface IAccrualRepo : IRepoBase<AccrualModel>
     {
+        #region Public Methods
+
         AccrualDto CreateAccrual(AccrualDto accrual);
+        AccrualDto DeleteAccrual(int id);
+
+        bool Exists(int clientId);
+
         AccrualDto GetAccrual(int id);
         AccrualDto UpdateAccrual(AccrualDto accrual);
-        AccrualDto DeleteAccrual(int id);
-        bool Exists(int clientId);
+
+        #endregion Public Methods
     }
 
 
     //Does the work
     public class AccrualRepo : RepoBase<AccrualModel>, IAccrualRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AccrualRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -37,6 +50,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public AccrualDto CreateAccrual(AccrualDto accrual)
         {
@@ -106,6 +123,8 @@ namespace Aluma.API.Repositories
             accrual = _mapper.Map<AccrualDto>(accrual);
             return accrual;
         }
+
+        #endregion Public Methods
     }
 
 

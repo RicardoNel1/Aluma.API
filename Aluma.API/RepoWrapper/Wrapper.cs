@@ -17,70 +17,100 @@ namespace Aluma.API.RepoWrapper
 {
     public class Wrapper : IWrapper
     {
+        #region Private Fields
+
+        private readonly IWebHostEnvironment _host;
+
+        private readonly ShareServiceClient _shareServiceClient;
+
+        private readonly ISignatureRepo _signature;
+
+        private IAccrualRepo _accrual;
+
         private IAdvisorRepo _advisor;
 
-        private IApplicationDocumentsRepo _applicationDocuments;
         private IApplicationRepo _application;
 
-        //private IDividendTaxRepo _dividendTax;
-        private IFspMandateRepo _fspMandate;
-        private IFNARepo _fna;
+        private IApplicationDocumentsRepo _applicationDocuments;
+        private IAssetsAttractingCGTRepo _assetsAttractingCGT;
 
-        private IIRSW8Repo _irsw8;
-        private IIRSW9Repo _irsw9;
-        private IPurposeAndFundingRepo _purposeAndFunding;
-        private IRecordOfAdviceRepo _recordOfAdvice;
+        private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
 
+        private IAssumptionsRepo _assumptions;
 
         private IBankDetailsRepo _bankDetails;
-        private ITaxResidencyRepo _taxResidency;
-        private IConsumerProtectionRepo _consumerProtection;
+
+        private IBankValidationServiceRepo _bankValidation;
+
         private IClientRepo _client;
-        private IKYCDataRepo _kycData;
-        private IRiskProfileRepo _riskProfile;
+
+        private IConfiguration _config;
+
+        private IConsumerProtectionRepo _consumerProtection;
+
+        private AlumaDBContext _dbContext;
 
         private IDisclosureRepo _disclosures;
 
-        private IProductRepo _product;
-        private IPrimaryResidenceRepo _primaryResidence;
-        private IAssetsAttractingCGTRepo _assetsAttractingCGT;
-        private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
-        private ILiquidAssetsRepo _liquidAssets;
-        private IInsuranceRepo _insurance;
-        private ILiabilitiesRepo _liabilities;
-        private IEstateExpensesRepo _estateExpenses;
-        private IRetirementPensionFundsRepo _retirementPensionFunds;
-        private IRetirementPreservationFundsRepo _retirementPreservationFunds;
-        private IAccrualRepo _accrual;
-        private IRetirementPlanningRepo _retirementPlanning;
-        private IAssumptionsRepo _assumptions;
+        private IDocumentHelper _documentHelper;
 
+        private IEstateExpensesRepo _estateExpenses;
 
         private IFIRepo _fi;
-        private IPEFRepo _pef;
-        private IDocumentHelper _documentHelper;
-        private IDocumentSignHelper _signHelper;
+
+        private IFileStorageRepo _fileStorage;
+
+        private IFNARepo _fna;
+
+        //private IDividendTaxRepo _dividendTax;
+        private IFspMandateRepo _fspMandate;
+        private IStringHasher _hasher;
+
+        private IInsuranceRepo _insurance;
+
+        private IIRSW8Repo _irsw8;
+        private IIRSW9Repo _irsw9;
+        private IJwtRepo _jwt;
+
+        private IKycFactoryRepo _kyc;
+
+        private IKYCDataRepo _kycData;
+
+        private ILiabilitiesRepo _liabilities;
+
+        private ILiquidAssetsRepo _liquidAssets;
+
+        private IMapper _mapper;
 
         private IOtpRepo _otp;
+
+        private IPEFRepo _pef;
+
+        private IPrimaryResidenceRepo _primaryResidence;
+
+        private IProductRepo _product;
+
+        private IPurposeAndFundingRepo _purposeAndFunding;
+        private IRecordOfAdviceRepo _recordOfAdvice;
+        private IRetirementPensionFundsRepo _retirementPensionFunds;
+
+        private IRetirementPlanningRepo _retirementPlanning;
+
+        private IRetirementPreservationFundsRepo _retirementPreservationFunds;
+
+        private IRiskProfileRepo _riskProfile;
+
+        private IDocumentSignHelper _signHelper;
+
+        private ISmsRepo _sms;
+
+        private ITaxResidencyRepo _taxResidency;
         private IUserRepo _user;
         private IUserDocumentsRepo _userDocuments;
 
-        private ISmsRepo _sms;
-        private IJwtRepo _jwt;
-        private IKycFactoryRepo _kyc;
-        private IBankValidationServiceRepo _bankValidation;
-        private readonly ISignatureRepo _signature;
-        private IFileStorageRepo _fileStorage;
+        #endregion Private Fields
 
-
-
-        private IStringHasher _hasher;
-
-        private AlumaDBContext _dbContext;
-        private IConfiguration _config;
-        private readonly IWebHostEnvironment _host;
-        private IMapper _mapper;
-        private readonly ShareServiceClient _shareServiceClient;
+        #region Public Constructors
 
         public Wrapper(AlumaDBContext dbContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage)
         {
@@ -89,6 +119,15 @@ namespace Aluma.API.RepoWrapper
             _config = config;
             _mapper = mapper;
             _fileStorage = fileStorage;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Properties
+
+        public IAccrualRepo Accrual
+        {
+            get { return _accrual == null ? new AccrualRepo(_dbContext, _host, _config, _mapper) : _accrual; }
         }
 
         public IAdvisorRepo Advisor
@@ -106,6 +145,72 @@ namespace Aluma.API.RepoWrapper
             get { return _application == null ? new ApplicationRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _application; }
         }
 
+        public IAssetsAttractingCGTRepo AssetsAttractingCGT
+        {
+            get { return _assetsAttractingCGT == null ? new AssetsAttractingCGTRepo(_dbContext, _host, _config, _mapper) : _assetsAttractingCGT; }
+        }
+
+        public IAssetsExemptFromCGTRepo AssetsExemptFromCGT
+        {
+            get { return _assetsExemptFromCGT == null ? new AssetsExemptFromCGTRepo(_dbContext, _host, _config, _mapper) : _assetsExemptFromCGT; }
+        }
+
+        public IAssumptionsRepo Assumptions
+        {
+            get { return _assumptions == null ? new AssumptionsRepo(_dbContext, _host, _config, _mapper) : _assumptions; }
+        }
+
+        public IBankDetailsRepo BankDetails
+        {
+            get { return _bankDetails == null ? new BankDetailsRepo(_dbContext, _host, _config, _mapper) : _bankDetails; }
+        }
+
+        public IBankValidationServiceRepo BankValidationRepo
+        {
+            get { return _bankValidation == null ? new BankValidationServiceRepo() : _bankValidation; }
+        }
+
+        public IClientRepo Client
+        {
+            get { return _client == null ? new ClientRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _client; }
+        }
+
+        public IConsumerProtectionRepo ConsumerProtection
+        {
+            get { return _consumerProtection == null ? new ConsumerProtectionRepo(_dbContext, _host, _config, _mapper) : _consumerProtection; }
+        }
+
+        public IDisclosureRepo Disclosures
+        {
+            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _fileStorage, _userDocuments) : _disclosures; }
+        }
+
+        public IDocumentHelper DocumentHelper
+        {
+            get { return _documentHelper == null ? new DocumentHelper(_dbContext, _config, _fileStorage, _host) : _documentHelper; }
+        }
+
+        public IEstateExpensesRepo EstateExpenses
+        {
+            get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
+        }
+
+        //Products and Documents
+        public IFIRepo FI
+        {
+            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fi; }
+        }
+
+        public IFileStorageRepo FileStorageRepo
+        {
+            get { return _fileStorage == null ? new FileStorageRepo(_shareServiceClient) : _fileStorage; }
+        }
+
+        public IFNARepo FNA
+        {
+            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
+        }
+
         //public IDividendTaxRepo DividendTax
         //{
         //    get { return _dividendTax == null ? new DividendTaxRepo(_dbContext) : _dividendTax; }
@@ -114,10 +219,9 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fspMandate; }
         }
-
-        public IFNARepo FNA
+        public IInsuranceRepo Insurance
         {
-            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
+            get { return _insurance == null ? new InsuranceRepo(_dbContext, _host, _config, _mapper) : _insurance; }
         }
 
         public IIRSW8Repo IRSW8
@@ -130,6 +234,54 @@ namespace Aluma.API.RepoWrapper
             get { return _irsw9 == null ? new IRSW9Repo(_dbContext, _host, _config, _mapper) : _irsw9; }
         }
 
+        public IJwtRepo JwtRepo
+        {
+            get { return _jwt == null ? new JwtRepo() : _jwt; }
+        }
+
+        public IKYCDataRepo KycData
+        {
+            get { return _kycData == null ? new KYCDataRepo(_dbContext, _host, _config, _mapper) : _kycData; }
+        }
+
+        public IKycFactoryRepo KycRepo
+        {
+            get { return _kyc == null ? new KycFactoryRepo() : _kyc; }
+        }
+
+        public ILiabilitiesRepo Liabilities
+        {
+            get { return _liabilities == null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+        }
+
+        public ILiquidAssetsRepo LiquidAssets
+        {
+            get { return _liquidAssets == null ? new LiquidAssetsRepo(_dbContext, _host, _config, _mapper) : _liquidAssets; }
+        }
+
+        //User
+        public IOtpRepo Otp
+        {
+            get { return _otp == null ? new OtpRepo(_dbContext, _host, _config, _mapper) : _otp; }
+        }
+
+        public IPEFRepo PEF
+        {
+            get { return _pef == null ? new PEFRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _pef; }
+        }
+
+        //FNA
+        public IPrimaryResidenceRepo PrimaryResidence
+        {
+            get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
+        }
+
+        //Product
+        public IProductRepo ProductRepo
+        {
+            get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product; }
+        }
+
         public IPurposeAndFundingRepo PurposeAndFunding
         {
             get { return _purposeAndFunding == null ? new PurposeAndFundingRepo(_dbContext, _host, _config, _mapper) : _purposeAndFunding; }
@@ -139,89 +291,9 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _recordOfAdvice == null ? new RecordOfAdviceRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _recordOfAdvice; }
         }
-
-        public IClientRepo Client
-        {
-            get { return _client == null ? new ClientRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _client; }
-        }
-
-        public IBankDetailsRepo BankDetails
-        {
-            get { return _bankDetails == null ? new BankDetailsRepo(_dbContext, _host, _config, _mapper) : _bankDetails; }
-        }
-
-        public ITaxResidencyRepo TaxResidency
-        {
-            get { return _taxResidency == null ? new TaxResidencyRepo(_dbContext, _host, _config, _mapper) : _taxResidency; }
-        }
-
-        public IConsumerProtectionRepo ConsumerProtection
-        {
-            get { return _consumerProtection == null ? new ConsumerProtectionRepo(_dbContext, _host, _config, _mapper) : _consumerProtection; }
-        }
-
-        public IKYCDataRepo KycData
-        {
-            get { return _kycData == null ? new KYCDataRepo(_dbContext, _host, _config, _mapper) : _kycData; }
-        }
-
-        public IRiskProfileRepo RiskProfile
-        {
-            get { return _riskProfile == null ? new RiskProfileRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _riskProfile; }
-        }
-
-        public IDisclosureRepo Disclosures
-        {
-            get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _fileStorage, _userDocuments) : _disclosures; }
-        }
-
-        //Product
-        public IProductRepo ProductRepo
-        {
-            get { return _product == null ? new ProductRepo(_dbContext, _host, _config, _mapper) : _product; }
-        }
-
-        //FNA
-        public IPrimaryResidenceRepo PrimaryResidence
-        {
-            get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
-        }
-        public IAssetsAttractingCGTRepo AssetsAttractingCGT
-        {
-            get { return _assetsAttractingCGT == null ? new AssetsAttractingCGTRepo(_dbContext, _host, _config, _mapper) : _assetsAttractingCGT; }
-        }
-        public IAssetsExemptFromCGTRepo AssetsExemptFromCGT
-        {
-            get { return _assetsExemptFromCGT == null ? new AssetsExemptFromCGTRepo(_dbContext, _host, _config, _mapper) : _assetsExemptFromCGT; }
-        }
-        public ILiquidAssetsRepo LiquidAssets
-        {
-            get { return _liquidAssets == null ? new LiquidAssetsRepo(_dbContext, _host, _config, _mapper) : _liquidAssets; }
-        }
-
-        public ILiabilitiesRepo Liabilities
-        {
-            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
-        }
-
-        public IInsuranceRepo Insurance
-        {
-            get { return _insurance == null ? new InsuranceRepo(_dbContext, _host, _config, _mapper) : _insurance; }
-        }
-
-        public IEstateExpensesRepo EstateExpenses
-        {
-            get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
-        }
-
         public IRetirementPensionFundsRepo RetirementPensionFunds
         {
             get { return _retirementPensionFunds == null ? new RetirementPensionFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPensionFunds; }
-        }
-
-        public IRetirementPreservationFundsRepo RetirementPreservationFunds
-        {
-            get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
         }
 
         public IRetirementPlanningRepo RetirementPlanning
@@ -229,43 +301,41 @@ namespace Aluma.API.RepoWrapper
             get { return _retirementPlanning == null ? new RetirementPlanningRepo(_dbContext, _host, _config, _mapper) : _retirementPlanning; }
         }
 
-        public IAssumptionsRepo Assumptions
+        public IRetirementPreservationFundsRepo RetirementPreservationFunds
         {
-            get { return _assumptions == null ? new AssumptionsRepo(_dbContext, _host, _config, _mapper) : _assumptions; }
+            get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
         }
 
-
-
-
-
-        //Products and Documents
-        public IFIRepo FI
+        public IRiskProfileRepo RiskProfile
         {
-            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }
+            get { return _riskProfile == null ? new RiskProfileRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _riskProfile; }
         }
-        public IPEFRepo PEF
+
+        public ISignatureRepo SignatureRepo
         {
-            get { return _pef == null ? new PEFRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _pef; }
+            get { return _signature == null ? new SignatureRepo() : _signature; }
         }
-        public IDocumentHelper DocumentHelper
-        {
-            get { return _documentHelper == null ? new DocumentHelper(_dbContext,_config,_fileStorage,_host) : _documentHelper; }
-        }
+
         public IDocumentSignHelper SignHelper
         {
-            get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
-        }
-        public IAccrualRepo Accrual
-        {
-            get { return _accrual == null ? new AccrualRepo(_dbContext, _host, _config, _mapper) : _accrual; }
+            get { return _signHelper == null ? new DocumentSignHelper(_dbContext, _config, _fileStorage, _host) : _signHelper; }
         }
 
-        //User
-        public IOtpRepo Otp
+        // Third Party Services
+        public ISmsRepo SmsRepo
         {
-            get { return _otp == null ? new OtpRepo(_dbContext, _host, _config, _mapper) : _otp; }
+            get { return _sms == null ? new SmsRepo() : _sms; }
         }
 
+        public IStringHasher StrHasher
+        {
+            get { return _hasher == null ? new StringHasherRepo() : _hasher; }
+        }
+
+        public ITaxResidencyRepo TaxResidency
+        {
+            get { return _taxResidency == null ? new TaxResidencyRepo(_dbContext, _host, _config, _mapper) : _taxResidency; }
+        }
         public IUserRepo User
         {
             get { return _user == null ? new UserRepo(_dbContext, _host, _config, _fileStorage, _mapper) : _user; }
@@ -276,40 +346,6 @@ namespace Aluma.API.RepoWrapper
             get { return _userDocuments == null ? new UserDocumentsRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _userDocuments; }
         }
 
-        // Third Party Services
-        public ISmsRepo SmsRepo
-        {
-            get { return _sms == null ? new SmsRepo() : _sms; }
-        }
-
-        public IJwtRepo JwtRepo
-        {
-            get { return _jwt == null ? new JwtRepo() : _jwt; }
-        }
-
-        public IKycFactoryRepo KycRepo
-        {
-            get { return _kyc == null ? new KycFactoryRepo() : _kyc; }
-        }
-
-        public IBankValidationServiceRepo BankValidationRepo
-        {
-            get { return _bankValidation == null ? new BankValidationServiceRepo() : _bankValidation; }
-        }
-
-        public ISignatureRepo SignatureRepo
-        {
-            get { return _signature == null ? new SignatureRepo() : _signature; }
-        }
-
-        public IFileStorageRepo FileStorageRepo
-        {
-            get { return _fileStorage == null ? new FileStorageRepo(_shareServiceClient) : _fileStorage; }
-        }
-
-        public IStringHasher StrHasher
-        {
-            get { return _hasher == null ? new StringHasherRepo() : _hasher; }
-        }
+        #endregion Public Properties
     }
 }
