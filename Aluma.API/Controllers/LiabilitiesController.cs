@@ -125,5 +125,68 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        //Estate Expenses    
+        [HttpPost("administration_costs"), AllowAnonymous]
+        public IActionResult CreateAdministrationCosts([FromBody] EstateExpensesDto dto)
+        {
+            try
+            {
+                bool estateExpensesExists = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+
+                if (estateExpensesExists)
+                {
+                    return BadRequest("Estate Expenses Exists");
+                }
+                else
+                {
+                    _repo.EstateExpenses.CreateEstateExpenses(dto);
+                }
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("administration_costs"), AllowAnonymous]
+        public IActionResult UpdateAdministrationCosts([FromBody] EstateExpensesDto dto)
+        {
+            try
+            {
+                bool estateExpensesExist = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+
+                if (!estateExpensesExist)
+                {
+                    CreateEstateExpenses(dto);
+                }
+                else
+                {
+                    _repo.EstateExpenses.UpdateEstateExpenses(dto);
+                }
+
+                return Ok("Estate Expenses Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("administration_costs"), AllowAnonymous]
+        public IActionResult GetAdministrationCosts(int clientId)
+        {
+            try
+            {
+                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(clientId);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
