@@ -10,28 +10,23 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class RetirementFundsController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RetirementFundsController(IWrapper repo)
         {
             _repo = repo;
         }
-             
 
-        //Pension Funds      
-        [HttpPut("pension_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPensionFunds([FromBody] RetirementPensionFundsDto[] dtoArray)
-        {
-            try
-            {
-                _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
-                return Ok("Pension Funds Updated");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        #endregion Public Constructors
+
+
+        #region Public Methods
 
         [HttpGet("pension_funds"), AllowAnonymous]
         public IActionResult GetRetirementPensionFunds(int clientId)
@@ -41,22 +36,6 @@ namespace Aluma.API.Controllers
                 List<RetirementPensionFundsDto> dtoList = _repo.RetirementPensionFunds.GetRetirementPensionFunds(clientId);
 
                 return Ok(dtoList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-
-        //Preservation Funds    
-        [HttpPut("preservation_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPreservationFunds([FromBody] RetirementPreservationFundsDto[] dtoArray)
-        {
-            try
-            {
-                _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
-                return Ok("Preservation Funds Updated");
             }
             catch (Exception e)
             {
@@ -78,5 +57,36 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        //Pension Funds      
+        [HttpPut("pension_funds"), AllowAnonymous]
+        public IActionResult UpdateRetirementPensionFunds([FromBody] RetirementPensionFundsDto[] dtoArray)
+        {
+            try
+            {
+                _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
+                return Ok("Pension Funds Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+        //Preservation Funds    
+        [HttpPut("preservation_funds"), AllowAnonymous]
+        public IActionResult UpdateRetirementPreservationFunds([FromBody] RetirementPreservationFundsDto[] dtoArray)
+        {
+            try
+            {
+                _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
+                return Ok("Preservation Funds Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        #endregion Public Methods
     }
 }

@@ -11,14 +11,25 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]")]
     public class OTPController : ControllerBase
     {
-        private readonly IWrapper _repo;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public OTPController(IWrapper repo, IConfiguration config)
         {
             _repo = repo;
             _config = config;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost("verify/login")]
         public IActionResult VerifyLoginOtp(LoginDto dto)
@@ -191,6 +202,8 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, response); ;
             }
         }
+
+        #endregion Public Methods
 
 
         //[HttpPost("resend/otp/{email}"), AllowAnonymous]

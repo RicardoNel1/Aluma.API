@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class DisclosureController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public DisclosureController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost]
         public IActionResult CreateDisclosure([FromBody] DisclosureDto dto)
@@ -31,6 +41,56 @@ namespace Aluma.API.Controllers
                     var disclosure = _repo.Disclosures.CreateDisclosure(dto);
                     return Ok(disclosure);
                 }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public IActionResult DeleteDisclosure(DisclosureDto dto)
+        {
+            try
+            {
+                bool isDeleted = _repo.Disclosures.DeleteDisclosure(dto);
+                if (!isDeleted)
+                {
+                    return BadRequest("Disclosure Not Deleted");
+                }
+                return Ok("Disclosure Deleted");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetDisclosure(ClientDto dto)
+        {
+            try
+            {
+                DisclosureDto disclosure = _repo.Disclosures.GetDisclosureByClient(dto);
+
+                return Ok(disclosure);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
+        public IActionResult ListAdvisorDisclosures(AdvisorDto dto)
+        {
+            try
+            {
+                //var claims = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                var disclosureList = _repo.Disclosures.GetDisclosureListByAdvisor(dto);
+
+                return Ok(disclosureList);
             }
             catch (Exception e)
             {
@@ -60,55 +120,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetDisclosure(ClientDto dto)
-        {
-            try
-            {
-                DisclosureDto disclosure = _repo.Disclosures.GetDisclosureByClient(dto);
-
-                return Ok(disclosure);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete, Authorize(Roles = "Admin")]
-        public IActionResult DeleteDisclosure(DisclosureDto dto)
-        {
-            try
-            {
-                bool isDeleted = _repo.Disclosures.DeleteDisclosure(dto);
-                if (!isDeleted)
-                {
-                    return BadRequest("Disclosure Not Deleted");
-                }
-                return Ok("Disclosure Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-               
-
-        [HttpGet("list/advisor"), Authorize(Roles = "Advisor,Admin")]
-        public IActionResult ListAdvisorDisclosures(AdvisorDto dto)
-        {
-            try
-            {
-                //var claims = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-                var disclosureList = _repo.Disclosures.GetDisclosureListByAdvisor(dto);
-
-                return Ok(disclosureList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        #endregion Public Methods
     }
 }

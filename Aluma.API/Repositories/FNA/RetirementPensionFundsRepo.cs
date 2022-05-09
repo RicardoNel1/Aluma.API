@@ -13,18 +13,29 @@ namespace Aluma.API.Repositories
 {
     public interface IRetirementPensionFundsRepo : IRepoBase<RetirementPensionFundsModel>
     {
+        #region Public Methods
+
+        bool DeleteRetirementPensionFundsItem(int id);
+
         List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId);
         RetirementPensionFundsDto UpdateRetirementPensionFunds(RetirementPensionFundsDto[] dtoArray);
 
-        bool DeleteRetirementPensionFundsItem(int id);
+        #endregion Public Methods
     }
 
     public class RetirementPensionFundsRepo : RepoBase<RetirementPensionFundsModel>, IRetirementPensionFundsRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RetirementPensionFundsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -34,6 +45,20 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        public bool DeleteRetirementPensionFundsItem(int id)
+        {
+            RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.RetirementPensionFunds.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId)
         {
@@ -97,15 +122,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteRetirementPensionFundsItem(int id)
-        {
-            RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.RetirementPensionFunds.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

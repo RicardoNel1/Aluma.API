@@ -13,20 +13,31 @@ namespace Aluma.API.Repositories
 {
     public interface IPrimaryResidenceRepo : IRepoBase<PrimaryResidenceModel>
     {
+        #region Public Methods
+
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
         PrimaryResidenceDto GetPrimaryResidence(int clientId);
         PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
+
+        #endregion Public Methods
 
 
     }
 
     public class PrimaryResidenceRepo : RepoBase<PrimaryResidenceModel>, IPrimaryResidenceRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public PrimaryResidenceRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -35,6 +46,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto)
         {
@@ -82,7 +97,9 @@ namespace Aluma.API.Repositories
 
         }
 
-       
+        #endregion Public Methods
+
+
 
     }
 }

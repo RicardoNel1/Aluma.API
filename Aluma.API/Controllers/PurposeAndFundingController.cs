@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class PurposeAndFundingController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public PurposeAndFundingController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreatePurposeAndFunding([FromBody] PurposeAndFundingDto dto)
@@ -39,6 +49,21 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetPurposeAndFunding(int applicationId)
+        {
+            try
+            {
+                PurposeAndFundingDto purposeAndFunding = _repo.PurposeAndFunding.GetPurposeAndFunding(applicationId);
+
+                return Ok(purposeAndFunding);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPut, AllowAnonymous]
         public IActionResult UpdatePurposeAndFunding([FromBody] PurposeAndFundingDto dto)
         {
@@ -55,24 +80,6 @@ namespace Aluma.API.Controllers
             return Ok(dto);
         }
 
-
-        [HttpGet, AllowAnonymous]
-        public IActionResult GetPurposeAndFunding(int applicationId)
-        {
-            try
-            {
-                PurposeAndFundingDto purposeAndFunding = _repo.PurposeAndFunding.GetPurposeAndFunding(applicationId);
-
-                return Ok(purposeAndFunding);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-
-
-
+        #endregion Public Methods
     }
 }

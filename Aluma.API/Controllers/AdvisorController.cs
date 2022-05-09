@@ -11,14 +11,25 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize(Roles = "Admin,Broker")]
     public class AdvisorController : ControllerBase
     {
-        private readonly IWrapper _repo;
+        #region Private Fields
+
         private readonly IMapper _mapper;
+
+        private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AdvisorController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> CreateAdvisor(AdvisorDto dto)
@@ -51,21 +62,17 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut, AllowAnonymous]
-        public IActionResult UpdateAdvisor(AdvisorDto dto)
+        [HttpDelete]
+        public IActionResult DeleteAdvisor(AdvisorDto dto)
         {
             try
             {
-                bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
-                if (!advisorExists)
+                bool isDeleted = _repo.Advisor.DeleteAdvisor(dto);
+                if (!isDeleted)
                 {
-                    return BadRequest("Advisor Does Not Exist");
+                    return BadRequest("Advisor Not Deleted");
                 }
-                else
-                {
-                    var advisor = _repo.Advisor.UpdateAdvisor(dto);
-                    return Ok(advisor);
-                }
+                return Ok("Advisor Deleted");
             }
             catch (Exception e)
             {
@@ -105,17 +112,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult DeleteAdvisor(AdvisorDto dto)
+        [HttpPut, AllowAnonymous]
+        public IActionResult UpdateAdvisor(AdvisorDto dto)
         {
             try
             {
-                bool isDeleted = _repo.Advisor.DeleteAdvisor(dto);
-                if (!isDeleted)
+                bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
+                if (!advisorExists)
                 {
-                    return BadRequest("Advisor Not Deleted");
+                    return BadRequest("Advisor Does Not Exist");
                 }
-                return Ok("Advisor Deleted");
+                else
+                {
+                    var advisor = _repo.Advisor.UpdateAdvisor(dto);
+                    return Ok(advisor);
+                }
             }
             catch (Exception e)
             {
@@ -123,6 +134,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-
+        #endregion Public Methods
     }
 }

@@ -14,17 +14,28 @@ namespace Aluma.API.Repositories
 {
     public interface IOtpRepo : IRepoBase<OtpModel>
     {
-        string VerifyOTP(string otp, int userId, int applicationId = 0);
+        #region Public Methods
 
         string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0);
+
+        string VerifyOTP(string otp, int userId, int applicationId = 0);
+
+        #endregion Public Methods
     }
 
     public class OtpRepo : RepoBase<OtpModel>, IOtpRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public OtpRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
         {
@@ -33,6 +44,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0)
         {
@@ -173,5 +188,7 @@ namespace Aluma.API.Repositories
             return result;
 
         }
+
+        #endregion Public Methods
     }
 }

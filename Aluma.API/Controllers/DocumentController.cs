@@ -14,13 +14,85 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class DocumentController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public DocumentController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
         }
 
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        [HttpGet("application/list/download")]
+        public IActionResult ApplicationDocsDownload(ApplicationDto dto)
+        {
+            try
+            {
+                // actual documents, just list of base64 strings
+                var docList = _repo.ApplicationDocuments.GetDocuments(dto);
+
+                return Ok(docList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("application/list"), AllowAnonymous]
+        public async Task<IActionResult> ApplicationDocsList(int applicationId, int userId)
+        {
+            try
+            {
+                //not actual documents just list
+                List<DocumentListDto> docs = await _repo.DocumentHelper.GetApplicationDocListAsync(applicationId, userId);
+
+                return Ok(docs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("deleteAll"), AllowAnonymous]
+        public IActionResult DeleteAll()
+        {
+            try
+            {
+                _repo.DocumentHelper.DeleteAllDocuments();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("application/list/id"), AllowAnonymous]
+        public IActionResult GetApplicationDocument(ApplicationDocumentDto dto)
+        {
+            try
+            {
+                var doc = _repo.ApplicationDocuments.GetDocument(dto);
+
+                return Ok(doc);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpPost, AllowAnonymous]
         public IActionResult GetDocument(DocumentListDto dto)
@@ -75,81 +147,14 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-
-        [HttpGet("deleteAll"), AllowAnonymous]
-        public IActionResult DeleteAll()
+        [HttpGet("user/list/id"), AllowAnonymous]
+        public IActionResult GetUserDocument(UserDocumentDto dto)
         {
             try
             {
-                 _repo.DocumentHelper.DeleteAllDocuments();
-
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-
-
-        [HttpGet("application/list"), AllowAnonymous]
-        public async Task<IActionResult> ApplicationDocsList(int applicationId,int userId)
-        {
-            try
-            {
-                //not actual documents just list
-                List<DocumentListDto> docs = await _repo.DocumentHelper.GetApplicationDocListAsync(applicationId, userId);
-
-                return Ok(docs);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("application/list/download")]
-        public IActionResult ApplicationDocsDownload(ApplicationDto dto)
-        {
-            try
-            {
-                // actual documents, just list of base64 strings
-                var docList = _repo.ApplicationDocuments.GetDocuments(dto);
-
-                return Ok(docList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("application/list/id"), AllowAnonymous]
-        public IActionResult GetApplicationDocument(ApplicationDocumentDto dto)
-        {
-            try
-            {
-                var doc = _repo.ApplicationDocuments.GetDocument(dto);
+                var doc = _repo.UserDocuments.GetDocument(dto);
 
                 return Ok(doc);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("user/list"), AllowAnonymous]
-        public async Task<IActionResult> UserDocsList(int userId)
-        {
-            try
-            {
-                //not actual documents just list
-                List<DocumentListDto> docs = await _repo.DocumentHelper.GetUserDocListAsync(userId);
-
-                return Ok(docs);
             }
             catch (Exception e)
             {
@@ -173,21 +178,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("user/list/id"), AllowAnonymous]
-        public IActionResult GetUserDocument(UserDocumentDto dto)
+        [HttpGet("user/list"), AllowAnonymous]
+        public async Task<IActionResult> UserDocsList(int userId)
         {
             try
             {
-                var doc = _repo.UserDocuments.GetDocument(dto);
+                //not actual documents just list
+                List<DocumentListDto> docs = await _repo.DocumentHelper.GetUserDocListAsync(userId);
 
-                return Ok(doc);
+                return Ok(docs);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-
         [HttpPost("user/upload")]
         public IActionResult UserUploadMultipleDocuments([FromBody] List<UserDocumentDto> dto)
         {
@@ -205,5 +210,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        #endregion Public Methods
     }
 }

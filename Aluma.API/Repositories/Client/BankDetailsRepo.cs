@@ -17,26 +17,38 @@ namespace Aluma.API.Repositories
 {
     public interface IBankDetailsRepo : IRepoBase<BankDetailsModel>
     {
-        void CheckBankValidationStatusByJobId(string jobId);
+        #region Public Methods
 
-        bool DoesBankDetailsExist(BankDetailsDto dto);
+        void CheckBankValidationStatusByJobId(string jobId);
 
         BankDetailsDto CreateClientBankDetails(BankDetailsDto dto);
 
-        BankDetailsDto UpdateClientBankDetails(BankDetailsDto dto);
+        bool DeleteBankDetails(BankDetailsDto dto);
 
+        bool DoesBankDetailsExist(BankDetailsDto dto);
         BankDetailsDto GetBankDetails(int clientId);
 
-        bool DeleteBankDetails(BankDetailsDto dto);
+        BankDetailsDto UpdateClientBankDetails(BankDetailsDto dto);
+
+        #endregion Public Methods
     }
 
     public class BankDetailsRepo : RepoBase<BankDetailsModel>, IBankDetailsRepo
     {
-        private AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly IWebHostEnvironment _host;
+
         private readonly IMapper _mapper;
+
+        private AlumaDBContext _context;
         UtilityHelper uh;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public BankDetailsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -46,6 +58,10 @@ namespace Aluma.API.Repositories
             _mapper = mapper;   //added
             uh = new UtilityHelper();
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public void CheckBankValidationStatusByJobId(string jobId)
         {
@@ -325,5 +341,7 @@ namespace Aluma.API.Repositories
                 return dto;
             }
         }
+
+        #endregion Public Methods
     }
 }

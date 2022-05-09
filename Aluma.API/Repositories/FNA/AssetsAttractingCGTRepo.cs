@@ -13,19 +13,29 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsAttractingCGTRepo : IRepoBase<AssetsAttractingCGTModel>
     {
-        List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
-        AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
+        #region Public Methods
 
         bool DeleteAssetsAttractingCGTItem(int id);
 
+        List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
+        AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
+
+        #endregion Public Methods
     }
 
     public class AssetsAttractingCGTRepo : RepoBase<AssetsAttractingCGTModel>, IAssetsAttractingCGTRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AssetsAttractingCGTRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -34,7 +44,21 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        public bool DeleteAssetsAttractingCGTItem(int id)
+        {
+            AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.AssetsAttractingCGT.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId)
         {
@@ -101,15 +125,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteAssetsAttractingCGTItem(int id)
-        {
-            AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.AssetsAttractingCGT.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

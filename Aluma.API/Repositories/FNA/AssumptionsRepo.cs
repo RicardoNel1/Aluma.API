@@ -13,20 +13,31 @@ namespace Aluma.API.Repositories
 {
     public interface IAssumptionsRepo : IRepoBase<AssumptionsModel>
     {
+        #region Public Methods
+
         AssumptionsDto CreateAssumptions(AssumptionsDto dto);
         bool DoesAssumptionsExist(AssumptionsDto dto);
         AssumptionsDto GetAssumptions(int clientId);
         AssumptionsDto UpdateAssumptions(AssumptionsDto dto);
+
+        #endregion Public Methods
 
 
     }
 
     public class AssumptionsRepo : RepoBase<AssumptionsModel>, IAssumptionsRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AssumptionsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -35,6 +46,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public AssumptionsDto CreateAssumptions(AssumptionsDto dto)
         {
@@ -81,6 +96,8 @@ namespace Aluma.API.Repositories
             return dto;
 
         }
+
+        #endregion Public Methods
 
 
 

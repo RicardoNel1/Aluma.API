@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class RiskProfileController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RiskProfileController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateRiskProfile([FromBody] RiskProfileDto dto)
@@ -37,20 +47,17 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut, AllowAnonymous]
-        public IActionResult UpdateRiskProfile([FromBody] RiskProfileDto dto)
+        [HttpDelete, Authorize(Roles = "Admin")]
+        public IActionResult DeleteRiskProfile(RiskProfileDto dto)
         {
             try
             {
-                bool riskExists = _repo.RiskProfile.DoesClientHaveRiskProfile(dto);
-                if (!riskExists)
+                bool isDeleted = _repo.RiskProfile.DeleteRiskProfile(dto);
+                if (!isDeleted)
                 {
-                    return BadRequest("Risk Profile Does Not Exist");
+                    return BadRequest("RiskProfile Not Deleted");
                 }
-
-                RiskProfileDto risk = _repo.RiskProfile.UpdateRiskProfile(dto);
-
-                return Ok(risk);
+                return Ok("RiskProfile Deleted");
             }
             catch (Exception e)
             {
@@ -75,22 +82,27 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete, Authorize(Roles = "Admin")]
-        public IActionResult DeleteRiskProfile(RiskProfileDto dto)
+        [HttpPut, AllowAnonymous]
+        public IActionResult UpdateRiskProfile([FromBody] RiskProfileDto dto)
         {
             try
             {
-                bool isDeleted = _repo.RiskProfile.DeleteRiskProfile(dto);
-                if (!isDeleted)
+                bool riskExists = _repo.RiskProfile.DoesClientHaveRiskProfile(dto);
+                if (!riskExists)
                 {
-                    return BadRequest("RiskProfile Not Deleted");
+                    return BadRequest("Risk Profile Does Not Exist");
                 }
-                return Ok("RiskProfile Deleted");
+
+                RiskProfileDto risk = _repo.RiskProfile.UpdateRiskProfile(dto);
+
+                return Ok(risk);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
+        #endregion Public Methods
     }
 }

@@ -11,30 +11,54 @@ namespace Aluma.API.Repositories
 {
     public interface IPurposeAndFundingRepo : IRepoBase<PurposeAndFundingModel>
     {
-        bool DoesPurposeAndFundingExist(PurposeAndFundingDto dto);
+        #region Public Methods
 
         PurposeAndFundingDto CreatePurposeAndFunding(PurposeAndFundingDto dto);
 
-        PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto);
-
+        bool DoesPurposeAndFundingExist(PurposeAndFundingDto dto);
         PurposeAndFundingDto GetPurposeAndFunding(int applicationId);
 
+        PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto);
+
+        #endregion Public Methods
     }
 
     public class PurposeAndFundingRepo : RepoBase<PurposeAndFundingModel>, IPurposeAndFundingRepo
     {
-        private AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly IWebHostEnvironment _host;
+
         private readonly IMapper _mapper;
 
+        private AlumaDBContext _context;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public PurposeAndFundingRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;       
             _config = config;   
-            _mapper = mapper;   
+            _mapper = mapper;
+
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public PurposeAndFundingDto CreatePurposeAndFunding(PurposeAndFundingDto dto)
+        {
+            PurposeAndFundingModel details = _mapper.Map<PurposeAndFundingModel>(dto);
+            _context.PurposeAndFunding.Add(details);
+            _context.SaveChanges();
+            dto = _mapper.Map<PurposeAndFundingDto>(details);
+            return dto;
 
         }
 
@@ -46,17 +70,11 @@ namespace Aluma.API.Repositories
 
             return purposeAndFundingExist;
         }
-
-        public PurposeAndFundingDto CreatePurposeAndFunding(PurposeAndFundingDto dto)
+        public PurposeAndFundingDto GetPurposeAndFunding(int applicationId)
         {
-            PurposeAndFundingModel details = _mapper.Map<PurposeAndFundingModel>(dto);
-            _context.PurposeAndFunding.Add(details);
-            _context.SaveChanges();
-            dto = _mapper.Map<PurposeAndFundingDto>(details);
-            return dto;
-         
+            PurposeAndFundingModel purposeAndFunding = _context.PurposeAndFunding.Where(c => c.ApplicationId == applicationId).First();
+            return _mapper.Map<PurposeAndFundingDto>(purposeAndFunding);
         }
-                      
 
         public PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto)
         {            
@@ -70,11 +88,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public PurposeAndFundingDto GetPurposeAndFunding(int applicationId)
-        {
-            PurposeAndFundingModel purposeAndFunding = _context.PurposeAndFunding.Where(c => c.ApplicationId == applicationId).First();
-            return _mapper.Map<PurposeAndFundingDto>(purposeAndFunding);
-        }
-
+        #endregion Public Methods
     }
 }

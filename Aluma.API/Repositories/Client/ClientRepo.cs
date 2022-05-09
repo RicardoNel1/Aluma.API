@@ -17,37 +17,51 @@ namespace Aluma.API.Repositories
 {
     public interface IClientRepo : IRepoBase<ClientModel>
     {
-        public ClientDto GetClientByUserId(int userId);
-        public ClientDto GetClient(ClientDto dto);
+        #region Public Methods
 
-        public List<ClientDto> GetClients();
+        ClientDto CheckForFNA(ClientDto client);
 
-        public List<ClientDto> GetClientsByAdvisor(int advisorId);
+        Task<ClientDto> CreateClient(ClientDto dto);
 
         public bool DeleteClient(ClientDto dto);
 
         bool DoesClientExist(RegistrationDto dto);
+
         bool DoesClientExist(ClientDto dto);
 
-        Task<ClientDto> CreateClient(ClientDto dto);
-
-        ClientDto UpdateClient(ClientDto dto);
-
-        void GenerateClientDocuments(int clientId);
-        void UpdateClientPassports(List<PassportDto> dto);
         bool DoesIDExist(ClientDto dto);
 
-        ClientDto CheckForFNA(ClientDto client);
+        void GenerateClientDocuments(int clientId);
+
+        public ClientDto GetClient(ClientDto dto);
+
+        public ClientDto GetClientByUserId(int userId);
+        public List<ClientDto> GetClients();
+
+        public List<ClientDto> GetClientsByAdvisor(int advisorId);
+        ClientDto UpdateClient(ClientDto dto);
+        void UpdateClientPassports(List<PassportDto> dto);
+
+        #endregion Public Methods
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
         MailSender _ms;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public ClientRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
@@ -56,6 +70,162 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
             _fileStorage = fileStorage;
             _ms = new MailSender(_context, _config, _fileStorage, _host);
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public ClientDto CheckForFNA(ClientDto client)
+        {
+
+            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
+
+            if (fnaExists.Any())
+            {
+                client.FNADate = fnaExists.First().Created;
+            }
+
+            client.hasFNA = fnaExists.Any();
+
+            return client;
+        }
+
+        public async Task<ClientDto> CreateClient(ClientDto dto)
+        {
+            ClientModel client = _mapper.Map<ClientModel>(dto);
+
+            _context.Clients.Add(client);
+            _context.SaveChanges();
+            dto = _mapper.Map<ClientDto>(client);
+
+            await _ms.SendClientWelcomeEmail(client);
+            return dto;
+        }
+
+        public bool DeleteClient(ClientDto dto)
+        {
+            try
+            {
+                ClientModel client = _context.Clients.Where(a => a.Id == dto.Id).First();
+                client.isDeleted = false;
+                _context.Clients.Update(client);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return false;
+            }
+        }
+
+        public bool DoesClientExist(RegistrationDto dto)
+        {
+            bool clientExists = false;
+            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+            bool userExists = ur.DoesUserExist(dto);
+
+            if (userExists)
+            {
+                UserModel user = ur.GetUser(dto);
+                clientExists = _context.Clients.Where(a => a.UserId == user.Id).Any();
+            }
+
+            return clientExists;
+        }
+
+        public bool DoesClientExist(ClientDto dto)
+        {
+            bool clientExists = false;
+
+            clientExists = _context.Clients.Where(a => a.Id == dto.Id).Any();
+
+            return clientExists;
+        }
+
+        public bool DoesIDExist(ClientDto dto)
+        {
+            try
+            {
+                bool idExists = false;
+
+                idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+
+                return idExists;
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return true;
+            }
+        }
+
+        public void GenerateClientDocuments(int clientId)
+        {
+            ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.BankDetails).Include(c => c.TaxResidency).SingleOrDefault(c => c.Id == clientId);
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == client.AdvisorId);
+
+            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
+            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
+            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
+
+
+
+            //Risk Profile
+            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
+            riskRepo.GenerateRiskProfile(client, advisor, risk);
+
+            //FSP Mandate
+            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
+            fspRepo.GenerateMandate(client, advisor, fsp);
+
+            //FNA
+            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
+            fnaRepo.GenerateFNA(client, advisor, fna);
+
+        }
+
+        public ClientDto GetClient(ClientDto dto)
+        {
+            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
+            dto = _mapper.Map<ClientDto>(client);
+
+            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
+            if (dto.AdvisorId != null)
+            {
+                var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
+
+                dto.AdvisorName = advisor.User.FirstName + " " + advisor.User.LastName;
+            }
+
+            dto.ApplicationCount = _context.Applications.Where(a => a.ClientId == dto.Id).Count();
+
+            var discExists = _context.Disclosures.Where(d => d.ClientId == dto.Id);
+            if (discExists.Any())
+            {
+                dto.DisclosureDate = discExists.First().Created;
+            }
+
+
+            dto.hasDisclosure = discExists.Any();
+
+            return dto;
+        }
+
+        public ClientDto GetClientByUserId(int userId)
+        {
+            ClientModel client = _context.Clients.Where(c => c.UserId == userId).First();
+            ClientDto response = _mapper.Map<ClientDto>(client);
+
+            response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
+
+            response = CheckForDisclosures(response);
+            response = CheckForFNA(response);
+
+            return response;
         }
 
         public List<ClientDto> GetClients()
@@ -121,132 +291,6 @@ namespace Aluma.API.Repositories
             }
             return response;
         }
-
-        public bool DeleteClient(ClientDto dto)
-        {
-            try
-            {
-                ClientModel client = _context.Clients.Where(a => a.Id == dto.Id).First();
-                client.isDeleted = false;
-                _context.Clients.Update(client);
-                _context.SaveChanges();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //log error
-                return false;
-            }
-        }
-
-        public ClientDto GetClient(ClientDto dto)
-        {
-            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
-            dto = _mapper.Map<ClientDto>(client);
-
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
-
-            if (dto.AdvisorId != null)
-            {
-                var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
-
-                dto.AdvisorName = advisor.User.FirstName + " " + advisor.User.LastName;
-            }
-
-            dto.ApplicationCount = _context.Applications.Where(a => a.ClientId == dto.Id).Count();
-
-            var discExists = _context.Disclosures.Where(d => d.ClientId == dto.Id);
-            if (discExists.Any())
-            {
-                dto.DisclosureDate = discExists.First().Created;
-            }
-
-
-            dto.hasDisclosure = discExists.Any();
-
-            return dto;
-        }
-
-        public ClientDto GetClientByUserId(int userId)
-        {
-            ClientModel client = _context.Clients.Where(c => c.UserId == userId).First();
-            ClientDto response = _mapper.Map<ClientDto>(client);
-
-            response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
-
-            response = CheckForDisclosures(response);
-            response = CheckForFNA(response);
-
-            return response;
-        }
-
-        private ClientDto CheckForDisclosures(ClientDto client)
-        {
-
-            var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id);
-
-            if (disclosureExists.Any())
-            {
-                client.DisclosureDate = disclosureExists.First().Created;
-            }
-
-            client.hasDisclosure = disclosureExists.Any();
-
-            return client;
-        }
-
-        public ClientDto CheckForFNA(ClientDto client)
-        {
-
-            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
-
-            if (fnaExists.Any())
-            {
-                client.FNADate = fnaExists.First().Created;
-            }
-
-            client.hasFNA = fnaExists.Any();
-
-            return client;
-        }
-
-        public bool DoesClientExist(RegistrationDto dto)
-        {
-            bool clientExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
-            bool userExists = ur.DoesUserExist(dto);
-
-            if (userExists)
-            {
-                UserModel user = ur.GetUser(dto);
-                clientExists = _context.Clients.Where(a => a.UserId == user.Id).Any();
-            }
-
-            return clientExists;
-        }
-
-        public bool DoesClientExist(ClientDto dto)
-        {
-            bool clientExists = false;
-
-            clientExists = _context.Clients.Where(a => a.Id == dto.Id).Any();
-
-            return clientExists;
-        }
-
-        public async Task<ClientDto> CreateClient(ClientDto dto)
-        {
-            ClientModel client = _mapper.Map<ClientModel>(dto);
-            
-            _context.Clients.Add(client);
-            _context.SaveChanges();
-            dto = _mapper.Map<ClientDto>(client);
-
-            await _ms.SendClientWelcomeEmail(client);
-            return dto;
-        }
-
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
@@ -326,31 +370,6 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public void GenerateClientDocuments(int clientId)
-        {
-            ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.BankDetails).Include(c => c.TaxResidency).SingleOrDefault(c => c.Id == clientId);
-            AdvisorModel advisor = _context.Advisors.Include(a => a.User).SingleOrDefault(ad => ad.Id == client.AdvisorId);
-
-            RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
-            FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
-            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
-
-            
-
-            //Risk Profile
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
-            riskRepo.GenerateRiskProfile(client, advisor, risk);
-
-            //FSP Mandate
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
-            fspRepo.GenerateMandate(client, advisor, fsp);
-
-            //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
-            fnaRepo.GenerateFNA(client, advisor, fna);
-
-        }
-
         public void UpdateClientPassports(List<PassportDto> dto)
         {
             foreach (PassportDto passport in dto)
@@ -360,24 +379,28 @@ namespace Aluma.API.Repositories
             }
             _context.SaveChanges();
 
-            
+
         }
 
-        public bool DoesIDExist(ClientDto dto)
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private ClientDto CheckForDisclosures(ClientDto client)
         {
-            try
-            {
-                bool idExists = false;                
 
-                idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+            var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id);
 
-                return idExists;
-            }
-            catch (Exception ex)
+            if (disclosureExists.Any())
             {
-                //log error
-                return true;
+                client.DisclosureDate = disclosureExists.First().Created;
             }
+
+            client.hasDisclosure = disclosureExists.Any();
+
+            return client;
         }
+
+        #endregion Private Methods
     }
 }

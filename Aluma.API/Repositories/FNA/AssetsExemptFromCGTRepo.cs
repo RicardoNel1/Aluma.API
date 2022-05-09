@@ -13,20 +13,31 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsExemptFromCGTRepo : IRepoBase<AssetsExemptFromCGTModel>
     {
+        #region Public Methods
+
+        bool DeleteAssetsExemptFromCGTItem(int id);
+
         bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto);
         List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId);
         AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray);
 
-        bool DeleteAssetsExemptFromCGTItem(int id);
+        #endregion Public Methods
     }
 
 
     public class AssetsExemptFromCGTRepo : RepoBase<AssetsExemptFromCGTModel>, IAssetsExemptFromCGTRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AssetsExemptFromCGTRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -35,7 +46,20 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        public bool DeleteAssetsExemptFromCGTItem(int id)
+        {
+            AssetsExemptFromCGTModel item = _context.AssetsExemptFromCGT.Where(a => a.Id == id).First();
+            _context.AssetsExemptFromCGT.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
         public bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto)
         {
@@ -106,14 +130,6 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteAssetsExemptFromCGTItem(int id)
-        {
-            AssetsExemptFromCGTModel item = _context.AssetsExemptFromCGT.Where(a => a.Id == id).First();
-            _context.AssetsExemptFromCGT.Remove(item);
-            _context.SaveChanges();
-
-            return true;
-        }
-
+        #endregion Public Methods
     }
 }

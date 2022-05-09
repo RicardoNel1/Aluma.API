@@ -16,20 +16,33 @@ namespace Aluma.API.Repositories
 {
     public interface IFIRepo : IRepoBase<ProductModel>
     {
+        #region Public Methods
+
         Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
 
         Task GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+
+        #endregion Public Methods
     }
 
 
     public class FIRepo : RepoBase<ProductModel>, IFIRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
         DocumentHelper _dh;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public FIRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
             _context = databaseContext;
@@ -38,6 +51,10 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
             _dh = new DocumentHelper(_context, _config, _fileStorage, _host);
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public async Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product)
         {
@@ -156,6 +173,8 @@ namespace Aluma.API.Repositories
             DocumentTypesEnum type = DocumentTypesEnum.FIQuote;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
+
+        #endregion Public Methods
 
     }
 }

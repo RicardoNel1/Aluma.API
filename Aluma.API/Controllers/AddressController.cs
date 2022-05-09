@@ -9,27 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class AddressController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AddressController(IWrapper repo)
         {
             _repo = repo;
         }
 
-        [HttpGet, AllowAnonymous]
-        public IActionResult GetAddress(int userId, string type)
-        {
-            try
-            {
-                AddressDto address = _repo.User.GetUserAddress(userId, type);
+        #endregion Public Constructors
 
-                return Ok(address);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateAddress(AddressDto dto)
@@ -54,6 +49,20 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetAddress(int userId, string type)
+        {
+            try
+            {
+                AddressDto address = _repo.User.GetUserAddress(userId, type);
+
+                return Ok(address);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
         [HttpPut, AllowAnonymous]
         public IActionResult UpdateAddress(AddressDto dto)
         {
@@ -70,5 +79,7 @@ namespace Aluma.API.Controllers
             }
             return Ok(dto);
         }
+
+        #endregion Public Methods
     }
 }

@@ -21,27 +21,40 @@ namespace Aluma.API.Repositories
 {
     public interface IAdvisorRepo : IRepoBase<AdvisorModel>
     {
-        public bool DoesAdvisorExist(UserDto dto);
-
-        public AdvisorDto GetAdvisor(AdvisorDto dto);
-        public AdvisorDto GetAdvisorByUserId(int userId);
+        #region Public Methods
 
         public Task<AdvisorDto> CreateAdvisor(AdvisorDto dto);
 
         public bool DeleteAdvisor(AdvisorDto dto);
 
-        public AdvisorDto UpdateAdvisor(AdvisorDto dto);
+        public bool DoesAdvisorExist(UserDto dto);
+
+        public AdvisorDto GetAdvisor(AdvisorDto dto);
+        public AdvisorDto GetAdvisorByUserId(int userId);
         public List<AdvisorDto> GetAllAdvisors();
+
+        public AdvisorDto UpdateAdvisor(AdvisorDto dto);
+
+        #endregion Public Methods
     }
 
     public class AdvisorRepo : RepoBase<AdvisorModel>, IAdvisorRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
         MailSender _ms;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public AdvisorRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
@@ -51,34 +64,9 @@ namespace Aluma.API.Repositories
             _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
-        public bool DoesAdvisorExist(UserDto dto)
-        {
-            bool advisorExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
-            bool userExists = ur.DoesUserExist(dto);
+        #endregion Public Constructors
 
-            if (userExists)
-            {
-                UserDto user = ur.GetUser(dto);
-                advisorExists = _context.Advisors.Where(a => a.UserId == user.Id).Any();
-            }
-
-            return advisorExists;
-        }
-
-        public AdvisorDto GetAdvisor(AdvisorDto dto)
-        {
-            AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
-            dto = _mapper.Map<AdvisorDto>(advisor);
-            return dto;
-        }
-
-        public AdvisorDto GetAdvisorByUserId(int userId)
-        {
-            AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).First();
-            return _mapper.Map<AdvisorDto>(advisor);
-        }
-
+        #region Public Methods
 
         public async Task<AdvisorDto> CreateAdvisor(AdvisorDto dto)
         {
@@ -86,7 +74,7 @@ namespace Aluma.API.Repositories
             {
                 StringHasherRepo str = new StringHasherRepo();
                 UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
-                
+
 
                 //Create Advisor
                 AdvisorModel advisor = _mapper.Map<AdvisorModel>(dto);
@@ -143,8 +131,6 @@ namespace Aluma.API.Repositories
             }
         }
 
-        
-
         public bool DeleteAdvisor(AdvisorDto dto)
         {
             try
@@ -161,6 +147,40 @@ namespace Aluma.API.Repositories
                 //log error
                 return false;
             }
+        }
+
+        public bool DoesAdvisorExist(UserDto dto)
+        {
+            bool advisorExists = false;
+            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+            bool userExists = ur.DoesUserExist(dto);
+
+            if (userExists)
+            {
+                UserDto user = ur.GetUser(dto);
+                advisorExists = _context.Advisors.Where(a => a.UserId == user.Id).Any();
+            }
+
+            return advisorExists;
+        }
+
+        public AdvisorDto GetAdvisor(AdvisorDto dto)
+        {
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
+            dto = _mapper.Map<AdvisorDto>(advisor);
+            return dto;
+        }
+
+        public AdvisorDto GetAdvisorByUserId(int userId)
+        {
+            AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).First();
+            return _mapper.Map<AdvisorDto>(advisor);
+        }
+        public List<AdvisorDto> GetAllAdvisors()
+        {
+            List<AdvisorModel> advisors = _context.Advisors.Include(c => c.User).Where(c => c.isActive == true).ToList();
+            List<AdvisorDto> response = _mapper.Map<List<AdvisorDto>>(advisors);
+            return response;
         }
 
         public AdvisorDto UpdateAdvisor(AdvisorDto dto)
@@ -183,11 +203,6 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public List<AdvisorDto> GetAllAdvisors()
-        {
-            List<AdvisorModel> advisors = _context.Advisors.Include(c => c.User).Where(c => c.isActive == true).ToList();
-            List<AdvisorDto> response = _mapper.Map<List<AdvisorDto>>(advisors);
-            return response;
-        }
+        #endregion Public Methods
     }
 }

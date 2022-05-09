@@ -10,58 +10,47 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class LiabilitiesController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public LiabilitiesController(IWrapper repo)
         {
             _repo = repo;
         }
-             
 
-        //Liabilities      
-        [HttpPut("liabilities"), AllowAnonymous]
-        public IActionResult UpdateLiabilities([FromBody] LiabilitiesDto[] dtoArray)
+        #endregion Public Constructors
+
+
+        #region Public Methods
+
+        //Estate Expenses    
+        [HttpPost("administration_costs"), AllowAnonymous]
+        public IActionResult CreateAdministrationCosts([FromBody] EstateExpensesDto dto)
         {
             try
             {
-                _repo.Liabilities.UpdateLiabilities(dtoArray);
-                return Ok("Liabilities Updated");
+                bool estateExpensesExists = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+
+                if (estateExpensesExists)
+                {
+                    return BadRequest("Estate Expenses Exists");
+                }
+                else
+                {
+                    _repo.EstateExpenses.CreateEstateExpenses(dto);
+                }
+                return Ok(dto);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("liabilities"), AllowAnonymous]
-        public IActionResult GetLiabilities(int clientId)
-        {
-            try
-            {
-                List<LiabilitiesDto> dtoList = _repo.Liabilities.GetLiabilities(clientId);
-
-                return Ok(dtoList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-        [HttpDelete("liabilities"), AllowAnonymous]
-        public IActionResult DeleteLiabilitiesItem(int id)
-        {
-            try
-            {
-                bool deleted = _repo.Liabilities.DeleteLiabilitiesItem(id);
-
-                return Ok(deleted);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
 
         //Estate Expenses    
         [HttpPost("estate_expenses"), AllowAnonymous]
@@ -87,23 +76,29 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut("estate_expenses"), AllowAnonymous]
-        public IActionResult UpdateEstateExpenses([FromBody] EstateExpensesDto dto)
+        [HttpDelete("liabilities"), AllowAnonymous]
+        public IActionResult DeleteLiabilitiesItem(int id)
         {
             try
             {
-                bool estateExpensesExist = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+                bool deleted = _repo.Liabilities.DeleteLiabilitiesItem(id);
 
-                if (!estateExpensesExist)
-                {
-                    CreateEstateExpenses(dto);
-                }
-                else
-                {
-                    _repo.EstateExpenses.UpdateEstateExpenses(dto);
-                }
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
-                return Ok("Estate Expenses Updated");
+        [HttpGet("administration_costs"), AllowAnonymous]
+        public IActionResult GetAdministrationCosts(int clientId)
+        {
+            try
+            {
+                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(clientId);
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -126,23 +121,14 @@ namespace Aluma.API.Controllers
             }
         }
 
-        //Estate Expenses    
-        [HttpPost("administration_costs"), AllowAnonymous]
-        public IActionResult CreateAdministrationCosts([FromBody] EstateExpensesDto dto)
+        [HttpGet("liabilities"), AllowAnonymous]
+        public IActionResult GetLiabilities(int clientId)
         {
             try
             {
-                bool estateExpensesExists = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+                List<LiabilitiesDto> dtoList = _repo.Liabilities.GetLiabilities(clientId);
 
-                if (estateExpensesExists)
-                {
-                    return BadRequest("Estate Expenses Exists");
-                }
-                else
-                {
-                    _repo.EstateExpenses.CreateEstateExpenses(dto);
-                }
-                return Ok(dto);
+                return Ok(dtoList);
             }
             catch (Exception e)
             {
@@ -174,19 +160,45 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("administration_costs"), AllowAnonymous]
-        public IActionResult GetAdministrationCosts(int clientId)
+        [HttpPut("estate_expenses"), AllowAnonymous]
+        public IActionResult UpdateEstateExpenses([FromBody] EstateExpensesDto dto)
         {
             try
             {
-                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(clientId);
+                bool estateExpensesExist = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
 
-                return Ok(dto);
+                if (!estateExpensesExist)
+                {
+                    CreateEstateExpenses(dto);
+                }
+                else
+                {
+                    _repo.EstateExpenses.UpdateEstateExpenses(dto);
+                }
+
+                return Ok("Estate Expenses Updated");
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
+        //Liabilities      
+        [HttpPut("liabilities"), AllowAnonymous]
+        public IActionResult UpdateLiabilities([FromBody] LiabilitiesDto[] dtoArray)
+        {
+            try
+            {
+                _repo.Liabilities.UpdateLiabilities(dtoArray);
+                return Ok("Liabilities Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        #endregion Public Methods
     }
 }

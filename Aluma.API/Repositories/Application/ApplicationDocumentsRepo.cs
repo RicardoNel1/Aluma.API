@@ -12,21 +12,32 @@ namespace Aluma.API.Repositories
 {
     public interface IApplicationDocumentsRepo : IRepoBase<ApplicationDocumentModel>
     {
-        public void SignDisclosure(UserDocumentModel dto);
+        #region Public Methods
+
+        object GetDocument(ApplicationDocumentDto dto);
 
         object GetDocuments(ApplicationDto dto);
 
         ICollection<ApplicationDocumentDto> GetDocumentsList(ApplicationDto dto);
 
-        object GetDocument(ApplicationDocumentDto dto);
+        public void SignDisclosure(UserDocumentModel dto);
+
+        #endregion Public Methods
     }
 
     public class ApplicationDocumentsRepo : RepoBase<ApplicationDocumentModel>, IApplicationDocumentsRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public ApplicationDocumentsRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
         {
@@ -35,6 +46,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public object GetDocument(ApplicationDocumentDto dto)
         {
@@ -67,5 +82,7 @@ namespace Aluma.API.Repositories
                 return;
             }
         }
+
+        #endregion Public Methods
     }
 }

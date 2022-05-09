@@ -9,12 +9,22 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class TaxResidencyController : ControllerBase
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public TaxResidencyController(IWrapper repo)
         {
             _repo = repo;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         [HttpPost, AllowAnonymous]
         public IActionResult CreateTaxResidency([FromBody] TaxResidencyDto dto)
@@ -32,6 +42,36 @@ namespace Aluma.API.Controllers
                      _repo.TaxResidency.CreateTaxResidency(dto);
                 }
                 return Ok("Tax Residency Created");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete, AllowAnonymous]
+        public IActionResult DeleteTaxResidencyItem(int id)
+        {
+            try
+            {
+                bool deleted = _repo.TaxResidency.DeleteTaxResidencyItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetTaxResidency(int clientId)
+        {
+            try
+            {
+                TaxResidencyDto taxResidency = _repo.TaxResidency.GetTaxResidency(clientId);
+
+                return Ok(taxResidency);
             }
             catch (Exception e)
             {
@@ -63,35 +103,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet, AllowAnonymous]
-        public IActionResult GetTaxResidency(int clientId)
-        {
-            try
-            {
-                TaxResidencyDto taxResidency = _repo.TaxResidency.GetTaxResidency(clientId);
-
-                return Ok(taxResidency);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete, AllowAnonymous]
-        public IActionResult DeleteTaxResidencyItem(int id)
-        {
-            try
-            {
-                bool deleted = _repo.TaxResidency.DeleteTaxResidencyItem(id);
-
-                return Ok(deleted);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
+        #endregion Public Methods
     }
 }

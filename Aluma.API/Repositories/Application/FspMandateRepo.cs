@@ -17,26 +17,39 @@ namespace Aluma.API.Repositories
 {
     public interface IFspMandateRepo : IRepoBase<FSPMandateModel>
     {
-        bool DoesApplicationHaveMandate(FSPMandateDto dto);
-
-        FSPMandateDto UpdateFSPMandate(FSPMandateDto dto);
+        #region Public Methods
 
         FSPMandateDto CreateFSPMandate(FSPMandateDto dto);
 
-        FSPMandateDto GetFSPMandate(int clientId);
-
         bool DeleteFSPMandate(FSPMandateDto dto);
 
+        bool DoesApplicationHaveMandate(FSPMandateDto dto);
+
         Task GenerateMandate(ClientModel client, AdvisorModel advisor, FSPMandateModel fsp);
+
+        FSPMandateDto GetFSPMandate(int clientId);
+
+        FSPMandateDto UpdateFSPMandate(FSPMandateDto dto);
+
+        #endregion Public Methods
     }
 
     public class FspMandateRepo : RepoBase<FSPMandateModel>, IFspMandateRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
         public FspMandateRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(context)
         {
             _context = context;
@@ -45,6 +58,10 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
             _fileStorage = fileStorage;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public FSPMandateDto CreateFSPMandate(FSPMandateDto dto)
         {
@@ -71,30 +88,6 @@ namespace Aluma.API.Repositories
                 return true;
             }
             return false;
-        }
-
-        public FSPMandateDto GetFSPMandate(int clientId)
-        {
-            var fspModel = _context.FspMandates.Where(r => r.ClientId == clientId);
-
-            if (fspModel.Any())
-            {
-                return _mapper.Map<FSPMandateDto>(fspModel.First());
-            }
-            return null;
-
-        }
-
-        public FSPMandateDto UpdateFSPMandate(FSPMandateDto dto)
-        {
-            FSPMandateModel newFsp = _mapper.Map<FSPMandateModel>(dto);
-
-            _context.FspMandates.Update(newFsp);
-            _context.SaveChanges();
-
-            dto = _mapper.Map<FSPMandateDto>(newFsp);
-
-            return dto;
         }
 
         public async Task GenerateMandate(ClientModel client, AdvisorModel ad, FSPMandateModel fsp)
@@ -140,7 +133,7 @@ namespace Aluma.API.Repositories
                         street = $"{item.StreetNumber} {item.StreetName}";
                         unitComplex = $"{item.UnitNumber} {item.ComplexName}";
 
-                        d[$"address1"] = unitComplex != " " ? $"{street}, {unitComplex}": street ;
+                        d[$"address1"] = unitComplex != " " ? $"{street}, {unitComplex}" : street;
 
                         d[$"address2"] = $"{item.Suburb} " + $"{item.City} ";
 
@@ -323,5 +316,31 @@ namespace Aluma.API.Repositories
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }
+
+        public FSPMandateDto GetFSPMandate(int clientId)
+        {
+            var fspModel = _context.FspMandates.Where(r => r.ClientId == clientId);
+
+            if (fspModel.Any())
+            {
+                return _mapper.Map<FSPMandateDto>(fspModel.First());
+            }
+            return null;
+
+        }
+
+        public FSPMandateDto UpdateFSPMandate(FSPMandateDto dto)
+        {
+            FSPMandateModel newFsp = _mapper.Map<FSPMandateModel>(dto);
+
+            _context.FspMandates.Update(newFsp);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<FSPMandateDto>(newFsp);
+
+            return dto;
+        }
+
+        #endregion Public Methods
     }
 }

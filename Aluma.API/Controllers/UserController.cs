@@ -11,21 +11,48 @@ namespace Aluma.API.Controllers
     [ApiController, Route("api/[controller]"), Authorize]
     public class UserController : Controller
     {
+        #region Private Fields
+
         private readonly IWrapper _repo;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public UserController(IWrapper wrapper)
         {
             _repo = wrapper;
         }
 
-        [HttpPut]
-        public IActionResult GetUser(UserDto dto)
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        [HttpGet("documents"), AllowAnonymous]
+        public async Task<IActionResult> DownloadAllUserDocuments(int userId)
         {
             try
             {
-                var user = _repo.User.GetUser(dto);
+                List<UserDocumentDto> appDocs = await _repo.UserDocuments.GetDocuments(userId);
 
-                return Ok(user);
+                return Ok(appDocs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("edit/signature"), AllowAnonymous]
+        //public IActionResult EditUserSignature([FromBody] int userId, string signature)
+        public IActionResult EditUserSignature([FromBody] UserDto dto)
+        {
+            try
+            {
+
+                _repo.User.EditUserSignature(dto);
+
+                return Ok("Signature Updated");
             }
             catch (Exception e)
             {
@@ -51,6 +78,20 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut]
+        public IActionResult GetUser(UserDto dto)
+        {
+            try
+            {
+                var user = _repo.User.GetUser(dto);
+
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
         [HttpGet("emails"), AllowAnonymous]
         public async Task<IActionResult> SendAlumaWelcomeEmails()
         {
@@ -66,21 +107,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("documents"), AllowAnonymous]
-        public async Task<IActionResult> DownloadAllUserDocuments(int userId)
-        {
-            try
-            {
-                List<UserDocumentDto> appDocs = await _repo.UserDocuments.GetDocuments(userId);
-
-                return Ok(appDocs);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
+        #endregion Public Methods
 
         //[HttpPut("edit/signature"), AllowAnonymous]
         //public IActionResult EditUserSignature([FromBody] int userId, string signature)
@@ -97,25 +124,5 @@ namespace Aluma.API.Controllers
         //        return StatusCode(500, e.Message);
         //    }
         //}
-
-        [HttpPut("edit/signature"), AllowAnonymous]
-        //public IActionResult EditUserSignature([FromBody] int userId, string signature)
-        public IActionResult EditUserSignature([FromBody] UserDto dto)
-        {
-            try
-            {
-
-                _repo.User.EditUserSignature(dto);
-
-                return Ok("Signature Updated");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-
-
     }
 }

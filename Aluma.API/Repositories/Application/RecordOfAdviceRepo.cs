@@ -18,27 +18,37 @@ namespace Aluma.API.Repositories
 {
     public interface IRecordOfAdviceRepo : IRepoBase<RecordOfAdviceModel>
     {
-        RecordOfAdviceDto GetRecordOfAdvice(int applicationId);
-
-        bool DoesApplicationHaveRecordOfAdice(int applicationId);
+        #region Public Methods
 
         RecordOfAdviceDto CreateRecordOfAdvice(RecordOfAdviceDto dto);
 
-        RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto);
-
         bool DeleteRecordOfAdvice(RecordOfAdviceDto dto);
 
+        bool DoesApplicationHaveRecordOfAdice(int applicationId);
+
         Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk);
+
+        RecordOfAdviceDto GetRecordOfAdvice(int applicationId);
+        RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto);
+
+        #endregion Public Methods
     }
 
     public class RecordOfAdviceRepo : RepoBase<RecordOfAdviceModel>, IRecordOfAdviceRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
 
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public RecordOfAdviceRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(databaseContext)
         {
@@ -49,33 +59,9 @@ namespace Aluma.API.Repositories
             _fileStorage = fileStorage;
         }
 
-        public bool DoesApplicationHaveRecordOfAdice(int applicationId)
-        {
-            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
-            if (roa.Any())
-            {
-                return true;
-            }
-            return false;
-        }
+        #endregion Public Constructors
 
-        public RecordOfAdviceDto GetRecordOfAdvice(int applicationId)
-        {
-            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
-
-            if (roa.Any())
-            {
-                RecordOfAdviceDto result = _mapper.Map<RecordOfAdviceDto>(roa.Include(r => r.SelectedProducts).First());
-
-                foreach (var product in result.SelectedProducts)
-                {
-                    product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
-                }
-
-                return result;
-            }
-            return null;
-        }
+        #region Public Methods
 
         public RecordOfAdviceDto CreateRecordOfAdvice(RecordOfAdviceDto dto)
         {
@@ -118,31 +104,19 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
-        {
-            RecordOfAdviceModel newRoa = _mapper.Map<RecordOfAdviceModel>(dto);
-
-            _context.RecordOfAdvice.Update(newRoa);
-            _context.SaveChanges();
-
-            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
-            app.ApplicationStatus = ApplicationStatusEnum.Submitted;
-            _context.Applications.Update(app);
-            _context.SaveChanges();
-
-
-            dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
-            foreach (var product in dto.SelectedProducts)
-            {
-                product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
-            }
-
-            return dto;
-        }
-
         public bool DeleteRecordOfAdvice(RecordOfAdviceDto dto)
         {
             throw new System.NotImplementedException();
+        }
+
+        public bool DoesApplicationHaveRecordOfAdice(int applicationId)
+        {
+            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
+            if (roa.Any())
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa, RiskProfileModel risk)
@@ -229,5 +203,46 @@ namespace Aluma.API.Repositories
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.RecordOfAdvice, data, client.User, app);
         }
+
+        public RecordOfAdviceDto GetRecordOfAdvice(int applicationId)
+        {
+            var roa = _context.RecordOfAdvice.Where(r => r.ApplicationId == applicationId);
+
+            if (roa.Any())
+            {
+                RecordOfAdviceDto result = _mapper.Map<RecordOfAdviceDto>(roa.Include(r => r.SelectedProducts).First());
+
+                foreach (var product in result.SelectedProducts)
+                {
+                    product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
+                }
+
+                return result;
+            }
+            return null;
+        }
+        public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
+        {
+            RecordOfAdviceModel newRoa = _mapper.Map<RecordOfAdviceModel>(dto);
+
+            _context.RecordOfAdvice.Update(newRoa);
+            _context.SaveChanges();
+
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
+            app.ApplicationStatus = ApplicationStatusEnum.Submitted;
+            _context.Applications.Update(app);
+            _context.SaveChanges();
+
+
+            dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
+            foreach (var product in dto.SelectedProducts)
+            {
+                product.ProductName = _context.Products.First(p => p.Id == (int)product.ProductId).Name;
+            }
+
+            return dto;
+        }
+
+        #endregion Public Methods
     }
 }

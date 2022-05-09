@@ -17,33 +17,44 @@ namespace Aluma.API.Repositories
 {
     public interface IUserDocumentsRepo : IRepoBase<UserDocumentModel>
     {
-        public UserDocumentModel CreateClientDisclosure(DisclosureModel model);
-
-        public UserDocumentModel UpdateClientDisclosure(DisclosureModel model);
+        #region Public Methods
 
         public UserDocumentModel CreateClientBankVerification(BankDetailsModel model);
 
-        public UserDocumentModel UpdateClientBankVerification(BankDetailsModel model);
-
-        ICollection<UserDocumentDto> GetDocumentsList(UserDto dto);
-
-        Task<List<UserDocumentDto>> GetDocuments(int userId);
+        public UserDocumentModel CreateClientDisclosure(DisclosureModel model);
 
         Task<UserDocumentDto> GetDocument(UserDocumentDto dto);
 
+        Task<List<UserDocumentDto>> GetDocuments(int userId);
+
+        ICollection<UserDocumentDto> GetDocumentsList(UserDto dto);
+
+        public UserDocumentModel UpdateClientBankVerification(BankDetailsModel model);
+
+        public UserDocumentModel UpdateClientDisclosure(DisclosureModel model);
         Task<UserDocumentDto> UploadDocument(UserDocumentDto dto);
+
+        #endregion Public Methods
 
 
     }
 
     public class UserDocumentsRepo : RepoBase<UserDocumentModel>, IUserDocumentsRepo
     {
-        private readonly AlumaDBContext _context;
-        private readonly IWebHostEnvironment _host;
+        #region Private Fields
+
         private readonly IConfiguration _config;
-        private readonly IMapper _mapper;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorage;
+
+        private readonly IWebHostEnvironment _host;
+        private readonly IMapper _mapper;
         DocumentHelper _dh;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public UserDocumentsRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper, IFileStorageRepo fileStorage) : base(context)
         {
@@ -54,6 +65,10 @@ namespace Aluma.API.Repositories
             _fileStorage = fileStorage;
             _dh = new DocumentHelper(_context, _config, _fileStorage, _host);
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public UserDocumentModel CreateClientBankVerification(BankDetailsModel model)
         {
@@ -132,5 +147,7 @@ namespace Aluma.API.Repositories
             }
 
         }
+
+        #endregion Public Methods
     }
 }

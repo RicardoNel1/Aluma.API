@@ -13,20 +13,31 @@ namespace Aluma.API.Repositories
 {
     public interface IAdministrationCostsRepo : IRepoBase<AdministrationCostsModel>
     {
+        #region Public Methods
+
         AdministrationCostsDto CreateAdministrationCosts(AdministrationCostsDto dto);
         bool DoesAdministrationCostsExist(AdministrationCostsDto dto);
         AdministrationCostsDto GetAdministrationCosts(int clientId);
         AdministrationCostsDto UpdateAdministrationCosts(AdministrationCostsDto dto);
+
+        #endregion Public Methods
 
 
     }
 
     public class AdministrationCostsRepo : RepoBase<AdministrationCostsModel>, IAdministrationCostsRepo
     {
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
-        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public AdministrationCostsRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
@@ -35,6 +46,10 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
+
+        #endregion Public Constructors
+
+        #region Public Methods
 
         public AdministrationCostsDto CreateAdministrationCosts(AdministrationCostsDto dto)
         {
@@ -83,6 +98,8 @@ namespace Aluma.API.Repositories
             return dto;
 
         }
+
+        #endregion Public Methods
 
 
 
