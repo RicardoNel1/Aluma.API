@@ -32,6 +32,8 @@ namespace DataService.Dto
         public bool NonResidentialAccount { get; set; }
         public bool hasDisclosure { get; set; }
         public DateTime DisclosureDate { get; set; }
+        public bool hasFNA { get; set; }
+        public DateTime FNADate { get; set; }
         public int ApplicationCount { get; set; }
     }
 }
