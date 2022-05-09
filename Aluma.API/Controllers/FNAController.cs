@@ -34,7 +34,7 @@ namespace Aluma.API.Controllers
 
             try
             {
-                var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = clientId});
+                var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = clientId });
                 if (fnaExist.hasFNA)
                 {
                     dto.Status = "Failure";

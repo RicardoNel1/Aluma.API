@@ -9,6 +9,18 @@ namespace Aluma.API.Helpers
 {
     public class UtilityHelper
     {
+        #region Public Fields
+
+        public Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
+                {
+                    {"00","Unknown"},
+                    {"01","Current / Cheque Account"},
+                    {"02","Savings Account"},
+                    {"03","Transmission Account"},
+                    {"04","Bond Account"},
+                    {"06","Subscription Share"}
+                };
+
         public Dictionary<string, int> BanksDictionary = new Dictionary<string, int>()
                 {
                     {"FNB",250655},
@@ -25,22 +37,32 @@ namespace Aluma.API.Helpers
                     {"TYMEBANK",678910},
                 };
 
-        public Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
-                {
-                    {"00","Unknown"},
-                    {"01","Current / Cheque Account"},
-                    {"02","Savings Account"},
-                    {"03","Transmission Account"},
-                    {"04","Bond Account"},
-                    {"06","Subscription Share"}
-                };
+        #endregion Public Fields
 
-        public string Initials(string str)
+        #region Public Methods
+
+        public static string DecryptString(string key, string cipherText)
         {
-            var newStr = string.Empty;
+            byte[] iv = new byte[16];
+            byte[] buffer = Convert.FromBase64String(cipherText);
 
-            str.Split(' ').ToList().ForEach(e => newStr += e[0]);
-            return newStr;
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        {
+                            return streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
         }
 
         public static string EncryptString(string key, string plainText)
@@ -72,28 +94,14 @@ namespace Aluma.API.Helpers
             return Convert.ToBase64String(array);
         }
 
-        public static string DecryptString(string key, string cipherText)
+        public string Initials(string str)
         {
-            byte[] iv = new byte[16];
-            byte[] buffer = Convert.FromBase64String(cipherText);
+            var newStr = string.Empty;
 
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.IV = iv;
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream memoryStream = new MemoryStream(buffer))
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
-                    {
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
-                        {
-                            return streamReader.ReadToEnd();
-                        }
-                    }
-                }
-            }
+            str.Split(' ').ToList().ForEach(e => newStr += e[0]);
+            return newStr;
         }
+
+        #endregion Public Methods
     }
 }

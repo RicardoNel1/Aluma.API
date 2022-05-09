@@ -132,7 +132,7 @@ namespace Aluma.API.Repositories
             var d = new Dictionary<string, string>();
             string signCity = string.Empty;
 
-            
+
 
             d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
             d["identityNumber"] = client.User.RSAIdNumber;
@@ -145,7 +145,7 @@ namespace Aluma.API.Repositories
             d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
 
 
-            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; 
+            d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
 
             if (product.ProductId == 5)
             {

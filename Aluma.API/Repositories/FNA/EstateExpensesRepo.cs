@@ -5,8 +5,6 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -81,7 +79,7 @@ namespace Aluma.API.Repositories
         public EstateExpensesDto UpdateEstateExpenses(EstateExpensesDto dto)
         {
             EstateExpensesModel data = _context.EstateExpenses.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-            
+
             //set fields to be updated       
             data.AdminCosts = dto.AdminCosts;
             data.FuneralExpenses = dto.FuneralExpenses;

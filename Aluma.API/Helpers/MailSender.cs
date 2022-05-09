@@ -19,13 +19,20 @@ namespace Aluma.API.Helpers
 {
     public class MailSender
     {
-        private readonly AlumaDBContext _context;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorageRepo;
         private readonly IWebHostEnvironment _host;
         DocumentHelper _dh;
         MailServerSettingsDto mailSettings;
         SystemSettingsDto systemSettings;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public MailSender(AlumaDBContext context, IConfiguration config, IFileStorageRepo fileStorage, IWebHostEnvironment host)
         {
@@ -38,23 +45,36 @@ namespace Aluma.API.Helpers
             systemSettings = _config.GetSection("SystemSettings").Get<SystemSettingsDto>();
         }
 
-        public async void SendNewApplicationEmail(ClientModel client, string productName)
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public async Task SendAdvisorWelcomeEmail(AdvisorModel advisor)
         {
+            UserMail um = new UserMail()
+            {
+                Email = advisor.User.Email,
+                Name = advisor.User.FirstName + " " + advisor.User.LastName,
+                Subject = "Aluma Capital: Advisor welcome letter for " + advisor.User.FirstName + " " + advisor.User.LastName,
+                Template = "AdvisorWelcome"
+            };
 
             try
             {
                 var message = new MailMessage
                 {
                     From = new MailAddress(mailSettings.Username),
-                    Subject = "New Aluma Application: " + client.User.FirstName + " " + client.User.LastName,
-                    IsBodyHtml = true
+                    Subject = um.Subject,
+                    IsBodyHtml = true,
+
                 };
 
-                //message.To.Add(new MailAddress("sales@aluma.co.za"));
-                message.To.Add(new MailAddress("system@aluma.co.za"));
+                message.To.Add(new MailAddress(advisor.User.Email));
+                //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
+                message.Bcc.Add(new MailAddress("system@aluma.co.za"));
 
                 char slash = Path.DirectorySeparatorChar;
-                string templatePath = $"{_host.WebRootPath}{slash}html{slash}NewApplication.html";
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
 
                 // Create Body Builder
                 MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
@@ -65,12 +85,11 @@ namespace Aluma.API.Helpers
                     bb.HtmlBody = sr.ReadToEnd();
                 }
 
-                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName + " " + client.User.LastName, productName);
+                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-private-equity.jpg";
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, advisor.User.FirstName, advisor.User.FirstName, advisor.User.LastName, advisor.User.Email, advisor.User.MobileNumber, advisor.User.Email, $"Aluma{advisor.User.FirstName.Trim()}");
 
                 message.Body = bb.HtmlBody;
 
-                //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
 
                 var smtpClient = new SmtpClient
 
@@ -83,6 +102,7 @@ namespace Aluma.API.Helpers
                     EnableSsl = true,
 
                 };
+
                 //var smtpClient = new SmtpClient
                 //{
                 //    Host = "mail.administr8it.co.za",
@@ -91,7 +111,9 @@ namespace Aluma.API.Helpers
                 //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
                 //    Timeout = 1000000
                 //};
+
                 smtpClient.Send(message);
+
                 message.Dispose();
                 return;
 
@@ -106,7 +128,6 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
-
 
         public async void SendApplicationDocumentsToBroker(ApplicationModel app, AdvisorModel advisor, ClientModel client)
         {
@@ -193,8 +214,6 @@ namespace Aluma.API.Helpers
             }
         }
 
-
-
         public async Task SendClientWelcomeEmail(ClientModel client)
         {
             UserMail um = new UserMail()
@@ -258,86 +277,6 @@ namespace Aluma.API.Helpers
                 };
 
 
-
-                smtpClient.Send(message);
-
-                message.Dispose();
-                return;
-
-            }
-            catch (System.Exception ex)
-            {
-                return;
-            }
-            finally
-            {
-                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-                NLog.LogManager.Shutdown();
-            }
-        }
-
-        public async Task SendAdvisorWelcomeEmail(AdvisorModel advisor)
-        {
-            UserMail um = new UserMail()
-            {
-                Email = advisor.User.Email,
-                Name = advisor.User.FirstName + " " + advisor.User.LastName,
-                Subject = "Aluma Capital: Advisor welcome letter for " + advisor.User.FirstName + " " + advisor.User.LastName,
-                Template = "AdvisorWelcome"
-            };
-
-            try
-            {
-                var message = new MailMessage
-                {
-                    From = new MailAddress(mailSettings.Username),
-                    Subject = um.Subject,
-                    IsBodyHtml = true,
-
-                };
-
-                message.To.Add(new MailAddress(advisor.User.Email));
-                //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
-                message.Bcc.Add(new MailAddress("system@aluma.co.za"));
-
-                char slash = Path.DirectorySeparatorChar;
-                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
-
-                // Create Body Builder
-                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
-
-                // Create streamreader to read content of the the given template
-                using (StreamReader sr = File.OpenText(templatePath))
-                {
-                    bb.HtmlBody = sr.ReadToEnd();
-                }
-
-                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-private-equity.jpg";
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, advisor.User.FirstName, advisor.User.FirstName, advisor.User.LastName, advisor.User.Email, advisor.User.MobileNumber, advisor.User.Email, $"Aluma{advisor.User.FirstName.Trim()}");
-
-                message.Body = bb.HtmlBody;
-
-
-                var smtpClient = new SmtpClient
-
-                {
-                    Host = "smtp.office365.com",
-                    Port = 587,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    EnableSsl = true,
-
-                };
-
-                //var smtpClient = new SmtpClient
-                //{
-                //    Host = "mail.administr8it.co.za",
-                //    Port = 25,
-                //    EnableSsl = false,
-                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
-                //    Timeout = 1000000
-                //};
 
                 smtpClient.Send(message);
 
@@ -466,5 +405,76 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
+
+        public async void SendNewApplicationEmail(ClientModel client, string productName)
+        {
+
+            try
+            {
+                var message = new MailMessage
+                {
+                    From = new MailAddress(mailSettings.Username),
+                    Subject = "New Aluma Application: " + client.User.FirstName + " " + client.User.LastName,
+                    IsBodyHtml = true
+                };
+
+                //message.To.Add(new MailAddress("sales@aluma.co.za"));
+                message.To.Add(new MailAddress("system@aluma.co.za"));
+
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}NewApplication.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName + " " + client.User.LastName, productName);
+
+                message.Body = bb.HtmlBody;
+
+                //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
+
+                var smtpClient = new SmtpClient
+
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+
+                };
+                //var smtpClient = new SmtpClient
+                //{
+                //    Host = "mail.administr8it.co.za",
+                //    Port = 25,
+                //    EnableSsl = false,
+                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                //    Timeout = 1000000
+                //};
+                smtpClient.Send(message);
+                message.Dispose();
+                return;
+
+            }
+            catch (System.Exception ex)
+            {
+                return;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
+        }
+
+        #endregion Public Methods
     }
 }

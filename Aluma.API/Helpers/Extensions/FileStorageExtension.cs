@@ -7,6 +7,8 @@ namespace Aluma.API.Helpers.Extensions
 {
     public static class FileStorageExtension
     {
+        #region Public Methods
+
         public static void ConfigureAzureFileStorage(this IServiceCollection services, IConfiguration config)
         {
             var connections = config.GetSection("AzureSettings").Get<AzureSettingsDto>();
@@ -16,5 +18,7 @@ namespace Aluma.API.Helpers.Extensions
                return new ShareServiceClient(connections.AzureFileStorageConnection);
            });
         }
+
+        #endregion Public Methods
     }
 }

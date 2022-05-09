@@ -29,9 +29,9 @@ namespace DataService.Model
 
         [Required, StringLength(60), MinLength(4)]
         public string FirstName { get; set; }
-                
+
         public string LastName { get; set; }
-                
+
         public string RSAIdNumber { get; set; }
 
         public string DateOfBirth { get; set; }
@@ -41,14 +41,14 @@ namespace DataService.Model
 
         public string MobileNumber { get; set; }
 
-        
+
         public string Password { get; set; }
 
 
         [Required]
         public RoleEnum Role { get; set; }
 
-        public byte[] Signature { get; set; } 
+        public byte[] Signature { get; set; }
         public string ProfileImage { get; set; }
 
         public bool isRegistrationVerified { get; set; }
@@ -78,7 +78,7 @@ namespace DataService.Model
 
             mb.HasOne(c => c.Client)
                 .WithOne(c => c.User)
-                .HasForeignKey<ClientModel>(c => c.UserId)                
+                .HasForeignKey<ClientModel>(c => c.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             mb.HasMany(c => c.Otp)

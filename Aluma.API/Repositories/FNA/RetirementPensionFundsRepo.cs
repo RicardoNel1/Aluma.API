@@ -5,7 +5,6 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -93,7 +92,7 @@ namespace Aluma.API.Repositories
 
                 if (existingItem)
                 {
-                    RetirementPensionFundsModel updateItem = _context.RetirementPensionFunds.Where(a => a.Id == item.Id).FirstOrDefault();                    
+                    RetirementPensionFundsModel updateItem = _context.RetirementPensionFunds.Where(a => a.Id == item.Id).FirstOrDefault();
                     updateItem.Description = item.Description;
                     updateItem.Value = item.Value;
                     updateItem.MonthlyContributions = item.MonthlyContributions;

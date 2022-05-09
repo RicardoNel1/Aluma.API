@@ -1,7 +1,4 @@
-﻿using System;
-using DataService.Enum;
-
-namespace DataService.Dto
+﻿namespace DataService.Dto
 {
 
     public class LiquidAssetsDto

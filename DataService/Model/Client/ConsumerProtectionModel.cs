@@ -8,7 +8,7 @@ namespace DataService.Model
     [Table("consumer_protection")]
     public class ConsumerProtectionModel : BaseModel
     {
-        public ClientModel Client { get; set; }        
+        public ClientModel Client { get; set; }
         public int Id { get; set; }
         public int ClientId { get; set; }
         public bool InformProducts { get; set; }
@@ -27,11 +27,11 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.ClientId).IsUnique();
-           
+
         }
     }
 
-    
 
-    
+
+
 }

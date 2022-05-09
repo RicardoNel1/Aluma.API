@@ -9,14 +9,24 @@ namespace BankValidationService
 {
     public interface IBankValidationServiceRepo
     {
-        BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
+        #region Public Methods
 
         VerificationStatusResponse GetBankValidationStatus(string jobId);
+
+        BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
+
+        #endregion Public Methods
     }
 
     public class BankValidationServiceRepo : IBankValidationServiceRepo
     {
+        #region Public Fields
+
         public readonly SettingsDto _settings;
+
+        #endregion Public Fields
+
+        #region Public Constructors
 
         public BankValidationServiceRepo()
         {
@@ -28,7 +38,35 @@ namespace BankValidationService
             _settings = root.GetSection("PbVerifyBankValidation").Get<SettingsDto>();
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
         public SettingsDto settings { get => _settings; }
+
+        #endregion Public Properties
+
+        #region Public Methods
+
+        public VerificationStatusResponse GetBankValidationStatus(string jobId)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-job-status-v3");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
+            request.AddHeader("Content-Type", "multipart/form-data");
+            request.AlwaysMultipartFormData = true;
+            request.AddParameter("memberkey", _settings.Memberkey.ToString());
+            request.AddParameter("password", _settings.Password.ToString());
+            request.AddParameter("jobID", jobId.ToString());
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to start Bank Account Validation Status");
+
+            return JsonConvert.DeserializeObject<VerificationStatusResponse>(response.Content);
+        }
 
         public BankValidationResponseDto StartBankValidation(BankDetailsDto dto)
         {
@@ -58,24 +96,6 @@ namespace BankValidationService
             return responseData;
         }
 
-        public VerificationStatusResponse GetBankValidationStatus(string jobId)
-        {
-            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-job-status-v3");
-            client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
-            request.AddHeader("Content-Type", "multipart/form-data");
-            request.AlwaysMultipartFormData = true;
-            request.AddParameter("memberkey", _settings.Memberkey.ToString());
-            request.AddParameter("password", _settings.Password.ToString());
-            request.AddParameter("jobID", jobId.ToString());
-            IRestResponse response = client.Execute(request);
-
-            if (!response.IsSuccessful)
-                throw new HttpRequestException("Error while trying to start Bank Account Validation Status");
-
-            return JsonConvert.DeserializeObject<VerificationStatusResponse>(response.Content);
-        }
+        #endregion Public Methods
     }
 }

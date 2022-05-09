@@ -6,7 +6,6 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -80,7 +79,7 @@ namespace Aluma.API.Repositories
 
         public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
             Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
             //set fields to be updated       

@@ -13,7 +13,7 @@
 
     public enum PaymentTypesEnum
     {
-        Lumpsum, 
+        Lumpsum,
         Recurringsum
     }
 
@@ -24,7 +24,7 @@
 
     public enum ProductCategoriesEnum
     {
-        Category1, 
+        Category1,
         Category2,
     }
 

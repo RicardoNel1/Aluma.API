@@ -4,7 +4,6 @@ using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Threading.Tasks;
 
@@ -311,7 +310,7 @@ namespace Aluma.API.Controllers
         [HttpPost("reset-advisor-password"), AllowAnonymous]
         public IActionResult ResetPassword(LoginDto dto)
         {
-                AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new AuthResponseDto();
 
             try
             {

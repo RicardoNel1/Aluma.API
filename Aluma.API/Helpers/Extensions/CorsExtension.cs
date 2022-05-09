@@ -4,6 +4,8 @@ namespace Aluma.API.Helpers.Extensions
 {
     public static class CorsExtension
     {
+        #region Public Methods
+
         public static void ConfigureCors(this IServiceCollection services)
         {
             services.AddCors(options =>
@@ -14,5 +16,7 @@ namespace Aluma.API.Helpers.Extensions
                     .AllowAnyHeader());
             });
         }
+
+        #endregion Public Methods
     }
 }

@@ -7,7 +7,7 @@
 
         //Discretion
         public string DiscretionType { get; set; }
-        public string InvestmentObjective { get; set; } 
+        public string InvestmentObjective { get; set; }
         public string LimitedInstruction { get; set; }
 
         //Voting

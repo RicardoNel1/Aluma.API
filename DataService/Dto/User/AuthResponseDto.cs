@@ -8,6 +8,6 @@
         public int AdvisorId { get; set; }
         public string Token { get; set; }
         public string TokenExpiry { get; set; }
-        
+
     }
 }

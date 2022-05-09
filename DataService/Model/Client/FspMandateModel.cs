@@ -12,7 +12,7 @@ namespace DataService.Model
         public int ClientId { get; set; }
 
         //Discretion
-        public string DiscretionType { get; set; }              
+        public string DiscretionType { get; set; }
         public string InvestmentObjective { get; set; }
         public string LimitedInstruction { get; set; }
 
@@ -30,7 +30,7 @@ namespace DataService.Model
         public string AdminFee { get; set; }
 
         //Dividend
-        public string DividendInstruction { get; set; }       
+        public string DividendInstruction { get; set; }
 
     }
 

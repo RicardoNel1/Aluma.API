@@ -9,7 +9,7 @@ namespace DataService.Model
     public class TaxResidencyModel : BaseModel
     {
         public ClientModel Client { get; set; }
-        
+
         public ICollection<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
         public int Id { get; set; }
         public int ClientId { get; set; }
@@ -28,7 +28,7 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.ClientId).IsUnique();
-           
+
         }
     }
 
@@ -37,7 +37,7 @@ namespace DataService.Model
     {
         public TaxResidencyModel TaxResidency { get; set; }
         public int Id { get; set; }
-        public int TaxResidencyId { get; set; }     
+        public int TaxResidencyId { get; set; }
         public string Country { get; set; }
         public string TinNumber { get; set; }
         public string TinUnavailableReason { get; set; }

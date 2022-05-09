@@ -2,9 +2,9 @@
 {
     public enum RiskRatingsEnum
     {
-        Conservative, 
-        ModeratelyConservative, 
-        Moderate, 
+        Conservative,
+        ModeratelyConservative,
+        Moderate,
         ModeratelyAggressive,
         Aggressive
     }

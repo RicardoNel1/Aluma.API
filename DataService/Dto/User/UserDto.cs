@@ -14,7 +14,7 @@ namespace DataService.Dto
         public bool HasSignature { get; set; }
     }
 
-    
+
 
 }
 

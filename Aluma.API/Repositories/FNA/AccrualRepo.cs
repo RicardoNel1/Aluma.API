@@ -59,7 +59,7 @@ namespace Aluma.API.Repositories
         {
             AccrualModel clientAccrual = _mapper.Map<AccrualModel>(accrual);
             Enum.TryParse(accrual.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-            
+
             clientAccrual.AllocateTo = parsedAllocation;
 
             _context.Accrual.Add(clientAccrual);
@@ -100,7 +100,7 @@ namespace Aluma.API.Repositories
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)
         {
-            AccrualModel data = _context.Accrual .Where(_ => _.ClientId == accrual.ClientId) .FirstOrDefault();
+            AccrualModel data = _context.Accrual.Where(_ => _.ClientId == accrual.ClientId).FirstOrDefault();
             Enum.TryParse(accrual.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
             data.ClientAssetsCommencement = accrual.ClientAssetsCommencement;

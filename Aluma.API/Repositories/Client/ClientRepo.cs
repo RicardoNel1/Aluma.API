@@ -262,7 +262,7 @@ namespace Aluma.API.Repositories
             }
 
 
-            return response ;
+            return response;
         }
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId)

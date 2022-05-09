@@ -9,6 +9,8 @@ namespace Aluma.API.Helpers.Extensions
 {
     public static class JwtExtension
     {
+        #region Public Methods
+
         public static void ConfigureJwtAuthentication(this IServiceCollection services,
             IConfiguration config)
         {
@@ -41,5 +43,7 @@ namespace Aluma.API.Helpers.Extensions
                 };
             });
         }
+
+        #endregion Public Methods
     }
 }

@@ -86,7 +86,7 @@ namespace Aluma.API.Repositories
 
         public AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
         {
-            
+
             foreach (var item in dtoArray)
             {
 

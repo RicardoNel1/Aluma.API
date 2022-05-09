@@ -128,7 +128,7 @@ namespace Aluma.API.Repositories
                 {
                     if (applicationId > 0)
                     {
-                        if(hasOtp.Where(o => o.OtpType == OtpTypesEnum.SignDocument).Any() == false)
+                        if (hasOtp.Where(o => o.OtpType == OtpTypesEnum.SignDocument).Any() == false)
                         {
                             result = "No Otp for signing.";
                             return result;

@@ -1,17 +1,17 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
+using BankValidationService;
 using DataService.Context;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using DataService.Dto;
 using DataService.Model;
-using System;
-using System.Linq;
-using Aluma.API.Helpers;
 using Hangfire;
-using BankValidationService;
-using System.Globalization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace Aluma.API.Repositories
 {
@@ -97,7 +97,7 @@ namespace Aluma.API.Repositories
             else
             {
                 bav.Reference = "Bank Verification Failed";
-                _context.BankDetails.Update(bav);             
+                _context.BankDetails.Update(bav);
 
                 _context.SaveChanges();
 
@@ -111,7 +111,7 @@ namespace Aluma.API.Repositories
             try
             {
                 BankDetailsModel details = _mapper.Map<BankDetailsModel>(dto);
-                
+
                 details.BranchCode = uh.BanksDictionary[details.BankName].ToString();
 
                 _context.BankDetails.Add(details);
@@ -327,7 +327,7 @@ namespace Aluma.API.Repositories
 
                     oldDetails.JobID = validation.JobID;
                     BackgroundJob.Schedule(() => CheckBankValidationStatusByJobId(validation.JobID), TimeSpan.FromMinutes(2));
-                    
+
                     _context.BankDetails.Update(oldDetails);
                     _context.SaveChanges();
 

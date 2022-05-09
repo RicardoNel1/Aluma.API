@@ -5,8 +5,6 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -83,8 +81,8 @@ namespace Aluma.API.Repositories
             AdministrationCostsModel data = _context.AdministrationCosts.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
             data.OtherFixedProperty = dto.OtherFixedProperty;
-            data.OtherFixedPropertyValue = dto.OtherFixedPropertyValue;            
-            
+            data.OtherFixedPropertyValue = dto.OtherFixedPropertyValue;
+
             data.OtherConveyanceCosts = dto.OtherConveyanceCosts;
             data.AdvertisingCosts = dto.AdvertisingCosts;
             data.RatesAndTaxes = dto.RatesAndTaxes;

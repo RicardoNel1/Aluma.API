@@ -3,7 +3,6 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
@@ -33,14 +32,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool retirementPlanningExists = _repo.RetirementPlanning.DoesRetirementPlanningExist(dto);                
+                bool retirementPlanningExists = _repo.RetirementPlanning.DoesRetirementPlanningExist(dto);
 
                 if (retirementPlanningExists)
                 {
                     return BadRequest("Retirement Planning Exists");
                 }
                 else
-                { 
+                {
                     _repo.RetirementPlanning.CreateRetirementPlanning(dto);
                 }
                 return Ok(dto);
@@ -68,7 +67,7 @@ namespace Aluma.API.Controllers
 
         [HttpPut, AllowAnonymous]
         public IActionResult UpdateRetirementPlanning([FromBody] RetirementPlanningDto dto)
-        {          
+        {
             try
             {
                 bool retirementPlanningExist = _repo.RetirementPlanning.DoesRetirementPlanningExist(dto);

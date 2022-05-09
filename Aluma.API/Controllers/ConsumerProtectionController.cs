@@ -31,15 +31,15 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool consumerProtectionExists = _repo.ConsumerProtection.DoesConsumerProtectionExist(dto);                
+                bool consumerProtectionExists = _repo.ConsumerProtection.DoesConsumerProtectionExist(dto);
 
                 if (consumerProtectionExists)
                 {
                     return BadRequest("Consumer Protection Exists");
                 }
-                else 
-                { 
-                     _repo.ConsumerProtection.CreateConsumerProtection(dto);
+                else
+                {
+                    _repo.ConsumerProtection.CreateConsumerProtection(dto);
                 }
                 return Ok("Consumer Protection Created");
             }
@@ -69,14 +69,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool consumerProtectionExists = _repo.ConsumerProtection.DoesConsumerProtectionExist(dto);               
+                bool consumerProtectionExists = _repo.ConsumerProtection.DoesConsumerProtectionExist(dto);
 
                 if (!consumerProtectionExists)
                 {
                     CreateConsumerProtection(dto);
                 }
-                else 
-                { 
+                else
+                {
                     _repo.ConsumerProtection.UpdateConsumerProtection(dto);
                 }
 

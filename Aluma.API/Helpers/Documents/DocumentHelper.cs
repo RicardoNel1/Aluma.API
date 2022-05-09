@@ -1,52 +1,52 @@
-﻿using DataService.Dto;
+﻿using Azure.Storage.Files.Shares;
+using DataService.Context;
+using DataService.Dto;
+using DataService.Enum;
+using DataService.Model;
+using FileStorageService;
 using iText.Forms;
 using iText.Forms.Fields;
 using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using FileStorageService;
-using DataService.Context;
-using Microsoft.Extensions.Configuration;
-using DataService.Model;
-using DataService.Enum;
-using Azure.Storage.Files.Shares;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Aluma.API.Helpers
 {
 
     public interface IDocumentHelper
     {
-        Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
+        #region Public Methods
+
+        void DeleteAllDocuments();
+
+        Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId);
+
         byte[] GetDocumentData(string url, string name);
+
         Task<byte[]> GetDocumentDataAsync(string url, string name);
+
+        Task<List<DocumentListDto>> GetUserDocListAsync(int userId);
+
+        Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
+        void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
+
+        Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
+
         void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document);
         Task UploadSignedUserFileAsync(byte[] fileBytes, UserDocumentModel document);
-        void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
-        Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user);
-        void DeleteAllDocuments();
-        Task<List<DocumentListDto>> GetUserDocListAsync(int userId);
-        Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId);
+
+        #endregion Public Methods
     }
 
     public class DocumentHelper : IDocumentHelper
     {
-        private readonly AlumaDBContext _context;
-        private readonly IConfiguration _config;
-        private readonly IFileStorageRepo _fileStorageRepo;
-        private readonly IWebHostEnvironment _host;
-
-        public DocumentHelper(AlumaDBContext context, IConfiguration config, IFileStorageRepo fileStorage, IWebHostEnvironment host)
-        {
-            _context = context;
-            _config = config;
-            _fileStorageRepo = fileStorage;
-            _host = host;
-        }
+        #region Public Fields
 
         public Dictionary<DocumentTypesEnum, string> DocumentNames = new Dictionary<DocumentTypesEnum, string>()
                 {
@@ -78,6 +78,44 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.FIQuote,"FIQuote.pdf"},
                 };
 
+        #endregion Public Fields
+
+        #region Private Fields
+
+        private readonly IConfiguration _config;
+
+        private readonly AlumaDBContext _context;
+        private readonly IFileStorageRepo _fileStorageRepo;
+        private readonly IWebHostEnvironment _host;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
+        public DocumentHelper(AlumaDBContext context, IConfiguration config, IFileStorageRepo fileStorage, IWebHostEnvironment host)
+        {
+            _context = context;
+            _config = config;
+            _fileStorageRepo = fileStorage;
+            _host = host;
+        }
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
+        public void DeleteAllDocuments()
+        {
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+            FileStorageDto fileDto = new FileStorageDto()
+            {
+                BaseDocumentPath = azureSettings.DocumentsRootPath,
+                BaseShare = azureSettings.BaseShare,
+            };
+
+            _fileStorageRepo.DeleteAllAsync(fileDto);
+        }
+
         public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
         {
             List<DocumentListDto> doc = new List<DocumentListDto>();
@@ -94,66 +132,6 @@ namespace Aluma.API.Helpers
 
             return doc;
         }
-
-        public async Task<List<DocumentListDto>> GetUserDocListAsync(int userId)
-        {
-            List<DocumentListDto> doc = new List<DocumentListDto>();
-
-            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
-
-            if (user != null)
-            {
-                foreach (var item in _context.UserDocuments.Where(d => d.UserId == user.Id))
-                {
-                    doc.Add(new DocumentListDto() { ApplicationId = 0, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "UserDocument" });
-                }
-            }
-
-            return doc;
-        }
-
-
-        public async Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null)
-        {
-            byte[] docPopulated = PopulateDocument(fileType, formData);
-
-            await UploadFile(docPopulated, fileType, user, application);
-        }
-
-        private byte[] PopulateDocument(DocumentTypesEnum documentType, Dictionary<string, string> formData)
-        {
-            char slash = Path.DirectorySeparatorChar;
-
-            string templatePath = $"{_host.WebRootPath}{slash}pdf{slash}{DocumentTemplates[documentType]}";
-
-            var ms = new MemoryStream();
-            var pdf = new PdfDocument(new PdfReader(templatePath), new PdfWriter(ms));
-            var form = PdfAcroForm.GetAcroForm(pdf, true);
-            IDictionary<String, PdfFormField> fields = form.GetFormFields();
-            PdfFormField toSet;
-
-            foreach (var d in formData)
-            {
-                try
-                {
-                    fields.TryGetValue(d.Key, out toSet);
-                    toSet.SetValue(d.Value);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Form Field Error:  {d.Key}, {d.Value}");
-                }
-            }
-
-            form.FlattenFields();
-            pdf.Close();
-
-            byte[] file = ms.ToArray();
-            ms.Close();
-
-            return file;
-        }
-
 
         public byte[] GetDocumentData(string url, string name)
         {
@@ -181,6 +159,115 @@ namespace Aluma.API.Helpers
             };
 
             return await _fileStorageRepo.DownloadAsync(dto);
+        }
+
+        public async Task<List<DocumentListDto>> GetUserDocListAsync(int userId)
+        {
+            List<DocumentListDto> doc = new List<DocumentListDto>();
+
+            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
+
+            if (user != null)
+            {
+                foreach (var item in _context.UserDocuments.Where(d => d.UserId == user.Id))
+                {
+                    doc.Add(new DocumentListDto() { ApplicationId = 0, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "UserDocument" });
+                }
+            }
+
+            return doc;
+        }
+
+
+        public async Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null)
+        {
+            byte[] docPopulated = PopulateDocument(fileType, formData);
+
+            await UploadFile(docPopulated, fileType, user, application);
+        }
+
+        public void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        {
+            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+
+            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
+
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.ApplicationDocuments.Update(document);
+
+            _context.SaveChanges();
+
+            var dtoNew = new FileStorageDto()
+            {
+                FileName = document.Name,
+                FileBytes = fileBytes,
+                FileDirectory = fileDirectory,
+                BaseDocumentPath = storageSettings.DocumentsRootPath,
+                BaseShare = storageSettings.BaseShare
+            };
+
+            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+
+            if (document.URL == fileDirectory)
+            {
+                var dtoOld = new FileStorageDto()
+                {
+                    BaseDocumentPath = storageSettings.DocumentsRootPath,
+                    BaseShare = storageSettings.BaseShare,
+                    FileName = document.Name,
+                    FileDirectory = document.URL,
+                };
+                storage.DeleteAsync(dtoOld).Wait();
+            }
+
+            storage.UploadAsync(dtoNew).Wait();
+        }
+
+        public async Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        {
+            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+
+            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
+
+
+            document.URL = fileDirectory;
+            document.Modified = DateTime.UtcNow;
+            document.Size = fileBytes.Length;
+            document.IsSigned = true;
+            _context.ApplicationDocuments.Update(document);
+
+            _context.SaveChanges();
+
+            var dtoNew = new FileStorageDto()
+            {
+                FileName = document.Name,
+                FileBytes = fileBytes,
+                FileDirectory = fileDirectory,
+                BaseDocumentPath = storageSettings.DocumentsRootPath,
+                BaseShare = storageSettings.BaseShare
+            };
+
+            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+
+            if (document.URL == fileDirectory)
+            {
+                var dtoOld = new FileStorageDto()
+                {
+                    BaseDocumentPath = storageSettings.DocumentsRootPath,
+                    BaseShare = storageSettings.BaseShare,
+                    FileName = document.Name,
+                    FileDirectory = document.URL,
+                };
+                await storage.DeleteAsync(dtoOld);
+            }
+
+            await storage.UploadAsync(dtoNew);
+
+
         }
 
         public void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document)
@@ -265,92 +352,113 @@ namespace Aluma.API.Helpers
             await storage.UploadAsync(dtoNew);
         }
 
+        #endregion Public Methods
 
-        public void UploadSignedApplicationFile(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        #region Internal Methods
+
+        internal async Task<List<ApplicationDocumentDto>> GetAllApplicationDocuments(ApplicationModel application)
         {
-            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
-            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
+            List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == application.Id).ToList();
 
-
-            document.URL = fileDirectory;
-            document.Modified = DateTime.UtcNow;
-            document.Size = fileBytes.Length;
-            document.IsSigned = true;
-            _context.ApplicationDocuments.Update(document);
-
-            _context.SaveChanges();
-
-            var dtoNew = new FileStorageDto()
+            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
+            foreach (var doc in appDocs)
             {
-                FileName = document.Name,
-                FileBytes = fileBytes,
-                FileDirectory = fileDirectory,
-                BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = storageSettings.BaseShare
-            };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
-
-            if (document.URL == fileDirectory)
-            {
-                var dtoOld = new FileStorageDto()
+                FileStorageDto fileDto = new FileStorageDto()
                 {
-                    BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = storageSettings.BaseShare,
-                    FileName = document.Name,
-                    FileDirectory = document.URL,
+                    BaseDocumentPath = azureSettings.DocumentsRootPath,
+                    BaseShare = azureSettings.BaseShare,
+                    FileDirectory = doc.URL,
+                    FileName = doc.Name
                 };
-                storage.DeleteAsync(dtoOld).Wait();
+
+                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
+
+                ApplicationDocumentDto dto = new ApplicationDocumentDto()
+                {
+                    Id = doc.Id,
+                    DocumentName = doc.Name,
+                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                };
+
+                response.Add(dto);
             }
 
-            storage.UploadAsync(dtoNew).Wait();
+            return response;
         }
 
-
-        public async Task UploadSignedApplicationFileAsync(byte[] fileBytes, ApplicationDocumentModel document, UserModel user)
+        internal async Task<List<UserDocumentDto>> GetAllUserDocuments(UserModel user)
         {
-            var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
+            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
-            string fileDirectory = $"{storageSettings.DocumentsRootPath}/{DateTime.UtcNow.Year}/{DateTime.UtcNow.Month}/{user.Id}/{document.ApplicationId}";
+            List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == user.Id).ToList();
 
-
-            document.URL = fileDirectory;
-            document.Modified = DateTime.UtcNow;
-            document.Size = fileBytes.Length;
-            document.IsSigned = true;
-            _context.ApplicationDocuments.Update(document);
-
-            _context.SaveChanges();
-
-            var dtoNew = new FileStorageDto()
+            List<UserDocumentDto> response = new List<UserDocumentDto>();
+            foreach (var doc in userDocs)
             {
-                FileName = document.Name,
-                FileBytes = fileBytes,
-                FileDirectory = fileDirectory,
-                BaseDocumentPath = storageSettings.DocumentsRootPath,
-                BaseShare = storageSettings.BaseShare
-            };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
-
-            if (document.URL == fileDirectory)
-            {
-                var dtoOld = new FileStorageDto()
+                FileStorageDto fileDto = new FileStorageDto()
                 {
-                    BaseDocumentPath = storageSettings.DocumentsRootPath,
-                    BaseShare = storageSettings.BaseShare,
-                    FileName = document.Name,
-                    FileDirectory = document.URL,
+                    BaseDocumentPath = azureSettings.DocumentsRootPath,
+                    BaseShare = azureSettings.BaseShare,
+                    FileDirectory = doc.URL,
+                    FileName = doc.Name
                 };
-                await storage.DeleteAsync(dtoOld);
+
+                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
+
+                UserDocumentDto dto = new UserDocumentDto()
+                {
+                    Id = doc.Id,
+                    DocumentName = doc.Name,
+                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
+                };
+
+                response.Add(dto);
             }
 
-            await storage.UploadAsync(dtoNew);
-
-
+            return response;
         }
 
+        #endregion Internal Methods
+
+        #region Private Methods
+
+        private byte[] PopulateDocument(DocumentTypesEnum documentType, Dictionary<string, string> formData)
+        {
+            char slash = Path.DirectorySeparatorChar;
+
+            string templatePath = $"{_host.WebRootPath}{slash}pdf{slash}{DocumentTemplates[documentType]}";
+
+            var ms = new MemoryStream();
+            var pdf = new PdfDocument(new PdfReader(templatePath), new PdfWriter(ms));
+            var form = PdfAcroForm.GetAcroForm(pdf, true);
+            IDictionary<String, PdfFormField> fields = form.GetFormFields();
+            PdfFormField toSet;
+
+            foreach (var d in formData)
+            {
+                try
+                {
+                    fields.TryGetValue(d.Key, out toSet);
+                    toSet.SetValue(d.Value);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Form Field Error:  {d.Key}, {d.Value}");
+                }
+            }
+
+            form.FlattenFields();
+            pdf.Close();
+
+            byte[] file = ms.ToArray();
+            ms.Close();
+
+            return file;
+        }
         private async Task UploadFile(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application)
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
@@ -438,82 +546,6 @@ namespace Aluma.API.Helpers
 
         }
 
-        internal async Task<List<ApplicationDocumentDto>> GetAllApplicationDocuments(ApplicationModel application)
-        {
-            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
-
-            List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == application.Id).ToList();
-
-            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
-            foreach (var doc in appDocs)
-            {
-
-                FileStorageDto fileDto = new FileStorageDto()
-                {
-                    BaseDocumentPath = azureSettings.DocumentsRootPath,
-                    BaseShare = azureSettings.BaseShare,
-                    FileDirectory = doc.URL,
-                    FileName = doc.Name
-                };
-
-                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
-
-                ApplicationDocumentDto dto = new ApplicationDocumentDto()
-                {
-                    Id = doc.Id,
-                    DocumentName = doc.Name,
-                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
-                };
-
-                response.Add(dto);
-            }
-
-            return response;
-        }
-
-        internal async Task<List<UserDocumentDto>> GetAllUserDocuments(UserModel user)
-        {
-            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
-
-            List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == user.Id).ToList();
-
-            List<UserDocumentDto> response = new List<UserDocumentDto>();
-            foreach (var doc in userDocs)
-            {
-
-                FileStorageDto fileDto = new FileStorageDto()
-                {
-                    BaseDocumentPath = azureSettings.DocumentsRootPath,
-                    BaseShare = azureSettings.BaseShare,
-                    FileDirectory = doc.URL,
-                    FileName = doc.Name
-                };
-
-                byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
-
-                UserDocumentDto dto = new UserDocumentDto()
-                {
-                    Id = doc.Id,
-                    DocumentName = doc.Name,
-                    b64 = "data:application/pdf;base64," + Convert.ToBase64String(bytes, 0, bytes.Length),
-                };
-
-                response.Add(dto);
-            }
-
-            return response;
-        }
-
-        public void DeleteAllDocuments()
-        {
-            var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
-            FileStorageDto fileDto = new FileStorageDto()
-            {
-                BaseDocumentPath = azureSettings.DocumentsRootPath,
-                BaseShare = azureSettings.BaseShare,
-            };
-
-            _fileStorageRepo.DeleteAllAsync(fileDto);
-        }
+        #endregion Private Methods
     }
 }

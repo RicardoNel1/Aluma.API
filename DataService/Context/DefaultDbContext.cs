@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 
 namespace DataService.Context
 {
@@ -91,7 +90,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AccrualModelBuilder());
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
             mb.ApplyConfiguration(new ClientProductModelBuilder());
-            
+
 
             //foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             //{

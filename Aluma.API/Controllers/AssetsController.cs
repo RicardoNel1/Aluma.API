@@ -33,14 +33,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);                
+                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);
 
                 if (primaryResidenceExists)
                 {
                     return BadRequest("Primary Residence Exists");
                 }
                 else
-                { 
+                {
                     _repo.PrimaryResidence.CreatePrimaryResidence(dto);
                 }
                 return Ok(dto);
@@ -248,7 +248,7 @@ namespace Aluma.API.Controllers
 
         [HttpPut("primary_residence"), AllowAnonymous]
         public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto)
-        {          
+        {
             try
             {
                 bool primaryResidenceExist = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);

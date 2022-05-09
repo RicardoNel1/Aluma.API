@@ -70,7 +70,7 @@ namespace Aluma.API.Controllers
 
 
             if (!addressExist)
-            {                
+            {
                 CreateAddress(dto);
             }
             else

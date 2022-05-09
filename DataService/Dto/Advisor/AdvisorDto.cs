@@ -9,7 +9,7 @@ namespace DataService.Dto
         public int Id { get; set; }
         public int UserId { get; set; }
         public DateTime AppointmentDate { get; set; }
-        
+
         public string Title { get; set; }
         public string BusinessTel { get; set; }
         public string HomeTel { get; set; }

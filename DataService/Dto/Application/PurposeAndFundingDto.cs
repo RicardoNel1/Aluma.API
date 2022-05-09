@@ -2,7 +2,7 @@
 {
     public class PurposeAndFundingDto
     {
-        public int ApplicationId { get; set; }       
+        public int ApplicationId { get; set; }
         public bool fundsEmployedSalary { get; set; }
         public bool fundsEmployedCommission { get; set; }
         public bool fundsEmployedBonus { get; set; }

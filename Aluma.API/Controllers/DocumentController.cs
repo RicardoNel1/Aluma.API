@@ -99,7 +99,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                if(dto.DocumentType == "UserDocument")
+                if (dto.DocumentType == "UserDocument")
                 {
                     var document = _repo.UserDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.UserId == dto.UserId);
                     if (document.Any())
@@ -119,7 +119,7 @@ namespace Aluma.API.Controllers
                     }
 
                 }
-                else if(dto.DocumentType == "ApplicationDocument")
+                else if (dto.DocumentType == "ApplicationDocument")
                 {
                     var document = _repo.ApplicationDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.ApplicationId == dto.ApplicationId);
 
@@ -140,7 +140,7 @@ namespace Aluma.API.Controllers
 
                 return BadRequest("Document couldn't be downloaded");
 
-                
+
             }
             catch (Exception e)
             {

@@ -9,9 +9,9 @@ namespace DataService.Model
     [Table("clients")]
     public class ClientModel : BaseModel
     {
-        
 
-        
+
+
         public int Id { get; set; }
 
         [Required]
@@ -60,14 +60,14 @@ namespace DataService.Model
     public class ClientModelBuilder : IEntityTypeConfiguration<ClientModel>
     {
         public void Configure(EntityTypeBuilder<ClientModel> mb)
-        {            
+        {
 
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.UserId).IsUnique();
 
-            
+
 
             mb.HasOne(c => c.TaxResidency)
                 .WithOne(c => c.Client)

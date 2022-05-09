@@ -9,6 +9,8 @@ namespace Aluma.API.Helpers.Extensions
 {
     public static class HangFireExtension
     {
+        #region Public Methods
+
         public static void ConfigureHangfireContext(this IServiceCollection services,
             IConfiguration config)
         {
@@ -17,8 +19,14 @@ namespace Aluma.API.Helpers.Extensions
             services.AddHangfireServer();
         }
 
+        #endregion Public Methods
+
+        #region Public Classes
+
         public class MyAuthorizationFilter : IDashboardAuthorizationFilter
         {
+            #region Public Methods
+
             public bool Authorize(DashboardContext context)
             {
                 var httpContext = context.GetHttpContext();
@@ -29,6 +37,10 @@ namespace Aluma.API.Helpers.Extensions
                 return httpContext.User.Identity.IsAuthenticated &&
                        httpContext.User.Claims.Any(c => c.Value == "Admin") ? true : false;
             }
+
+            #endregion Public Methods
         }
+
+        #endregion Public Classes
     }
 }

@@ -63,7 +63,7 @@ namespace Aluma.API.Repositories
 
         public bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto)
         {
-           bool assetsExemptFromCGTExist = false;
+            bool assetsExemptFromCGTExist = false;
             assetsExemptFromCGTExist = _context.AssetsExemptFromCGT.Where(a => a.ClientId == dto.ClientId).Any();
             return assetsExemptFromCGTExist;
 

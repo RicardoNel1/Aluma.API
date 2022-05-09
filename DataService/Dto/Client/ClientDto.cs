@@ -13,7 +13,7 @@ namespace DataService.Dto
         public string Title { get; set; }
         //public string Initials { get; set; }
         public string CountryOfResidence { get; set; }
-        public string CountryOfBirth { get; set; }        
+        public string CountryOfBirth { get; set; }
         public string CityOfBirth { get; set; }
         public string Nationality { get; set; }
         public string EmploymentStatus { get; set; }

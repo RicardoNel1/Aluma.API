@@ -26,7 +26,7 @@ namespace Aluma.API.Controllers
 
         #region Public Methods
 
-        [HttpPost,AllowAnonymous]
+        [HttpPost, AllowAnonymous]
         public IActionResult CreateAdvice([FromBody] RecordOfAdviceDto dto)
         {
             try

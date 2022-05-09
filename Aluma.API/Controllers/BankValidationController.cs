@@ -32,7 +32,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);  
+                bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);
 
                 if (bankDetailsExist)
                 {
@@ -40,7 +40,7 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                   dto = _repo.BankDetails.CreateClientBankDetails(dto);
+                    dto = _repo.BankDetails.CreateClientBankDetails(dto);
                 }
                 return Ok(dto);
             }
@@ -88,7 +88,7 @@ namespace Aluma.API.Controllers
         [AutomaticRetry(Attempts = 30, DelaysInSeconds = new int[] { 60 })]
         public IActionResult UpdateClientBankDetails([FromBody] BankDetailsDto dto)
         {
-            bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto); 
+            bool bankDetailsExist = _repo.BankDetails.DoesBankDetailsExist(dto);
 
             if (!bankDetailsExist)
             {
@@ -97,7 +97,7 @@ namespace Aluma.API.Controllers
             }
             else
             {
-               dto = _repo.BankDetails.UpdateClientBankDetails(dto);
+                dto = _repo.BankDetails.UpdateClientBankDetails(dto);
             }
             return Ok(dto);
         }

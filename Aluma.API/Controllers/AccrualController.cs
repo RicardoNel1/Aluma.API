@@ -42,7 +42,7 @@ namespace Aluma.API.Controllers
                 {
                     _repo.Accrual.CreateAccrual(dto);
                 }
-                
+
                 return Ok(dto);
             }
             catch (Exception e)

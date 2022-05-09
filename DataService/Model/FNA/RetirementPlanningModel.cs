@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using DataService.Enum;
 
 namespace DataService.Model
 {
@@ -12,7 +9,7 @@ namespace DataService.Model
     {
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
-        public int ClientId { get; set; }        
+        public int ClientId { get; set; }
         public double MonthlyIncome { get; set; }
         public int TermPostRetirement_Years { get; set; }
         public double IncomeEscalation { get; set; }
@@ -33,7 +30,7 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.ClientId).IsUnique();
-           
+
         }
     }
 

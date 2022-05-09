@@ -1,10 +1,10 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using DataService.Dto;
 using DataService.Model;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -42,8 +42,8 @@ namespace Aluma.API.Repositories
         public PurposeAndFundingRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
-            _host = host;       
-            _config = config;   
+            _host = host;
+            _config = config;
             _mapper = mapper;
 
         }
@@ -77,9 +77,9 @@ namespace Aluma.API.Repositories
         }
 
         public PurposeAndFundingDto UpdatePurposeAndFunding(PurposeAndFundingDto dto)
-        {            
+        {
             PurposeAndFundingModel details = _context.PurposeAndFunding.Where(a => a.ApplicationId == dto.ApplicationId).FirstOrDefault();
-                        
+
             details = _mapper.Map<PurposeAndFundingModel>(dto);
             _context.PurposeAndFunding.Update(details);
             _context.SaveChanges();

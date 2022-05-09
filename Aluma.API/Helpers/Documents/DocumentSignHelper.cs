@@ -1,40 +1,46 @@
-﻿using DataService.Dto;
-using iText.Forms;
-using iText.Forms.Fields;
-using iText.Kernel.Pdf;
+﻿using DataService.Context;
+using DataService.Dto;
+using DataService.Enum;
+using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using SignatureService;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using FileStorageService;
-using DataService.Context;
-using Microsoft.Extensions.Configuration;
-using DataService.Model;
-using DataService.Enum;
-using Azure.Storage.Files.Shares;
 using System.Threading.Tasks;
-using SignatureService;
-using Microsoft.EntityFrameworkCore;
 
 namespace Aluma.API.Helpers
 {
 
     public interface IDocumentSignHelper
     {
-        Task SignDocuments(int applicationId);
+        #region Public Methods
 
         Task SendAdvisorEmails();
+
+        Task SignDocuments(int applicationId);
+
+        #endregion Public Methods
     }
 
     public class DocumentSignHelper : IDocumentSignHelper
     {
-        private readonly AlumaDBContext _context;
+        #region Private Fields
+
         private readonly IConfiguration _config;
+
+        private readonly AlumaDBContext _context;
         private readonly IFileStorageRepo _fileStorageRepo;
         private readonly IWebHostEnvironment _host;
         DocumentHelper _dh;
         MailSender _ms;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public DocumentSignHelper(AlumaDBContext context, IConfiguration config, IFileStorageRepo fileStorage, IWebHostEnvironment host)
         {
@@ -46,6 +52,10 @@ namespace Aluma.API.Helpers
             _ms = new MailSender(_context, _config, _fileStorageRepo, _host);
         }
 
+        #endregion Public Constructors
+
+        #region Public Methods
+
         public async Task SendAdvisorEmails()
         {
             //var items = _context.Advisors.Include(a => a.User).ToList();
@@ -55,177 +65,6 @@ namespace Aluma.API.Helpers
                 //await _ms.SendAdvisorWelcomeEmail(item);
                 await _ms.SendClientWelcomeEmail(item);
             }
-        }
-
-        private List<SignerListItemDto> FspMandateSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 20, 767, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 113, 205, 30, 120, 11)));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 400, 205, 30, 120, 11)));
-
-            if (client.FspMandate.DiscretionType == "full")
-            {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 117, 530, 30, 120, 11)));
-            }
-            else if (client.FspMandate.DiscretionType == "limited_DE")
-            {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 162, 30, 120, 12)));
-            }
-            else if (client.FspMandate.DiscretionType == "limited_RM")
-            {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 296, 30, 120, 12)));
-            }
-
-            return signerList;
-        }
-        private List<SignerListItemDto> ClientConsentSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 677, 30, 120, 1)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> RiskProfileSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2 };
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 18, 769, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 115, 436, 30, 120, 2)));
-
-            return signerList;
-
-        }
-        private List<SignerListItemDto> DisclosureLetterSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2, 3 };
-
-
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 25, 770, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 98, 463, 30, 120, 4)));
-                                
-            //when broker appointment is added.
-            //signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 98, 463, 30, 120, 4)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> RecordOfAdviceSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 560, 30, 120, 4)));
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 385, 560, 30, 120, 4)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> PEFDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> PEF2DOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> PEFQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 190, 597, 30, 120, 1)));
-
-            return signerList;
-        }
-        private List<SignerListItemDto> PEF2QuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
-
-            return signerList;
-        }
-
-        private List<SignerListItemDto> FIDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
-
-            return signerList;
-        }
-
-        private List<SignerListItemDto> FIQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
-        {
-            SignatureRepo _signRepo = new SignatureRepo();
-            var signerList = new List<SignerListItemDto>();
-
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
-
-            return signerList;
-        }
-
-
-
-        private SignerDto CreateSignItem(UserModel user, int x, int y, int h, int w, int p)
-        {
-            return new SignerDto()
-            {
-                Signature = System.Text.Encoding.ASCII.GetString(user.Signature),
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                IdNo = user.RSAIdNumber,
-                Mobile = user.MobileNumber,
-                XField = x,
-                YField = y,
-                HField = h,
-                WField = w,
-                Page = p
-            };
         }
 
         public async Task SignDocuments(int applicationId)
@@ -352,5 +191,186 @@ namespace Aluma.API.Helpers
             _ms.SendApplicationDocumentsToBroker(application, advisor, client);
         }
 
+        #endregion Public Methods
+
+        #region Private Methods
+
+        private List<SignerListItemDto> ClientConsentSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 677, 30, 120, 1)));
+
+            return signerList;
+        }
+
+        private SignerDto CreateSignItem(UserModel user, int x, int y, int h, int w, int p)
+        {
+            return new SignerDto()
+            {
+                Signature = System.Text.Encoding.ASCII.GetString(user.Signature),
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                IdNo = user.RSAIdNumber,
+                Mobile = user.MobileNumber,
+                XField = x,
+                YField = y,
+                HField = h,
+                WField = w,
+                Page = p
+            };
+        }
+
+        private List<SignerListItemDto> DisclosureLetterSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2, 3 };
+
+
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 25, 770, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 98, 463, 30, 120, 4)));
+
+            //when broker appointment is added.
+            //signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 98, 463, 30, 120, 4)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> FIDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> FIQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> FspMandateSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 20, 767, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 113, 205, 30, 120, 11)));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 400, 205, 30, 120, 11)));
+
+            if (client.FspMandate.DiscretionType == "full")
+            {
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 117, 530, 30, 120, 11)));
+            }
+            else if (client.FspMandate.DiscretionType == "limited_DE")
+            {
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 162, 30, 120, 12)));
+            }
+            else if (client.FspMandate.DiscretionType == "limited_RM")
+            {
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 296, 30, 120, 12)));
+            }
+
+            return signerList;
+        }
+        private List<SignerListItemDto> PEF2DOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> PEF2QuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> PEFDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 529, 788, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 170, 299, 30, 120, 10)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 170, 703, 30, 120, 10)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> PEFQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 190, 597, 30, 120, 1)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> RecordOfAdviceSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 560, 30, 120, 4)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 385, 560, 30, 120, 4)));
+
+            return signerList;
+        }
+
+        private List<SignerListItemDto> RiskProfileSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new SignatureRepo();
+            var signerList = new List<SignerListItemDto>();
+
+            var pageList = new List<int> { 1, 2 };
+
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 18, 769, 20, 60, p))));
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 115, 436, 30, 120, 2)));
+
+            return signerList;
+
+        }
+
+        #endregion Private Methods
     }
 }

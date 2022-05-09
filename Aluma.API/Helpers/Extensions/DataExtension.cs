@@ -8,6 +8,8 @@ namespace Aluma.API.Helpers.Extensions
 {
     public static class DataExtension
     {
+        #region Public Methods
+
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration config)
         {
             var connections = config.GetSection("ConnectionStrings").Get<ConnectionStringsDto>();
@@ -20,9 +22,11 @@ namespace Aluma.API.Helpers.Extensions
                         so.EnableRetryOnFailure();
                         so.CommandTimeout(150);
                     }
-                    
+
                 );
             });
         }
+
+        #endregion Public Methods
     }
 }

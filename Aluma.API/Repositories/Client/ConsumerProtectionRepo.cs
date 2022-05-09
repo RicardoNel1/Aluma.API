@@ -61,7 +61,7 @@ namespace Aluma.API.Repositories
             _context.ConsumerProtection.Add(consumerProtection);
             _context.SaveChanges();
             dto = _mapper.Map<ConsumerProtectionDto>(consumerProtection);
-            
+
             return dto;
 
         }
@@ -91,7 +91,7 @@ namespace Aluma.API.Repositories
             //set fields to be updated            
             data.InformProducts = dto.InformProducts;
             data.InformOffers = dto.InformOffers;
-            data.RequestResearch = dto.RequestResearch;                       
+            data.RequestResearch = dto.RequestResearch;
             data.PreferredComm = parsedComm;
             data.OtherCommMethods = dto.OtherCommMethods;
 

@@ -22,7 +22,7 @@ namespace DataService.Model
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public System.Nullable<int> AdvisorId { get; set; }
-        public int ClientId { get; set; }        
+        public int ClientId { get; set; }
         public ApplicationTypesEnum ApplicationType { get; set; }
         public int ProductId { get; set; }
 
@@ -42,7 +42,7 @@ namespace DataService.Model
         public bool DocumentsSigned { get; set; }
         public string BdaNumber { get; set; }
         public bool PaymentConfirmed { get; set; }
-        
+
     }
 
     public class ApplicationModelBuilder : IEntityTypeConfiguration<ApplicationModel>

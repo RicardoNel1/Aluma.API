@@ -43,7 +43,7 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.ClientId).IsUnique();
-            
+
         }
     }
 }

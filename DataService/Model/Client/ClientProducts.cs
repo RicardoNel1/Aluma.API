@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,11 +21,11 @@ namespace DataService.Model
     public class ClientProductModelBuilder : IEntityTypeConfiguration<ClientProductModel>
     {
         public void Configure(EntityTypeBuilder<ClientProductModel> mb)
-        {            
+        {
 
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
-           
+
         }
     }
 }

@@ -202,7 +202,7 @@ namespace Aluma.API.RepoWrapper
 
         public ILiabilitiesRepo Liabilities
         {
-            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+            get { return _liabilities == null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
         }
 
         public IInsuranceRepo Insurance
@@ -247,7 +247,7 @@ namespace Aluma.API.RepoWrapper
         //Products and Documents
         public IFIRepo FI
         {
-            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }
+            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fi; }
         }
         public IPEFRepo PEF
         {
@@ -255,11 +255,11 @@ namespace Aluma.API.RepoWrapper
         }
         public IDocumentHelper DocumentHelper
         {
-            get { return _documentHelper == null ? new DocumentHelper(_dbContext,_config,_fileStorage,_host) : _documentHelper; }
+            get { return _documentHelper == null ? new DocumentHelper(_dbContext, _config, _fileStorage, _host) : _documentHelper; }
         }
         public IDocumentSignHelper SignHelper
         {
-            get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
+            get { return _signHelper == null ? new DocumentSignHelper(_dbContext, _config, _fileStorage, _host) : _signHelper; }
         }
         public IAccrualRepo Accrual
         {

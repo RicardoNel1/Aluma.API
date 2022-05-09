@@ -43,14 +43,14 @@ namespace DataService.Model
             {
                 Id = 1,
                 UnitNumber = null,
-                ComplexName = "FinTech Campus", 
+                ComplexName = "FinTech Campus",
                 StreetNumber = null,
                 StreetName = "Cnr Illanga and Botterklapper",
-                Suburb = "The Willows", 
-                City = "Pretoria", 
+                Suburb = "The Willows",
+                City = "Pretoria",
                 PostalCode = "0081",
-                Country = "South Africa", 
-                Type = AddressTypesEnum.Residential, 
+                Country = "South Africa",
+                Type = AddressTypesEnum.Residential,
                 UserId = 1,
                 YearsAtAddress = 1
             });

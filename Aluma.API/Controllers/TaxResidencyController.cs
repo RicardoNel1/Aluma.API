@@ -31,15 +31,15 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);                
+                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);
 
                 if (taxResidencyExists)
                 {
                     return BadRequest("Tax Residency Exists");
                 }
-                else 
-                { 
-                     _repo.TaxResidency.CreateTaxResidency(dto);
+                else
+                {
+                    _repo.TaxResidency.CreateTaxResidency(dto);
                 }
                 return Ok("Tax Residency Created");
             }
@@ -84,14 +84,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);               
+                bool taxResidencyExists = _repo.TaxResidency.DoesTaxResidencyExist(dto);
 
                 if (!taxResidencyExists)
                 {
                     CreateTaxResidency(dto);
                 }
-                else 
-                { 
+                else
+                {
                     _repo.TaxResidency.UpdateTaxResidency(dto);
                 }
 

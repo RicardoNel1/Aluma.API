@@ -6,7 +6,6 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -82,13 +81,13 @@ namespace Aluma.API.Repositories
         {
             AssumptionsModel data = _context.Assumptions.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
             Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
-            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);      
+            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
 
             //set fields to be updated       
             data.RetirementAge = dto.RetirementAge;
             data.CurrentNetIncome = dto.CurrentNetIncome;
             data.DeathInvestmentRisk = parsedDeath;
-            data.DisabilityInvestmentRisk = parsedDisability;            
+            data.DisabilityInvestmentRisk = parsedDisability;
 
             _context.Assumptions.Update(data);
             _context.SaveChanges();

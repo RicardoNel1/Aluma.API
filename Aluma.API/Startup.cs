@@ -1,4 +1,5 @@
 using Aluma.API.Helpers.Extensions;
+using DataService;
 using DataService.Context;
 using FileStorageService;
 using Hangfire;
@@ -11,7 +12,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
-using DataService;
 
 namespace Aluma.API
 {
@@ -34,7 +34,7 @@ namespace Aluma.API
             services.AddScoped<IFileStorageRepo, FileStorageRepo>();
             services.ConfigureRepoWrapper();
             services.AddAutoMapper(typeof(MappingProfile));
-           //services.AddAutoMapper();
+            //services.AddAutoMapper();
             services.ConfigureHangfireContext(Configuration);
             services.ConfigureSystemSettings(Configuration);
             services.ConfigureMailSettings(Configuration);
@@ -74,7 +74,7 @@ namespace Aluma.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
+
 
                 app.UseHangfireDashboard();
 

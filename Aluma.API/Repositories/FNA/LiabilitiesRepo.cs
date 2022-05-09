@@ -5,7 +5,6 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -83,7 +82,7 @@ namespace Aluma.API.Repositories
 
         public LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray)
         {
-            
+
             foreach (var item in dtoArray)
             {
 
@@ -92,7 +91,7 @@ namespace Aluma.API.Repositories
                 if (existingItem)
                 {
                     LiabilitiesModel updateItem = _context.Liabilities.Where(a => a.Id == item.Id).FirstOrDefault();
-                   
+
                     updateItem.Description = item.Description;
                     updateItem.Value = item.Value;
 

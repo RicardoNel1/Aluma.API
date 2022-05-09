@@ -13,7 +13,7 @@
         DisclosureLetter,
         ClientConsent,
         PEFDOA,
-        PEF2DOA, 
+        PEF2DOA,
         PEFQuote,
         PEF2Quote,
         FIDOA,

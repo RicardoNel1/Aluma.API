@@ -1,6 +1,6 @@
 ﻿namespace DataService.Dto
 {
-    public class ResetPasswordDto:ApiResponseDto
+    public class ResetPasswordDto : ApiResponseDto
     {
         public string UserId { get; set; }
         public string UserName { get; set; }

@@ -11,14 +11,30 @@ namespace SmsService
 {
     public interface ISmsRepo
     {
+        #region Public Methods
+
         string CreateOtp();
 
         bool SendOtp(string mobile, string message);
+
+        #endregion Public Methods
     }
 
     public class SmsRepo : ISmsRepo
     {
+        #region Public Fields
+
         public readonly SmsSettings _settings;
+
+        #endregion Public Fields
+
+        #region Private Fields
+
+        private static readonly Random random = new Random();
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public SmsRepo()
         {
@@ -29,9 +45,15 @@ namespace SmsService
             _settings = root.GetSection("SMSPortalSettings").Get<SmsSettings>();
         }
 
+        #endregion Public Constructors
+
+        #region Public Properties
+
         public SmsSettings settings { get => _settings; }
 
-        private static readonly Random random = new Random();
+        #endregion Public Properties
+
+        #region Public Methods
 
         public string CreateOtp()
         {
@@ -88,6 +110,8 @@ namespace SmsService
             return sendResponse.StatusCode == HttpStatusCode.OK ? true : false;
         }
 
-        
+        #endregion Public Methods
+
+
     }
 }
