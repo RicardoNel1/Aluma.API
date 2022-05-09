@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
@@ -11,6 +12,10 @@ namespace DataService.Model
         public int Id { get; set; }
         public int ClientId { get; set; }
 
+        public static bool Any()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class FNAModelBuilder : IEntityTypeConfiguration<FNAModel>
