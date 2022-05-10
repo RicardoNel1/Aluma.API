@@ -11,6 +11,7 @@ namespace DataService.Dto
         public double Value { get; set; }
         public double MonthlyContributions { get; set; }
         public double EscPercent { get; set; }
+        public double Growth { get; set; }
     }
 
 }

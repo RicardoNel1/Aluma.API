@@ -89,8 +89,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
-            mb.ApplyConfiguration(new ClientProductModelBuilder());
-            
+            mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
 
             //foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             //{
@@ -115,11 +114,11 @@ namespace DataService.Context
 
         public DbSet<PurposeAndFundingModel> PurposeAndFunding { get; set; }
         public DbSet<FSPMandateModel> FspMandates { get; set; }
-        public DbSet<IRSW8Model> IRSW8 { get; set; }
-        public DbSet<IRSW9Model> IRSW9 { get; set; }
+        //public DbSet<IRSW8Model> IRSW8 { get; set; }
+        //public DbSet<IRSW9Model> IRSW9 { get; set; }
         public DbSet<RecordOfAdviceModel> RecordOfAdvice { get; set; }
         public DbSet<RecordOfAdviceItemsModel> RecordOfAdviceItems { get; set; }
-        public DbSet<USPersonsModel> USPersons { get; set; }
+        //public DbSet<USPersonsModel> USPersons { get; set; }
 
         //Client
         public DbSet<BankDetailsModel> BankDetails { get; set; }
@@ -149,8 +148,8 @@ namespace DataService.Context
         public DbSet<RetirementPreservationFundsModel> RetirementPreservationFunds { get; set; }
         public DbSet<AccrualModel> Accrual { get; set; }
         public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
-
         public DbSet<AssumptionsModel> Assumptions { get; set; }
+        public DbSet<AdministrationCostsModel> AdministrationCosts { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
