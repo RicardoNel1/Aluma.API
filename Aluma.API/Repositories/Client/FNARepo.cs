@@ -36,12 +36,15 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientFNADto> CreateFNA(ClientFNADto dto)
         {
-            FNAModel newFna = _mapper.Map<FNAModel>(dto);
-            _context.FNA.Add(newFna);
-            _context.SaveChanges();
-            dto = _mapper.Map<ClientFNADto>(newFna);
+            using (var db = new AlumaDBContext())
+            {
+                FNAModel newFna = _mapper.Map<FNAModel>(dto);
+                db.FNA.Add(newFna);
+                db.SaveChanges();
+                dto = _mapper.Map<ClientFNADto>(newFna);
 
-            return dto;
+                return dto;
+            }
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
@@ -90,7 +93,7 @@ namespace Aluma.API.Repositories
         {
             var fnaModel = _context.FNA.Where(r => r.ClientId == clientId);
 
-            if (FNAModel.Any())
+            if (fnaModel.Any())
             {
                 return _mapper.Map<ClientFNADto>(fnaModel.First());
             }

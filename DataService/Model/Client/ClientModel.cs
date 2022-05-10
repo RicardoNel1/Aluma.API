@@ -51,6 +51,7 @@ namespace DataService.Model
         public TaxResidencyModel TaxResidency { get; set; }
         public RiskProfileModel RiskProfile { get; set; }
         public FSPMandateModel FspMandate { get; set; }
+        public FNAModel FNA { get; set; }
 
         public ICollection<ApplicationModel> Applications { get; set; }
         public ICollection<BankDetailsModel> BankDetails { get; set; }

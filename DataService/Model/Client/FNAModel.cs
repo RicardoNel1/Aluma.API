@@ -8,14 +8,10 @@ namespace DataService.Model
     [Table("fna")]
     public class FNAModel : BaseModel
     {
-        public ClientModel Client { get; set; }
         public int Id { get; set; }
+        public ClientModel Client { get; set; }
         public int ClientId { get; set; }
 
-        public static bool Any()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class FNAModelBuilder : IEntityTypeConfiguration<FNAModel>
@@ -25,12 +21,10 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasIndex(c => c.ClientId).IsUnique();
-
+            mb.HasOne(c => c.Client)
+               .WithOne(c => c.FNA)
+               .HasForeignKey<ClientModel>(c => c.Id)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
-
-
-
-
 }
