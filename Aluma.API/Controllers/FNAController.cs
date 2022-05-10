@@ -33,7 +33,6 @@ namespace Aluma.API.Controllers
                 }
 
                 dto = await _repo.FNA.CreateFNA(dto);
-
                 return Ok(dto);
             }
             catch (Exception e)
