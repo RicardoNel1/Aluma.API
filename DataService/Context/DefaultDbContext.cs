@@ -114,11 +114,11 @@ namespace DataService.Context
 
         public DbSet<PurposeAndFundingModel> PurposeAndFunding { get; set; }
         public DbSet<FSPMandateModel> FspMandates { get; set; }
-        public DbSet<IRSW8Model> IRSW8 { get; set; }
-        public DbSet<IRSW9Model> IRSW9 { get; set; }
+        //public DbSet<IRSW8Model> IRSW8 { get; set; }
+        //public DbSet<IRSW9Model> IRSW9 { get; set; }
         public DbSet<RecordOfAdviceModel> RecordOfAdvice { get; set; }
         public DbSet<RecordOfAdviceItemsModel> RecordOfAdviceItems { get; set; }
-        public DbSet<USPersonsModel> USPersons { get; set; }
+        //public DbSet<USPersonsModel> USPersons { get; set; }
 
         //Client
         public DbSet<BankDetailsModel> BankDetails { get; set; }
