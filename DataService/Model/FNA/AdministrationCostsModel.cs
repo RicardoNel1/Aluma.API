@@ -13,13 +13,11 @@ namespace DataService.Model
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public string OtherFixedProperty { get; set; }
-        public double OtherFixedPropertyValue { get; set; }
         public double OtherConveyanceCosts { get; set; }
         public double AdvertisingCosts { get; set; }
         public double RatesAndTaxes { get; set; }
-        public string OtherAdministrationCosts { get; set; }
-        public double OtherAdministrationCostsValue { get; set; }
+        public string OtherAdminDescription { get; set; }
+        public double OtherAdminCosts { get; set; }
         public double TotalEstimatedCosts { get; set; }
     }
 

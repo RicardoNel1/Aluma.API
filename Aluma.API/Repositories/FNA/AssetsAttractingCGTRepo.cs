@@ -49,6 +49,7 @@ namespace Aluma.API.Repositories
                     ClientId = item.ClientId,
                     Description = item.Description,
                     Value = item.Value,
+                    PropertyType = Enum.GetName(typeof(DataService.Enum.PropertyTypeEnum), item.PropertyType),
                     AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo),
                     BaseCost = item.BaseCost
                 };
@@ -87,8 +88,10 @@ namespace Aluma.API.Repositories
                         else
                         {
                             Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                            Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
                             updateItem.Description = item.Description;
                             updateItem.Value = item.Value;
+                            updateItem.PropertyType = parsedType;
                             updateItem.AllocateTo = parsedAllocation;
                             updateItem.BaseCost = item.BaseCost;
                         }
@@ -116,9 +119,11 @@ namespace Aluma.API.Repositories
                         else
                         {
                             Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                            Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
                             newItem.ClientId = item.ClientId;
                             newItem.Description = item.Description;
                             newItem.Value = item.Value;
+                            newItem.PropertyType = parsedType;
                             newItem.AllocateTo = parsedAllocation;
                             newItem.BaseCost = item.BaseCost;
                         }

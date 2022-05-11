@@ -126,21 +126,21 @@ namespace Aluma.API.Controllers
             }
         }
 
-        //Estate Expenses    
+        //Administration Costs    
         [HttpPost("administration_costs"), AllowAnonymous]
-        public IActionResult CreateAdministrationCosts([FromBody] EstateExpensesDto dto)
+        public IActionResult CreateAdministrationCosts([FromBody] AdministrationCostsDto dto)
         {
             try
             {
-                bool estateExpensesExists = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+                bool administrationCostsExist = _repo.AdministrationCosts.DoesAdministrationCostsExist(dto);
 
-                if (estateExpensesExists)
+                if (administrationCostsExist)
                 {
                     return BadRequest("Estate Expenses Exists");
                 }
                 else
                 {
-                    _repo.EstateExpenses.CreateEstateExpenses(dto);
+                    _repo.AdministrationCosts.CreateAdministrationCosts(dto);
                 }
                 return Ok(dto);
             }
@@ -151,22 +151,22 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut("administration_costs"), AllowAnonymous]
-        public IActionResult UpdateAdministrationCosts([FromBody] EstateExpensesDto dto)
+        public IActionResult UpdateAdministrationCosts([FromBody] AdministrationCostsDto dto)
         {
             try
             {
-                bool estateExpensesExist = _repo.EstateExpenses.DoesEstateExpensesExist(dto);
+                bool administrationCostsExists = _repo.AdministrationCosts.DoesAdministrationCostsExist(dto);
 
-                if (!estateExpensesExist)
+                if (!administrationCostsExists)
                 {
-                    CreateEstateExpenses(dto);
+                    CreateAdministrationCosts(dto);
                 }
                 else
                 {
-                    _repo.EstateExpenses.UpdateEstateExpenses(dto);
+                    _repo.AdministrationCosts.UpdateAdministrationCosts(dto);
                 }
 
-                return Ok("Estate Expenses Updated");
+                return Ok("Administration Costs Updated");
             }
             catch (Exception e)
             {
@@ -179,7 +179,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(clientId);
+                AdministrationCostsDto dto = _repo.AdministrationCosts.GetAdministrationCosts(clientId);
 
                 return Ok(dto);
             }
