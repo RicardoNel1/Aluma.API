@@ -81,14 +81,14 @@ namespace Aluma.API.Repositories
                     LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
 
                     //Update All fields or Retirement or Disability
-                    if (update_type == "RETIREMENT")
+                    if (update_type == "retirement")
                     {
                         updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
                         updateItem.Growth = item.Growth;
                     }
                     else
                     {
-                        if (update_type == "DISABILITY")
+                        if (update_type == "disability")
                         {
                             updateItem.DisposedOnDisability = item.DisposedOnDisability;
                         }
@@ -109,14 +109,14 @@ namespace Aluma.API.Repositories
                     LiquidAssetsModel newItem = new LiquidAssetsModel();
 
                     //Add fields or Retirement or Disability
-                    if (update_type == "RETIREMENT")
+                    if (update_type == "retirement")
                     {
                         newItem.DisposedAtRetirement = item.DisposedAtRetirement;
                         newItem.Growth = item.Growth;
                     }
                     else
                     {
-                        if (update_type == "DISABILITY")
+                        if (update_type == "disability")
                         {
                             newItem.DisposedOnDisability = item.DisposedOnDisability;
                         }
@@ -129,42 +129,6 @@ namespace Aluma.API.Repositories
                             newItem.AllocateTo = parsedAllocation;
                         }
                     }
-
-                    _context.LiquidAssets.Add(newItem);
-
-                }
-            }
-
-            _context.SaveChanges();
-            return null;
-
-        }
-
-        public LiquidAssetsDto UpdateLiquidAssets_Disposed(LiquidAssetsDto[] dtoArray)
-        {
-
-            foreach (var item in dtoArray)
-            {
-
-                bool existingItem = _context.LiquidAssets.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
-                {
-                    LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
-                    updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                    updateItem.Growth = item.Growth;
-
-                    _context.LiquidAssets.Update(updateItem);
-
-                }
-                else
-                {
-                    LiquidAssetsModel newItem = new LiquidAssetsModel();
-
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    newItem.ClientId = item.ClientId;
-                    newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                    newItem.Growth = item.Growth;
 
                     _context.LiquidAssets.Add(newItem);
 

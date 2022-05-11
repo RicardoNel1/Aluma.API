@@ -80,14 +80,14 @@ namespace Aluma.API.Repositories
                     AssetsExemptFromCGTModel updateItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).FirstOrDefault();
 
                     //Update All fields or Retirement or Disability
-                    if (update_type == "RETIREMENT")
+                    if (update_type == "retirement")
                     {
                         updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
                         updateItem.Growth = item.Growth;
                     }
                     else
                     {
-                        if (update_type == "DISABILITY")
+                        if (update_type == "disability")
                         {
                             updateItem.DisposedOnDisability = item.DisposedOnDisability;
                         }
@@ -108,14 +108,14 @@ namespace Aluma.API.Repositories
                     AssetsExemptFromCGTModel newItem = new AssetsExemptFromCGTModel();
 
                     //Add fields or Retirement or Disability
-                    if (update_type == "RETIREMENT")
+                    if (update_type == "retirement")
                     {
                         newItem.DisposedAtRetirement = item.DisposedAtRetirement;
                         newItem.Growth = item.Growth;
                     }
                     else
                     {
-                        if (update_type == "DISABILITY")
+                        if (update_type == "disability")
                         {
                             newItem.DisposedOnDisability = item.DisposedOnDisability;
                         }
