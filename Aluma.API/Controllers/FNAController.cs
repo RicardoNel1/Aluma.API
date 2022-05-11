@@ -17,22 +17,42 @@ namespace Aluma.API.Controllers
             _repo = repo;
         }
 
+        [HttpGet, AllowAnonymous]
+        public IActionResult GetFNA(int clientId)
+        {
+            ClientFNADto dto = new ClientFNADto();
+            try
+            {
+                dto = _repo.FNA.GetClientFNA(clientId);
+
+                dto.Status = "Success";
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
+            }
+        }
+
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> CreateClientFNA(int clientId)
+        public async Task<IActionResult> CreateClientFNA([FromBody] int clientId)
         {
             ClientFNADto dto = new ClientFNADto();
 
             try
             {
-                var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = clientId});
+                var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = clientId });
                 if (fnaExist.hasFNA)
                 {
                     dto.Status = "Failure";
                     dto.Message = "FNA Exists";
                     return BadRequest(dto);
                 }
-
+                dto.ClientId = clientId;
                 dto = await _repo.FNA.CreateFNA(dto);
+                dto.Status = "Success";
                 return Ok(dto);
             }
             catch (Exception e)

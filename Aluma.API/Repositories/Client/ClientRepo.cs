@@ -82,7 +82,7 @@ namespace Aluma.API.Repositories
 
                 dto.hasDisclosure = discExists.Any();
 
-                var fnaExists = _context.PrimaryResidence.Where(d => d.ClientId == dto.Id);
+                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
                 if (fnaExists.Any())
                 {
                     dto.FNADate = fnaExists.First().Created;
@@ -118,6 +118,14 @@ namespace Aluma.API.Repositories
                 }
 
                 dto.hasDisclosure = discExists.Any();
+
+                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
+                if (fnaExists.Any())
+                {
+                    dto.FNADate = fnaExists.First().Created;
+                }
+
+                dto.hasFNA = fnaExists.Any();
             }
             return response;
         }

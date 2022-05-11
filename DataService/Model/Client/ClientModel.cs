@@ -51,6 +51,7 @@ namespace DataService.Model
         public TaxResidencyModel TaxResidency { get; set; }
         public RiskProfileModel RiskProfile { get; set; }
         public FSPMandateModel FspMandate { get; set; }
+        public ICollection<FNAModel> FNAs { get; set; }
 
         public ICollection<ApplicationModel> Applications { get; set; }
         public ICollection<BankDetailsModel> BankDetails { get; set; }
@@ -67,7 +68,10 @@ namespace DataService.Model
 
             mb.HasIndex(c => c.UserId).IsUnique();
 
-            
+            mb.HasMany(c => c.FNAs)
+              .WithOne(c => c.Client)
+              .HasForeignKey(c => c.ClientId)
+              .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasOne(c => c.TaxResidency)
                 .WithOne(c => c.Client)
