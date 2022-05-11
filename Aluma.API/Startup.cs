@@ -50,7 +50,7 @@ namespace Aluma.API
             });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1.1", new OpenApiInfo { Title = "Aluma.API.UAT", Version = "v1.1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aluma.API", Version = "v1.000" });
             });
         }
 
