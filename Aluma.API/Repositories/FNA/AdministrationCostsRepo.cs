@@ -65,16 +65,13 @@ namespace Aluma.API.Repositories
 
         public AdministrationCostsDto UpdateAdministrationCosts(AdministrationCostsDto dto)
         {
-            AdministrationCostsModel data = _context.AdministrationCosts.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-
-            data.OtherFixedProperty = dto.OtherFixedProperty;
-            data.OtherFixedPropertyValue = dto.OtherFixedPropertyValue;            
+            AdministrationCostsModel data = _context.AdministrationCosts.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();                 
             
             data.OtherConveyanceCosts = dto.OtherConveyanceCosts;
             data.AdvertisingCosts = dto.AdvertisingCosts;
             data.RatesAndTaxes = dto.RatesAndTaxes;
-            data.OtherAdministrationCosts = dto.OtherAdministrationCosts;
-            data.OtherAdministrationCostsValue = dto.OtherAdministrationCostsValue;
+            data.OtherAdminDescription = dto.OtherAdminDescription;
+            data.OtherAdminCosts = dto.OtherAdminCosts;
             data.TotalEstimatedCosts = dto.TotalEstimatedCosts;
 
             _context.AdministrationCosts.Update(data);
