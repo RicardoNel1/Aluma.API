@@ -37,7 +37,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> CreateClientFNA(int clientId)
+        public async Task<IActionResult> CreateClientFNA([FromBody] int clientId)
         {
             ClientFNADto dto = new ClientFNADto();
 
@@ -50,7 +50,7 @@ namespace Aluma.API.Controllers
                     dto.Message = "FNA Exists";
                     return BadRequest(dto);
                 }
-
+                dto.ClientId = clientId;
                 dto = await _repo.FNA.CreateFNA(dto);
                 dto.Status = "Success";
                 return Ok(dto);

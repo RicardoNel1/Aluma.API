@@ -21,10 +21,7 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasOne(c => c.Client)
-               .WithOne(c => c.FNA)
-               .HasForeignKey<ClientModel>(c => c.Id)
-               .OnDelete(DeleteBehavior.NoAction);
+           
         }
     }
 }

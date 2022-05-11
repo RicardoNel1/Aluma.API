@@ -36,15 +36,14 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientFNADto> CreateFNA(ClientFNADto dto)
         {
-            using (var db = new AlumaDBContext())
-            {
+            
                 FNAModel newFna = _mapper.Map<FNAModel>(dto);
-                db.FNA.Add(newFna);
-                db.SaveChanges();
+                _context.FNA.Add(newFna);
+                _context.SaveChanges();
                 dto = _mapper.Map<ClientFNADto>(newFna);
 
                 return dto;
-            }
+            
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
