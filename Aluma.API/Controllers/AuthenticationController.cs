@@ -153,7 +153,7 @@ namespace Aluma.API.Controllers
 
 
                 UserDto user = new UserDto();
-                RoleEnum role = RoleEnum.Advisor;
+                
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
                 string token = String.Empty;
 
@@ -177,7 +177,7 @@ namespace Aluma.API.Controllers
 
                 if (dto.UserName == "dev@aluma.co.za")
                 {
-                    token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
+                    token = _repo.JwtRepo.CreateJwtToken(user.Id, user.Role, jwtSettings.LifeSpan);
 
                     AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
 
