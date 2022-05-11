@@ -188,5 +188,69 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        //Estate Duties
+        [HttpPost("estate_duties"), AllowAnonymous]
+        public IActionResult CreateEstateDuties([FromBody] EstateDutyDto dto)
+        {
+            try
+            {
+                bool estateDutyExists = _repo.EstateDuties.DoesEstateDutyExist(dto);
+
+                if (estateDutyExists)
+                {
+                    return BadRequest("Estate Duty Exists");
+                }
+                else
+                {
+                    _repo.EstateDuties.CreateEstateDuty(dto);
+                }
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("estate_duties"), AllowAnonymous]
+        public IActionResult UpdateEstateDuty([FromBody] EstateDutyDto dto)
+        {
+            try
+            {
+                bool estateDutyExists = _repo.EstateDuties.DoesEstateDutyExist(dto);
+
+                if (!estateDutyExists)
+                {
+                    CreateEstateDuties(dto);
+                }
+                else
+                {
+                    _repo.EstateDuties.UpdateEstateDuty(dto);
+                }
+
+                return Ok("Estate Duties Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("estate_duties"), AllowAnonymous]
+        public IActionResult GetEstateDuty(int clientId)
+        {
+            try
+            {
+                EstateDutyDto dto = _repo.EstateDuties.GetEstateDuty(clientId);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

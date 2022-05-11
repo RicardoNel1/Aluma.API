@@ -100,6 +100,9 @@ namespace DataService
             CreateMap<RetirementPlanningModel, RetirementPlanningDto>()
                 .ReverseMap();
 
+            CreateMap<EstateDutyModel, EstateDutyDto>()
+                .ReverseMap();
+
 
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()

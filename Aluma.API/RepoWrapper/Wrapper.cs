@@ -49,6 +49,7 @@ namespace Aluma.API.RepoWrapper
         private IInsuranceRepo _insurance;
         private ILiabilitiesRepo _liabilities;
         private IEstateExpensesRepo _estateExpenses;
+        private IEstateDutiesRepo _estateDuties;
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
         private IAccrualRepo _accrual;
@@ -215,6 +216,11 @@ namespace Aluma.API.RepoWrapper
             get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
         }
 
+        public IEstateDutiesRepo EstateDuties
+        {
+            get { return _estateDuties == null ? new EstateDutyRepo(_dbContext, _host, _config, _mapper) : _estateDuties; }
+        }
+
         public IAdministrationCostsRepo AdministrationCosts
         {
             get { return _administrationCosts == null ? new AdministrationCostsRepo(_dbContext, _host, _config, _mapper) : _administrationCosts; }
@@ -317,5 +323,7 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _hasher == null ? new StringHasherRepo() : _hasher; }
         }
+
+        
     }
 }
