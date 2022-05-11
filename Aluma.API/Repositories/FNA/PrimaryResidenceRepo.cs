@@ -67,14 +67,14 @@ namespace Aluma.API.Repositories
             PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
             
             //Update All fields or Retirement or Disability
-            if (update_type == "RETIREMENT")
+            if (update_type == "retirement")
             {
                 data.DisposedAtRetirement = dto.DisposedAtRetirement;
                 data.Growth = dto.Growth;
             }
             else
             {
-                if (update_type == "DISABILITY")
+                if (update_type == "disability")
                 {
                     data.DisposedOnDisability = dto.DisposedOnDisability;
                 }
