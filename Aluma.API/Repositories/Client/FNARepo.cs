@@ -6,6 +6,7 @@ using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
@@ -14,6 +15,7 @@ namespace Aluma.API.Repositories
     {
         void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
         Task<ClientFNADto> CreateFNA(ClientFNADto dto);
+        ClientFNADto GetClientFNA(int clientId);
     }
 
     public class FNARepo : RepoBase<FNAModel>, IFNARepo
@@ -32,9 +34,16 @@ namespace Aluma.API.Repositories
             _fileStorage = fileStorage;
         }
 
-        public Task<ClientFNADto> CreateFNA(ClientFNADto dto)
+        public async Task<ClientFNADto> CreateFNA(ClientFNADto dto)
         {
-            throw new System.NotImplementedException();
+            
+                FNAModel newFna = _mapper.Map<FNAModel>(dto);
+                _context.FNA.Add(newFna);
+                _context.SaveChanges();
+                dto = _mapper.Map<ClientFNADto>(newFna);
+
+                return dto;
+            
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
@@ -77,6 +86,17 @@ namespace Aluma.API.Repositories
 
             //_context.UserDocuments.Add(udm);
             //_context.SaveChanges();
+        }
+
+        public ClientFNADto GetClientFNA(int clientId)
+        {
+            var fnaModel = _context.FNA.Where(r => r.ClientId == clientId);
+
+            if (fnaModel.Any())
+            {
+                return _mapper.Map<ClientFNADto>(fnaModel.First());
+            }
+            return null;
         }
     }
 }

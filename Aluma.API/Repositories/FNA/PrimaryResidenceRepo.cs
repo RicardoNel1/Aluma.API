@@ -16,8 +16,7 @@ namespace Aluma.API.Repositories
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
         PrimaryResidenceDto GetPrimaryResidence(int clientId);
-        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
-
+        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type);
 
     }
 
@@ -63,17 +62,32 @@ namespace Aluma.API.Repositories
 
         }
 
-        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
+        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type)
         {
             PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            
+            //Update All fields or Retirement or Disability
+            if (update_type == "retirement")
+            {
+                data.DisposedAtRetirement = dto.DisposedAtRetirement;
+                data.Growth = dto.Growth;
+            }
+            else
+            {
+                if (update_type == "disability")
+                {
+                    data.DisposedOnDisability = dto.DisposedOnDisability;
+                }
+                else
+                {
+                    Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
-            //set fields to be updated       
-            data.Description = dto.Description;
-            data.AllocateTo = parsedAllocation;
-            data.Value = dto.Value;
-            data.BaseCost = dto.BaseCost;
-
+                    data.Description = dto.Description;
+                    data.AllocateTo = parsedAllocation;
+                    data.Value = dto.Value;
+                    data.BaseCost = dto.BaseCost;
+                }
+            }
 
             _context.PrimaryResidence.Update(data);
             _context.SaveChanges();
@@ -81,8 +95,6 @@ namespace Aluma.API.Repositories
             return dto;
 
         }
-
-       
 
     }
 }

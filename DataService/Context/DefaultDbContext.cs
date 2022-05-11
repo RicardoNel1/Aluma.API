@@ -79,6 +79,8 @@ namespace DataService.Context
 
 
             //FNA   
+            
+            mb.ApplyConfiguration(new FNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
@@ -92,16 +94,16 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
             mb.ApplyConfiguration(new EstateDutymodelBuilder());
 
-            //foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
-            //{
-            //    if (property.GetMaxLength() == null)
-            //    {
-            //        if (property.Name == "Description")
-            //            property.SetColumnType("varchar(MAX)");
-            //        else
-            //            property.SetColumnType("varchar(100)");
-            //    }
-            //}
+            foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
+            {
+                if (property.GetMaxLength() == null)
+                {
+                    if (property.Name == "Description")
+                        property.SetColumnType("varchar(MAX)");
+                    else
+                        property.SetColumnType("varchar(100)");
+                }
+            }
         }
 
         //Advisor
