@@ -42,7 +42,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut("primary_residence"), AllowAnonymous]
-        public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto)
+        public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto, string update_type)
         {          
             try
             {
@@ -54,7 +54,7 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
+                    _repo.PrimaryResidence.UpdatePrimaryResidence(dto, update_type);
                 }
 
                 return Ok("Primary Residence Updated");
@@ -84,11 +84,11 @@ namespace Aluma.API.Controllers
         //Assets Attracting CGT        
 
         [HttpPut("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
+        public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray, string update_type)
         {
             try
             {
-                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
+                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray, update_type);
                 return Ok("Assets Attracting CGT Updated");
             }
             catch (Exception e)
@@ -130,11 +130,11 @@ namespace Aluma.API.Controllers
 
         //Assets Exempt from CGT       
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray, string update_type)
         {
             try
             {
-                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray, update_type);
                 return Ok("Assets Exempt From CGT Updated");
             }
             catch (Exception e)
@@ -176,11 +176,11 @@ namespace Aluma.API.Controllers
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
-        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
+        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray, string update_type)
         {
             try
             {
-                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
+                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray, update_type);
                 return Ok("Liquid Assets Updated");
             }
             catch (Exception e)
