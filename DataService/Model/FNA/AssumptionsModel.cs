@@ -7,12 +7,13 @@ using DataService.Enum;
 
 namespace DataService.Model
 {
-    [Table("assumptions")]
+    [Table("fna_assumptions")]
     public class AssumptionsModel : BaseModel
     {
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public int RetirementAge { get; set; }
         public double CurrentNetIncome { get; set; }
         public InvestmentRiskEnum DeathInvestmentRisk { get; set; }
@@ -26,7 +27,7 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasIndex(c => c.ClientId).IsUnique();
+            mb.HasIndex(c => c.FNAId).IsUnique();
            
         }
     }

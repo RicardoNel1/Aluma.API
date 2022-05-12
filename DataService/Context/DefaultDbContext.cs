@@ -61,7 +61,7 @@ namespace DataService.Context
 
             //Application
             mb.ApplyConfiguration(new ApplicationModelBuilder());
-            mb.ApplyConfiguration(new IRSW8ModelBuilder());
+            //mb.ApplyConfiguration(new IRSW8ModelBuilder());
             mb.ApplyConfiguration(new RecordOfAdviceModelBuilder());
 
             //Product
@@ -79,8 +79,6 @@ namespace DataService.Context
 
 
             //FNA   
-            
-            mb.ApplyConfiguration(new FNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
@@ -124,6 +122,7 @@ namespace DataService.Context
         //public DbSet<USPersonsModel> USPersons { get; set; }
 
         //Client
+        public DbSet<LeadModel> Leads { get; set; }
         public DbSet<BankDetailsModel> BankDetails { get; set; }
         public DbSet<ClientModel> Clients { get; set; }
         public DbSet<KYCDataModel> KycData { get; set; }
@@ -132,7 +131,7 @@ namespace DataService.Context
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
         public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
-        public DbSet<FNAModel> FNA { get; set; }
+        public DbSet<ClientFNAModel> clientFNA { get; set; }
         public DbSet<ClientProductModel> ClientProducts { get; set; }
 
 

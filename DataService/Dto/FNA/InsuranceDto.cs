@@ -9,7 +9,7 @@ namespace DataService.Dto
     public class InsuranceDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public string Description { get; set; }
         public string Owner { get; set; }
         public double LifeCover { get; set; }

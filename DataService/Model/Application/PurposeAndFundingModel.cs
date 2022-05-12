@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DataService.Model
 {
-    [Table("purpose_and_funding")]
+    [Table("application_purpose_and_funding")]
     public class PurposeAndFundingModel : BaseModel
     {
         public ApplicationModel Application { get; set; }

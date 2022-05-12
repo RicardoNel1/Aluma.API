@@ -7,7 +7,7 @@ namespace DataService.Dto
     public class RetirementPlanningDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public double MonthlyIncome { get; set; }
         public int TermPostRetirement_Years { get; set; }
         public double IncomeEscalation { get; set; }

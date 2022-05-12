@@ -82,7 +82,7 @@ namespace Aluma.API.Repositories
 
                 dto.hasDisclosure = discExists.Any();
 
-                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
                 if (fnaExists.Any())
                 {
                     dto.FNADate = fnaExists.First().Created;
@@ -119,7 +119,7 @@ namespace Aluma.API.Repositories
 
                 dto.hasDisclosure = discExists.Any();
 
-                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
                 if (fnaExists.Any())
                 {
                     dto.FNADate = fnaExists.First().Created;
@@ -207,7 +207,7 @@ namespace Aluma.API.Repositories
         public ClientDto CheckForFNA(ClientDto client)
         {
 
-            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
+            var fnaExists = _context.clientFNA.Where(d => d.ClientId == client.Id);
 
             if (fnaExists.Any())
             {
@@ -341,7 +341,7 @@ namespace Aluma.API.Repositories
 
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
-            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
+            ClientFNAModel fna = _context.clientFNA.SingleOrDefault(r => r.ClientId == client.Id);
 
             
 
@@ -354,8 +354,8 @@ namespace Aluma.API.Repositories
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
-            fnaRepo.GenerateFNA(client, advisor, fna);
+            //FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
+            //fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 

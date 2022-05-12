@@ -18,7 +18,7 @@ namespace Aluma.API.Repositories
         AccrualDto GetAccrual(int id);
         AccrualDto UpdateAccrual(AccrualDto accrual);
         AccrualDto DeleteAccrual(int id);
-        bool Exists(int clientId);
+        bool Exists(int fnaId);
     }
 
 
@@ -57,9 +57,9 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public bool Exists(int clientId)
+        public bool Exists(int fnaId)
         {
-            return _context.Accrual.Where(a => a.ClientId == clientId).FirstOrDefault() != null;
+            return _context.Accrual.Where(a => a.FNAId == fnaId).FirstOrDefault() != null;
         }
 
         public IQueryable<AccrualModel> FindByCondition(Expression<Func<AccrualModel, bool>> expression)
@@ -67,9 +67,9 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public AccrualDto GetAccrual(int clientId)
+        public AccrualDto GetAccrual(int fnaId)
         {
-            AccrualModel accrual = _context.Accrual.Where(c => c.ClientId == clientId).FirstOrDefault();
+            AccrualModel accrual = _context.Accrual.Where(c => c.FNAId == fnaId).FirstOrDefault();
             if (accrual == null)
             {
                 return new AccrualDto();
@@ -83,7 +83,7 @@ namespace Aluma.API.Repositories
 
         public AccrualDto UpdateAccrual(AccrualDto accrual)
         {
-            AccrualModel data = _context.Accrual .Where(_ => _.ClientId == accrual.ClientId) .FirstOrDefault();
+            AccrualModel data = _context.Accrual .Where(a => a.FNAId == accrual.FNAId) .FirstOrDefault();
             Enum.TryParse(accrual.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
 
             data.ClientAssetsCommencement = accrual.ClientAssetsCommencement;

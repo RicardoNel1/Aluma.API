@@ -24,7 +24,6 @@ namespace Aluma.API.RepoWrapper
 
         //private IDividendTaxRepo _dividendTax;
         private IFspMandateRepo _fspMandate;
-        private IFNARepo _fna;
 
         private IIRSW8Repo _irsw8;
         private IIRSW9Repo _irsw9;
@@ -32,6 +31,7 @@ namespace Aluma.API.RepoWrapper
         private IRecordOfAdviceRepo _recordOfAdvice;
 
 
+        private ILeadRepo _lead;
         private IBankDetailsRepo _bankDetails;
         private ITaxResidencyRepo _taxResidency;
         private IConsumerProtectionRepo _consumerProtection;
@@ -42,6 +42,8 @@ namespace Aluma.API.RepoWrapper
         private IDisclosureRepo _disclosures;
 
         private IProductRepo _product;
+
+        private IFNARepo _fna;
         private IPrimaryResidenceRepo _primaryResidence;
         private IAssetsAttractingCGTRepo _assetsAttractingCGT;
         private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
@@ -117,11 +119,11 @@ namespace Aluma.API.RepoWrapper
             get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fspMandate; }
         }
 
-        public IFNARepo FNA
-        {
-            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
-        }
 
+        public ILeadRepo Leads
+        {
+            get { return _lead == null ? new LeadRepo(_dbContext, _host, _config, _mapper) : _lead; }
+        }
         public IIRSW8Repo IRSW8
         {
             get { return _irsw8 == null ? new IRSW8Repo(_dbContext, _host, _config, _mapper) : _irsw8; }
@@ -184,6 +186,10 @@ namespace Aluma.API.RepoWrapper
         }
 
         //FNA
+        public IFNARepo FNA
+        {
+            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
+        }
         public IPrimaryResidenceRepo PrimaryResidence
         {
             get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
@@ -203,7 +209,7 @@ namespace Aluma.API.RepoWrapper
 
         public ILiabilitiesRepo Liabilities
         {
-            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+            get { return _liabilities == null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
         }
 
         public IInsuranceRepo Insurance
@@ -253,7 +259,7 @@ namespace Aluma.API.RepoWrapper
         //Products and Documents
         public IFIRepo FI
         {
-            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }
+            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fi; }
         }
         public IPEFRepo PEF
         {
@@ -261,11 +267,11 @@ namespace Aluma.API.RepoWrapper
         }
         public IDocumentHelper DocumentHelper
         {
-            get { return _documentHelper == null ? new DocumentHelper(_dbContext,_config,_fileStorage,_host) : _documentHelper; }
+            get { return _documentHelper == null ? new DocumentHelper(_dbContext, _config, _fileStorage, _host) : _documentHelper; }
         }
         public IDocumentSignHelper SignHelper
         {
-            get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
+            get { return _signHelper == null ? new DocumentSignHelper(_dbContext, _config, _fileStorage, _host) : _signHelper; }
         }
         public IAccrualRepo Accrual
         {
@@ -324,6 +330,6 @@ namespace Aluma.API.RepoWrapper
             get { return _hasher == null ? new StringHasherRepo() : _hasher; }
         }
 
-        
+
     }
 }

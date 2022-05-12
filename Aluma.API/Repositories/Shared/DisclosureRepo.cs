@@ -354,7 +354,7 @@ namespace Aluma.API.Repositories
             else
                 d["smokerFalse"] = "x";
 
-            if (client.LeadType == "Own")
+            if (client.Lead.LeadType == LeadTypesEnum.Direct)
                 d["leadType"] = "x";
 
             if (client.Education != null)
