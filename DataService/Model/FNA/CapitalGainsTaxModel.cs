@@ -9,21 +9,18 @@ using System.Threading.Tasks;
 
 namespace DataService.Model
 {
-    [Table("estate_duty")]
-    public class EstateDutyModel : BaseModel
+    [Table("capital_gains_tax")]
+    public class CapitalGainsTaxModel : BaseModel
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public double Section4pValue { get; set; }
-        public double LimitedRights { get; set; }
-        public bool ResidueToSpouse { get; set; }
-        public double Abatement { get; set; }
-        public double TotalDutyPayable { get; set; }
+        public double PreviousCapitalLosses { get; set; }
+        public double TotalCGTPayable { get; set; }
     }
 
-    public class EstateDutyModelBuilder : IEntityTypeConfiguration<EstateDutyModel>
+    public class CapitalGainsTaxModelBuilder : IEntityTypeConfiguration<CapitalGainsTaxModel>
     {
-        public void Configure(EntityTypeBuilder<EstateDutyModel> mb)
+        public void Configure(EntityTypeBuilder<CapitalGainsTaxModel> mb)
         {
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();

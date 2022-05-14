@@ -72,7 +72,7 @@ namespace Aluma.API.Repositories
             data.FuneralExpenses = dto.FuneralExpenses;
             data.CashBequests = dto.CashBequests;
             data.Other = dto.Other;
-            data.CapitalLosses = dto.CapitalLosses;
+            data.TotalEstateExpenses = dto.TotalEstateExpenses;
 
 
             _context.EstateExpenses.Update(data);
