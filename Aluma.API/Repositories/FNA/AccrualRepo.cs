@@ -96,8 +96,9 @@ namespace Aluma.API.Repositories
             data.SpouseLiabilities = accrual.SpouseLiabilities;
             data.SpouseExcludedValue = accrual.SpouseExcludedValue;
             data.AllocateTo = parsedAllocation;
+            data.TotalAsAsset = accrual.TotalAsAsset;
+            data.TotalAsLiability = accrual.TotalAsLiability;
 
-            data.Cpi = (double)accrual.Cpi;
             data.Offset = accrual.Offset;
 
             _context.Accrual.Update(data);
