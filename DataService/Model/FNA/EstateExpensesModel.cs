@@ -17,6 +17,7 @@ namespace DataService.Model
         public double FuneralExpenses { get; set; }
         public double CashBequests { get; set; }
         public double Other { get; set; }
+        public double ExecutorsFees { get; set; }
         public double TotalEstateExpenses { get; set; }
 
     }

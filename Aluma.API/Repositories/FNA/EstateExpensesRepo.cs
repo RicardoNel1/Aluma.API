@@ -72,6 +72,7 @@ namespace Aluma.API.Repositories
             data.FuneralExpenses = dto.FuneralExpenses;
             data.CashBequests = dto.CashBequests;
             data.Other = dto.Other;
+            data.ExecutorsFees = dto.ExecutorsFees;
             data.TotalEstateExpenses = dto.TotalEstateExpenses;
 
 

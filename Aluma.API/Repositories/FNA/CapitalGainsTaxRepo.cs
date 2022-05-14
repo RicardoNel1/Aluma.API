@@ -64,15 +64,11 @@ namespace Aluma.API.Repositories
 
         public CapitalGainsTaxDto UpdateCapitalGainsTax(CapitalGainsTaxDto dto)
         {
-            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            
-           
-                    //Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
-                    //data.Description = dto.Description;
-                    //data.AllocateTo = parsedAllocation;
-                    //data.Value = dto.Value;
-           
+            data.PreviousCapitalLosses = dto.PreviousCapitalLosses;
+            data.TotalCGTPayable = dto.TotalCGTPayable;
+
 
             _context.CapitalGainsTax.Update(data);
             _context.SaveChanges();
