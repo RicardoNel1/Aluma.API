@@ -96,6 +96,7 @@ namespace DataService
 
             CreateMap<AccrualModel, AccrualDto>()
                 .ReverseMap();
+
             CreateMap<AssumptionsModel, AssumptionsDto>()
                 .ReverseMap();
 
@@ -109,6 +110,8 @@ namespace DataService
             CreateMap<AdministrationCostsModel, AdministrationCostsDto>()
                 .ReverseMap();
 
+            CreateMap<CapitalGainsTaxModel, CapitalGainsTaxDto>()
+                .ReverseMap();
 
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()

@@ -61,11 +61,12 @@ namespace Aluma.API.Repositories
         {
             EstateDutyModel data = _context.EstateDuty.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
-            data.ClientId = dto.ClientId;
+            //data.ClientId = dto.ClientId;                 //never update id
             data.Section4pValue = dto.Section4pValue;
+            data.LimitedRights = dto.LimitedRights;
             data.ResidueToSpouse = dto.ResidueToSpouse;
             data.Abatement = dto.Abatement;
-            data.LimitedRights = dto.LimitedRights;
+            data.TotalDutyPayable = dto.TotalDutyPayable;
 
 
             _context.EstateDuty.Update(data);

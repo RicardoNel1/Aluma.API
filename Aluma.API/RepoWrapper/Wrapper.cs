@@ -50,6 +50,7 @@ namespace Aluma.API.RepoWrapper
         private ILiabilitiesRepo _liabilities;
         private IEstateExpensesRepo _estateExpenses;
         private IEstateDutiesRepo _estateDuties;
+        private ICapitalGainsTaxRepo _capitalGainsTax;
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
         private IAccrualRepo _accrual;
@@ -203,7 +204,7 @@ namespace Aluma.API.RepoWrapper
 
         public ILiabilitiesRepo Liabilities
         {
-            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+            get { return _liabilities == null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
         }
 
         public IInsuranceRepo Insurance
@@ -246,8 +247,10 @@ namespace Aluma.API.RepoWrapper
             get { return _assumptions == null ? new AssumptionsRepo(_dbContext, _host, _config, _mapper) : _assumptions; }
         }
 
-
-
+        public ICapitalGainsTaxRepo CapitalGainsTax
+        {
+            get { return _capitalGainsTax == null ? new CapitalGainsTaxRepo(_dbContext, _host, _config, _mapper) : _capitalGainsTax; }
+        }
 
 
         //Products and Documents
