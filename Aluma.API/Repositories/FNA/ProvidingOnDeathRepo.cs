@@ -65,6 +65,7 @@ namespace Aluma.API.Repositories
 
         public ProvidingOnDeathDto UpdateProvidingOnDeath(ProvidingOnDeathDto dto)
         {
+
             ProvidingOnDeathModel data = _context.ProvidingOnDeath.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
 
             //set fields to be updated       
