@@ -11,7 +11,8 @@ namespace DataService.Dto
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int RetirementAge { get; set; }
-        public double CurrentNetIncome { get; set; }
+        public double CurrentGrossIncome { get; set; }
+        public string RetirementInvestmentRisk { get; set; }
         public string DeathInvestmentRisk { get; set; }
         public string DisabilityInvestmentRisk { get; set; }
     }

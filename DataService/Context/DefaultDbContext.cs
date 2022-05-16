@@ -78,8 +78,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AddressModelBuilder());
 
 
-            //FNA   
-
+            //FNA               
             mb.ApplyConfiguration(new FNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
@@ -95,6 +94,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
             mb.ApplyConfiguration(new EstateDutyModelBuilder());
             mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
+            mb.ApplyConfiguration(new AssumptionsModelBuilder());
 
             foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             {
