@@ -154,12 +154,10 @@ namespace DataService.Context
         public DbSet<RetirementPlanningModel> RetirementPlanning { get; set; }
         public DbSet<AssumptionsModel> Assumptions { get; set; }
         public DbSet<AdministrationCostsModel> AdministrationCosts { get; set; }
-<<<<<<< Updated upstream
         public DbSet<EstateDutyModel> EstateDuty { get; set; }
         public DbSet<CapitalGainsTaxModel> CapitalGainsTax { get; set; }
-=======
         public DbSet<ProvidingOnDeathModel> ProvidingOnDeath { get; set; }
->>>>>>> Stashed changes
+
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }

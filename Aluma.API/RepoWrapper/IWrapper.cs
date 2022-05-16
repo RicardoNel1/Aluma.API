@@ -54,11 +54,8 @@ namespace Aluma.API.RepoWrapper
         IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
         IAccrualRepo Accrual { get; }
         IRetirementPlanningRepo RetirementPlanning { get; }
-<<<<<<< Updated upstream
-=======
         IProvidingOnDeathRepo ProvidingOnDeath { get; }
 
->>>>>>> Stashed changes
         IAdministrationCostsRepo AdministrationCosts { get; }
         IEstateDutiesRepo EstateDuties { get; }
         ICapitalGainsTaxRepo CapitalGainsTax { get; }
