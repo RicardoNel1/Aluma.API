@@ -55,6 +55,7 @@ namespace Aluma.API.RepoWrapper
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
         private IAccrualRepo _accrual;
         private IRetirementPlanningRepo _retirementPlanning;
+        private IProvidingOnDeathRepo _providingOnDeath;
         private IAssumptionsRepo _assumptions;
         private IAdministrationCostsRepo _administrationCosts;
 
@@ -240,6 +241,11 @@ namespace Aluma.API.RepoWrapper
         public IRetirementPlanningRepo RetirementPlanning
         {
             get { return _retirementPlanning == null ? new RetirementPlanningRepo(_dbContext, _host, _config, _mapper) : _retirementPlanning; }
+        }
+
+        public IProvidingOnDeathRepo ProvidingOnDeath
+        {
+            get { return _providingOnDeath == null ? new ProvidingOnDeathRepo(_dbContext, _host, _config, _mapper) : _providingOnDeath; }
         }
 
         public IAssumptionsRepo Assumptions
