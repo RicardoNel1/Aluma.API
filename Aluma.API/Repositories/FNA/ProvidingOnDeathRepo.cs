@@ -72,11 +72,11 @@ namespace Aluma.API.Repositories
             data.IncomeNeeds = dto.IncomeNeeds;
             data.IncomeTerm_Years = dto.IncomeTerm_Years;
             data.CapitalNeeds = dto.CapitalNeeds;
-            data.IncomeNeeds = dto.IncomeNeeds;
             data.Available_InsuranceDescription = dto.Available_InsuranceDescription;
             data.Available_Insurance_Amount = dto.Available_Insurance_Amount;
             data.Available_PreTaxIncome_Amount = dto.Available_PreTaxIncome_Amount;
             data.Available_PreTaxIncome_Term = dto.Available_PreTaxIncome_Term;
+            data.RetirementFunds = dto.RetirementFunds;
 
             _context.ProvidingOnDeath.Update(data);
             _context.SaveChanges();
