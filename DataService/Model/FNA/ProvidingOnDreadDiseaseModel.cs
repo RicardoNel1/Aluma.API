@@ -10,11 +10,13 @@ namespace DataService.Model
     [Table("fna_providing_on_dread_disease")]
     public class ProvidingOnDreadDiseaseModel : BaseModel
     {
-        //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public ClientFNAModel FNA { get; set; }
         public int FNAId { get; set; }
-
+        public double Needs_CapitalNeeds { get; set; }
+        public double Needs_GrossAnnualSalary { get; set; }
+        public string Available_DreadDiseaseDescription { get; set; }
+        public double Available_DreadDiseaseAmount { get; set; }
     }
 
     public class ProvidingOnDreadDiseaseModelBuilder : IEntityTypeConfiguration<ProvidingOnDreadDiseaseModel>

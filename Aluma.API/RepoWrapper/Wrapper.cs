@@ -58,6 +58,7 @@ namespace Aluma.API.RepoWrapper
         private IAccrualRepo _accrual;
         private IRetirementPlanningRepo _retirementPlanning;
         private IProvidingOnDeathRepo _providingOnDeath;
+        private IProvidingOnDreadDiseaseRepo _providingOnDreadDisease;
         private IAssumptionsRepo _assumptions;
         private IAdministrationCostsRepo _administrationCosts;
         private ITaxLumpsumRepo _taxLumpsum;
@@ -253,6 +254,11 @@ namespace Aluma.API.RepoWrapper
         public IProvidingOnDeathRepo ProvidingOnDeath
         {
             get { return _providingOnDeath == null ? new ProvidingOnDeathRepo(_dbContext, _host, _config, _mapper) : _providingOnDeath; }
+        }
+
+        public IProvidingOnDreadDiseaseRepo ProvidingOnDreadDisease
+        {
+            get { return _providingOnDreadDisease == null ? new ProvidingOnDreadDiseaseRepo(_dbContext, _host, _config, _mapper) : _providingOnDreadDisease; }
         }
 
         public IAssumptionsRepo Assumptions

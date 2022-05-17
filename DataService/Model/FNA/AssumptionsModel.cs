@@ -14,7 +14,7 @@ namespace DataService.Model
         public int Id { get; set; }
         public ClientFNAModel FNA { get; set; }
         public int FNAId { get; set; }
-        public int RetirementAge { get; set; }
+        public double RetirementAge { get; set; }
         public double CurrentGrossIncome { get; set; }
         public InvestmentRiskEnum RetirementInvestmentRisk { get; set; }
         public InvestmentRiskEnum DeathInvestmentRisk { get; set; }
