@@ -2,7 +2,7 @@
 
 namespace DataService.Model
 {
-    [Table("irsw_9")]
+    //[Table("irsw_9")]
     public class IRSW9Model : BaseModel
     {
         public ApplicationModel Application { get; set; }

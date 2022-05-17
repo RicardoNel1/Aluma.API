@@ -34,11 +34,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("liabilities"), AllowAnonymous]
-        public IActionResult GetLiabilities(int clientId)
+        public IActionResult GetLiabilities(int fnaId)
         {
             try
             {
-                List<LiabilitiesDto> dtoList = _repo.Liabilities.GetLiabilities(clientId);
+                List<LiabilitiesDto> dtoList = _repo.Liabilities.GetLiabilities(fnaId);
 
                 return Ok(dtoList);
             }
@@ -112,11 +112,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("estate_expenses"), AllowAnonymous]
-        public IActionResult GetEstateExpenses(int clientId)
+        public IActionResult GetEstateExpenses(int fnaId)
         {
             try
             {
-                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(clientId);
+                EstateExpensesDto dto = _repo.EstateExpenses.GetEstateExpenses(fnaId);
 
                 return Ok(dto);
             }
@@ -175,11 +175,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("administration_costs"), AllowAnonymous]
-        public IActionResult GetAdministrationCosts(int clientId)
+        public IActionResult GetAdministrationCosts(int fnaId)
         {
             try
             {
-                AdministrationCostsDto dto = _repo.AdministrationCosts.GetAdministrationCosts(clientId);
+                AdministrationCostsDto dto = _repo.AdministrationCosts.GetAdministrationCosts(fnaId);
 
                 return Ok(dto);
             }
@@ -238,11 +238,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("estate_duties"), AllowAnonymous]
-        public IActionResult GetEstateDuty(int clientId)
+        public IActionResult GetEstateDuty(int fnaId)
         {
             try
             {
-                EstateDutyDto dto = _repo.EstateDuties.GetEstateDuty(clientId);
+                EstateDutyDto dto = _repo.EstateDuties.GetEstateDuty(fnaId);
 
                 return Ok(dto);
             }

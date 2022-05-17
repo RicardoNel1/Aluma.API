@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("accrual")]
+    [Table("fna_accrual")]
     public class AccrualModel : BaseModel
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public double ClientAssetsCommencement { get; set; }
         public double SpouseAssetsCommencement { get; set; }
         public double ClientEstateCurrent { get; set; }
@@ -32,7 +33,7 @@ namespace DataService.Model
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasIndex(c => c.ClientId).IsUnique();
+            builder.HasIndex(c => c.FNAId).IsUnique();
 
 
         }

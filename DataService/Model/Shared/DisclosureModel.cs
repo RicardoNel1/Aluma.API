@@ -2,7 +2,7 @@
 
 namespace DataService.Model
 {
-    [Table("disclosures")]
+    [Table("advisor_disclosures")]
     public class DisclosureModel : BaseModel
     {
         public AdvisorModel Advisor { get; set; }

@@ -14,7 +14,7 @@ namespace Aluma.API.Repositories
     public interface IAssetsExemptFromCGTRepo : IRepoBase<AssetsExemptFromCGTModel>
     {
         bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto);
-        List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId);
+        List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId);
         AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray, string update_type);
 
         bool DeleteAssetsExemptFromCGTItem(int id);
@@ -40,14 +40,14 @@ namespace Aluma.API.Repositories
         public bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto)
         {
            bool assetsExemptFromCGTExist = false;
-            assetsExemptFromCGTExist = _context.AssetsExemptFromCGT.Where(a => a.ClientId == dto.ClientId).Any();
+            assetsExemptFromCGTExist = _context.AssetsExemptFromCGT.Where(a => a.FNAId == dto.FNAId).Any();
             return assetsExemptFromCGTExist;
 
         }
 
-        public List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int clientId)
+        public List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId)
         {
-            ICollection<AssetsExemptFromCGTModel> data = _context.AssetsExemptFromCGT.Where(c => c.ClientId == clientId).ToList();
+            ICollection<AssetsExemptFromCGTModel> data = _context.AssetsExemptFromCGT.Where(c => c.FNAId == fnaId).ToList();
             List<AssetsExemptFromCGTDto> assets = new List<AssetsExemptFromCGTDto>();
 
             foreach (var item in data)
@@ -55,7 +55,7 @@ namespace Aluma.API.Repositories
                 AssetsExemptFromCGTDto asset = new AssetsExemptFromCGTDto();
 
                 asset.Id = item.Id;
-                asset.ClientId = item.ClientId;
+                asset.FNAId = item.FNAId;
                 asset.Description = item.Description;
                 asset.Value = item.Value;
                 asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
@@ -122,7 +122,7 @@ namespace Aluma.API.Repositories
                         else
                         {
                             Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            newItem.ClientId = item.ClientId;
+                            newItem.FNAId = item.FNAId;
                             newItem.Description = item.Description;
                             newItem.Value = item.Value;
                             newItem.AllocateTo = parsedAllocation;

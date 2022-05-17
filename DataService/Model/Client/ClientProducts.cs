@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("client_product")]
+    [Table("client_products")]
     public class ClientProductModel : BaseModel
     {
         public int Id { get; set; }

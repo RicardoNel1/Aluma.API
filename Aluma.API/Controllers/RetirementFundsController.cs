@@ -16,7 +16,7 @@ namespace Aluma.API.Controllers
         {
             _repo = repo;
         }
-             
+
 
         //Pension Funds      
         [HttpPut("pension_funds"), AllowAnonymous]
@@ -34,11 +34,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("pension_funds"), AllowAnonymous]
-        public IActionResult GetRetirementPensionFunds(int clientId)
+        public IActionResult GetRetirementPensionFunds(int fnaId)
         {
             try
             {
-                List<RetirementPensionFundsDto> dtoList = _repo.RetirementPensionFunds.GetRetirementPensionFunds(clientId);
+                List<RetirementPensionFundsDto> dtoList = _repo.RetirementPensionFunds.GetRetirementPensionFunds(fnaId);
 
                 return Ok(dtoList);
             }
@@ -65,11 +65,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("preservation_funds"), AllowAnonymous]
-        public IActionResult GetRetirementPreservationFunds(int clientId)
+        public IActionResult GetRetirementPreservationFunds(int fnaId)
         {
             try
             {
-                List<RetirementPreservationFundsDto> dtoList = _repo.RetirementPreservationFunds.GetRetirementPreservationFunds(clientId);
+                List<RetirementPreservationFundsDto> dtoList = _repo.RetirementPreservationFunds.GetRetirementPreservationFunds(fnaId);
 
                 return Ok(dtoList);
             }

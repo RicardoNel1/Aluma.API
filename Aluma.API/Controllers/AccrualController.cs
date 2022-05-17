@@ -22,7 +22,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                var exists = _repo.Accrual.Exists(dto.ClientId);
+                var exists = _repo.Accrual.Exists(dto.FNAId);
 
                 if (exists)
                 {
@@ -42,11 +42,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("getAccrual"), AllowAnonymous]
-        public IActionResult GetAccrual(int ClientId)
+        public IActionResult GetAccrual(int fnaId)
         {
             try
             {
-                AccrualDto accrual = _repo.Accrual.GetAccrual(ClientId);
+                AccrualDto accrual = _repo.Accrual.GetAccrual(fnaId);
                 return Ok(accrual);
             }
             catch (Exception e)

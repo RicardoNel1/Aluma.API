@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("irsw_8")]
+    //[Table("irsw_8")]
     public class IRSW8Model : BaseModel
     {
         public ApplicationModel Application { get; set; }

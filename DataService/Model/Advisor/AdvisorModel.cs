@@ -147,7 +147,8 @@ namespace DataService.Model
         public UserModel User { get; set; }
         public ICollection<ApplicationModel> Applications { get; set; }
         public ICollection<ClientModel> Clients { get; set; }
-        
+        public ICollection<ClientFNAModel> FNAs { get; set; }
+
 
     }
 
@@ -164,6 +165,11 @@ namespace DataService.Model
                 .WithOne(c => c.Advisor)
                 .HasForeignKey(c => c.AdvisorId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            mb.HasMany(c => c.FNAs)
+              .WithOne(c => c.Advisor)
+              .HasForeignKey(c => c.AdvisorId)
+              .OnDelete(DeleteBehavior.NoAction);
 
             mb.HasMany(c => c.Applications)
                 .WithOne(c => c.Advisor)

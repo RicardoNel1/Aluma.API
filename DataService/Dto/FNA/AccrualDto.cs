@@ -11,7 +11,7 @@ namespace DataService.Dto
     public class AccrualDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public double ClientAssetsCommencement { get; set; }
         public double SpouseAssetsCommencement { get; set; }
         public double ClientEstateCurrent { get; set; }
