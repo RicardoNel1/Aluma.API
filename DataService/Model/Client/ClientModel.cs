@@ -10,9 +10,9 @@ namespace DataService.Model
     public class ClientModel : BaseModel
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int AdvisorId { get; set; }
-        public int LeadId { get; set; }
+        public System.Nullable<int> UserId { get; set; }
+        public System.Nullable<int> AdvisorId { get; set; }
+        public System.Nullable<int> LeadId { get; set; }
         public string ClientType { get; set; }
         public string Title { get; set; }
         public string CountryOfResidence { get; set; }
