@@ -66,11 +66,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetRetirementPlanning(int clientId)
+        public IActionResult GetRetirementPlanning(int fnaId)
         {
             try
             {
-                RetirementPlanningDto dto = _repo.RetirementPlanning.GetRetirementPlanning(clientId);
+                RetirementPlanningDto dto = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
 
                 return Ok(dto);
             }

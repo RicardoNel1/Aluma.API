@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
-        PrimaryResidenceDto GetPrimaryResidence(int clientId);
+        PrimaryResidenceDto GetPrimaryResidence(int fnaId);
         PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type);
 
     }
@@ -50,21 +50,21 @@ namespace Aluma.API.Repositories
         public bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto)
         {
             bool primaryResidenceExist = false;
-            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).Any();
+            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).Any();
             return primaryResidenceExist;
 
         }
 
-        public PrimaryResidenceDto GetPrimaryResidence(int clientId)
+        public PrimaryResidenceDto GetPrimaryResidence(int fnaId)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.ClientId == clientId).First();
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<PrimaryResidenceDto>(data);
 
         }
 
         public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();            
             
             //Update All fields or Retirement or Disability
             if (update_type == "retirement")

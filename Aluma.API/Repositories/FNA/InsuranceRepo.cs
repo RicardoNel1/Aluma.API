@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
 {
     public interface IInsuranceRepo : IRepoBase<InsuranceModel>
     {
-        List<InsuranceDto> GetInsurance(int clientId);
+        List<InsuranceDto> GetInsurance(int fnaId);
         InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray);
         bool DeleteInsuranceItem(int id);
 
@@ -35,9 +35,9 @@ namespace Aluma.API.Repositories
         }
                
 
-        public List<InsuranceDto> GetInsurance(int clientId)
+        public List<InsuranceDto> GetInsurance(int fnaId)
         {
-            ICollection<InsuranceModel> data = _context.Insurance.Where(c => c.ClientId == clientId).ToList();
+            ICollection<InsuranceModel> data = _context.Insurance.Where(c => c.FNAId == fnaId).ToList();
             List<InsuranceDto> insurance = new();
 
             foreach (var item in data)
@@ -45,7 +45,7 @@ namespace Aluma.API.Repositories
                 InsuranceDto insured = new()
                 {
                     Id = item.Id,
-                    ClientId = item.ClientId,
+                    FNAId = item.FNAId,
                     Description = item.Description,
                     Owner = item.Owner,
                     LifeCover = item.LifeCover,
@@ -92,7 +92,7 @@ namespace Aluma.API.Repositories
                     InsuranceModel newItem = new InsuranceModel();
 
                     Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    newItem.ClientId = item.ClientId;
+                    newItem.FNAId = item.FNAId;
                     newItem.Description = item.Description;
                     newItem.Owner = item.Owner;
                     newItem.LifeCover = item.LifeCover;

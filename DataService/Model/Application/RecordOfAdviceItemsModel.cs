@@ -2,7 +2,7 @@
 
 namespace DataService.Model
 {
-    [Table("record_of_advice_items")]
+    [Table("application_roa_products")]
     public class RecordOfAdviceItemsModel : BaseModel
     {
         public RecordOfAdviceModel RecordOfAdvice { get; set; }

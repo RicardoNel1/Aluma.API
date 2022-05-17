@@ -7,12 +7,13 @@ using DataService.Enum;
 
 namespace DataService.Model
 {
-    [Table("liabilities")]
+    [Table("fna_liabilities")]
     public class LiabilitiesModel : BaseModel
     {
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public string Description { get; set; }
         public double Value { get; set; }
     }

@@ -36,9 +36,9 @@ namespace Aluma.API.Repositories
         }
 
 
-        public List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId)
+        public List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int fnaId)
         {
-            ICollection<RetirementPreservationFundsModel> data = _context.RetirementPreservationFunds.Where(c => c.ClientId == clientId).ToList();
+            ICollection<RetirementPreservationFundsModel> data = _context.RetirementPreservationFunds.Where(c => c.FNAId == fnaId).ToList();
             List<RetirementPreservationFundsDto> funds = new List<RetirementPreservationFundsDto>();
 
             foreach (var item in data)
@@ -46,7 +46,7 @@ namespace Aluma.API.Repositories
                 RetirementPreservationFundsDto fund = new RetirementPreservationFundsDto();
 
                 fund.Id = item.Id;
-                fund.ClientId = item.ClientId;
+                fund.FNAId = item.FNAId;
                 fund.Description = item.Description;
                 fund.Value = item.Value;
 
@@ -79,7 +79,7 @@ namespace Aluma.API.Repositories
                 {
                     RetirementPreservationFundsModel newItem = new RetirementPreservationFundsModel();
 
-                    newItem.ClientId = item.ClientId;
+                    newItem.FNAId = item.FNAId;
                     newItem.Description = item.Description;
                     newItem.Value = item.Value;
 
