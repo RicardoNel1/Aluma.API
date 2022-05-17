@@ -32,7 +32,7 @@ namespace DataService.Model
         }
     }
 
-    [Table("foreign_tax_residency")]
+    [Table("client_foreign_tax")]
     public class ForeignTaxResidencyModel : BaseModel
     {
         public TaxResidencyModel TaxResidency { get; set; }
