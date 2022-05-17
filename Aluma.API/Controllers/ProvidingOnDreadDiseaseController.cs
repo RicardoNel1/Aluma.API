@@ -66,11 +66,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetProvidingOnDreadDisease(int clientId)
+        public IActionResult GetProvidingOnDreadDisease(int fnaId)
         {
             try
             {
-                ProvidingOnDreadDiseaseDto dto = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(clientId);
+                ProvidingOnDreadDiseaseDto dto = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(fnaId);
 
                 return Ok(dto);
             }

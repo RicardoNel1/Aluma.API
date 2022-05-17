@@ -66,11 +66,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetProvidingOnDeath(int clientId)
+        public IActionResult GetProvidingOnDeath(int fnaId)
         {
             try
             {
-                ProvidingOnDeathDto dto = _repo.ProvidingOnDeath.GetProvidingOnDeath(clientId);
+                ProvidingOnDeathDto dto = _repo.ProvidingOnDeath.GetProvidingOnDeath(fnaId);
 
                 return Ok(dto);
             }
