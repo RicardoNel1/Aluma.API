@@ -115,7 +115,7 @@ namespace DataService
             CreateMap<CapitalGainsTaxModel, CapitalGainsTaxDto>()
                 .ReverseMap();
 
-            CreateMap<TaxLumpsumModel, TaxLumpSumDto>()
+            CreateMap<TaxLumpsumModel, TaxLumpsumDto>()
                 .ReverseMap();
 
             //Shared

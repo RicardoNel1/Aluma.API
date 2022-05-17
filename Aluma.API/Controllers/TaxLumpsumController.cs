@@ -2,6 +2,7 @@
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Aluma.API.Controllers
 {
@@ -18,17 +19,25 @@ namespace Aluma.API.Controllers
         [HttpGet]
         public IActionResult GetTaxLumpsum(int clientId)
         {
-            return null;
+            try
+            {
+                TaxLumpsumDto taxLumpsum = _repo.TaxLumpsum.GetTaxLumpsum(clientId);
+                return Ok(taxLumpsum);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost]
-        public IActionResult CreateTaxLumpsum(TaxLumpSumDto dto)
+        public IActionResult CreateTaxLumpsum(TaxLumpsumDto dto)
         {
             return null;
         }
 
         [HttpPut]
-        public IActionResult UpdateTaxLumpsum(TaxLumpSumDto dto)
+        public IActionResult UpdateTaxLumpsum(TaxLumpsumDto dto)
         {
             return null;
         }

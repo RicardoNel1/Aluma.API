@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataService.Dto
 {
-    public class TaxLumpSumDto
+    public class TaxLumpsumDto
     {
         public int Id { get; set; }
         public int ClientId { get; set; }

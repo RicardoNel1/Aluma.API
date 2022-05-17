@@ -11,10 +11,10 @@ namespace Aluma.API.Repositories
 {
     public interface ITaxLumpsumRepo : IRepoBase<TaxLumpsumModel>
     {
-        TaxLumpSumDto CreateTaxLumpsum(TaxLumpSumDto dto);
-        TaxLumpSumDto GetTaxLumpsum(int id);
-        TaxLumpSumDto UpdateTaxLumpsum(TaxLumpSumDto accrual);
-        TaxLumpSumDto DeleteTaxLumpsum(int id);
+        TaxLumpsumDto CreateTaxLumpsum(TaxLumpsumDto dto);
+        TaxLumpsumDto GetTaxLumpsum(int id);
+        TaxLumpsumDto UpdateTaxLumpsum(TaxLumpsumDto accrual);
+        TaxLumpsumDto DeleteTaxLumpsum(int id);
     }
 
     public class TaxLumpsumRepo : RepoBase<TaxLumpsumModel>, ITaxLumpsumRepo
@@ -32,22 +32,31 @@ namespace Aluma.API.Repositories
             _mapper = mapper;
         }
 
-        public TaxLumpSumDto CreateTaxLumpsum(TaxLumpSumDto dto)
+        public TaxLumpsumDto CreateTaxLumpsum(TaxLumpsumDto dto)
         {
             throw new System.NotImplementedException();
         }
 
-        public TaxLumpSumDto GetTaxLumpsum(int id)
-        {   
-            return _mapper.Map<TaxLumpSumDto>(_context.TaxLumpsum.Where(c => c.ClientId == id).FirstOrDefault());
+        public TaxLumpsumDto GetTaxLumpsum(int id)
+        {
+            TaxLumpsumModel taxLumpsum = _context.TaxLumpsum.Where(c => c.ClientId == id).FirstOrDefault();
+
+            if (taxLumpsum == null)
+            {
+                return new TaxLumpsumDto();
+            }
+            else
+            {
+                return _mapper.Map<TaxLumpsumDto>(taxLumpsum);
+            }
         }
 
-        public TaxLumpSumDto UpdateTaxLumpsum(TaxLumpSumDto accrual)
+        public TaxLumpsumDto UpdateTaxLumpsum(TaxLumpsumDto accrual)
         {
             throw new System.NotImplementedException();
         }
 
-        public TaxLumpSumDto DeleteTaxLumpsum(int id)
+        public TaxLumpsumDto DeleteTaxLumpsum(int id)
         {
             throw new System.NotImplementedException();
         }
