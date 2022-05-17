@@ -122,9 +122,9 @@ namespace Aluma.API.Controllers
                     user = _repo.User.CreateClientUser(registerDto);
 
                     //Create Client
-                    dto.UserId = user.Id;
-                    dto.AdvisorId = null;
+                    dto.UserId = user.Id;                    
                     dto.ClientType = "Primary";
+                    dto.AdvisorId = null;
                     dto = await _repo.Client.CreateClient(dto);
 
                     dto.Status = "Success";

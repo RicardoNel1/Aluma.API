@@ -246,7 +246,6 @@ namespace Aluma.API.Repositories
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            
             _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
