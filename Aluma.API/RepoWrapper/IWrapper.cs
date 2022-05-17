@@ -55,22 +55,23 @@ namespace Aluma.API.RepoWrapper
         IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
         IAccrualRepo Accrual { get; }
         IRetirementPlanningRepo RetirementPlanning { get; }
+        IProvidingOnDeathRepo ProvidingOnDeath { get; }
 
         IAdministrationCostsRepo AdministrationCosts { get; }
         IEstateDutiesRepo EstateDuties { get; }
+        ICapitalGainsTaxRepo CapitalGainsTax { get; }
+        IAssumptionsRepo Assumptions { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
 
         //User
         IOtpRepo Otp { get; }
-
         IUserRepo User { get; }
         IUserDocumentsRepo UserDocuments { get; }
 
         // Third Party Services
         ISmsRepo SmsRepo { get; }
-
         IJwtRepo JwtRepo { get; }
         IKycFactoryRepo KycRepo { get; }
         IBankValidationServiceRepo BankValidationRepo { get; }

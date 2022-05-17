@@ -252,5 +252,69 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        //Capital Gains Tax
+        [HttpPost("capital_gains_tax"), AllowAnonymous]
+        public IActionResult CreateCapitalGainsTax([FromBody] CapitalGainsTaxDto dto)
+        {
+            try
+            {
+                bool estateDutyExists = _repo.CapitalGainsTax.DoesCapitalGainsTaxExist(dto);
+
+                if (estateDutyExists)
+                {
+                    return BadRequest("Capital Gains Tax Exists");
+                }
+                else
+                {
+                    _repo.CapitalGainsTax.CreateCapitalGainsTax(dto);
+                }
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("capital_gains_tax"), AllowAnonymous]
+        public IActionResult UpdateCapitalGainsTax([FromBody] CapitalGainsTaxDto dto)
+        {
+            try
+            {
+                bool estateDutyExists = _repo.CapitalGainsTax.DoesCapitalGainsTaxExist(dto);
+
+                if (!estateDutyExists)
+                {
+                    CreateCapitalGainsTax(dto);
+                }
+                else
+                {
+                    _repo.CapitalGainsTax.UpdateCapitalGainsTax(dto);
+                }
+
+                return Ok("Capital Gains Tax Updated");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("capital_gains_tax"), AllowAnonymous]
+        public IActionResult GetCapitalGainsTax(int clientId)
+        {
+            try
+            {
+                CapitalGainsTaxDto dto = _repo.CapitalGainsTax.GetCapitalGainsTax(clientId);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

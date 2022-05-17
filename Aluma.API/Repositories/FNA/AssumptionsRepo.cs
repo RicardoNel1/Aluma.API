@@ -16,7 +16,7 @@ namespace Aluma.API.Repositories
         AssumptionsDto CreateAssumptions(AssumptionsDto dto);
         bool DoesAssumptionsExist(AssumptionsDto dto);
         AssumptionsDto GetAssumptions(int fnaId);
-        AssumptionsDto UpdateAssumptions(AssumptionsDto dto);
+        AssumptionsDto UpdateAssumptions(AssumptionsDto dto, string update_type);
 
 
     }
@@ -63,17 +63,37 @@ namespace Aluma.API.Repositories
 
         }
 
-        public AssumptionsDto UpdateAssumptions(AssumptionsDto dto)
+        public AssumptionsDto UpdateAssumptions(AssumptionsDto dto, string update_type)
         {
             AssumptionsModel data = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
-            Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
-            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);      
 
-            //set fields to be updated       
-            data.RetirementAge = dto.RetirementAge;
-            data.CurrentNetIncome = dto.CurrentNetIncome;
-            data.DeathInvestmentRisk = parsedDeath;
-            data.DisabilityInvestmentRisk = parsedDisability;            
+            //Update according to screen
+            if (update_type == "retirement")
+            {
+                Enum.TryParse(dto.RetirementInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedRetirement);
+                data.RetirementInvestmentRisk = parsedRetirement;
+                data.RetirementAge = dto.RetirementAge;
+            }
+            else if (update_type == "death")
+            {
+                Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
+                data.DeathInvestmentRisk = parsedDeath;
+                data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            }
+            else if (update_type == "disability")
+            {
+                Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
+                data.DisabilityInvestmentRisk = parsedDisability;
+                data.RetirementAge = dto.RetirementAge;
+                data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            }
+            else if (update_type == "dread")
+            {
+                data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            }
+
+
+
 
             _context.Assumptions.Update(data);
             _context.SaveChanges();

@@ -78,7 +78,8 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AddressModelBuilder());
 
 
-            //FNA   
+            //FNA               
+            mb.ApplyConfiguration(new FNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
@@ -90,7 +91,9 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
-            mb.ApplyConfiguration(new EstateDutymodelBuilder());
+            mb.ApplyConfiguration(new EstateDutyModelBuilder());
+            mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
+            mb.ApplyConfiguration(new AssumptionsModelBuilder());
 
             foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             {
@@ -153,6 +156,9 @@ namespace DataService.Context
         public DbSet<AssumptionsModel> Assumptions { get; set; }
         public DbSet<AdministrationCostsModel> AdministrationCosts { get; set; }
         public DbSet<EstateDutyModel> EstateDuty { get; set; }
+        public DbSet<CapitalGainsTaxModel> CapitalGainsTax { get; set; }
+        public DbSet<ProvidingOnDeathModel> ProvidingOnDeath { get; set; }
+
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
