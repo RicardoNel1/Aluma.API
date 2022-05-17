@@ -10,7 +10,7 @@ namespace DataService.Dto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }
-        public int RetirementAge { get; set; }
+        public double RetirementAge { get; set; }
         public double CurrentGrossIncome { get; set; }
         public string RetirementInvestmentRisk { get; set; }
         public string DeathInvestmentRisk { get; set; }

@@ -41,8 +41,9 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateAssumptions([FromBody] AssumptionsDto dto, string update_type)
-        {          
+        public IActionResult UpdateAssumptions([FromBody] AssumptionsDto dto)
+        //public IActionResult UpdateAssumptions([FromBody] AssumptionsDto dto)
+        {
             try
             {
                 bool assumptionsExist = _repo.Assumptions.DoesAssumptionsExist(dto);
@@ -53,7 +54,7 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                    _repo.Assumptions.UpdateAssumptions(dto, update_type);
+                    _repo.Assumptions.UpdateAssumptions(dto);
                 }
 
                 return Ok("Assumptions Updated");
