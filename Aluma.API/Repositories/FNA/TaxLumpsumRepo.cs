@@ -5,6 +5,7 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -34,7 +35,7 @@ namespace Aluma.API.Repositories
 
         public TaxLumpsumDto CreateTaxLumpsum(TaxLumpsumDto dto)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public TaxLumpsumDto GetTaxLumpsum(int id)
@@ -43,7 +44,7 @@ namespace Aluma.API.Repositories
 
             if (taxLumpsum == null)
             {
-                return new TaxLumpsumDto();
+                return new TaxLumpsumDto() { ClientId = id };
             }
             else
             {
@@ -53,12 +54,12 @@ namespace Aluma.API.Repositories
 
         public TaxLumpsumDto UpdateTaxLumpsum(TaxLumpsumDto accrual)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public TaxLumpsumDto DeleteTaxLumpsum(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

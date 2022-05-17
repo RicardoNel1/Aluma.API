@@ -33,13 +33,29 @@ namespace Aluma.API.Controllers
         [HttpPost]
         public IActionResult CreateTaxLumpsum(TaxLumpsumDto dto)
         {
-            return null;
+            try
+            {
+                TaxLumpsumDto result = _repo.TaxLumpsum.CreateTaxLumpsum(dto);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPut]
         public IActionResult UpdateTaxLumpsum(TaxLumpsumDto dto)
         {
-            return null;
+            try
+            {
+                TaxLumpsumDto result = _repo.TaxLumpsum.CreateTaxLumpsum(dto);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpDelete]
