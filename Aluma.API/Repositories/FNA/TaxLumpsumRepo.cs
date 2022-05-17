@@ -5,16 +5,16 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace Aluma.API.Repositories
 {
     public interface ITaxLumpsumRepo : IRepoBase<TaxLumpsumModel>
     {
         TaxLumpSumDto CreateTaxLumpsum(TaxLumpSumDto dto);
-        TaxLumpSumDto GetAccrual(int id);
-        TaxLumpSumDto UpdateAccrual(TaxLumpSumDto accrual);
-        TaxLumpSumDto DeleteAccrual(int id);
-        bool Exists(int clientId);
+        TaxLumpSumDto GetTaxLumpsum(int id);
+        TaxLumpSumDto UpdateTaxLumpsum(TaxLumpSumDto accrual);
+        TaxLumpSumDto DeleteTaxLumpsum(int id);
     }
 
     public class TaxLumpsumRepo : RepoBase<TaxLumpsumModel>, ITaxLumpsumRepo
@@ -37,22 +37,17 @@ namespace Aluma.API.Repositories
             throw new System.NotImplementedException();
         }
 
-        public TaxLumpSumDto DeleteAccrual(int id)
+        public TaxLumpSumDto GetTaxLumpsum(int id)
+        {   
+            return _mapper.Map<TaxLumpSumDto>(_context.TaxLumpsum.Where(c => c.ClientId == id).FirstOrDefault());
+        }
+
+        public TaxLumpSumDto UpdateTaxLumpsum(TaxLumpSumDto accrual)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Exists(int clientId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public TaxLumpSumDto GetAccrual(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public TaxLumpSumDto UpdateAccrual(TaxLumpSumDto accrual)
+        public TaxLumpSumDto DeleteTaxLumpsum(int id)
         {
             throw new System.NotImplementedException();
         }
