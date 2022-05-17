@@ -8,7 +8,7 @@ namespace DataService.Model
     public class TaxLumpsumModel : BaseModel
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FnaId { get; set; }
         public float PreviouslyDisallowed { get; set; }
         public float RetirementReceived { get; set; }
         public float WithdrawalReceived { get; set; }
@@ -24,8 +24,6 @@ namespace DataService.Model
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
-            builder.HasIndex(c => c.ClientId).IsUnique();
         }
     }
 }

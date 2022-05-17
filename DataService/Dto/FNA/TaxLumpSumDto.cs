@@ -9,7 +9,7 @@ namespace DataService.Dto
     public class TaxLumpsumDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FnaId { get; set; }
         public float PreviouslyDisallowed { get; set; }
         public float RetirementReceived { get; set; }
         public float WithdrawalReceived { get; set; }

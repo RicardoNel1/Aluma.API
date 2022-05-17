@@ -35,16 +35,23 @@ namespace Aluma.API.Repositories
 
         public TaxLumpsumDto CreateTaxLumpsum(TaxLumpsumDto dto)
         {
-            throw new NotImplementedException();
+            TaxLumpsumModel tls = _mapper.Map<TaxLumpsumModel>(dto);
+
+            _context.TaxLumpsum.Add(tls);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<TaxLumpsumDto>(tls);
+
+            return dto;
         }
 
-        public TaxLumpsumDto GetTaxLumpsum(int id)
+        public TaxLumpsumDto GetTaxLumpsum(int fnaId)
         {
-            TaxLumpsumModel taxLumpsum = _context.TaxLumpsum.Where(c => c.ClientId == id).FirstOrDefault();
+            TaxLumpsumModel taxLumpsum = _context.TaxLumpsum.Where(c => c.FnaId == fnaId).FirstOrDefault();
 
             if (taxLumpsum == null)
             {
-                return new TaxLumpsumDto() { ClientId = id };
+                return new TaxLumpsumDto() { FnaId = fnaId };
             }
             else
             {
@@ -52,9 +59,20 @@ namespace Aluma.API.Repositories
             }
         }
 
-        public TaxLumpsumDto UpdateTaxLumpsum(TaxLumpsumDto accrual)
+        public TaxLumpsumDto UpdateTaxLumpsum(TaxLumpsumDto dto)
         {
-            throw new NotImplementedException();
+            TaxLumpsumModel tls = _context.TaxLumpsum.Where(a => a.FnaId == dto.FnaId).FirstOrDefault();
+
+            tls.PreviouslyDisallowed = dto.PreviouslyDisallowed;
+            tls.RetirementReceived = dto.RetirementReceived;
+            tls.WithdrawalReceived = dto.WithdrawalReceived;
+            tls.SeverenceReceived = dto.SeverenceReceived;
+            tls.TaxPayable = dto.TaxPayable;
+
+            _context.TaxLumpsum.Update(tls);
+            _context.SaveChanges();
+            dto = _mapper.Map<TaxLumpsumDto>(dto);
+            return dto;
         }
 
         public TaxLumpsumDto DeleteTaxLumpsum(int id)

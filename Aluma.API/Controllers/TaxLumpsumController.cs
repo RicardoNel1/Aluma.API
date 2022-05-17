@@ -17,11 +17,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTaxLumpsum(int clientId)
+        public IActionResult GetTaxLumpsum(int fnaId)
         {
             try
             {
-                TaxLumpsumDto taxLumpsum = _repo.TaxLumpsum.GetTaxLumpsum(clientId);
+                TaxLumpsumDto taxLumpsum = _repo.TaxLumpsum.GetTaxLumpsum(fnaId);
                 return Ok(taxLumpsum);
             }
             catch (Exception e)
