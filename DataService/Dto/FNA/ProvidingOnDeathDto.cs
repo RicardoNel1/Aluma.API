@@ -7,7 +7,7 @@ namespace DataService.Dto
     public class ProvidingOnDeathDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public double IncomeNeeds { get; set; }
         public int IncomeTerm_Years { get; set; }
         public double CapitalNeeds { get; set; }

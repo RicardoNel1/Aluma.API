@@ -51,14 +51,14 @@ namespace Aluma.API.Repositories
         public bool DoesProvidingOnDeathExist(ProvidingOnDeathDto dto)
         {
             bool providingOnDeathExist = false;
-            providingOnDeathExist = _context.ProvidingOnDeath.Where(a => a.ClientId == dto.ClientId).Any();
+            providingOnDeathExist = _context.ProvidingOnDeath.Where(a => a.FNAId == dto.FNAId).Any();
             return providingOnDeathExist;
 
         }
 
-        public ProvidingOnDeathDto GetProvidingOnDeath(int clientId)
+        public ProvidingOnDeathDto GetProvidingOnDeath(int fnaId)
         {
-            ProvidingOnDeathModel data = _context.ProvidingOnDeath.Where(c => c.ClientId == clientId).First();
+            ProvidingOnDeathModel data = _context.ProvidingOnDeath.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<ProvidingOnDeathDto>(data);
 
         }
@@ -66,7 +66,7 @@ namespace Aluma.API.Repositories
         public ProvidingOnDeathDto UpdateProvidingOnDeath(ProvidingOnDeathDto dto)
         {
 
-            ProvidingOnDeathModel data = _context.ProvidingOnDeath.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            ProvidingOnDeathModel data = _context.ProvidingOnDeath.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
             //set fields to be updated       
             data.IncomeNeeds = dto.IncomeNeeds;

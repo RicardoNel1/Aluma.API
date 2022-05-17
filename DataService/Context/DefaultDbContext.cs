@@ -79,7 +79,7 @@ namespace DataService.Context
 
 
             //FNA               
-            mb.ApplyConfiguration(new FNAModelBuilder());
+            mb.ApplyConfiguration(new ClientFNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
