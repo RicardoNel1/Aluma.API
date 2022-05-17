@@ -13,7 +13,7 @@ namespace DataService.Model
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public int RetirementAge { get; set; }
+        public double RetirementAge { get; set; }
         public double CurrentGrossIncome { get; set; }
         public InvestmentRiskEnum RetirementInvestmentRisk { get; set; }
         public InvestmentRiskEnum DeathInvestmentRisk { get; set; }
