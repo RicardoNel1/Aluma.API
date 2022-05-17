@@ -90,6 +90,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
+            mb.ApplyConfiguration(new TaxLumpsumBuilder());
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
             mb.ApplyConfiguration(new EstateDutyModelBuilder());
             mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
@@ -158,6 +159,7 @@ namespace DataService.Context
         public DbSet<EstateDutyModel> EstateDuty { get; set; }
         public DbSet<CapitalGainsTaxModel> CapitalGainsTax { get; set; }
         public DbSet<ProvidingOnDeathModel> ProvidingOnDeath { get; set; }
+        public DbSet<TaxLumpsumModel> TaxLumpsum { get; set; }
 
 
         //Shared

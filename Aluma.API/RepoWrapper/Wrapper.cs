@@ -60,6 +60,7 @@ namespace Aluma.API.RepoWrapper
         private IProvidingOnDeathRepo _providingOnDeath;
         private IAssumptionsRepo _assumptions;
         private IAdministrationCostsRepo _administrationCosts;
+        private ITaxLumpsumRepo _taxLumpsum;
 
 
         private IFIRepo _fi;
@@ -264,6 +265,10 @@ namespace Aluma.API.RepoWrapper
             get { return _capitalGainsTax == null ? new CapitalGainsTaxRepo(_dbContext, _host, _config, _mapper) : _capitalGainsTax; }
         }
 
+        public ITaxLumpsumRepo TaxLumpsum
+        {
+            get { return _taxLumpsum == null ? new TaxLumpsumRepo(_dbContext, _host, _config, _mapper) : _taxLumpsum; }
+        }
 
         //Products and Documents
         public IFIRepo FI
