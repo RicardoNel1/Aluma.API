@@ -9,7 +9,7 @@ namespace DataService.Dto
     public class AssumptionsDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public double RetirementAge { get; set; }
         public double CurrentGrossIncome { get; set; }
         public string RetirementInvestmentRisk { get; set; }

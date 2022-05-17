@@ -14,7 +14,7 @@ namespace Aluma.API.Repositories
     public interface ILiquidAssetsRepo : IRepoBase<LiquidAssetsModel>
     {
         bool DoesLiquidAssetsExist(LiquidAssetsDto dto);
-        List<LiquidAssetsDto> GetLiquidAssets(int clientId);
+        List<LiquidAssetsDto> GetLiquidAssets(int fnaId);
         LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray, string update_type);
 
         bool DeleteLiquidAssetsItem(int id);
@@ -40,14 +40,14 @@ namespace Aluma.API.Repositories
         public bool DoesLiquidAssetsExist(LiquidAssetsDto dto)
         {
             bool liquidAssetsExist = false;
-            liquidAssetsExist = _context.LiquidAssets.Where(a => a.ClientId == dto.ClientId).Any();
+            liquidAssetsExist = _context.LiquidAssets.Where(a => a.FNAId == dto.FNAId).Any();
             return liquidAssetsExist;
 
         }
 
-        public List<LiquidAssetsDto> GetLiquidAssets(int clientId)
+        public List<LiquidAssetsDto> GetLiquidAssets(int fnaId)
         {
-            ICollection<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.ClientId == clientId).ToList();
+            ICollection<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.FNAId == fnaId).ToList();
             List<LiquidAssetsDto> assets = new();
 
             foreach (var item in data)
@@ -55,7 +55,7 @@ namespace Aluma.API.Repositories
                 LiquidAssetsDto asset = new()
                 {
                     Id = item.Id,
-                    ClientId = item.ClientId,
+                    FNAId = item.FNAId,
                     Description = item.Description,
                     Value = item.Value,
                     AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo)
@@ -123,7 +123,7 @@ namespace Aluma.API.Repositories
                         else
                         {
                             Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            newItem.ClientId = item.ClientId;
+                            newItem.FNAId = item.FNAId;
                             newItem.Description = item.Description;
                             newItem.Value = item.Value;
                             newItem.AllocateTo = parsedAllocation;

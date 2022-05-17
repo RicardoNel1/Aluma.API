@@ -52,8 +52,7 @@ namespace DataService
             CreateMap<BankDetailsModel, BankDetailsDto>()
                 .ReverseMap();
 
-            //CreateMap<ClientModel, ApplicationDto>()
-            //   .ReverseMap();
+            CreateMap<LeadModel, LeadDto>().ReverseMap(); 
 
             CreateMap<ClientModel, ClientDto>()
                .ReverseMap();
@@ -85,7 +84,7 @@ namespace DataService
                 .ReverseMap();
 
             //FNA
-            CreateMap<ClientFNADto, FNAModel>()
+            CreateMap<ClientFNADto, ClientFNAModel>()
                 .ReverseMap();
 
             CreateMap<PrimaryResidenceModel, PrimaryResidenceDto>()
@@ -102,6 +101,9 @@ namespace DataService
 
 
             CreateMap<RetirementPlanningModel, RetirementPlanningDto>()
+                .ReverseMap();
+
+            CreateMap<ProvidingOnDeathModel, ProvidingOnDeathDto>()
                 .ReverseMap();
 
             CreateMap<EstateDutyModel, EstateDutyDto>()

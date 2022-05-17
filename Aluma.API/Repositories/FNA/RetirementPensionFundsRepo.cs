@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
 {
     public interface IRetirementPensionFundsRepo : IRepoBase<RetirementPensionFundsModel>
     {
-        List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId);
+        List<RetirementPensionFundsDto> GetRetirementPensionFunds(int fnaId);
         RetirementPensionFundsDto UpdateRetirementPensionFunds(RetirementPensionFundsDto[] dtoArray);
 
         bool DeleteRetirementPensionFundsItem(int id);
@@ -35,9 +35,9 @@ namespace Aluma.API.Repositories
         }
 
 
-        public List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId)
+        public List<RetirementPensionFundsDto> GetRetirementPensionFunds(int fnaId)
         {
-            ICollection<RetirementPensionFundsModel> data = _context.RetirementPensionFunds.Where(c => c.ClientId == clientId).ToList();
+            ICollection<RetirementPensionFundsModel> data = _context.RetirementPensionFunds.Where(c => c.FNAId == fnaId).ToList();
             List<RetirementPensionFundsDto> funds = new List<RetirementPensionFundsDto>();
 
             foreach (var item in data)
@@ -45,7 +45,7 @@ namespace Aluma.API.Repositories
                 RetirementPensionFundsDto fund = new RetirementPensionFundsDto();
 
                 fund.Id = item.Id;
-                fund.ClientId = item.ClientId;
+                fund.FNAId = item.FNAId;
                 fund.Description = item.Description;
                 fund.Value = item.Value;
                 fund.MonthlyContributions = item.MonthlyContributions;
@@ -81,7 +81,7 @@ namespace Aluma.API.Repositories
                 {
                     RetirementPensionFundsModel newItem = new RetirementPensionFundsModel();
 
-                    newItem.ClientId = item.ClientId;
+                    newItem.FNAId = item.FNAId;
                     newItem.Description = item.Description;
                     newItem.Value = item.Value;
                     newItem.MonthlyContributions = item.MonthlyContributions;

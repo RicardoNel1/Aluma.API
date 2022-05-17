@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
-    public interface IFNARepo : IRepoBase<FNAModel>
+    public interface IFNARepo : IRepoBase<ClientFNAModel>
     {
-        void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
+        void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna);
         Task<ClientFNADto> CreateFNA(ClientFNADto dto);
         ClientFNADto GetClientFNA(int clientId);
     }
 
-    public class FNARepo : RepoBase<FNAModel>, IFNARepo
+    public class FNARepo : RepoBase<ClientFNAModel>, IFNARepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
@@ -37,8 +37,8 @@ namespace Aluma.API.Repositories
         public async Task<ClientFNADto> CreateFNA(ClientFNADto dto)
         {
             
-                FNAModel newFna = _mapper.Map<FNAModel>(dto);
-                _context.FNA.Add(newFna);
+                ClientFNAModel newFna = _mapper.Map<ClientFNAModel>(dto);
+                _context.clientFNA.Add(newFna);
                 _context.SaveChanges();
                 dto = _mapper.Map<ClientFNADto>(newFna);
 
@@ -46,7 +46,7 @@ namespace Aluma.API.Repositories
             
         }
 
-        public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
+        public void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna)
         {
             //var data = new Dictionary<string, string>();
 
@@ -90,7 +90,7 @@ namespace Aluma.API.Repositories
 
         public ClientFNADto GetClientFNA(int clientId)
         {
-            var fnaModel = _context.FNA.Where(r => r.ClientId == clientId);
+            var fnaModel = _context.clientFNA.Where(r => r.ClientId == clientId);
 
             if (fnaModel.Any())
             {

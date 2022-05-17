@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
 {
     public interface IAssetsAttractingCGTRepo : IRepoBase<AssetsAttractingCGTModel>
     {
-        List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId);
+        List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId);
         AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray, string update_type);
 
         bool DeleteAssetsAttractingCGTItem(int id);
@@ -36,9 +36,9 @@ namespace Aluma.API.Repositories
         }
                 
 
-        public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int clientId)
+        public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId)
         {
-            ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.ClientId == clientId).ToList();
+            ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.FNAId == fnaId).ToList();
             List<AssetsAttractingCGTDto> assets = new();
 
             foreach (var item in data)
@@ -46,7 +46,7 @@ namespace Aluma.API.Repositories
                 AssetsAttractingCGTDto asset = new()
                 {
                     Id = item.Id,
-                    ClientId = item.ClientId,
+                    FNAId = item.FNAId,
                     Description = item.Description,
                     Value = item.Value,
                     PropertyType = Enum.GetName(typeof(DataService.Enum.PropertyTypeEnum), item.PropertyType),
@@ -120,7 +120,7 @@ namespace Aluma.API.Repositories
                         {
                             Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
                             Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
-                            newItem.ClientId = item.ClientId;
+                            newItem.FNAId = item.FNAId;
                             newItem.Description = item.Description;
                             newItem.Value = item.Value;
                             newItem.PropertyType = parsedType;

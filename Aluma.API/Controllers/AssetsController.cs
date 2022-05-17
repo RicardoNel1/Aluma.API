@@ -23,14 +23,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);                
+                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);
 
                 if (primaryResidenceExists)
                 {
                     return BadRequest("Primary Residence Exists");
                 }
                 else
-                { 
+                {
                     _repo.PrimaryResidence.CreatePrimaryResidence(dto);
                 }
                 return Ok(dto);
@@ -43,7 +43,7 @@ namespace Aluma.API.Controllers
 
         [HttpPut("primary_residence"), AllowAnonymous]
         public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto, string update_type)
-        {          
+        {
             try
             {
                 bool primaryResidenceExist = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);
@@ -66,11 +66,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("primary_residence"), AllowAnonymous]
-        public IActionResult GetPrimaryResidence(int clientId)
+        public IActionResult GetPrimaryResidence(int fnaId)
         {
             try
             {
-                PrimaryResidenceDto dto = _repo.PrimaryResidence.GetPrimaryResidence(clientId);
+                PrimaryResidenceDto dto = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
 
                 return Ok(dto);
             }
@@ -79,7 +79,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-                
+
 
         //Assets Attracting CGT        
 
@@ -98,11 +98,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult GetAssetsAttractingCGT(int clientId)
-        {            
+        public IActionResult GetAssetsAttractingCGT(int fnaId)
+        {
             try
             {
-                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
+                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(fnaId);
 
                 return Ok(dtoList);
             }
@@ -144,11 +144,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult GetAssetsExemptFromCGT(int clientId)
+        public IActionResult GetAssetsExemptFromCGT(int fnaId)
         {
             try
             {
-                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(clientId);
+                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(fnaId);
 
                 return Ok(dtoList);
             }
@@ -172,7 +172,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-                
+
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
@@ -190,11 +190,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("liquid_assets"), AllowAnonymous]
-        public IActionResult GetLiquidAssets(int clientId)
+        public IActionResult GetLiquidAssets(int fnaId)
         {
             try
             {
-                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(clientId);
+                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(fnaId);
 
                 return Ok(dtoList);
             }

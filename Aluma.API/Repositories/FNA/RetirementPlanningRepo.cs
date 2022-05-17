@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         RetirementPlanningDto CreateRetirementPlanning(RetirementPlanningDto dto);
         bool DoesRetirementPlanningExist(RetirementPlanningDto dto);
-        RetirementPlanningDto GetRetirementPlanning(int clientId);
+        RetirementPlanningDto GetRetirementPlanning(int fnaId);
         RetirementPlanningDto UpdateRetirementPlanning(RetirementPlanningDto dto);
 
 
@@ -51,21 +51,21 @@ namespace Aluma.API.Repositories
         public bool DoesRetirementPlanningExist(RetirementPlanningDto dto)
         {
             bool retirementPlanningExist = false;
-            retirementPlanningExist = _context.RetirementPlanning.Where(a => a.ClientId == dto.ClientId).Any();
+            retirementPlanningExist = _context.RetirementPlanning.Where(a => a.FNAId == dto.FNAId).Any();
             return retirementPlanningExist;
 
         }
 
-        public RetirementPlanningDto GetRetirementPlanning(int clientId)
+        public RetirementPlanningDto GetRetirementPlanning(int fnaId)
         {
-            RetirementPlanningModel data = _context.RetirementPlanning.Where(c => c.ClientId == clientId).First();
+            RetirementPlanningModel data = _context.RetirementPlanning.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<RetirementPlanningDto>(data);
 
         }
 
         public RetirementPlanningDto UpdateRetirementPlanning(RetirementPlanningDto dto)
         {
-            RetirementPlanningModel data = _context.RetirementPlanning.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            RetirementPlanningModel data = _context.RetirementPlanning.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
             //set fields to be updated       
             data.MonthlyIncome = dto.MonthlyIncome;

@@ -19,7 +19,6 @@ namespace Aluma.API.RepoWrapper
 
         //IDividendTaxRepo DividendTax { get; }
         IFspMandateRepo FSPMandate { get; }
-        IFNARepo FNA { get; }
 
         IFIRepo FI { get; }
         IPEFRepo PEF { get; }
@@ -32,6 +31,7 @@ namespace Aluma.API.RepoWrapper
         IRecordOfAdviceRepo RecordOfAdvice { get; }
 
         //Client
+        ILeadRepo Leads { get; }
         IClientRepo Client { get; }
         IBankDetailsRepo BankDetails { get; }
         IKYCDataRepo KycData { get; }
@@ -43,6 +43,7 @@ namespace Aluma.API.RepoWrapper
         IProductRepo ProductRepo { get; }
 
         //FNA
+        IFNARepo FNA { get; }
         IPrimaryResidenceRepo PrimaryResidence { get; }
         IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
         IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }

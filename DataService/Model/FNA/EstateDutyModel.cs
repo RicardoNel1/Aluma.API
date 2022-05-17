@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 
 namespace DataService.Model
 {
-    [Table("estate_duty")]
+    [Table("fna_estate_duty")]
     public class EstateDutyModel : BaseModel
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public double Section4pValue { get; set; }
         public double LimitedRights { get; set; }
         public bool ResidueToSpouse { get; set; }

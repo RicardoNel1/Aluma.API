@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("risk_profiles")]
+    [Table("client_risk_profile")]
     public class RiskProfileModel : BaseModel
     {
         public ClientModel Client { get; set; }

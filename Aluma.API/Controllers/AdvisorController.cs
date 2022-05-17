@@ -113,8 +113,6 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                //var claims = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
                 var advisor = _repo.Advisor.GetAllAdvisors();
 
                 return Ok(advisor);

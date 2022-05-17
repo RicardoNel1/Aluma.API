@@ -31,7 +31,8 @@ namespace DataService.Model
         public string FirstName { get; set; }
                 
         public string LastName { get; set; }
-                
+        public string MaidenName { get; set; }
+
         public string RSAIdNumber { get; set; }
 
         public string DateOfBirth { get; set; }

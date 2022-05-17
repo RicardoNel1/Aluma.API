@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("tax_residency")]
+    [Table("client_tax_residency")]
     public class TaxResidencyModel : BaseModel
     {
         public ClientModel Client { get; set; }
@@ -32,7 +32,7 @@ namespace DataService.Model
         }
     }
 
-    [Table("foreign_tax_residency")]
+    [Table("client_foreign_tax")]
     public class ForeignTaxResidencyModel : BaseModel
     {
         public TaxResidencyModel TaxResidency { get; set; }

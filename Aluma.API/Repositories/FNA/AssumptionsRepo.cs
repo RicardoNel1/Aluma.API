@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         AssumptionsDto CreateAssumptions(AssumptionsDto dto);
         bool DoesAssumptionsExist(AssumptionsDto dto);
-        AssumptionsDto GetAssumptions(int clientId);
+        AssumptionsDto GetAssumptions(int fnaId);
         AssumptionsDto UpdateAssumptions(AssumptionsDto dto);
 
 
@@ -51,21 +51,21 @@ namespace Aluma.API.Repositories
         public bool DoesAssumptionsExist(AssumptionsDto dto)
         {
             bool assumptionsExist = false;
-            assumptionsExist = _context.Assumptions.Where(a => a.ClientId == dto.ClientId).Any();
+            assumptionsExist = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).Any();
             return assumptionsExist;
 
         }
 
-        public AssumptionsDto GetAssumptions(int clientId)
+        public AssumptionsDto GetAssumptions(int fnaId)
         {
-            AssumptionsModel data = _context.Assumptions.Where(c => c.ClientId == clientId).First();
+            AssumptionsModel data = _context.Assumptions.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<AssumptionsDto>(data);
 
         }
 
         public AssumptionsDto UpdateAssumptions(AssumptionsDto dto)
         {
-            AssumptionsModel data = _context.Assumptions.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            AssumptionsModel data = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
             //Update according to screen
             //if (update_type == "retirement")

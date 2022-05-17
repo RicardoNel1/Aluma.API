@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("otp")]
+    [Table("user_otp")]
     public class OtpModel : BaseModel
     {
         public UserModel User { get; set; }
