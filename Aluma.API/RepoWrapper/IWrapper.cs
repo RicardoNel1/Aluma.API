@@ -62,6 +62,7 @@ namespace Aluma.API.RepoWrapper
         IEstateDutiesRepo EstateDuties { get; }
         ICapitalGainsTaxRepo CapitalGainsTax { get; }
         IAssumptionsRepo Assumptions { get; }
+        ITaxLumpsumRepo TaxLumpsum { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
