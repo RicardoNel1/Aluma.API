@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto);
         List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId);
-        AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray, string update_type);
+        AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray);
 
         bool DeleteAssetsExemptFromCGTItem(int id);
     }
@@ -35,11 +35,11 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
 
         public bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto)
         {
-           bool assetsExemptFromCGTExist = false;
+            bool assetsExemptFromCGTExist = false;
             assetsExemptFromCGTExist = _context.AssetsExemptFromCGT.Where(a => a.FNAId == dto.FNAId).Any();
             return assetsExemptFromCGTExist;
 
@@ -67,7 +67,7 @@ namespace Aluma.API.Repositories
             return assets;
         }
 
-        public AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray, string update_type)
+        public AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray)
         {
 
             foreach (var item in dtoArray)
@@ -79,26 +79,14 @@ namespace Aluma.API.Repositories
                 {
                     AssetsExemptFromCGTModel updateItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).FirstOrDefault();
 
-                    //Update All fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        updateItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            updateItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            updateItem.Description = item.Description;
-                            updateItem.Value = item.Value;
-                            updateItem.AllocateTo = parsedAllocation;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.AllocateTo = parsedAllocation;
+
+                    updateItem.DisposedOnDisability = item.DisposedOnDisability;
+                    updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    updateItem.Growth = item.Growth;
 
                     _context.AssetsExemptFromCGT.Update(updateItem);
 
@@ -107,27 +95,15 @@ namespace Aluma.API.Repositories
                 {
                     AssetsExemptFromCGTModel newItem = new AssetsExemptFromCGTModel();
 
-                    //Add fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        newItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            newItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            newItem.FNAId = item.FNAId;
-                            newItem.Description = item.Description;
-                            newItem.Value = item.Value;
-                            newItem.AllocateTo = parsedAllocation;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    newItem.FNAId = item.FNAId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.AllocateTo = parsedAllocation;
+
+                    newItem.DisposedOnDisability = item.DisposedOnDisability;
+                    newItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    newItem.Growth = item.Growth;
 
                     _context.AssetsExemptFromCGT.Add(newItem);
 
