@@ -16,7 +16,7 @@ namespace Aluma.API.Repositories
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
         PrimaryResidenceDto GetPrimaryResidence(int fnaId);
-        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type);
+        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
 
     }
 
@@ -62,32 +62,19 @@ namespace Aluma.API.Repositories
 
         }
 
-        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type)
+        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();            
-            
-            //Update All fields or Retirement or Disability
-            if (update_type == "retirement")
-            {
-                data.DisposedAtRetirement = dto.DisposedAtRetirement;
-                data.Growth = dto.Growth;
-            }
-            else
-            {
-                if (update_type == "disability")
-                {
-                    data.DisposedOnDisability = dto.DisposedOnDisability;
-                }
-                else
-                {
-                    Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
-                    data.Description = dto.Description;
-                    data.AllocateTo = parsedAllocation;
-                    data.Value = dto.Value;
-                    data.BaseCost = dto.BaseCost;
-                }
-            }
+            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            data.Description = dto.Description;
+            data.AllocateTo = parsedAllocation;
+            data.Value = dto.Value;
+            data.BaseCost = dto.BaseCost;
+
+            data.DisposedOnDisability = dto.DisposedOnDisability;
+            data.DisposedAtRetirement = dto.DisposedAtRetirement;
+            data.Growth = dto.Growth;
 
             _context.PrimaryResidence.Update(data);
             _context.SaveChanges();

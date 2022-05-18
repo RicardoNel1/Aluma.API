@@ -14,7 +14,7 @@ namespace Aluma.API.Repositories
     public interface IAssetsAttractingCGTRepo : IRepoBase<AssetsAttractingCGTModel>
     {
         List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId);
-        AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray, string update_type);
+        AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray);
 
         bool DeleteAssetsAttractingCGTItem(int id);
 
@@ -34,7 +34,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
+
 
         public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId)
         {
@@ -61,9 +61,9 @@ namespace Aluma.API.Repositories
             return assets;
         }
 
-        public AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray, string update_type)
+        public AssetsAttractingCGTDto UpdateAssetsAttractingCGT(AssetsAttractingCGTDto[] dtoArray)
         {
-            
+
             foreach (var item in dtoArray)
             {
 
@@ -73,29 +73,17 @@ namespace Aluma.API.Repositories
                 {
                     AssetsAttractingCGTModel updateItem = _context.AssetsAttractingCGT.Where(a => a.Id == item.Id).FirstOrDefault();
 
-                    //Update All fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        updateItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            updateItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
-                            updateItem.Description = item.Description;
-                            updateItem.Value = item.Value;
-                            updateItem.PropertyType = parsedType;
-                            updateItem.AllocateTo = parsedAllocation;
-                            updateItem.BaseCost = item.BaseCost;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.PropertyType = parsedType;
+                    updateItem.AllocateTo = parsedAllocation;
+                    updateItem.BaseCost = item.BaseCost;
+
+                    updateItem.DisposedOnDisability = item.DisposedOnDisability;
+                    updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    updateItem.Growth = item.Growth;
 
                     _context.AssetsAttractingCGT.Update(updateItem);
 
@@ -104,30 +92,18 @@ namespace Aluma.API.Repositories
                 {
                     AssetsAttractingCGTModel newItem = new();
 
-                    //Add fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        newItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            newItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
-                            newItem.FNAId = item.FNAId;
-                            newItem.Description = item.Description;
-                            newItem.Value = item.Value;
-                            newItem.PropertyType = parsedType;
-                            newItem.AllocateTo = parsedAllocation;
-                            newItem.BaseCost = item.BaseCost;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
+                    newItem.FNAId = item.FNAId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.PropertyType = parsedType;
+                    newItem.AllocateTo = parsedAllocation;
+                    newItem.BaseCost = item.BaseCost;
+
+                    newItem.DisposedOnDisability = item.DisposedOnDisability;
+                    newItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    newItem.Growth = item.Growth;
 
                     _context.AssetsAttractingCGT.Add(newItem);
 
@@ -139,7 +115,7 @@ namespace Aluma.API.Repositories
 
         }
 
-         public bool DeleteAssetsAttractingCGTItem(int id)
+        public bool DeleteAssetsAttractingCGTItem(int id)
         {
             AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
             //item.isDeleted = false;

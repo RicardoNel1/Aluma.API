@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         bool DoesLiquidAssetsExist(LiquidAssetsDto dto);
         List<LiquidAssetsDto> GetLiquidAssets(int fnaId);
-        LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray, string update_type);
+        LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray);
 
         bool DeleteLiquidAssetsItem(int id);
 
@@ -35,7 +35,7 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-               
+
 
         public bool DoesLiquidAssetsExist(LiquidAssetsDto dto)
         {
@@ -68,7 +68,7 @@ namespace Aluma.API.Repositories
             return assets;
         }
 
-        public LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray, string update_type)
+        public LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray)
         {
 
             foreach (var item in dtoArray)
@@ -80,26 +80,14 @@ namespace Aluma.API.Repositories
                 {
                     LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
 
-                    //Update All fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        updateItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            updateItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            updateItem.Description = item.Description;
-                            updateItem.Value = item.Value;
-                            updateItem.AllocateTo = parsedAllocation;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    updateItem.Description = item.Description;
+                    updateItem.Value = item.Value;
+                    updateItem.AllocateTo = parsedAllocation;
+
+                    updateItem.DisposedOnDisability = item.DisposedOnDisability;
+                    updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    updateItem.Growth = item.Growth;
 
                     _context.LiquidAssets.Update(updateItem);
 
@@ -108,27 +96,15 @@ namespace Aluma.API.Repositories
                 {
                     LiquidAssetsModel newItem = new LiquidAssetsModel();
 
-                    //Add fields or Retirement or Disability
-                    if (update_type == "retirement")
-                    {
-                        newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                        newItem.Growth = item.Growth;
-                    }
-                    else
-                    {
-                        if (update_type == "disability")
-                        {
-                            newItem.DisposedOnDisability = item.DisposedOnDisability;
-                        }
-                        else
-                        {
-                            Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                            newItem.FNAId = item.FNAId;
-                            newItem.Description = item.Description;
-                            newItem.Value = item.Value;
-                            newItem.AllocateTo = parsedAllocation;
-                        }
-                    }
+                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                    newItem.FNAId = item.FNAId;
+                    newItem.Description = item.Description;
+                    newItem.Value = item.Value;
+                    newItem.AllocateTo = parsedAllocation;
+
+                    newItem.DisposedOnDisability = item.DisposedOnDisability;
+                    newItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                    newItem.Growth = item.Growth;
 
                     _context.LiquidAssets.Add(newItem);
 
