@@ -25,7 +25,7 @@ namespace DataService.Model
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.HasIndex(c => c.FnaId).IsUnique();
+            //builder.HasIndex(c => c.FnaId).IsUnique();
         }
     }
 }

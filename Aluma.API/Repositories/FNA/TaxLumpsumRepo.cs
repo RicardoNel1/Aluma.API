@@ -51,7 +51,7 @@ namespace Aluma.API.Repositories
 
             if (taxLumpsum == null)
             {
-                return new TaxLumpsumDto() { FnaId = fnaId };
+                return new TaxLumpsumDto();
             }
             else
             {

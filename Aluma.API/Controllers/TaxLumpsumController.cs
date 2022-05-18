@@ -6,7 +6,7 @@ using System;
 
 namespace Aluma.API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize]
+    [ApiController, Route("api/[controller]")]
     public class TaxLumpsumController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -30,8 +30,8 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost("test"), AllowAnonymous]
-        public IActionResult CreateTaxLumpsum(TaxLumpsumDto dto)
+        [HttpPost, AllowAnonymous]
+        public IActionResult CreateTaxLumpsum([FromBody] TaxLumpsumDto dto)
         {
             try
             {
@@ -44,12 +44,12 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateTaxLumpsum(TaxLumpsumDto dto)
         {
             try
             {
-                TaxLumpsumDto result = _repo.TaxLumpsum.CreateTaxLumpsum(dto);
+                TaxLumpsumDto result = _repo.TaxLumpsum.UpdateTaxLumpsum(dto);
                 return Ok(result);
             }
             catch (Exception e)
@@ -58,11 +58,11 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult DeleteTaxLumpsum(int clientId)
-        {
-            return null;
-        }
+        //[HttpDelete]
+        //public IActionResult DeleteTaxLumpsum(int clientId)
+        //{
+        //    return null;
+        //}
 
 
     }
