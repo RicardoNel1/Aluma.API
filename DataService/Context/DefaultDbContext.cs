@@ -136,6 +136,8 @@ namespace DataService.Context
         public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
         public DbSet<ClientFNAModel> clientFNA { get; set; }
         public DbSet<ClientProductModel> ClientProducts { get; set; }
+        public DbSet<EmploymentDetailsModel> EmploymentDetails { get; set; }
+        public DbSet<MaritalDetailsModel> MaritalDetails { get; set; }
 
 
         //Product

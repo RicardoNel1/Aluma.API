@@ -10,7 +10,7 @@ namespace DataService.Dto
         public string DateOfBirth { get; set; }
         public RoleEnum Role { get; set; }
         public string ProfilePicture { get; set; }
-
+        public string Password { get; set; }
         public bool HasSignature { get; set; }
     }
 

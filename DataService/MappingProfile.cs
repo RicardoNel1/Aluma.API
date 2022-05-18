@@ -48,6 +48,10 @@ namespace DataService
                 .ReverseMap();
 
             //Client
+            CreateMap<EmploymentDetailsModel, EmploymentDetailsDto>()
+                .ReverseMap(); 
+            CreateMap<MaritalDetailsModel, MaritalDetailsDto>()
+                 .ReverseMap();
 
             CreateMap<BankDetailsModel, BankDetailsDto>()
                 .ReverseMap();

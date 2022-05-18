@@ -60,7 +60,7 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).Include(a => a.EmploymentDetails).Include(a => a.MaritalDetails).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
@@ -150,7 +150,7 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClient(ClientDto dto)
         {
-            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
+            ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
             dto.User.MobileNumber = "0" + dto.User.MobileNumber;
@@ -245,8 +245,10 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
+            dto.ClientType = "Primary";
+            dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);
+            _context.Clients.Add(client);            
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
