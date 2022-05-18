@@ -30,7 +30,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("test"), AllowAnonymous]
         public IActionResult CreateTaxLumpsum(TaxLumpsumDto dto)
         {
             try

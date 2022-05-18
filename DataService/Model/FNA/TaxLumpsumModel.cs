@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("tax_lumpsum")]
+    [Table("fna_tax_lumpsum")]
     public class TaxLumpsumModel : BaseModel
     {
         public int Id { get; set; }
         public int FnaId { get; set; }
-        public float PreviouslyDisallowed { get; set; }
-        public float RetirementReceived { get; set; }
-        public float WithdrawalReceived { get; set; }
-        public float SeverenceReceived { get; set; }
-        public float TaxPayable { get; set; }
+        public double PreviouslyDisallowed { get; set; }
+        public double RetirementReceived { get; set; }
+        public double WithdrawalReceived { get; set; }
+        public double SeverenceReceived { get; set; }
+        public double TaxPayable { get; set; }
 
     }
 
@@ -24,6 +24,8 @@ namespace DataService.Model
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            builder.HasIndex(c => c.FnaId).IsUnique();
         }
     }
 }
