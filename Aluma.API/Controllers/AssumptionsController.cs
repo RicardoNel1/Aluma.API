@@ -66,11 +66,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetAssumptions(int clientId)
+        public IActionResult GetAssumptions(int fnaId)
         {
             try
             {
-                AssumptionsDto dto = _repo.Assumptions.GetAssumptions(clientId);
+                AssumptionsDto dto = _repo.Assumptions.GetAssumptions(fnaId);
 
                 return Ok(dto);
             }
