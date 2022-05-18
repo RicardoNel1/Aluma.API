@@ -6,7 +6,7 @@ using System;
 
 namespace Aluma.API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize]
+    [ApiController, Route("api/[controller]")]
     public class TaxLumpsumController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -17,11 +17,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTaxLumpsum(int clientId)
+        public IActionResult GetTaxLumpsum(int fnaId)
         {
             try
             {
-                TaxLumpsumDto taxLumpsum = _repo.TaxLumpsum.GetTaxLumpsum(clientId);
+                TaxLumpsumDto taxLumpsum = _repo.TaxLumpsum.GetTaxLumpsum(fnaId);
                 return Ok(taxLumpsum);
             }
             catch (Exception e)
@@ -30,23 +30,39 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult CreateTaxLumpsum(TaxLumpsumDto dto)
+        [HttpPost, AllowAnonymous]
+        public IActionResult CreateTaxLumpsum([FromBody] TaxLumpsumDto dto)
         {
-            return null;
+            try
+            {
+                TaxLumpsumDto result = _repo.TaxLumpsum.CreateTaxLumpsum(dto);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
-        [HttpPut]
+        [HttpPut, AllowAnonymous]
         public IActionResult UpdateTaxLumpsum(TaxLumpsumDto dto)
         {
-            return null;
+            try
+            {
+                TaxLumpsumDto result = _repo.TaxLumpsum.UpdateTaxLumpsum(dto);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
-        [HttpDelete]
-        public IActionResult DeleteTaxLumpsum(int clientId)
-        {
-            return null;
-        }
+        //[HttpDelete]
+        //public IActionResult DeleteTaxLumpsum(int clientId)
+        //{
+        //    return null;
+        //}
 
 
     }
