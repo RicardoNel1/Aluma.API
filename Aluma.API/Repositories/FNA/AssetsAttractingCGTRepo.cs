@@ -39,15 +39,8 @@ namespace Aluma.API.Repositories
 
         public List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId)
         {
-            ICollection<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.FNAId == fnaId).ToList();
-            List<AssetsAttractingCGTDto> assets = new();
-
-            foreach (var item in data)
-            {
-                var asset =  _mapper.Map<AssetsAttractingCGTDto>(item);
-                assets.Add(asset);
-
-            }
+            List<AssetsAttractingCGTModel> data = _context.AssetsAttractingCGT.Where(c => c.FNAId == fnaId).ToList();
+            var assets = _mapper.Map<List<AssetsAttractingCGTDto>>(data);
 
             return assets;
         }
@@ -76,6 +69,7 @@ namespace Aluma.API.Repositories
                             db.AssetsAttractingCGT.Add(pModel);
                             if (db.SaveChanges() > 0)
                             {
+                                asset.Id = _mapper.Map<AssetsAttractingCGTDto>(pModel).Id;
                                 asset.Status = "Success";
                                 asset.Message = "Asset Attracting CGT Created";
                             }
@@ -90,56 +84,6 @@ namespace Aluma.API.Repositories
                 }
             }
             return dtoArray;
-
-            // foreach (var item in dtoArray)
-            // {
-
-            //     bool existingItem = _context.AssetsAttractingCGT.Where(a => a.Id == item.Id).Any();
-
-            //     if (existingItem)
-            //     {
-            //         AssetsAttractingCGTModel updateItem = _context.AssetsAttractingCGT.Where(a => a.Id == item.Id).FirstOrDefault();
-
-            //         Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-            //         Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
-            //         updateItem.Description = item.Description;
-            //         updateItem.Value = item.Value;
-            //         updateItem.PropertyType = parsedType;
-            //         updateItem.AllocateTo = parsedAllocation;
-            //         updateItem.BaseCost = item.BaseCost;
-
-            //         updateItem.DisposedOnDisability = item.DisposedOnDisability;
-            //         updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-            //         updateItem.Growth = item.Growth;
-
-            //         _context.AssetsAttractingCGT.Update(updateItem);
-
-            //     }
-            //     else
-            //     {
-            //         AssetsAttractingCGTModel newItem = new();
-
-            //         Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-            //         Enum.TryParse(item.PropertyType, true, out DataService.Enum.PropertyTypeEnum parsedType);
-            //         newItem.FNAId = item.FNAId;
-            //         newItem.Description = item.Description;
-            //         newItem.Value = item.Value;
-            //         newItem.PropertyType = parsedType;
-            //         newItem.AllocateTo = parsedAllocation;
-            //         newItem.BaseCost = item.BaseCost;
-
-            //         newItem.DisposedOnDisability = item.DisposedOnDisability;
-            //         newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-            //         newItem.Growth = item.Growth;
-
-            //         _context.AssetsAttractingCGT.Add(newItem);
-
-            //     }
-            // }
-
-            _context.SaveChanges();
-            return null;
-
         }
 
         public bool DeleteAssetsAttractingCGTItem(int id)

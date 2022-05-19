@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aluma.API.Controllers
 {
@@ -20,12 +21,16 @@ namespace Aluma.API.Controllers
 
         //Pension Funds      
         [HttpPut("pension_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPensionFunds([FromBody] RetirementPensionFundsDto[] dtoArray)
+        public IActionResult UpdateRetirementPensionFunds([FromBody] List<RetirementPensionFundsDto> dtoArray)
         {
             try
             {
-                _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
-                return Ok("Pension Funds Updated");
+                dtoArray = _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -51,12 +56,16 @@ namespace Aluma.API.Controllers
 
         //Preservation Funds    
         [HttpPut("preservation_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPreservationFunds([FromBody] RetirementPreservationFundsDto[] dtoArray)
+        public IActionResult UpdateRetirementPreservationFunds([FromBody] List<RetirementPreservationFundsDto> dtoArray)
         {
             try
             {
-                _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
-                return Ok("Preservation Funds Updated");
+                dtoArray = _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
+                
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
