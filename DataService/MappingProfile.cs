@@ -113,6 +113,9 @@ namespace DataService
             CreateMap<ProvidingOnDreadDiseaseModel, ProvidingOnDreadDiseaseDto>()
                 .ReverseMap();
 
+            CreateMap<ProvidingOnDisabilityModel, ProvidingOnDisabilityDto>()
+                .ReverseMap();
+
             CreateMap<EstateDutyModel, EstateDutyDto>()
                 .ReverseMap();
 
