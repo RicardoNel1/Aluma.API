@@ -4,7 +4,7 @@ using DataService.Enum;
 namespace DataService.Dto
 {
 
-    public class PrimaryResidenceDto
+    public class PrimaryResidenceDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }

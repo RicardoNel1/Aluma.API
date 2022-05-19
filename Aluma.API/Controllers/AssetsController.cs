@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aluma.API.Controllers
 {
@@ -27,17 +28,24 @@ namespace Aluma.API.Controllers
 
                 if (primaryResidenceExists)
                 {
-                    return BadRequest("Primary Residence Exists");
+                    dto.Status = "BadRequest";
+                    dto.Message = "Primary Residence Exists";
+                    return BadRequest(dto);
                 }
                 else
                 {
-                    _repo.PrimaryResidence.CreatePrimaryResidence(dto);
+                    dto = _repo.PrimaryResidence.CreatePrimaryResidence(dto);
                 }
+
+                dto.Status = "Success";
+                dto.Message = "Primary Residence Created";
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -50,33 +58,43 @@ namespace Aluma.API.Controllers
 
                 if (!primaryResidenceExist)
                 {
-                    CreatePrimaryResidence(dto);
+                    return CreatePrimaryResidence(dto);
                 }
                 else
                 {
-                    _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
+                    dto = _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
                 }
 
-                return Ok("Primary Residence Updated");
+                dto.Status = "Success";
+                dto.Message = "Primary Residence Updated";
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
         [HttpGet("primary_residence"), AllowAnonymous]
         public IActionResult GetPrimaryResidence(int fnaId)
         {
+            PrimaryResidenceDto dto = new();
             try
             {
-                PrimaryResidenceDto dto = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
+                dto = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
 
+                dto.Status = "Success";
+                dto.Message = "";
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -84,12 +102,16 @@ namespace Aluma.API.Controllers
         //Assets Attracting CGT        
 
         [HttpPut("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray)
+        public IActionResult UpdateAssetsAttractingCGT([FromBody] List<AssetsAttractingCGTDto> dtoArray)
         {
             try
             {
-                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
-                return Ok("Assets Attracting CGT Updated");
+                dtoArray = _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -130,12 +152,16 @@ namespace Aluma.API.Controllers
 
         //Assets Exempt from CGT       
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] List<AssetsExemptFromCGTDto> dtoArray)
         {
             try
             {
-                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
-                return Ok("Assets Exempt From CGT Updated");
+                dtoArray = _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -176,12 +202,16 @@ namespace Aluma.API.Controllers
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
-        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
+        public IActionResult UpdateLiquidAssets([FromBody] List<LiquidAssetsDto> dtoArray)
         {
             try
             {
-                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
-                return Ok("Liquid Assets Updated");
+                dtoArray = _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
+                
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {

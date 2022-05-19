@@ -4,7 +4,7 @@ using DataService.Enum;
 namespace DataService.Dto
 {
 
-    public class AssetsAttractingCGTDto
+    public class AssetsAttractingCGTDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }

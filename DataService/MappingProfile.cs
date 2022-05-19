@@ -103,11 +103,25 @@ namespace DataService
             CreateMap<AssumptionsModel, AssumptionsDto>()
                 .ReverseMap();
 
+            CreateMap<AssetsAttractingCGTModel, AssetsAttractingCGTDto>()
+                .ReverseMap();
+
+            CreateMap<AssetsExemptFromCGTModel, AssetsExemptFromCGTDto>()
+                .ReverseMap();
+
+            CreateMap<RetirementPensionFundsModel, RetirementPensionFundsDto>()
+                .ReverseMap();
 
             CreateMap<RetirementPlanningModel, RetirementPlanningDto>()
                 .ReverseMap();
 
             CreateMap<ProvidingOnDeathModel, ProvidingOnDeathDto>()
+                .ReverseMap();
+
+            CreateMap<LiquidAssetsModel, LiquidAssetsDto>()
+                .ReverseMap();
+
+            CreateMap<RetirementPreservationFundsModel, RetirementPreservationFundsDto>()
                 .ReverseMap();
 
             CreateMap<ProvidingOnDreadDiseaseModel, ProvidingOnDreadDiseaseDto>()
