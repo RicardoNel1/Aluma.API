@@ -33,11 +33,17 @@ namespace Aluma.API.Controllers
                 {
                     _repo.ProvidingOnDeath.CreateProvidingOnDeath(dto);
                 }
+
+                dto.Status = "Success";
+                dto.Message = "Providing On Death Created";
+
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -57,11 +63,16 @@ namespace Aluma.API.Controllers
                     _repo.ProvidingOnDeath.UpdateProvidingOnDeath(dto);
                 }
 
-                return Ok("Providing On Death Updated");
+                dto.Status = "Success";
+                dto.Message = "Providing On Death Created";
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 

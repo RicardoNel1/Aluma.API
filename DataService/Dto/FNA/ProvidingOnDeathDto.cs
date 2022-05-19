@@ -16,6 +16,8 @@ namespace DataService.Dto
         public double RetirementFunds { get; set; }
         public double Available_PreTaxIncome_Amount { get; set; }
         public int Available_PreTaxIncome_Term { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
     }
 
 }

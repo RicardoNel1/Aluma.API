@@ -14,6 +14,8 @@ namespace DataService.Dto
         public double Needs_GrossAnnualSalary { get; set; }
         public string Available_DreadDiseaseDescription { get; set; }
         public double Available_DreadDiseaseAmount { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
     }
 }
 
