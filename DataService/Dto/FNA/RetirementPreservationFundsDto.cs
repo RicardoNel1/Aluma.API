@@ -3,7 +3,7 @@
 namespace DataService.Dto
 {
 
-    public class RetirementPreservationFundsDto
+    public class RetirementPreservationFundsDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }

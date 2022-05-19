@@ -29,7 +29,7 @@ namespace Aluma.API.Controllers
                 if (primaryResidenceExists)
                 {
                     dto.Status = "BadRequest";
-                    dto.Message= "Primary Residence Exists";
+                    dto.Message = "Primary Residence Exists";
                     return BadRequest(dto);
                 }
                 else
@@ -38,13 +38,13 @@ namespace Aluma.API.Controllers
                 }
 
                 dto.Status = "Success";
-                dto.Message= "Primary Residence Created";
+                dto.Message = "Primary Residence Created";
                 return Ok(dto);
             }
             catch (Exception e)
             {
                 dto.Status = "Server Error";
-                dto.Message= e.Message;
+                dto.Message = e.Message;
                 return StatusCode(500, dto);
             }
         }
@@ -62,18 +62,18 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-                   dto = _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
+                    dto = _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
                 }
 
                 dto.Status = "Success";
-                dto.Message= "Primary Residence Updated";
+                dto.Message = "Primary Residence Updated";
 
                 return Ok(dto);
             }
             catch (Exception e)
             {
                 dto.Status = "Server Error";
-                dto.Message= e.Message;
+                dto.Message = e.Message;
                 return StatusCode(500, dto);
             }
         }
@@ -85,15 +85,15 @@ namespace Aluma.API.Controllers
             try
             {
                 dto = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
-                
+
                 dto.Status = "Success";
-                dto.Message= "";
+                dto.Message = "";
                 return Ok(dto);
             }
             catch (Exception e)
             {
                 dto.Status = "Server Error";
-                dto.Message= e.Message;
+                dto.Message = e.Message;
                 return StatusCode(500, dto);
             }
         }
@@ -107,7 +107,7 @@ namespace Aluma.API.Controllers
             try
             {
                 dtoArray = _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
-                
+
                 if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
                     return BadRequest(dtoArray);
 
@@ -152,12 +152,16 @@ namespace Aluma.API.Controllers
 
         //Assets Exempt from CGT       
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray)
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] List<AssetsExemptFromCGTDto> dtoArray)
         {
             try
             {
-                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
-                return Ok("Assets Exempt From CGT Updated");
+                dtoArray = _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -198,12 +202,16 @@ namespace Aluma.API.Controllers
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
-        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray)
+        public IActionResult UpdateLiquidAssets([FromBody] List<LiquidAssetsDto> dtoArray)
         {
             try
             {
-                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
-                return Ok("Liquid Assets Updated");
+                dtoArray = _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
+                
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {

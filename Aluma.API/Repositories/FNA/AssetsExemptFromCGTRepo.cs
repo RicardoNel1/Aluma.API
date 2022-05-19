@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Aluma.API.Repositories
     {
         bool DoesAssetsExemptFromCGTExist(AssetsExemptFromCGTDto dto);
         List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId);
-        AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray);
+        List<AssetsExemptFromCGTDto>  UpdateAssetsExemptFromCGT(List<AssetsExemptFromCGTDto>  dtoArray);
 
         bool DeleteAssetsExemptFromCGTItem(int id);
     }
@@ -47,72 +48,51 @@ namespace Aluma.API.Repositories
 
         public List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId)
         {
-            ICollection<AssetsExemptFromCGTModel> data = _context.AssetsExemptFromCGT.Where(c => c.FNAId == fnaId).ToList();
-            List<AssetsExemptFromCGTDto> assets = new List<AssetsExemptFromCGTDto>();
-
-            foreach (var item in data)
-            {
-                AssetsExemptFromCGTDto asset = new AssetsExemptFromCGTDto();
-
-                asset.Id = item.Id;
-                asset.FNAId = item.FNAId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
-
-                assets.Add(asset);
-
-            }
+            List<AssetsExemptFromCGTModel> data = _context.AssetsExemptFromCGT.Where(c => c.FNAId == fnaId).ToList();
+            var assets = _mapper.Map<List<AssetsExemptFromCGTDto>>(data);
 
             return assets;
         }
 
-        public AssetsExemptFromCGTDto UpdateAssetsExemptFromCGT(AssetsExemptFromCGTDto[] dtoArray)
+        public List<AssetsExemptFromCGTDto>  UpdateAssetsExemptFromCGT(List<AssetsExemptFromCGTDto> dtoArray)
         {
-
-            foreach (var item in dtoArray)
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    AssetsExemptFromCGTModel updateItem = _context.AssetsExemptFromCGT.Where(a => a.Id == item.Id).FirstOrDefault();
+                    using (AlumaDBContext db = new AlumaDBContext())
+                    {
+                        var pModel = _mapper.Map<AssetsExemptFromCGTModel>(asset);
 
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
-                    updateItem.AllocateTo = parsedAllocation;
+                        if (db.AssetsExemptFromCGT.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            db.Entry(pModel).State = EntityState.Modified;
+                            if (db.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Asset Exempted Form CGT Updated";
+                            }
+                        }
+                        else
+                        {
+                            db.AssetsExemptFromCGT.Add(pModel);
+                            if (db.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<AssetsExemptFromCGTDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Asset Exempted Form CGT Created";
+                            }
+                        }
 
-                    updateItem.DisposedOnDisability = item.DisposedOnDisability;
-                    updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                    updateItem.Growth = item.Growth;
-
-                    _context.AssetsExemptFromCGT.Update(updateItem);
-
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    AssetsExemptFromCGTModel newItem = new AssetsExemptFromCGTModel();
-
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    newItem.FNAId = item.FNAId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-                    newItem.AllocateTo = parsedAllocation;
-
-                    newItem.DisposedOnDisability = item.DisposedOnDisability;
-                    newItem.DisposedAtRetirement = item.DisposedAtRetirement;
-                    newItem.Growth = item.Growth;
-
-                    _context.AssetsExemptFromCGT.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
             }
-
-            _context.SaveChanges();
-            return null;
-
+            return dtoArray;
         }
 
         public bool DeleteAssetsExemptFromCGTItem(int id)
