@@ -16,12 +16,9 @@ namespace DataService.Model
         public int FNAId { get; set; }
         public double ShortTermProtection { get; set; }
         public int IncomeProtectionTerm_Months { get; set; }
-        public double ShortTermEscalation { get; set; }
         public double LongTermProtection { get; set; }
-        public double LongTermEscalation { get; set; }
         public double IncomeNeeds { get; set; }
         public int NeedsTerm_Years { get; set; }
-        public double IncomeNeedsEscalation { get; set; }
         public double LiabilitiesToClear { get; set; }
         public double CapitalNeeds { get; set; }
     }

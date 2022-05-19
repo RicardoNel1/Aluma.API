@@ -162,6 +162,7 @@ namespace DataService.Context
         public DbSet<CapitalGainsTaxModel> CapitalGainsTax { get; set; }
         public DbSet<ProvidingOnDeathModel> ProvidingOnDeath { get; set; }
         public DbSet<ProvidingOnDreadDiseaseModel> ProvidingOnDreadDisease { get; set; }
+        public DbSet<ProvidingOnDisabilityModel> ProvidingOnDisability { get; set; }
         public DbSet<TaxLumpsumModel> TaxLumpsum { get; set; }
 
 
