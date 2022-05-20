@@ -51,21 +51,21 @@ namespace Aluma.API.Repositories
         public bool DoesAdministrationCostsExist(AdministrationCostsDto dto)
         {
             bool administrationCostsExist = false;
-            administrationCostsExist = _context.AdministrationCosts.Where(a => a.ClientId == dto.ClientId).Any();
+            administrationCostsExist = _context.AdministrationCosts.Where(a => a.FNAId == dto.FNAId).Any();
             return administrationCostsExist;
 
         }
 
-        public AdministrationCostsDto GetAdministrationCosts(int clientId)
+        public AdministrationCostsDto GetAdministrationCosts(int fnaId)
         {
-            AdministrationCostsModel data = _context.AdministrationCosts.Where(c => c.ClientId == clientId).First();
+            AdministrationCostsModel data = _context.AdministrationCosts.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<AdministrationCostsDto>(data);
 
         }
 
         public AdministrationCostsDto UpdateAdministrationCosts(AdministrationCostsDto dto)
         {
-            AdministrationCostsModel data = _context.AdministrationCosts.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();                 
+            AdministrationCostsModel data = _context.AdministrationCosts.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();                 
             
             data.OtherConveyanceCosts = dto.OtherConveyanceCosts;
             data.AdvertisingCosts = dto.AdvertisingCosts;

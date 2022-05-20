@@ -7,7 +7,7 @@ namespace DataService.Dto
     public class AdministrationCostsDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public double OtherConveyanceCosts { get; set; }
         public double AdvertisingCosts { get; set; }
         public double RatesAndTaxes { get; set; }

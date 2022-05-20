@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("insurance")]
+    [Table("fna_insurance")]
     public class InsuranceModel : BaseModel
     {
         //public ClientModel Client { get; set; }
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public string Description { get; set; }
         public string Owner { get; set; }
         public double LifeCover { get; set; }

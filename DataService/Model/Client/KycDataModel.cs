@@ -2,7 +2,7 @@
 
 namespace DataService.Model
 {
-    [Table("kyc_data")]
+    [Table("client_kyc_data")]
     public class KYCDataModel : BaseModel
     {
         public ClientModel Client { get; set; }

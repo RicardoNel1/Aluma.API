@@ -7,20 +7,18 @@ using DataService.Enum;
 
 namespace DataService.Model
 {
-    [Table("providing_on_disability")]
+    [Table("fna_providing_on_disability")]
     public class ProvidingOnDisabilityModel : BaseModel
     {
         //public ClientModel Client { get; set; }        
         public int Id { get; set; }
-        public int ClientId { get; set; }        
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public double ShortTermProtection { get; set; }
         public int IncomeProtectionTerm_Months { get; set; }
-        public double ShortTermEscalation { get; set; }
         public double LongTermProtection { get; set; }
-        public double LongTermEscalation { get; set; }
         public double IncomeNeeds { get; set; }
         public int NeedsTerm_Years { get; set; }
-        public double IncomeNeedsEscalation { get; set; }
         public double LiabilitiesToClear { get; set; }
         public double CapitalNeeds { get; set; }
     }
@@ -32,7 +30,7 @@ namespace DataService.Model
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            mb.HasIndex(c => c.ClientId).IsUnique();
+            mb.HasIndex(c => c.FNAId).IsUnique();
            
         }
     }

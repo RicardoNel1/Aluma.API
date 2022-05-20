@@ -110,21 +110,20 @@ namespace Aluma.API.Controllers
                 else if (!clientExist)
                 {
 
-                    RegistrationDto registerDto = new RegistrationDto
-                    {
-                        FirstName = dto.User.FirstName,
-                        LastName = dto.User.LastName,
-                        Email = dto.User.Email,
-                        MobileNumber = dto.User.MobileNumber,
-                    };
+                    //RegistrationDto registerDto = new RegistrationDto
+                    //{
+                    //    FirstName = dto.User.FirstName,
+                    //    LastName = dto.User.LastName,
+                    //    Email = dto.User.Email,
+                    //    MobileNumber = dto.User.MobileNumber,
+                    //};
 
-                    //Create User
-                    user = _repo.User.CreateClientUser(registerDto);
+                    ////Create User
+                    //user = _repo.User.CreateClientUser(registerDto);
 
                     //Create Client
-                    dto.UserId = user.Id;
-                    dto.AdvisorId = null;
-                    dto.ClientType = "Primary";
+                    //dto.UserId = user.Id;
+                   
                     dto = await _repo.Client.CreateClient(dto);
 
                     dto.Status = "Success";
@@ -134,7 +133,7 @@ namespace Aluma.API.Controllers
                 {
 
                     _repo.Client.UpdateClient(dto);
-                    dto.Status = "Success";                    
+                    dto.Status = "Success";
                 }
                 return Ok(dto);
             }

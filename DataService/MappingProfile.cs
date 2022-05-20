@@ -48,12 +48,15 @@ namespace DataService
                 .ReverseMap();
 
             //Client
+            CreateMap<EmploymentDetailsModel, EmploymentDetailsDto>()
+                .ReverseMap(); 
+            CreateMap<MaritalDetailsModel, MaritalDetailsDto>()
+                 .ReverseMap();
 
             CreateMap<BankDetailsModel, BankDetailsDto>()
                 .ReverseMap();
 
-            //CreateMap<ClientModel, ApplicationDto>()
-            //   .ReverseMap();
+            CreateMap<LeadModel, LeadDto>().ReverseMap(); 
 
             CreateMap<ClientModel, ClientDto>()
                .ReverseMap();
@@ -85,7 +88,7 @@ namespace DataService
                 .ReverseMap();
 
             //FNA
-            CreateMap<ClientFNADto, FNAModel>()
+            CreateMap<ClientFNADto, ClientFNAModel>()
                 .ReverseMap();
 
             CreateMap<PrimaryResidenceModel, PrimaryResidenceDto>()
@@ -96,11 +99,35 @@ namespace DataService
 
             CreateMap<AccrualModel, AccrualDto>()
                 .ReverseMap();
+
             CreateMap<AssumptionsModel, AssumptionsDto>()
                 .ReverseMap();
 
+            CreateMap<AssetsAttractingCGTModel, AssetsAttractingCGTDto>()
+                .ReverseMap();
+
+            CreateMap<AssetsExemptFromCGTModel, AssetsExemptFromCGTDto>()
+                .ReverseMap();
+
+            CreateMap<RetirementPensionFundsModel, RetirementPensionFundsDto>()
+                .ReverseMap();
 
             CreateMap<RetirementPlanningModel, RetirementPlanningDto>()
+                .ReverseMap();
+
+            CreateMap<ProvidingOnDeathModel, ProvidingOnDeathDto>()
+                .ReverseMap();
+
+            CreateMap<LiquidAssetsModel, LiquidAssetsDto>()
+                .ReverseMap();
+
+            CreateMap<RetirementPreservationFundsModel, RetirementPreservationFundsDto>()
+                .ReverseMap();
+
+            CreateMap<ProvidingOnDreadDiseaseModel, ProvidingOnDreadDiseaseDto>()
+                .ReverseMap();
+
+            CreateMap<ProvidingOnDisabilityModel, ProvidingOnDisabilityDto>()
                 .ReverseMap();
 
             CreateMap<EstateDutyModel, EstateDutyDto>()
@@ -109,6 +136,11 @@ namespace DataService
             CreateMap<AdministrationCostsModel, AdministrationCostsDto>()
                 .ReverseMap();
 
+            CreateMap<CapitalGainsTaxModel, CapitalGainsTaxDto>()
+                .ReverseMap();
+
+            CreateMap<TaxLumpsumModel, TaxLumpsumDto>()
+                .ReverseMap();
 
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()

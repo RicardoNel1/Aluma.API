@@ -15,7 +15,7 @@ namespace Aluma.API.Repositories
     {
         AssumptionsDto CreateAssumptions(AssumptionsDto dto);
         bool DoesAssumptionsExist(AssumptionsDto dto);
-        AssumptionsDto GetAssumptions(int clientId);
+        AssumptionsDto GetAssumptions(int fnaId);
         AssumptionsDto UpdateAssumptions(AssumptionsDto dto);
 
 
@@ -51,29 +51,56 @@ namespace Aluma.API.Repositories
         public bool DoesAssumptionsExist(AssumptionsDto dto)
         {
             bool assumptionsExist = false;
-            assumptionsExist = _context.Assumptions.Where(a => a.ClientId == dto.ClientId).Any();
+            assumptionsExist = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).Any();
             return assumptionsExist;
 
         }
 
-        public AssumptionsDto GetAssumptions(int clientId)
+        public AssumptionsDto GetAssumptions(int fnaId)
         {
-            AssumptionsModel data = _context.Assumptions.Where(c => c.ClientId == clientId).First();
+            AssumptionsModel data = _context.Assumptions.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<AssumptionsDto>(data);
 
         }
 
         public AssumptionsDto UpdateAssumptions(AssumptionsDto dto)
         {
-            AssumptionsModel data = _context.Assumptions.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
-            Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
-            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);      
+            AssumptionsModel data = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
-            //set fields to be updated       
-            data.RetirementAge = dto.RetirementAge;
-            data.CurrentNetIncome = dto.CurrentNetIncome;
+            //Update according to screen
+            //if (update_type == "retirement")
+            //{
+            //    Enum.TryParse(dto.RetirementInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedRetirement);
+            //    data.RetirementInvestmentRisk = parsedRetirement;
+            //    data.RetirementAge = dto.RetirementAge;
+            //}
+            //else if (update_type == "death")
+            //{
+            //    Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
+            //    data.DeathInvestmentRisk = parsedDeath;
+            //    data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            //}
+            //else if (update_type == "disability")
+            //{
+            //    Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
+            //    data.DisabilityInvestmentRisk = parsedDisability;
+            //    data.RetirementAge = dto.RetirementAge;
+            //    data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            //}
+            //else if (update_type == "dread")
+            //{
+            //    data.CurrentGrossIncome = dto.CurrentGrossIncome;
+            //}
+
+            Enum.TryParse(dto.RetirementInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedRetirement);
+            Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
+            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
+            data.RetirementInvestmentRisk = parsedRetirement;
             data.DeathInvestmentRisk = parsedDeath;
-            data.DisabilityInvestmentRisk = parsedDisability;            
+            data.DisabilityInvestmentRisk = parsedDisability;
+            data.RetirementAge = dto.RetirementAge;            
+            data.CurrentGrossIncome = dto.CurrentGrossIncome;           
+
 
             _context.Assumptions.Update(data);
             _context.SaveChanges();

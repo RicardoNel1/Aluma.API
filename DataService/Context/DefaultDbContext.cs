@@ -61,7 +61,7 @@ namespace DataService.Context
 
             //Application
             mb.ApplyConfiguration(new ApplicationModelBuilder());
-            mb.ApplyConfiguration(new IRSW8ModelBuilder());
+            //mb.ApplyConfiguration(new IRSW8ModelBuilder());
             mb.ApplyConfiguration(new RecordOfAdviceModelBuilder());
 
             //Product
@@ -78,9 +78,8 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AddressModelBuilder());
 
 
-            //FNA   
-            
-            mb.ApplyConfiguration(new FNAModelBuilder());
+            //FNA               
+            mb.ApplyConfiguration(new ClientFNAModelBuilder());
             mb.ApplyConfiguration(new PrimaryResidenceModelBuilder());
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
@@ -91,8 +90,11 @@ namespace DataService.Context
             mb.ApplyConfiguration(new RetirementPensionFundsModelBuilder());
             mb.ApplyConfiguration(new RetirementPreservationFundsModelBuilder());
             mb.ApplyConfiguration(new AccrualModelBuilder());
+            mb.ApplyConfiguration(new TaxLumpsumBuilder());
             mb.ApplyConfiguration(new AdministrationCostsModelBuilder());
-            mb.ApplyConfiguration(new EstateDutymodelBuilder());
+            mb.ApplyConfiguration(new EstateDutyModelBuilder());
+            mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
+            mb.ApplyConfiguration(new AssumptionsModelBuilder());
 
             foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             {
@@ -124,6 +126,7 @@ namespace DataService.Context
         //public DbSet<USPersonsModel> USPersons { get; set; }
 
         //Client
+        public DbSet<LeadModel> Leads { get; set; }
         public DbSet<BankDetailsModel> BankDetails { get; set; }
         public DbSet<ClientModel> Clients { get; set; }
         public DbSet<KYCDataModel> KycData { get; set; }
@@ -132,8 +135,10 @@ namespace DataService.Context
         public DbSet<TaxResidencyModel> TaxResidency { get; set; }
         public DbSet<ForeignTaxResidencyModel> TaxResidencyItems { get; set; }
         public DbSet<ConsumerProtectionModel> ConsumerProtection { get; set; }
-        public DbSet<FNAModel> FNA { get; set; }
+        public DbSet<ClientFNAModel> clientFNA { get; set; }
         public DbSet<ClientProductModel> ClientProducts { get; set; }
+        public DbSet<EmploymentDetailsModel> EmploymentDetails { get; set; }
+        public DbSet<MaritalDetailsModel> MaritalDetails { get; set; }
 
 
         //Product
@@ -154,6 +159,12 @@ namespace DataService.Context
         public DbSet<AssumptionsModel> Assumptions { get; set; }
         public DbSet<AdministrationCostsModel> AdministrationCosts { get; set; }
         public DbSet<EstateDutyModel> EstateDuty { get; set; }
+        public DbSet<CapitalGainsTaxModel> CapitalGainsTax { get; set; }
+        public DbSet<ProvidingOnDeathModel> ProvidingOnDeath { get; set; }
+        public DbSet<ProvidingOnDreadDiseaseModel> ProvidingOnDreadDisease { get; set; }
+        public DbSet<ProvidingOnDisabilityModel> ProvidingOnDisability { get; set; }
+        public DbSet<TaxLumpsumModel> TaxLumpsum { get; set; }
+
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aluma.API.Controllers
 {
@@ -23,73 +24,94 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);                
+                bool primaryResidenceExists = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);
 
                 if (primaryResidenceExists)
                 {
-                    return BadRequest("Primary Residence Exists");
+                    dto.Status = "BadRequest";
+                    dto.Message = "Primary Residence Exists";
+                    return BadRequest(dto);
                 }
                 else
-                { 
-                    _repo.PrimaryResidence.CreatePrimaryResidence(dto);
+                {
+                    dto = _repo.PrimaryResidence.CreatePrimaryResidence(dto);
                 }
+
+                dto.Status = "Success";
+                dto.Message = "Primary Residence Created";
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
         [HttpPut("primary_residence"), AllowAnonymous]
-        public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto, string update_type)
-        {          
+        public IActionResult UpdatePrimaryResidence([FromBody] PrimaryResidenceDto dto)
+        {
             try
             {
                 bool primaryResidenceExist = _repo.PrimaryResidence.DoesPrimaryResidenceExist(dto);
 
                 if (!primaryResidenceExist)
                 {
-                    CreatePrimaryResidence(dto);
+                    return CreatePrimaryResidence(dto);
                 }
                 else
                 {
-                    _repo.PrimaryResidence.UpdatePrimaryResidence(dto, update_type);
+                    dto = _repo.PrimaryResidence.UpdatePrimaryResidence(dto);
                 }
 
-                return Ok("Primary Residence Updated");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("primary_residence"), AllowAnonymous]
-        public IActionResult GetPrimaryResidence(int clientId)
-        {
-            try
-            {
-                PrimaryResidenceDto dto = _repo.PrimaryResidence.GetPrimaryResidence(clientId);
+                dto.Status = "Success";
+                dto.Message = "Primary Residence Updated";
 
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
-                
+
+        [HttpGet("primary_residence"), AllowAnonymous]
+        public IActionResult GetPrimaryResidence(int fnaId)
+        {
+            PrimaryResidenceDto dto = new();
+            try
+            {
+                dto = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
+
+                dto.Status = "Success";
+                dto.Message = "";
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
+            }
+        }
+
 
         //Assets Attracting CGT        
 
         [HttpPut("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsAttractingCGT([FromBody] AssetsAttractingCGTDto[] dtoArray, string update_type)
+        public IActionResult UpdateAssetsAttractingCGT([FromBody] List<AssetsAttractingCGTDto> dtoArray)
         {
             try
             {
-                _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray, update_type);
-                return Ok("Assets Attracting CGT Updated");
+                dtoArray = _repo.AssetsAttractingCGT.UpdateAssetsAttractingCGT(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -98,11 +120,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("assets_attracting_cgt"), AllowAnonymous]
-        public IActionResult GetAssetsAttractingCGT(int clientId)
-        {            
+        public IActionResult GetAssetsAttractingCGT(int fnaId)
+        {
             try
             {
-                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(clientId);
+                List<AssetsAttractingCGTDto> dtoList = _repo.AssetsAttractingCGT.GetAssetsAttractingCGT(fnaId);
 
                 return Ok(dtoList);
             }
@@ -130,12 +152,16 @@ namespace Aluma.API.Controllers
 
         //Assets Exempt from CGT       
         [HttpPut("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult UpdateAssetsExemptFromCGT([FromBody] AssetsExemptFromCGTDto[] dtoArray, string update_type)
+        public IActionResult UpdateAssetsExemptFromCGT([FromBody] List<AssetsExemptFromCGTDto> dtoArray)
         {
             try
             {
-                _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray, update_type);
-                return Ok("Assets Exempt From CGT Updated");
+                dtoArray = _repo.AssetsExemptFromCGT.UpdateAssetsExemptFromCGT(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -144,11 +170,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("assets_exempt_from_cgt"), AllowAnonymous]
-        public IActionResult GetAssetsExemptFromCGT(int clientId)
+        public IActionResult GetAssetsExemptFromCGT(int fnaId)
         {
             try
             {
-                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(clientId);
+                List<AssetsExemptFromCGTDto> dtoList = _repo.AssetsExemptFromCGT.GetAssetsExemptFromCGT(fnaId);
 
                 return Ok(dtoList);
             }
@@ -172,16 +198,20 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-                
+
 
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
-        public IActionResult UpdateLiquidAssets([FromBody] LiquidAssetsDto[] dtoArray, string update_type)
+        public IActionResult UpdateLiquidAssets([FromBody] List<LiquidAssetsDto> dtoArray)
         {
             try
             {
-                _repo.LiquidAssets.UpdateLiquidAssets(dtoArray, update_type);
-                return Ok("Liquid Assets Updated");
+                dtoArray = _repo.LiquidAssets.UpdateLiquidAssets(dtoArray);
+                
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -190,11 +220,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("liquid_assets"), AllowAnonymous]
-        public IActionResult GetLiquidAssets(int clientId)
+        public IActionResult GetLiquidAssets(int fnaId)
         {
             try
             {
-                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(clientId);
+                List<LiquidAssetsDto> dtoList = _repo.LiquidAssets.GetLiquidAssets(fnaId);
 
                 return Ok(dtoList);
             }

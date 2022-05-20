@@ -19,7 +19,6 @@ namespace Aluma.API.RepoWrapper
 
         //IDividendTaxRepo DividendTax { get; }
         IFspMandateRepo FSPMandate { get; }
-        IFNARepo FNA { get; }
 
         IFIRepo FI { get; }
         IPEFRepo PEF { get; }
@@ -32,6 +31,7 @@ namespace Aluma.API.RepoWrapper
         IRecordOfAdviceRepo RecordOfAdvice { get; }
 
         //Client
+        ILeadRepo Leads { get; }
         IClientRepo Client { get; }
         IBankDetailsRepo BankDetails { get; }
         IKYCDataRepo KycData { get; }
@@ -43,6 +43,7 @@ namespace Aluma.API.RepoWrapper
         IProductRepo ProductRepo { get; }
 
         //FNA
+        IFNARepo FNA { get; }
         IPrimaryResidenceRepo PrimaryResidence { get; }
         IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
         IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
@@ -54,22 +55,26 @@ namespace Aluma.API.RepoWrapper
         IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
         IAccrualRepo Accrual { get; }
         IRetirementPlanningRepo RetirementPlanning { get; }
+        IProvidingOnDeathRepo ProvidingOnDeath { get; }
+        IProvidingOnDreadDiseaseRepo ProvidingOnDreadDisease { get; }
+        IProvidingOnDisabilityRepo ProvidingOnDisability { get; }
 
         IAdministrationCostsRepo AdministrationCosts { get; }
         IEstateDutiesRepo EstateDuties { get; }
+        ICapitalGainsTaxRepo CapitalGainsTax { get; }
+        IAssumptionsRepo Assumptions { get; }
+        ITaxLumpsumRepo TaxLumpsum { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
 
         //User
         IOtpRepo Otp { get; }
-
         IUserRepo User { get; }
         IUserDocumentsRepo UserDocuments { get; }
 
         // Third Party Services
         ISmsRepo SmsRepo { get; }
-
         IJwtRepo JwtRepo { get; }
         IKycFactoryRepo KycRepo { get; }
         IBankValidationServiceRepo BankValidationRepo { get; }

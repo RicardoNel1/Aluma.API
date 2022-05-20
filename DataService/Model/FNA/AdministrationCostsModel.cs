@@ -7,12 +7,12 @@ using DataService.Enum;
 
 namespace DataService.Model
 {
-    [Table("administration_costs")]
+    [Table("fna_administration_costs")]
     public class AdministrationCostsModel : BaseModel
-    {
-        //public ClientModel Client { get; set; }        
+    {      
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public ClientFNAModel FNA { get; set; }
+        public int FNAId { get; set; }
         public double OtherConveyanceCosts { get; set; }
         public double AdvertisingCosts { get; set; }
         public double RatesAndTaxes { get; set; }

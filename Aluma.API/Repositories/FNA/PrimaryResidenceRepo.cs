@@ -15,8 +15,8 @@ namespace Aluma.API.Repositories
     {
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
-        PrimaryResidenceDto GetPrimaryResidence(int clientId);
-        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type);
+        PrimaryResidenceDto GetPrimaryResidence(int fnaId);
+        PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
 
     }
 
@@ -50,44 +50,31 @@ namespace Aluma.API.Repositories
         public bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto)
         {
             bool primaryResidenceExist = false;
-            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).Any();
+            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).Any();
             return primaryResidenceExist;
 
         }
 
-        public PrimaryResidenceDto GetPrimaryResidence(int clientId)
+        public PrimaryResidenceDto GetPrimaryResidence(int fnaId)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.ClientId == clientId).First();
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<PrimaryResidenceDto>(data);
 
         }
 
-        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto, string update_type)
+        public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            
-            //Update All fields or Retirement or Disability
-            if (update_type == "retirement")
-            {
-                data.DisposedAtRetirement = dto.DisposedAtRetirement;
-                data.Growth = dto.Growth;
-            }
-            else
-            {
-                if (update_type == "disability")
-                {
-                    data.DisposedOnDisability = dto.DisposedOnDisability;
-                }
-                else
-                {
-                    Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
-                    data.Description = dto.Description;
-                    data.AllocateTo = parsedAllocation;
-                    data.Value = dto.Value;
-                    data.BaseCost = dto.BaseCost;
-                }
-            }
+            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            data.Description = dto.Description;
+            data.AllocateTo = parsedAllocation;
+            data.Value = dto.Value;
+            data.BaseCost = dto.BaseCost;
+
+            data.DisposedOnDisability = dto.DisposedOnDisability;
+            data.DisposedAtRetirement = dto.DisposedAtRetirement;
+            data.Growth = dto.Growth;
 
             _context.PrimaryResidence.Update(data);
             _context.SaveChanges();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aluma.API.Controllers
 {
@@ -16,16 +17,20 @@ namespace Aluma.API.Controllers
         {
             _repo = repo;
         }
-             
+
 
         //Pension Funds      
         [HttpPut("pension_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPensionFunds([FromBody] RetirementPensionFundsDto[] dtoArray)
+        public IActionResult UpdateRetirementPensionFunds([FromBody] List<RetirementPensionFundsDto> dtoArray)
         {
             try
             {
-                _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
-                return Ok("Pension Funds Updated");
+                dtoArray = _repo.RetirementPensionFunds.UpdateRetirementPensionFunds(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -34,11 +39,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("pension_funds"), AllowAnonymous]
-        public IActionResult GetRetirementPensionFunds(int clientId)
+        public IActionResult GetRetirementPensionFunds(int fnaId)
         {
             try
             {
-                List<RetirementPensionFundsDto> dtoList = _repo.RetirementPensionFunds.GetRetirementPensionFunds(clientId);
+                List<RetirementPensionFundsDto> dtoList = _repo.RetirementPensionFunds.GetRetirementPensionFunds(fnaId);
 
                 return Ok(dtoList);
             }
@@ -51,12 +56,16 @@ namespace Aluma.API.Controllers
 
         //Preservation Funds    
         [HttpPut("preservation_funds"), AllowAnonymous]
-        public IActionResult UpdateRetirementPreservationFunds([FromBody] RetirementPreservationFundsDto[] dtoArray)
+        public IActionResult UpdateRetirementPreservationFunds([FromBody] List<RetirementPreservationFundsDto> dtoArray)
         {
             try
             {
-                _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
-                return Ok("Preservation Funds Updated");
+                dtoArray = _repo.RetirementPreservationFunds.UpdateRetirementPreservationFunds(dtoArray);
+                
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -65,11 +74,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("preservation_funds"), AllowAnonymous]
-        public IActionResult GetRetirementPreservationFunds(int clientId)
+        public IActionResult GetRetirementPreservationFunds(int fnaId)
         {
             try
             {
-                List<RetirementPreservationFundsDto> dtoList = _repo.RetirementPreservationFunds.GetRetirementPreservationFunds(clientId);
+                List<RetirementPreservationFundsDto> dtoList = _repo.RetirementPreservationFunds.GetRetirementPreservationFunds(fnaId);
 
                 return Ok(dtoList);
             }

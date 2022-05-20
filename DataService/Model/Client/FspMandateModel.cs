@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("mandates")]
+    [Table("client_mandate")]
     public class FSPMandateModel : BaseModel
     {
         public ClientModel Client { get; set; }

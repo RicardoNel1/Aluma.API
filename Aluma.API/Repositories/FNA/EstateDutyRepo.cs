@@ -47,25 +47,26 @@ namespace Aluma.API.Repositories
         public bool DoesEstateDutyExist(EstateDutyDto dto)
         {
             bool estateDutyExist = false;
-            estateDutyExist = _context.EstateDuty.Where(a => a.ClientId == dto.ClientId).Any();
+            estateDutyExist = _context.EstateDuty.Where(a => a.FNAId == dto.FNAId).Any();
             return estateDutyExist;
         }
 
-        public EstateDutyDto GetEstateDuty(int clientId)
+        public EstateDutyDto GetEstateDuty(int fnaId)
         {
-            EstateDutyModel data = _context.EstateDuty.Where(c => c.ClientId == clientId).First();
+            EstateDutyModel data = _context.EstateDuty.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<EstateDutyDto>(data);
         }
 
         public EstateDutyDto UpdateEstateDuty(EstateDutyDto dto)
         {
-            EstateDutyModel data = _context.EstateDuty.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            EstateDutyModel data = _context.EstateDuty.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
-            data.ClientId = dto.ClientId;
+            //data.ClientId = dto.ClientId;                 //never update id
             data.Section4pValue = dto.Section4pValue;
+            data.LimitedRights = dto.LimitedRights;
             data.ResidueToSpouse = dto.ResidueToSpouse;
             data.Abatement = dto.Abatement;
-            data.LimitedRights = dto.LimitedRights;
+            data.TotalDutyPayable = dto.TotalDutyPayable;
 
 
             _context.EstateDuty.Update(data);

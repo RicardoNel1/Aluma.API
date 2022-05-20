@@ -1,11 +1,9 @@
 ﻿namespace DataService.Dto
 {
-    public class FNADto
+    public class LeadDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-      
-        //TODO
-
+        public int AdvisorId { get; set; }
     }
 }

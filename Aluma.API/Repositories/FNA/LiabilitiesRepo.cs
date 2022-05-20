@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
 {
     public interface ILiabilitiesRepo : IRepoBase<LiabilitiesModel>
     {
-        List<LiabilitiesDto> GetLiabilities(int clientId);
+        List<LiabilitiesDto> GetLiabilities(int fnaId);
         LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
 
         bool DeleteLiabilitiesItem(int id);
@@ -35,9 +35,9 @@ namespace Aluma.API.Repositories
         }
                 
 
-        public List<LiabilitiesDto> GetLiabilities(int clientId)
+        public List<LiabilitiesDto> GetLiabilities(int fnaId)
         {
-            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.ClientId == clientId).ToList();
+            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.FNAId == fnaId).ToList();
             List<LiabilitiesDto> liabilities = new List<LiabilitiesDto>();
 
             foreach (var item in data)
@@ -45,7 +45,7 @@ namespace Aluma.API.Repositories
                 LiabilitiesDto liability = new LiabilitiesDto();
 
                 liability.Id = item.Id;
-                liability.ClientId = item.ClientId;
+                liability.FNAId = item.FNAId;
                 liability.Description = item.Description;
                 liability.Value = item.Value;
 
@@ -78,7 +78,7 @@ namespace Aluma.API.Repositories
                 {
                     LiabilitiesModel newItem = new LiabilitiesModel();
 
-                    newItem.ClientId = item.ClientId;
+                    newItem.FNAId = item.FNAId;
                     newItem.Description = item.Description;
                     newItem.Value = item.Value;
 

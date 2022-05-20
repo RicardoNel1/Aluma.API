@@ -60,7 +60,7 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).Include(a => a.EmploymentDetails).Include(a => a.MaritalDetails).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
@@ -82,7 +82,7 @@ namespace Aluma.API.Repositories
 
                 dto.hasDisclosure = discExists.Any();
 
-                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
                 if (fnaExists.Any())
                 {
                     dto.FNADate = fnaExists.First().Created;
@@ -119,7 +119,7 @@ namespace Aluma.API.Repositories
 
                 dto.hasDisclosure = discExists.Any();
 
-                var fnaExists = _context.FNA.Where(d => d.ClientId == dto.Id);
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
                 if (fnaExists.Any())
                 {
                     dto.FNADate = fnaExists.First().Created;
@@ -150,7 +150,7 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClient(ClientDto dto)
         {
-            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
+            ClientModel client = _context.Clients.Include(c => c.User).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
             dto.User.MobileNumber = "0" + dto.User.MobileNumber;
@@ -207,7 +207,7 @@ namespace Aluma.API.Repositories
         public ClientDto CheckForFNA(ClientDto client)
         {
 
-            var fnaExists = _context.FNA.Where(d => d.ClientId == client.Id);
+            var fnaExists = _context.clientFNA.Where(d => d.ClientId == client.Id);
 
             if (fnaExists.Any())
             {
@@ -245,9 +245,10 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
+            dto.ClientType = "Primary";
+            dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            
-            _context.Clients.Add(client);
+            _context.Clients.Add(client);            
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
@@ -341,7 +342,7 @@ namespace Aluma.API.Repositories
 
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
-            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
+            ClientFNAModel fna = _context.clientFNA.SingleOrDefault(r => r.ClientId == client.Id);
 
             
 
@@ -354,8 +355,8 @@ namespace Aluma.API.Repositories
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
-            fnaRepo.GenerateFNA(client, advisor, fna);
+            //FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
+            //fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 
