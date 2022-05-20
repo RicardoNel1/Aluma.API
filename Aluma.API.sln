@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31710.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aluma.API", "Aluma.API\Aluma.API.csproj", "{1BEEA169-AC28-444C-A20F-19C528DC1A92}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aluma.UnitTests", "Aluma.UnitTests\Aluma.UnitTests.csproj", "{F51C71B9-6D7E-4DD3-9DFE-521E9B96B9F7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataService", "DataService\DataService.csproj", "{8B4AE591-884D-48A4-9C4A-3ED366450EA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankValidationService", "BankValidationService\BankValidationService.csproj", "{A80DBB6A-5045-459A-BCBB-1846A087AF6A}"
@@ -21,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SMSService", "SMSService\SM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorageService", "FileStorageService\FileStorageService.csproj", "{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentService", "DocumentService\DocumentService.csproj", "{14BD9C88-89B4-4AF6-B4B8-BF880CF5AC9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocumentService", "DocumentService\DocumentService.csproj", "{14BD9C88-89B4-4AF6-B4B8-BF880CF5AC9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aluma.UnitTests", "Aluma.UnitTests\Aluma.UnitTests.csproj", "{78C47C78-51D5-4AB0-BD7C-06654A80709D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{1BEEA169-AC28-444C-A20F-19C528DC1A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BEEA169-AC28-444C-A20F-19C528DC1A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BEEA169-AC28-444C-A20F-19C528DC1A92}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F51C71B9-6D7E-4DD3-9DFE-521E9B96B9F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F51C71B9-6D7E-4DD3-9DFE-521E9B96B9F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F51C71B9-6D7E-4DD3-9DFE-521E9B96B9F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F51C71B9-6D7E-4DD3-9DFE-521E9B96B9F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8B4AE591-884D-48A4-9C4A-3ED366450EA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8B4AE591-884D-48A4-9C4A-3ED366450EA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B4AE591-884D-48A4-9C4A-3ED366450EA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +65,10 @@ Global
 		{14BD9C88-89B4-4AF6-B4B8-BF880CF5AC9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14BD9C88-89B4-4AF6-B4B8-BF880CF5AC9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14BD9C88-89B4-4AF6-B4B8-BF880CF5AC9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78C47C78-51D5-4AB0-BD7C-06654A80709D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78C47C78-51D5-4AB0-BD7C-06654A80709D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78C47C78-51D5-4AB0-BD7C-06654A80709D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78C47C78-51D5-4AB0-BD7C-06654A80709D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

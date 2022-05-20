@@ -1,5 +1,4 @@
 ﻿using DataService.Dto;
-using DocumentService.Interfaces;
 using SelectPdf;
 using System;
 using System.IO;
@@ -7,7 +6,13 @@ using System.Linq;
 
 namespace DocumentService.Services
 {
-    public class DocumentService : IDocumentService
+    public interface IDocumentBaseService
+    {
+        public string PDFGeneration(string html);
+        public string FNAHtmlGeneration(FNAReportDto dto);
+    }
+
+    public class DocumentBaseService : IDocumentBaseService
     {
         public string PDFGeneration(string html)
         {
@@ -22,29 +27,18 @@ namespace DocumentService.Services
                 pdf_orientation, true);
 
             int webPageWidth = 1024;
-            int webPageHeight = 0;
+            int webPageHeight = 1356;
 
             // instantiate a html to pdf converter object
             HtmlToPdf converter = new();
 
-            //var footerHtml = new PdfHtmlSection("<footer><span style='font-family: Helvetica, Arial, sans-serif; '></span></footer>", "")
-            //{
-            //    AutoFitHeight = HtmlToPdfPageFitMode.AutoFit
-            //};
 
-            var text = new PdfTextSection(31, 10, "LNDR (PTY) LTD is a registered Credit Provider (NCRCP9333)  ", new System.Drawing.Font("Arial", 8))
+            var text = new PdfTextSection(31, 10, "Aluma", new System.Drawing.Font("Arial", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Left,
 
             };
-            //if (officeID == 41 || officeID == 42)
-            //{
-            //    text = new PdfTextSection(31, 10, "ubank Limited is an authorised Financial Services Provider (FSP No.14740) and Credit Provider (NCRCP21)  ", new System.Drawing.Font("Arial", 8))
-            //    {
-            //        HorizontalAlign = PdfTextHorizontalAlign.Left,
 
-            //    };
-            //}
 
             converter.Footer.Add(text);
 
@@ -69,12 +63,10 @@ namespace DocumentService.Services
             converter.Options.WebPageHeight = webPageHeight;
             converter.Options.DrawBackground = false;
 
-            string[] HTMLstring = html.Cast<string>().ToArray();
-            string HTMLStrings = string.Join(" ", HTMLstring);
 
 
             // create a new pdf document converting an url
-            SelectPdf.PdfDocument doc = converter.ConvertHtmlString(HTMLStrings);
+            SelectPdf.PdfDocument doc = converter.ConvertHtmlString(html);
 
             MemoryStream ms = new();
 
@@ -106,9 +98,14 @@ namespace DocumentService.Services
 
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Media/fna_report.html");
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report.html");
 
                 string result = File.ReadAllText(path);
+
+                result = result.Replace("%name%", "Tiago Van Niekerk").Replace("[date]", DateTime.Now.ToString("dd/MM/yyyy"));
+
+
+                result += _fNAModulesService.OverviewModule(dto.ClientId);
 
                 if (dto.ClientId == 0)
                     return null;
@@ -116,8 +113,6 @@ namespace DocumentService.Services
                 if (dto.ClientModule)
                     result += _fNAModulesService.ClientModule(dto.ClientId);
 
-                result.Replace("%FNADate%", DateTime.Now.ToString("yyyy/MM/dd"))
-                    .Replace("%FullName%", "FullName");
 
                 result += "</body></html>";
 
