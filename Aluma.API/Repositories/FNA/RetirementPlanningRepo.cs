@@ -58,8 +58,13 @@ namespace Aluma.API.Repositories
 
         public RetirementPlanningDto GetRetirementPlanning(int fnaId)
         {
+            try {
             RetirementPlanningModel data = _context.RetirementPlanning.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<RetirementPlanningDto>(data);
+            }
+            catch(Exception ex) {
+                return null;
+            }
 
         }
 
