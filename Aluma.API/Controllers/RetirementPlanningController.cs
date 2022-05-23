@@ -72,6 +72,17 @@ namespace Aluma.API.Controllers
             {
                 RetirementPlanningDto dto = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
 
+                if (dto == null)
+                {
+                    dto = new() {
+                        FNAId= fnaId,
+                        Status= "Bad Request",
+                        Message = $"Retirement Planning data is not available for fna id: {fnaId}"
+                    };
+
+                    return BadRequest(dto);
+                }
+
                 return Ok(dto);
             }
             catch (Exception e)
