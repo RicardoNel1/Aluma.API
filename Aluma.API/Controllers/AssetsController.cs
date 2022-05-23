@@ -266,11 +266,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("insurance"), AllowAnonymous]
-        public IActionResult GetInsurance(int clientId)
+        public IActionResult GetInsurance(int fnaId)
         {
             try
             {
-                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(clientId);
+                List<InsuranceDto> dtoList = _repo.Insurance.GetInsurance(fnaId);
 
                 return Ok(dtoList);
             }
