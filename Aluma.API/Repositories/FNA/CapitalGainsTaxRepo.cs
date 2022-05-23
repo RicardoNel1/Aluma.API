@@ -50,21 +50,21 @@ namespace Aluma.API.Repositories
         public bool DoesCapitalGainsTaxExist(CapitalGainsTaxDto dto)
         {
             bool CapitalGainsTaxExist = false;
-            CapitalGainsTaxExist = _context.CapitalGainsTax.Where(a => a.ClientId == dto.ClientId).Any();
+            CapitalGainsTaxExist = _context.CapitalGainsTax.Where(a => a.FnaId == dto.FnaId).Any();
             return CapitalGainsTaxExist;
 
         }
 
-        public CapitalGainsTaxDto GetCapitalGainsTax(int clientId)
+        public CapitalGainsTaxDto GetCapitalGainsTax(int fnaId)
         {
-            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(c => c.ClientId == clientId).First();
+            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(c => c.FnaId == fnaId).First();
             return _mapper.Map<CapitalGainsTaxDto>(data);
 
         }
 
         public CapitalGainsTaxDto UpdateCapitalGainsTax(CapitalGainsTaxDto dto)
         {
-            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            CapitalGainsTaxModel data = _context.CapitalGainsTax.Where(a => a.FnaId == dto.FnaId).FirstOrDefault();
 
             data.PreviousCapitalLosses = dto.PreviousCapitalLosses;
             data.TotalCGTPayable = dto.TotalCGTPayable;
