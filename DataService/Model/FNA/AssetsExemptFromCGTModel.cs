@@ -7,7 +7,7 @@ using DataService.Enum;
 
 namespace DataService.Model
 {
-    [Table("fna_assets_exempt_from_cgt")]
+    [Table("fna_assets_exempt_from_cgt", Schema = "dbo")]
     public class AssetsExemptFromCGTModel : BaseModel
     {
         //public ClientModel Client { get; set; }        

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataService.Model
 {
-    [Table("capital_gains_tax")]
+    [Table("fna_capital_gains_tax")]
     public class CapitalGainsTaxModel : BaseModel
     {
         public int Id { get; set; }
