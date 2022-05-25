@@ -56,7 +56,7 @@ namespace Aluma.API.Controllers
 
                 if (!providingOnDisabilityExist)
                 {
-                    CreateProvidingOnDisability(dto);
+                    return CreateProvidingOnDisability(dto);
                 }
                 else
                 {
