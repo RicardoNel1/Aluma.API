@@ -67,7 +67,7 @@ namespace Aluma.API.Repositories
 
         public async Task<UserDocumentDto> GetDocument(UserDocumentDto dto)
         {
-            FileStorageDto fileDto = new FileStorageDto()
+            FileStorageDto fileDto = new()
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,
@@ -106,7 +106,7 @@ namespace Aluma.API.Repositories
 
         public async Task<UserDocumentDto> UploadDocument(UserDocumentDto dto)
         {
-            FileStorageDto fileDto = new FileStorageDto()
+            FileStorageDto fileDto = new()
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,

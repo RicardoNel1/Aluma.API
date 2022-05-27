@@ -100,7 +100,7 @@ namespace Aluma.API.Repositories
 
         public async Task GenerateRiskProfile(ClientModel client, AdvisorModel advisor, RiskProfileModel riskProfile)
         {
-            Dictionary<string, string> d = new Dictionary<string, string>();
+            Dictionary<string, string> d = new();
 
             d["User"] = $"{client.User.FirstName} {client.User.LastName}";
             d["IdNo"] = client.User.RSAIdNumber;
@@ -129,7 +129,7 @@ namespace Aluma.API.Repositories
             //advisor notes
             d["advisorNotes"] = riskProfile.AdvisorNotes ?? string.Empty;
 
-            DocumentHelper dh = new DocumentHelper(_context,_config, _fileStorage, _host);
+            DocumentHelper dh = new(_context,_config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.RiskProfile, d, client.User);
             

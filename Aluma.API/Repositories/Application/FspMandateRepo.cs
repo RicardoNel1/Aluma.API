@@ -219,7 +219,7 @@ namespace Aluma.API.Repositories
                 bv = client.BankDetails.First();
             }
 
-            UtilityHelper uh = new UtilityHelper();
+            UtilityHelper uh = new();
             d["accountHolder"] = $"{uh.Initials(client.User.FirstName)}";
             d["bank"] = bv.BankName ?? string.Empty;
             d["branchNo"] = bv.BranchCode ?? string.Empty;
@@ -319,7 +319,7 @@ namespace Aluma.API.Repositories
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }

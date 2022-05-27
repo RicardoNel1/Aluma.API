@@ -51,7 +51,7 @@ namespace Aluma.API.Repositories
 
             foreach (var item in dto.TaxResidencyItems)
             {
-                ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
+                ForeignTaxResidencyModel newItem = new();
 
                 newItem.TaxResidencyId = dto.Id;
                 _context.TaxResidencyItems.Add(newItem);
@@ -107,7 +107,7 @@ namespace Aluma.API.Repositories
                 }
                 else
                 {
-                    ForeignTaxResidencyModel newItem = new ForeignTaxResidencyModel();
+                    ForeignTaxResidencyModel newItem = new();
                     newItem.TaxResidencyId = dto.Id;
                     newItem.Country = item.Country;
                     newItem.TinNumber = item.TinNumber;

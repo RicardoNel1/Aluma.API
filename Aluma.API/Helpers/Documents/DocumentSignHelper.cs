@@ -59,7 +59,7 @@ namespace Aluma.API.Helpers
 
         private List<SignerListItemDto> FspMandateSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
@@ -87,7 +87,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> ClientConsentSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 677, 30, 120, 1)));
@@ -96,7 +96,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> RiskProfileSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2 };
@@ -110,7 +110,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> DisclosureLetterSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2, 3 };
@@ -128,7 +128,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> RecordOfAdviceSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 99, 560, 30, 120, 4)));
@@ -138,7 +138,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> PEFDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -152,7 +152,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> PEF2DOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -166,7 +166,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> PEFQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 190, 597, 30, 120, 1)));
@@ -175,7 +175,7 @@ namespace Aluma.API.Helpers
         }
         private List<SignerListItemDto> PEF2QuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
@@ -185,7 +185,7 @@ namespace Aluma.API.Helpers
 
         private List<SignerListItemDto> FIDOASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -200,7 +200,7 @@ namespace Aluma.API.Helpers
 
         private List<SignerListItemDto> FIQuoteSigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
             signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
@@ -230,7 +230,7 @@ namespace Aluma.API.Helpers
 
         public async Task SignDocuments(int applicationId)
         {
-            SignatureRepo _signRepo = new SignatureRepo();
+            SignatureRepo _signRepo = new();
 
             ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).Include(c => c.FspMandate).SingleOrDefault(c => c.Id == application.ClientId);
@@ -240,7 +240,7 @@ namespace Aluma.API.Helpers
             List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == applicationId && !d.IsSigned).ToList();
 
 
-            List<DocumentTypesEnum> docTypeRequireSignature = new List<DocumentTypesEnum>();
+            List<DocumentTypesEnum> docTypeRequireSignature = new();
             Console.WriteLine("User docs to sign : " + userDocs.Count);
             Console.WriteLine("Application docs to sign: " + appDocs.Count);
 

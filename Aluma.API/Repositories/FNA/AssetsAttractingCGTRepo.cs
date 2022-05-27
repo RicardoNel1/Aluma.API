@@ -51,7 +51,7 @@ namespace Aluma.API.Repositories
             {
                 try
                 {
-                    using (AlumaDBContext db = new AlumaDBContext())
+                    using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<AssetsAttractingCGTModel>(asset);
 

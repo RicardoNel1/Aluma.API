@@ -26,7 +26,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                AuthResponseDto response = new AuthResponseDto();
+                AuthResponseDto response = new();
                 bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
                 if (advisorExists)
                 {

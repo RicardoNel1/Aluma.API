@@ -49,7 +49,7 @@ namespace Aluma.API.Repositories
 
         public void CheckBankValidationStatusByJobId(string jobId)
         {
-            BankValidationServiceRepo bvr = new BankValidationServiceRepo();
+            BankValidationServiceRepo bvr = new();
 
             // get the bank validation object where jobId matches
             var bav = _context.BankDetails.First(e => e.JobID == jobId);
@@ -104,7 +104,7 @@ namespace Aluma.API.Repositories
 
                 ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
                 dto.IdNumber = client.User.RSAIdNumber;
-                BankValidationServiceRepo bvr = new BankValidationServiceRepo();
+                BankValidationServiceRepo bvr = new();
 
                 var jobID = string.Empty;
                 var validation = bvr.StartBankValidation(dto);
@@ -240,7 +240,7 @@ namespace Aluma.API.Repositories
                 {
                     ClientModel client = _context.Clients.Include(c => c.User).First(c => c.Id == dto.ClientId);
                     dto.IdNumber = client.User.RSAIdNumber;
-                    BankValidationServiceRepo bvr = new BankValidationServiceRepo();
+                    BankValidationServiceRepo bvr = new();
 
                     var jobID = string.Empty;
                     var validation = bvr.StartBankValidation(dto);
