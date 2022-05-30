@@ -186,7 +186,9 @@ namespace Aluma.API.Repositories
                     d["foreignMarriage_N"] = "x";
 
                 d["countryOfMarriage"] = client.MaritalDetails.CountryOfMarriage;
-                d["spouseName"] = client.MaritalDetails.FullName;
+                d["firstName"] = client.MaritalDetails.FirstName;
+                d["surname"] = client.MaritalDetails.Surname;
+                d["idNumber"] = client.MaritalDetails.IdNumber;
                 d["maidenName"] = client.MaritalDetails.MaidenName;
                 //d["spouseDateOfBirth"] = clientDetails.SpouseDateOfBirth;
                 d["spouseDateOfBirth"] = client.MaritalDetails.SpouseDateOfBirth;
