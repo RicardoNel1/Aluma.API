@@ -26,10 +26,14 @@ namespace Aluma.API.Controllers
 
                 if (exists)
                 {
+                    dto.Status = "Success";
+                    dto.Message = "Accrual Record Updated";
                     _repo.Accrual.UpdateAccrual(dto);
                 }
                 else
                 {
+                    dto.Status = "Success";
+                    dto.Message = "Accrual Record Created";
                     _repo.Accrual.CreateAccrual(dto);
                 }
                 
@@ -37,7 +41,9 @@ namespace Aluma.API.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failed";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
