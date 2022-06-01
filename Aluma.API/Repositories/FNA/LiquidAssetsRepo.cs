@@ -64,10 +64,10 @@ namespace Aluma.API.Repositories
                     {
                         var pModel = _mapper.Map<LiquidAssetsModel>(asset);
 
-                        if (db.LiquidAssets.Where(a => a.Id == pModel.Id).Any())
+                        if (_context.LiquidAssets.Where(a => a.Id == pModel.Id).Any())
                         {
-                            db.Entry(pModel).State = EntityState.Modified;
-                            if (db.SaveChanges() > 0)
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Status = "Success";
                                 asset.Message = "Liquid Asset Updated";
@@ -75,8 +75,8 @@ namespace Aluma.API.Repositories
                         }
                         else
                         {
-                            db.LiquidAssets.Add(pModel);
-                            if (db.SaveChanges() > 0)
+                            _context.LiquidAssets.Add(pModel);
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Id = _mapper.Map<LiquidAssetsDto>(pModel).Id;
                                 asset.Status = "Success";

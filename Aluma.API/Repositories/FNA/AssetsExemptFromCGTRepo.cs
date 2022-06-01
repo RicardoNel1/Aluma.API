@@ -63,10 +63,10 @@ namespace Aluma.API.Repositories
                     using AlumaDBContext db = new();
                     var pModel = _mapper.Map<AssetsExemptFromCGTModel>(asset);
 
-                    if (db.AssetsExemptFromCGT.Where(a => a.Id == pModel.Id).Any())
+                    if (_context.AssetsExemptFromCGT.Where(a => a.Id == pModel.Id).Any())
                     {
-                        db.Entry(pModel).State = EntityState.Modified;
-                        if (db.SaveChanges() > 0)
+                        _context.Entry(pModel).State = EntityState.Modified;
+                        if (_context.SaveChanges() > 0)
                         {
                             asset.Status = "Success";
                             asset.Message = "Asset Exempted Form CGT Updated";
@@ -74,8 +74,8 @@ namespace Aluma.API.Repositories
                     }
                     else
                     {
-                        db.AssetsExemptFromCGT.Add(pModel);
-                        if (db.SaveChanges() > 0)
+                        _context.AssetsExemptFromCGT.Add(pModel);
+                        if (_context.SaveChanges() > 0)
                         {
                             asset.Id = _mapper.Map<AssetsExemptFromCGTDto>(pModel).Id;
                             asset.Status = "Success";
