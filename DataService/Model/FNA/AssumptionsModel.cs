@@ -14,8 +14,13 @@ namespace DataService.Model
         public int Id { get; set; }
         public ClientFNAModel FNA { get; set; }
         public int FNAId { get; set; }
-        public double RetirementAge { get; set; }
+        public int RetirementAge { get; set; }
+        public int LifeExpentancy { get; set; }
+        public int YearsTillLifeExpentancy { get; set; }
+        public int YearsTillRetirement { get; set; }
+        public int YearsAfterRetirement { get; set; }
         public double CurrentGrossIncome { get; set; }
+        public double CurrentNetIncome { get; set; }
         public InvestmentRiskEnum RetirementInvestmentRisk { get; set; }
         public InvestmentRiskEnum DeathInvestmentRisk { get; set; }
         public InvestmentRiskEnum DisabilityInvestmentRisk { get; set; }
@@ -29,7 +34,7 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.FNAId).IsUnique();
-           
+
         }
     }
 

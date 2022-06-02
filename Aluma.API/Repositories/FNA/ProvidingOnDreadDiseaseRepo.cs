@@ -70,9 +70,10 @@ namespace Aluma.API.Repositories
 
             //set fields to be updated       
             data.Needs_CapitalNeeds = dto.Needs_CapitalNeeds;
-            data.Needs_GrossAnnualSalary = dto.Needs_GrossAnnualSalary;
+            data.Needs_GrossAnnualSalaryMultiple = dto.Needs_GrossAnnualSalaryMultiple;
             data.Available_DreadDiseaseDescription = dto.Available_DreadDiseaseDescription;
             data.Available_DreadDiseaseAmount = dto.Available_DreadDiseaseAmount;
+            data.TotalDreadDisease = dto.TotalDreadDisease;
 
             _context.ProvidingOnDreadDisease.Update(data);
             _context.SaveChanges();
