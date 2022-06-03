@@ -74,7 +74,7 @@ namespace Aluma.API.Controllers
 
 
         //Preservation Funds    
-        [HttpPut("preservation_funds"), AllowAnonymous]
+        [HttpPut("preservation_funds/update"), AllowAnonymous]
         public IActionResult UpdateRetirementPreservationFunds([FromBody] List<RetirementPreservationFundsDto> dtoArray)
         {
             try
@@ -85,6 +85,26 @@ namespace Aluma.API.Controllers
                     return BadRequest(dtoArray);
 
                 return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("preservation_funds/delete"), AllowAnonymous]
+        public IActionResult DeleteRetirementPreservationFunds([FromQuery] int Id)
+        {
+            try
+            {
+                string result = _repo.RetirementPreservationFunds.DeleteRetirementPreservationFunds(Id);
+
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
