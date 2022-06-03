@@ -5,7 +5,7 @@
         Conservative,
         ModeratelyConservative,
         Moderate,
-        ModeratelyAggresive,
+        ModeratelyAggressive,
         Aggressive
     }
 }

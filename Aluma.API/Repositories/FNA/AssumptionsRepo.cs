@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,39 @@ namespace Aluma.API.Repositories
 
         public AssumptionsDto UpdateAssumptions(AssumptionsDto dto)
         {
-            AssumptionsModel data = _context.Assumptions.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+                    var pModel = _mapper.Map<AssumptionsModel>(dto);
+
+                    if (_context.Assumptions.Where(a => a.Id == pModel.Id).Any())
+                    {
+                        _context.Entry(pModel).State = EntityState.Modified;
+                        if (_context.SaveChanges() > 0)
+                        {
+                            dto.Status = "Success";
+                            dto.Message = "Assumptions Updated";
+                        }
+                    }
+                    else
+                    {
+                        _context.Assumptions.Add(pModel);
+                        if (_context.SaveChanges() > 0)
+                        {
+                            dto.Id = _mapper.Map<AssumptionsDto>(pModel).Id;
+                            dto.Status = "Success";
+                            dto.Message = "Assumptions Created";
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                dto.Status = "Server Error";
+                dto.Message = ex.Message;
+            }
 
             //Update according to screen
             //if (update_type == "retirement")
@@ -92,19 +125,15 @@ namespace Aluma.API.Repositories
             //    data.CurrentGrossIncome = dto.CurrentGrossIncome;
             //}
 
-            Enum.TryParse(dto.RetirementInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedRetirement);
-            Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
-            Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
-            data.RetirementInvestmentRisk = parsedRetirement;
-            data.DeathInvestmentRisk = parsedDeath;
-            data.DisabilityInvestmentRisk = parsedDisability;
-            data.RetirementAge = dto.RetirementAge;            
-            data.CurrentGrossIncome = dto.CurrentGrossIncome;           
+            // Enum.TryParse(dto.RetirementInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedRetirement);
+            // Enum.TryParse(dto.DeathInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDeath);
+            // Enum.TryParse(dto.DisabilityInvestmentRisk, true, out DataService.Enum.InvestmentRiskEnum parsedDisability);
+            // data.RetirementInvestmentRisk = parsedRetirement;
+            // data.DeathInvestmentRisk = parsedDeath;
+            // data.DisabilityInvestmentRisk = parsedDisability;
+            // data.RetirementAge = dto.RetirementAge;            
+            // data.CurrentGrossIncome = dto.CurrentGrossIncome;           
 
-
-            _context.Assumptions.Update(data);
-            _context.SaveChanges();
-            dto = _mapper.Map<AssumptionsDto>(data);
             return dto;
 
         }

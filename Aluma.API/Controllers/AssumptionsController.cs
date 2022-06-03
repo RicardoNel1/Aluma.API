@@ -22,21 +22,32 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool assumptionsExist = _repo.Assumptions.DoesAssumptionsExist(dto);                
+                bool assumptionsExist = _repo.Assumptions.DoesAssumptionsExist(dto);
 
                 if (assumptionsExist)
                 {
-                    return BadRequest("Assumptions Exists");
+                    dto.Status = "Server Error";
+                    dto.Message = "Assumptions Exists";
+                    return BadRequest(dto);
                 }
                 else
-                { 
-                    _repo.Assumptions.CreateAssumptions(dto);
+                {
+                    dto = _repo.Assumptions.CreateAssumptions(dto);
+                    if (dto.Status.ToLower().Contains("success"))
+                    {
+                        return Ok(dto);
+                    }
+                    else
+                    {
+                        return BadRequest(dto);
+                    }
                 }
-                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -50,18 +61,27 @@ namespace Aluma.API.Controllers
 
                 if (!assumptionsExist)
                 {
-                    CreateAssumptions(dto);
+                    return CreateAssumptions(dto);
                 }
                 else
                 {
-                    _repo.Assumptions.UpdateAssumptions(dto);
+                    dto = _repo.Assumptions.UpdateAssumptions(dto);
+                    if (dto.Status.ToLower().Contains("success"))
+                    {
+                        return Ok(dto);
+                    }
+                    else
+                    {
+                        return BadRequest(dto);
+                    }
                 }
 
-                return Ok("Assumptions Updated");
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Server Error";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -79,9 +99,9 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-                
 
-        
+
+
 
     }
 }
