@@ -4,7 +4,7 @@ using DataService.Enum;
 namespace DataService.Dto
 {
 
-    public class RetirementPlanningDto: ApiResponseDto
+    public class RetirementPlanningDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }
@@ -15,6 +15,9 @@ namespace DataService.Dto
         public int NeedsTerm_Years { get; set; }
         public double IncomeNeedsEscalation { get; set; }
         public double CapitalNeeds { get; set; }
+        public double CapitalAvailable { get; set; }
+        public double TotalCapitalNeeds { get; set; }
+        public double TotalCapitalAvailable { get; set; }
         public double OutstandingLiabilities { get; set; }
         public double SavingsEscalation { get; set; }
     }

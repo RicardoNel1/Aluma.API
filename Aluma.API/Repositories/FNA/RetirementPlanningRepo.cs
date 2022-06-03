@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -71,24 +72,41 @@ namespace Aluma.API.Repositories
 
         public RetirementPlanningDto UpdateRetirementPlanning(RetirementPlanningDto dto)
         {
-            RetirementPlanningModel data = _context.RetirementPlanning.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+                    var pModel = _mapper.Map<RetirementPlanningModel>(dto);
 
-            //set fields to be updated       
-            data.MonthlyIncome = dto.MonthlyIncome;
-            data.TermPostRetirement_Years = dto.TermPostRetirement_Years;
-            data.IncomeEscalation = dto.IncomeEscalation;
-            data.IncomeNeeds = dto.IncomeNeeds;
-            data.NeedsTerm_Years = dto.NeedsTerm_Years;
-            data.IncomeNeedsEscalation = dto.IncomeNeedsEscalation;
-            data.CapitalNeeds = dto.CapitalNeeds;
-            data.OutstandingLiabilities = dto.OutstandingLiabilities;
-            data.SavingsEscalation = dto.SavingsEscalation;
+                    if (_context.RetirementPlanning.Where(a => a.Id == pModel.Id).Any())
+                    {
+                        _context.Entry(pModel).State = EntityState.Modified;
+                        if (_context.SaveChanges() > 0)
+                        {
+                            dto.Status = "Success";
+                            dto.Message = "Asset Attracting CGT Updated";
+                        }
+                    }
+                    else
+                    {
+                        _context.RetirementPlanning.Add(pModel);
+                        if (_context.SaveChanges() > 0)
+                        {
+                            dto.Id = _mapper.Map<RetirementPlanningDto>(pModel).Id;
+                            dto.Status = "Success";
+                            dto.Message = "Asset Attracting CGT Created";
+                        }
+                    }
 
-            _context.RetirementPlanning.Update(data);
-            _context.SaveChanges();
-            dto = _mapper.Map<RetirementPlanningDto>(data);
+                }
+            }
+            catch (Exception ex)
+            {
+                dto.Status = "Server Error";
+                dto.Message = ex.Message;
+            }
+
             return dto;
-
         }
 
 
