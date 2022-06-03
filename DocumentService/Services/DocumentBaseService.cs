@@ -102,7 +102,11 @@ namespace DocumentService.Services
 
                 string result = File.ReadAllText(path);
 
-                result = result.Replace("%name%", "Tiago Van Niekerk").Replace("[date]", DateTime.Now.ToString("dd/MM/yyyy"));
+                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
+
+                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
+
+                result = result.Replace("[name]", "Tiago Van Niekerk").Replace("[date]", DateTime.Now.ToString("dd/MM/yyyy")).Replace("[logo]", logo);
 
 
                 result += _fNAModulesService.OverviewModule(dto.ClientId);
@@ -114,13 +118,30 @@ namespace DocumentService.Services
                     result += _fNAModulesService.ClientModule(dto.ClientId);
 
 
-                result += "</body></html>";
+                if (dto.ProvidingOnDisability)
+                    result += _fNAModulesService.ProvidingOnDisabilityCapitalSolution(dto.ClientId);
+
+
+                result += "</body>";
+
+
+                result += "<script type='text/javascript'>";
+
+
+                if (dto.ProvidingOnDisability)
+                    result += _fNAModulesService.CapitalSolutionGraphJavascript(dto.ClientId);
+                result += "</script>";
+
+
+                result += "</html>";
+
+                result = result.Replace("[spacer]", spacer);
 
                 return result;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
                 throw;
             }
 

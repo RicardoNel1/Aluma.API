@@ -20,7 +20,8 @@ namespace Aluma.UnitTests
             FNAReportDto dto = new FNAReportDto()
             {
                 ClientId = 1,
-                ClientModule = true
+                ClientModule = true,
+                ProvidingOnDisability = true
             };
 
             try

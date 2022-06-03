@@ -16,6 +16,7 @@
     <None Remove="wwwroot\html\aluma-fna-report.html" />
     <None Remove="wwwroot\html\ApplicationComplete.html" />
     <None Remove="wwwroot\html\AssociateConsent.html" />
+    <None Remove="wwwroot\html\capital-solution-graph.html" />
     <None Remove="wwwroot\html\ClientWelcome.html" />
     <None Remove="wwwroot\html\ForgotPassword.html" />
     <None Remove="wwwroot\html\NewApplication.html" />
@@ -31,6 +32,7 @@
     <None Remove="wwwroot\img\email-banner-offshore-investment.jpg" />
     <None Remove="wwwroot\img\email-banner-private-equity.jpg" />
     <None Remove="wwwroot\img\spacer.png" />
+    <None Remove="wwwroot\js\capital-solution-graph.js" />
     <None Remove="wwwroot\pdf\BankVerificationReport.pdf" />
     <None Remove="wwwroot\pdf\ClientConsent.pdf" />
     <None Remove="wwwroot\pdf\DisclosureLetter.pdf" />
@@ -48,6 +50,7 @@
     <Content Include="wwwroot\html\AdvisorWelcome.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\aluma-fna-report-personal-details.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -82,34 +85,47 @@
     <Content Include="wwwroot\html\ApplicationComplete.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\AssociateConsent.html">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="wwwroot\html\capital-solution-graph.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\html\ClientWelcome.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\ForgotPassword.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\NewApplication.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\SwitchPortfolio.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\SwitchPortfolioSigned.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\html\VerifyEmail.html">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="wwwroot\img\aluma-logo-2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -146,6 +162,12 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="wwwroot\img\spacer.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="wwwroot\js\capital-solution-graph.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
