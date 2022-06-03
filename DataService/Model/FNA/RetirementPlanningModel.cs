@@ -20,6 +20,7 @@ namespace DataService.Model
         public double IncomeNeeds { get; set; }
         public int NeedsTerm_Years { get; set; }
         public double IncomeNeedsEscalation { get; set; }
+        public double CapitalNeeds { get; set; }
         public double TotalCapitalNeeds { get; set; }
         public double TotalCapitalAvailable { get; set; }
         public double OutstandingLiabilities { get; set; }
