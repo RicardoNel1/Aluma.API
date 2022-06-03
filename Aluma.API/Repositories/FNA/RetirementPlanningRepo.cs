@@ -80,7 +80,8 @@ namespace Aluma.API.Repositories
             data.IncomeNeeds = dto.IncomeNeeds;
             data.NeedsTerm_Years = dto.NeedsTerm_Years;
             data.IncomeNeedsEscalation = dto.IncomeNeedsEscalation;
-            data.CapitalNeeds = dto.CapitalNeeds;
+            data.TotalCapitalNeeds = dto.TotalCapitalNeeds;
+            data.TotalCapitalAvailable = dto.TotalCapitalAvailable;
             data.OutstandingLiabilities = dto.OutstandingLiabilities;
             data.SavingsEscalation = dto.SavingsEscalation;
 
