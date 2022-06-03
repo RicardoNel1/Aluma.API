@@ -17,6 +17,8 @@ namespace Aluma.API.Repositories
         List<RetirementPensionFundsDto> GetRetirementPensionFunds(int fnaId);
         List<RetirementPensionFundsDto> UpdateRetirementPensionFunds(List<RetirementPensionFundsDto> dtoArray);
 
+        string DeleteRetirementPensionFunds(int Id);
+
         bool DeleteRetirementPensionFundsItem(int id);
     }
 
@@ -55,7 +57,7 @@ namespace Aluma.API.Repositories
                     {
                         var pModel = _mapper.Map<RetirementPensionFundsModel>(asset);
 
-                        if (db.AssetsAttractingCGT.Where(a => a.Id == pModel.Id).Any())
+                        if (db.RetirementPensionFunds.Where(a => a.Id == pModel.Id).Any())
                         {
                             db.Entry(pModel).State = EntityState.Modified;
                             if (db.SaveChanges() > 0)
@@ -85,6 +87,34 @@ namespace Aluma.API.Repositories
             }
 
             return dtoArray;
+
+        }
+
+        public string DeleteRetirementPensionFunds(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+
+                    RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == Id).First();
+
+                    db.RetirementPensionFunds.Remove(item);
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        return "Asset Retirement Pension Fund Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
 
         }
 
