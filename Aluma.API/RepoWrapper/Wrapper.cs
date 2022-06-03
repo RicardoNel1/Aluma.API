@@ -64,6 +64,13 @@ namespace Aluma.API.RepoWrapper
         private IAdministrationCostsRepo _administrationCosts;
         private ITaxLumpsumRepo _taxLumpsum;
 
+        private IAssetSummaryRepo _assetSummary;
+        private IInsuranceSummaryRepo _insuranceSummary;
+        private IProvidingDeathSummaryRepo _providingDeathSummary;
+        private IProvidingDisabilitySummaryRepo _providingDisabilitySummary;
+        private IRetirementSummaryRepo _retirementSummary;
+
+
 
         private IFIRepo _fi;
         private IPEFRepo _pef;
@@ -281,6 +288,30 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _taxLumpsum == null ? new TaxLumpsumRepo(_dbContext, _host, _config, _mapper) : _taxLumpsum; }
         }
+
+        //FNA - SUMMARY
+        public IAssetSummaryRepo AssetSummary
+        {
+            get { return _assetSummary == null ? new AssetSummaryRepo(_dbContext, _host, _config, _mapper) : _assetSummary; }
+        }
+        public IInsuranceSummaryRepo InsuranceSummary
+        {
+            get { return _insuranceSummary == null ? new InsuranceSummaryRepo(_dbContext, _host, _config, _mapper) : _insuranceSummary; }
+        }
+        public IProvidingDeathSummaryRepo ProvidingDeathSummary
+        {
+            get { return _providingDeathSummary == null ? new ProvidingDeathSummaryRepo(_dbContext, _host, _config, _mapper) : _providingDeathSummary; }
+        }
+        public IProvidingDisabilitySummaryRepo ProvidingDisabilitySummary
+        {
+            get { return _providingDisabilitySummary == null ? new ProvidingDisabilitySummaryRepo(_dbContext, _host, _config, _mapper) : _providingDisabilitySummary; }
+        }
+        public IRetirementSummaryRepo RetirementSummary
+        {
+            get { return _retirementSummary == null ? new RetirementSummaryRepo(_dbContext, _host, _config, _mapper) : _retirementSummary; }
+        }
+
+
 
         //Products and Documents
         public IFIRepo FI

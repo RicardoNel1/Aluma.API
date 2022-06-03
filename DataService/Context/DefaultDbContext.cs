@@ -96,6 +96,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
             mb.ApplyConfiguration(new AssumptionsModelBuilder());
 
+
             foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             {
                 if (property.GetMaxLength() == null)
@@ -165,6 +166,12 @@ namespace DataService.Context
         public DbSet<ProvidingOnDisabilityModel> ProvidingOnDisability { get; set; }
         public DbSet<TaxLumpsumModel> TaxLumpsum { get; set; }
 
+        //FNA - SUMMARY
+        public DbSet<AssetSummaryModel> AssetSummary { get; set; }
+        public DbSet<InsuranceSummaryModel> InsuranceSummary { get; set; }
+        public DbSet<ProvidingDeathSummaryModel> ProvidingDeathSummary { get; set; }
+        public DbSet<ProvidingDisabilitySummaryModel> ProvidingDisabilitySummary { get; set; }
+        public DbSet<RetirementSummaryModel> RetirementSummary { get; set; }
 
         //Shared
         public DbSet<DisclosureModel> Disclosures { get; set; }
