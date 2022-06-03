@@ -33,7 +33,7 @@ namespace DocumentService.Services
             HtmlToPdf converter = new();
 
 
-            var text = new PdfTextSection(31, 10, "Aluma", new System.Drawing.Font("Arial", 8))
+            var text = new PdfTextSection(0, 10, "Aluma", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Left,
 
@@ -43,7 +43,7 @@ namespace DocumentService.Services
             converter.Footer.Add(text);
 
             // page numbers can be added using a PdfTextSection object
-            text = new PdfTextSection(520, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Arial", 8))
+            text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Center
             };
@@ -62,6 +62,8 @@ namespace DocumentService.Services
             converter.Options.WebPageWidth = webPageWidth;
             converter.Options.WebPageHeight = webPageHeight;
             converter.Options.DrawBackground = false;
+            converter.Options.MarginTop = 30;
+            converter.Options.MarginLeft = 30;
 
 
 
