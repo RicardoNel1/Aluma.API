@@ -50,9 +50,15 @@ namespace Aluma.API.Repositories
 
         public bool DoesProvidingOnDisabilityExist(ProvidingOnDisabilityDto dto)
         {
-            bool providingOnDisabilityExist = false;
-            providingOnDisabilityExist = _context.ProvidingOnDisability.Where(a => a.FNAId == dto.FNAId).Any();
-            return providingOnDisabilityExist;
+            try
+            {
+                bool providingOnDisabilityExist = false;
+                providingOnDisabilityExist = _context.ProvidingOnDisability.Where(a => a.FNAId == dto.FNAId).Any();
+                return providingOnDisabilityExist;
+            }
+            catch(Exception ex) {
+                return false;
+            }
 
         }
 

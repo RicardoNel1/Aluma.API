@@ -302,11 +302,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("capital_gains_tax"), AllowAnonymous]
-        public IActionResult GetCapitalGainsTax(int clientId)
+        public IActionResult GetCapitalGainsTax(int fnaId)
         {
             try
             {
-                CapitalGainsTaxDto dto = _repo.CapitalGainsTax.GetCapitalGainsTax(clientId);
+                CapitalGainsTaxDto dto = _repo.CapitalGainsTax.GetCapitalGainsTax(fnaId);
 
                 return Ok(dto);
             }

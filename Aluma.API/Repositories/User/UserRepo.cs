@@ -253,7 +253,7 @@ namespace Aluma.API.Repositories
 
         public bool IsPasswordVerified(LoginDto dto)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
             UserModel user = _context.Users.Where(c => c.Email == dto.UserName).First();
             bool match = str.ValidateHash(user.Password, dto.Password);
 
@@ -278,7 +278,7 @@ namespace Aluma.API.Repositories
         public UserDto CreateClientUser(RegistrationDto dto)
         {
             //create user            
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
@@ -299,7 +299,7 @@ namespace Aluma.API.Repositories
         }
         public UserDto CreateAdvisorUser(RegistrationDto dto)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
@@ -370,7 +370,7 @@ namespace Aluma.API.Repositories
 
         public void ResetPassword(int userId, string password)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
             UserModel user = _context.Users.Where(u => u.Id == userId).First();
 
             user.Password = str.CreateHash(password);

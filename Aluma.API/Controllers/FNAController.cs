@@ -21,7 +21,7 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetFNA(int clientId)
         {
-            ClientFNADto dto = new ClientFNADto();
+            ClientFNADto dto = new();
             try
             {
                 dto = _repo.FNA.GetClientFNA(clientId);

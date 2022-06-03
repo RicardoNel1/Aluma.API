@@ -79,15 +79,29 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetProvidingOnDeath(int fnaId)
         {
+            ProvidingOnDeathDto dto = new();
             try
             {
-                ProvidingOnDeathDto dto = _repo.ProvidingOnDeath.GetProvidingOnDeath(fnaId);
+                dto = _repo.ProvidingOnDeath.GetProvidingOnDeath(fnaId);
 
+                if (dto == null)
+                {
+                    dto.Status = "Failure";
+                    dto.Message = "NotExist";
+                }
+                else
+                {
+                    dto.Status = "Success";
+                    dto.Message = "RecordFound";
+
+                }
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 

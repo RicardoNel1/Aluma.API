@@ -54,7 +54,7 @@ namespace Aluma.API.Repositories
         public bool DoesAdvisorExist(UserDto dto)
         {
             bool advisorExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+            UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)
@@ -84,8 +84,8 @@ namespace Aluma.API.Repositories
         {
             try
             {
-                StringHasherRepo str = new StringHasherRepo();
-                UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+                StringHasherRepo str = new();
+                UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
                 
 
                 //Create Advisor
@@ -96,7 +96,7 @@ namespace Aluma.API.Repositories
                 _context.Advisors.Add(advisor);
                 _context.SaveChanges();
 
-                AddressModel resAddress = new AddressModel()
+                AddressModel resAddress = new()
                 {
                     UnitNumber = null,
                     ComplexName = "FinTech Campus",
@@ -114,7 +114,7 @@ namespace Aluma.API.Repositories
                 _context.Address.Add(resAddress);
                 _context.SaveChanges();
 
-                AddressModel postalAddress = new AddressModel()
+                AddressModel postalAddress = new()
                 {
                     UnitNumber = null,
                     ComplexName = "Postnet Suite 33",

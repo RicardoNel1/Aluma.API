@@ -186,7 +186,9 @@ namespace Aluma.API.Repositories
                     d["foreignMarriage_N"] = "x";
 
                 d["countryOfMarriage"] = client.MaritalDetails.CountryOfMarriage;
-                d["spouseName"] = client.MaritalDetails.FullName;
+                d["firstName"] = client.MaritalDetails.FirstName;
+                d["surname"] = client.MaritalDetails.Surname;
+                d["idNumber"] = client.MaritalDetails.IdNumber;
                 d["maidenName"] = client.MaritalDetails.MaidenName;
                 //d["spouseDateOfBirth"] = clientDetails.SpouseDateOfBirth;
                 d["spouseDateOfBirth"] = client.MaritalDetails.SpouseDateOfBirth;
@@ -219,7 +221,7 @@ namespace Aluma.API.Repositories
                 bv = client.BankDetails.First();
             }
 
-            UtilityHelper uh = new UtilityHelper();
+            UtilityHelper uh = new();
             d["accountHolder"] = $"{uh.Initials(client.User.FirstName)}";
             d["bank"] = bv.BankName ?? string.Empty;
             d["branchNo"] = bv.BranchCode ?? string.Empty;
@@ -319,7 +321,7 @@ namespace Aluma.API.Repositories
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }

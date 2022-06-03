@@ -36,7 +36,7 @@ namespace Aluma.API.Repositories
 
         public string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0)
         {
-            SmsService.SmsRepo smsService = new SmsService.SmsRepo();
+            SmsService.SmsRepo smsService = new();
             string result = string.Empty;
             try
             {
@@ -62,7 +62,7 @@ namespace Aluma.API.Repositories
                     : otpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + newOtpNumber
                     : "Aluma Capital: Herewith your OTP for resetting your password - " + newOtpNumber;
 
-                OtpModel newOtp = new OtpModel()
+                OtpModel newOtp = new()
                 {
                     Otp = newOtpNumber,
                     OtpType = otpType,

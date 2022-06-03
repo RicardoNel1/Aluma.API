@@ -89,7 +89,7 @@ namespace Aluma.API.Repositories
                 }
                 else
                 {
-                    InsuranceModel newItem = new InsuranceModel();
+                    InsuranceModel newItem = new();
 
                     Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
                     newItem.FNAId = item.FNAId;

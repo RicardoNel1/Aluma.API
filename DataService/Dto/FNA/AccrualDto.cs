@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace DataService.Dto
 {
     //stuff that has to be saved
-    public class AccrualDto
+    public class AccrualDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }
@@ -24,5 +24,6 @@ namespace DataService.Dto
         public string? AllocateTo { get; set; }
         public double TotalAsAsset { get; set; }
         public double TotalAsLiability { get; set; }
+
     }
 }

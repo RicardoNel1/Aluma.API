@@ -102,7 +102,7 @@ namespace Aluma.API.Repositories
             var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id && d.AdvisorId == newRoa.AdvisorId);
             if (!disclosureExists.Any())
             {
-                DisclosureRepo discRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
+                DisclosureRepo discRepo = new(_context, _host, _config, _mapper, _fileStorage, null);
 
                 var discDto = new DisclosureDto()
                 {
@@ -223,7 +223,7 @@ namespace Aluma.API.Repositories
                 data[$"{product.Name}_deviationReason"] = item.DeviationReason ?? string.Empty; ;
             }
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
 

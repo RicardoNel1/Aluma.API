@@ -141,7 +141,7 @@ namespace Aluma.API.Repositories
 
             //remove when productID is implemented
             List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
+            RecordOfAdviceRepo roaRepo = new(_context, _host, _config, _mapper, _fileStorage);
             foreach (var app in result)
             {
                 app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
@@ -165,7 +165,7 @@ namespace Aluma.API.Repositories
 
             ApplicationDto response = _mapper.Map<ApplicationDto>(application);
 
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
+            RecordOfAdviceRepo roaRepo = new(_context, _host, _config, _mapper, _fileStorage);
 
             response.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(response.Id);
             response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
@@ -269,12 +269,12 @@ namespace Aluma.API.Repositories
 
 
             //ROA only application document thus far
-            RecordOfAdviceRepo roaRepo = new RecordOfAdviceRepo(_context, _host, _config, _mapper, _fileStorage);
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
-            FspMandateRepo fspMandateRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
-            DisclosureRepo disclosure = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
-            PEFRepo pefRepo = new PEFRepo(_context, _host, _config, _mapper, _fileStorage);
-            FIRepo fiRepo = new FIRepo(_context, _host, _config, _mapper, _fileStorage);
+            RecordOfAdviceRepo roaRepo = new(_context, _host, _config, _mapper, _fileStorage);
+            RiskProfileRepo riskRepo = new(_context, _host, _config, _mapper, _fileStorage);
+            FspMandateRepo fspMandateRepo = new(_context, _host, _config, _mapper, _fileStorage);
+            DisclosureRepo disclosure = new(_context, _host, _config, _mapper, _fileStorage, null);
+            PEFRepo pefRepo = new(_context, _host, _config, _mapper, _fileStorage);
+            FIRepo fiRepo = new(_context, _host, _config, _mapper, _fileStorage);
 
             roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
             riskRepo.GenerateRiskProfile(client, advisor, risk);

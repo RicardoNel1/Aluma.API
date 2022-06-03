@@ -26,7 +26,7 @@ namespace Aluma.API.Controllers
         [HttpPost("client/login")]
         public async Task<IActionResult> AuthenticateClient(LoginDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
 
             try
             {
@@ -35,7 +35,7 @@ namespace Aluma.API.Controllers
                 bool passwordMatched = false;
                 bool registrationVerified = false;
 
-                UserDto user = new UserDto();
+                UserDto user = new();
                 RoleEnum role = RoleEnum.Client;
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
                 string token = String.Empty;
@@ -46,7 +46,7 @@ namespace Aluma.API.Controllers
                 {
                     if (dto.SocialId != null && dto.Password == "")
                     {
-                        RegistrationDto regDto = new RegistrationDto()
+                        RegistrationDto regDto = new()
                         {
                             Email = dto.UserName,
                             SocialId = dto.SocialId,
@@ -56,14 +56,14 @@ namespace Aluma.API.Controllers
 
                         user = _repo.User.CreateClientUser(regDto);
 
-                        ClientDto client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
+                        ClientDto client = new() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
                         client = await _repo.Client.CreateClient(client);
                         token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
 
                         response = new AuthResponseDto()
                         {
                             Token = token,
-                            ClientId = client.Id,
+                            Client = client,
                             TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
                             User = user,
                             Message = "SuccessfulSocialLogin",
@@ -126,7 +126,7 @@ namespace Aluma.API.Controllers
                     response = new AuthResponseDto()
                     {
                         Token = token,
-                        ClientId = client.Id,
+                        Client = client,
                         TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString(),
                         User = user,
                         Message = "SuccessfulSocialLogin",
@@ -144,7 +144,7 @@ namespace Aluma.API.Controllers
         [HttpPost("advisor/login")]
         public IActionResult AuthenticateAdmin(LoginDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
             try
             {
                 bool loginExists = false;
@@ -152,7 +152,7 @@ namespace Aluma.API.Controllers
                 bool registrationVerified = false;
 
 
-                UserDto user = new UserDto();
+                UserDto user = new();
                 
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
                 string token = String.Empty;
@@ -241,12 +241,12 @@ namespace Aluma.API.Controllers
         [HttpPost("forgot-password")]
         public IActionResult ForgotPassword([FromBody] LoginDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
 
             try
             {
                 bool loginExists = false;
-                UserDto user = new UserDto();
+                UserDto user = new();
 
                 loginExists = _repo.User.DoesUserNameExist(dto);
 
@@ -274,11 +274,11 @@ namespace Aluma.API.Controllers
         [HttpPost("reset-password"), AllowAnonymous]
         public IActionResult ResetPassword(ResetPasswordDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
 
             try
             {
-                UserDto user = new UserDto();
+                UserDto user = new();
 
                 int userId = _repo.User.DecryptUserId(dto.UserId);
                 user.Id = userId;
@@ -302,11 +302,11 @@ namespace Aluma.API.Controllers
         [HttpPost("reset-advisor-password"), AllowAnonymous]
         public IActionResult ResetPassword(LoginDto dto)
         {
-                AuthResponseDto response = new AuthResponseDto();
+                AuthResponseDto response = new();
 
             try
             {
-                UserDto user = new UserDto();
+                UserDto user = new();
 
                 user = _repo.User.GetUser(dto);
 

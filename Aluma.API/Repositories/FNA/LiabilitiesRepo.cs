@@ -38,11 +38,11 @@ namespace Aluma.API.Repositories
         public List<LiabilitiesDto> GetLiabilities(int fnaId)
         {
             ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.FNAId == fnaId).ToList();
-            List<LiabilitiesDto> liabilities = new List<LiabilitiesDto>();
+            List<LiabilitiesDto> liabilities = new();
 
             foreach (var item in data)
             {
-                LiabilitiesDto liability = new LiabilitiesDto();
+                LiabilitiesDto liability = new();
 
                 liability.Id = item.Id;
                 liability.FNAId = item.FNAId;
@@ -76,7 +76,7 @@ namespace Aluma.API.Repositories
                 }
                 else
                 {
-                    LiabilitiesModel newItem = new LiabilitiesModel();
+                    LiabilitiesModel newItem = new();
 
                     newItem.FNAId = item.FNAId;
                     newItem.Description = item.Description;

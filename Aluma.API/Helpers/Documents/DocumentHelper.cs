@@ -48,7 +48,7 @@ namespace Aluma.API.Helpers
             _host = host;
         }
 
-        public Dictionary<DocumentTypesEnum, string> DocumentNames = new Dictionary<DocumentTypesEnum, string>()
+        public Dictionary<DocumentTypesEnum, string> DocumentNames = new()
                 {
                     {DocumentTypesEnum.RiskProfile,     "Aluma Capital - Risk Profile.pdf"},
                     {DocumentTypesEnum.RecordOfAdvice,  "Aluma Capital - Record of Advice.pdf"},
@@ -63,7 +63,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.FIQuote,       "Aluma Capital - Fixed Income - Quote.pdf"},
                 };
 
-        public Dictionary<DocumentTypesEnum, string> DocumentTemplates = new Dictionary<DocumentTypesEnum, string>()
+        public Dictionary<DocumentTypesEnum, string> DocumentTemplates = new()
                 {
                     {DocumentTypesEnum.RiskProfile,"RiskProfile.pdf"},
                     {DocumentTypesEnum.RecordOfAdvice,"ROA.pdf"},
@@ -80,7 +80,7 @@ namespace Aluma.API.Helpers
 
         public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
         {
-            List<DocumentListDto> doc = new List<DocumentListDto>();
+            List<DocumentListDto> doc = new();
 
             ApplicationModel app = _context.Applications.Include(a => a.Client).Where(a => a.Id == applicationId).FirstOrDefault();
 
@@ -97,7 +97,7 @@ namespace Aluma.API.Helpers
 
         public async Task<List<DocumentListDto>> GetUserDocListAsync(int userId)
         {
-            List<DocumentListDto> doc = new List<DocumentListDto>();
+            List<DocumentListDto> doc = new();
 
             UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
 
@@ -207,7 +207,7 @@ namespace Aluma.API.Helpers
                 BaseShare = storageSettings.BaseShare
             };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+            FileStorageRepo storage = new(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
 
             if (document.URL == fileDirectory)
             {
@@ -248,7 +248,7 @@ namespace Aluma.API.Helpers
                 BaseShare = storageSettings.BaseShare
             };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+            FileStorageRepo storage = new(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
 
             if (document.URL == fileDirectory)
             {
@@ -290,7 +290,7 @@ namespace Aluma.API.Helpers
                 BaseShare = storageSettings.BaseShare
             };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+            FileStorageRepo storage = new(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
 
             if (document.URL == fileDirectory)
             {
@@ -332,7 +332,7 @@ namespace Aluma.API.Helpers
                 BaseShare = storageSettings.BaseShare
             };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+            FileStorageRepo storage = new(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
 
             if (document.URL == fileDirectory)
             {
@@ -360,7 +360,7 @@ namespace Aluma.API.Helpers
             if (application != null)
             {
                 fileDirectory += $"/{application.Id}";
-                ApplicationDocumentModel adm = new ApplicationDocumentModel();
+                ApplicationDocumentModel adm = new();
                 var documentExist = _context.ApplicationDocuments.Where(d => d.Name == DocumentNames[fileType].ToString() && d.ApplicationId == application.Id);
 
                 if (documentExist.Any())
@@ -391,7 +391,7 @@ namespace Aluma.API.Helpers
             }
             else
             {
-                UserDocumentModel udm = new UserDocumentModel();
+                UserDocumentModel udm = new();
                 var documentExist = _context.UserDocuments.Where(d => d.Name == DocumentNames[fileType].ToString() && d.UserId == user.Id);
 
                 if (documentExist.Any())
@@ -431,7 +431,7 @@ namespace Aluma.API.Helpers
                 BaseShare = storageSettings.BaseShare
             };
 
-            FileStorageRepo storage = new FileStorageRepo(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
+            FileStorageRepo storage = new(new ShareServiceClient(storageSettings.AzureFileStorageConnection));
 
             await storage.UploadAsync(dto);
 
@@ -444,11 +444,11 @@ namespace Aluma.API.Helpers
 
             List<ApplicationDocumentModel> appDocs = _context.ApplicationDocuments.Where(d => d.ApplicationId == application.Id).ToList();
 
-            List<ApplicationDocumentDto> response = new List<ApplicationDocumentDto>();
+            List<ApplicationDocumentDto> response = new();
             foreach (var doc in appDocs)
             {
 
-                FileStorageDto fileDto = new FileStorageDto()
+                FileStorageDto fileDto = new()
                 {
                     BaseDocumentPath = azureSettings.DocumentsRootPath,
                     BaseShare = azureSettings.BaseShare,
@@ -458,7 +458,7 @@ namespace Aluma.API.Helpers
 
                 byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
 
-                ApplicationDocumentDto dto = new ApplicationDocumentDto()
+                ApplicationDocumentDto dto = new()
                 {
                     Id = doc.Id,
                     DocumentName = doc.Name,
@@ -477,11 +477,11 @@ namespace Aluma.API.Helpers
 
             List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == user.Id).ToList();
 
-            List<UserDocumentDto> response = new List<UserDocumentDto>();
+            List<UserDocumentDto> response = new();
             foreach (var doc in userDocs)
             {
 
-                FileStorageDto fileDto = new FileStorageDto()
+                FileStorageDto fileDto = new()
                 {
                     BaseDocumentPath = azureSettings.DocumentsRootPath,
                     BaseShare = azureSettings.BaseShare,
@@ -491,7 +491,7 @@ namespace Aluma.API.Helpers
 
                 byte[] bytes = await _fileStorageRepo.DownloadAsync(fileDto);
 
-                UserDocumentDto dto = new UserDocumentDto()
+                UserDocumentDto dto = new()
                 {
                     Id = doc.Id,
                     DocumentName = doc.Name,
@@ -507,7 +507,7 @@ namespace Aluma.API.Helpers
         public void DeleteAllDocuments()
         {
             var azureSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
-            FileStorageDto fileDto = new FileStorageDto()
+            FileStorageDto fileDto = new()
             {
                 BaseDocumentPath = azureSettings.DocumentsRootPath,
                 BaseShare = azureSettings.BaseShare,

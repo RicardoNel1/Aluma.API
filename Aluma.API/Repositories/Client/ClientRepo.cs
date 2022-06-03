@@ -178,7 +178,7 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClientByUserId(int userId)
         {
-            ClientModel client = _context.Clients.Where(c => c.UserId == userId).First();
+            ClientModel client = _context.Clients.Include(x => x.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
 
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
@@ -222,7 +222,7 @@ namespace Aluma.API.Repositories
         public bool DoesClientExist(RegistrationDto dto)
         {
             bool clientExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+            UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)
@@ -347,11 +347,11 @@ namespace Aluma.API.Repositories
             
 
             //Risk Profile
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
+            RiskProfileRepo riskRepo = new(_context, _host, _config, _mapper, _fileStorage);
             riskRepo.GenerateRiskProfile(client, advisor, risk);
 
             //FSP Mandate
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
+            FspMandateRepo fspRepo = new(_context, _host, _config, _mapper, _fileStorage);
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA

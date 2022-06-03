@@ -27,17 +27,22 @@ namespace Aluma.API.Controllers
 
                 if (retirementPlanningExists)
                 {
-                    return BadRequest("Retirement Planning Exists");
+                    dto.Status = "Failure";
+                    dto.Message = "Retirement Planning Exists";
+                    return BadRequest(dto);
                 }
                 else
                 { 
-                    _repo.RetirementPlanning.CreateRetirementPlanning(dto);
+                    dto = _repo.RetirementPlanning.CreateRetirementPlanning(dto);
+                    dto.Status = "Success";
                 }
                 return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -50,18 +55,22 @@ namespace Aluma.API.Controllers
 
                 if (!retirementPlanningExist)
                 {
-                    CreateRetirementPlanning(dto);
+                    dto = _repo.RetirementPlanning.CreateRetirementPlanning(dto);
+                    dto.Status = "Success";                
                 }
                 else
                 {
-                    _repo.RetirementPlanning.UpdateRetirementPlanning(dto);
+                    dto = _repo.RetirementPlanning.UpdateRetirementPlanning(dto);
+                    dto.Status = "Success";
                 }
 
-                return Ok("Retirement Planning Updated");
+                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -72,6 +81,17 @@ namespace Aluma.API.Controllers
             {
                 RetirementPlanningDto dto = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
 
+                if (dto == null)
+                {
+                    dto = new() {
+                        FNAId= fnaId,
+                        Status= "Bad Request",
+                        Message = $"Retirement Planning data is not available for fna id: {fnaId}"
+                    };
+
+                    return BadRequest(dto);
+                }
+
                 return Ok(dto);
             }
             catch (Exception e)
@@ -79,7 +99,5 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-                
-
     }
 }

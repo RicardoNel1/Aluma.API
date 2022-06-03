@@ -24,7 +24,7 @@ namespace Aluma.API.Controllers
         public IActionResult VerifyLoginOtp(LoginDto dto)
         {
             UserDto user = _repo.User.GetUser(dto);
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
             string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
 
             if (isOtpVerified != "Validated")
@@ -41,7 +41,7 @@ namespace Aluma.API.Controllers
             if (role == RoleEnum.Client)
             {
                 ClientDto client = _repo.Client.GetClientByUserId(user.Id);
-                response.ClientId = client.Id;
+                response.Client = client;
             }
             else if (role == RoleEnum.Advisor || role == RoleEnum.Admin)
             {
@@ -62,7 +62,7 @@ namespace Aluma.API.Controllers
         public IActionResult VerifyRegisterOtp(LoginDto dto)
         {
             UserDto user = _repo.User.GetUser(dto);
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
 
             string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
 
@@ -80,7 +80,7 @@ namespace Aluma.API.Controllers
             if (role == RoleEnum.Client)
             {
                 ClientDto client = _repo.Client.GetClientByUserId(user.Id);
-                response.ClientId = client.Id;
+                response.Client = client;
             }
             else if (role == RoleEnum.Advisor)
             {
@@ -101,14 +101,16 @@ namespace Aluma.API.Controllers
         public IActionResult VerifyResetPasswordOtp(ResetPasswordDto dto)
         {
 
-            AuthResponseDto response = new AuthResponseDto();
-            UserDto user = new UserDto();
+            AuthResponseDto response = new();
+            UserDto user = new();
 
             if (dto.UserName != "" && dto.UserName != null)
             {
-                LoginDto login = new LoginDto();
-                login.UserName = dto.UserName;
-                login.Password = dto.Password;
+                LoginDto login = new()
+                {
+                    UserName = dto.UserName,
+                    Password = dto.Password
+                };
 
                 if (_repo.User.DoesUserNameExist(login))
                 {
@@ -148,7 +150,7 @@ namespace Aluma.API.Controllers
             if (role == RoleEnum.Client)
             {
                 ClientDto client = _repo.Client.GetClientByUserId(user.Id);
-                response.ClientId = client.Id;
+                response.Client = client;
             }
             else if (role == RoleEnum.Advisor)
             {
@@ -165,7 +167,7 @@ namespace Aluma.API.Controllers
         public async Task<IActionResult> VerifySignatureOtp(int applicationId, string otp)
         {
 
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
 
             try
             {

@@ -51,14 +51,14 @@ namespace Aluma.API.Repositories
             {
                 try
                 {
-                    using (AlumaDBContext db = new AlumaDBContext())
+                    using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<AssetsAttractingCGTModel>(asset);
 
-                        if (db.AssetsAttractingCGT.Where(a => a.Id == pModel.Id).Any())
+                        if (_context.AssetsAttractingCGT.Where(a => a.Id == pModel.Id).Any())
                         {
-                            db.Entry(pModel).State = EntityState.Modified;
-                            if (db.SaveChanges() > 0)
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Status = "Success";
                                 asset.Message = "Asset Attracting CGT Updated";
@@ -66,8 +66,8 @@ namespace Aluma.API.Repositories
                         }
                         else
                         {
-                            db.AssetsAttractingCGT.Add(pModel);
-                            if (db.SaveChanges() > 0)
+                            _context.AssetsAttractingCGT.Add(pModel);
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Id = _mapper.Map<AssetsAttractingCGTDto>(pModel).Id;
                                 asset.Status = "Success";

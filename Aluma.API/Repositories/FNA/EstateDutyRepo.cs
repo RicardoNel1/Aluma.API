@@ -54,6 +54,10 @@ namespace Aluma.API.Repositories
         public EstateDutyDto GetEstateDuty(int fnaId)
         {
             EstateDutyModel data = _context.EstateDuty.Where(c => c.FNAId == fnaId).First();
+            if (data == null)
+            {
+                data = new EstateDutyModel();
+            }
             return _mapper.Map<EstateDutyDto>(data);
         }
 

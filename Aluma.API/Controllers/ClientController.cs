@@ -22,7 +22,7 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetClient(int clientId)
         {
-            ClientDto dto = new ClientDto();
+            ClientDto dto = new();
             try
             {
                 dto = _repo.Client.GetClient(new ClientDto() { Id = clientId });
@@ -98,7 +98,7 @@ namespace Aluma.API.Controllers
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                UserDto user = new UserDto();
+                UserDto user = new();
                 bool clientExist = _repo.Client.DoesClientExist(dto);
                 bool idExists = _repo.Client.DoesIDExist(dto);
                 if (idExists)
@@ -165,7 +165,7 @@ namespace Aluma.API.Controllers
         [HttpPost("register"), AllowAnonymous]
         public async Task<IActionResult> RegisterClient(RegistrationDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
             UserDto user = null;
             ClientDto client = null;
 
