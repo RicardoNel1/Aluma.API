@@ -7,6 +7,8 @@ namespace DataService.Model
     [Table("fna_tax_lumpsum")]
     public class TaxLumpsumModel : BaseModel
     {
+        public ClientFNAModel FNA { get; set; }
+
         public int Id { get; set; }
         public int FnaId { get; set; }
         public double PreviouslyDisallowed { get; set; }

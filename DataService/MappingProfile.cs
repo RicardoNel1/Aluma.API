@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Aluma.API.Repositories;
+using AutoMapper;
 using DataService.Dto;
 using DataService.Model;
 
@@ -140,6 +141,18 @@ namespace DataService
                 .ReverseMap();
 
             CreateMap<TaxLumpsumModel, TaxLumpsumDto>()
+                .ReverseMap();
+
+            //FNA - SUMMARY
+            CreateMap<AssetSummaryModel, AssetSummaryDto>()
+                .ReverseMap();
+            CreateMap<InsuranceSummaryModel, InsuranceSummaryDto>()
+                .ReverseMap();
+            CreateMap<ProvidingDeathSummaryModel, ProvidingDeathSummaryDto>()
+                .ReverseMap();
+            CreateMap<ProvidingDisabilitySummaryModel, ProvidingDisabilitySummaryDto>()
+                .ReverseMap();
+            CreateMap<RetirementSummaryModel, RetirementSummaryDto>()
                 .ReverseMap();
 
             //Shared

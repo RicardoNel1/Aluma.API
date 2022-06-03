@@ -18,6 +18,7 @@ namespace DataService.Model
         public int TermPostRetirement_Years { get; set; }
         public double IncomeEscalation { get; set; }
         public double IncomeNeeds { get; set; }
+        public double IncomeNeedsTotal { get; set; }
         public int NeedsTerm_Years { get; set; }
         public double IncomeNeedsEscalation { get; set; }
         public double CapitalNeeds { get; set; }
