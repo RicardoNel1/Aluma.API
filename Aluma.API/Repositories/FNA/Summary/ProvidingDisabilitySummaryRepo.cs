@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,13 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IProvidingDisabilitySummaryRepo : IRepoBase<LiabilitiesModel>
+    public interface IProvidingDisabilitySummaryRepo : IRepoBase<ProvidingDisabilitySummaryModel>
     {
-        List<LiabilitiesDto> GetLiabilities(int fnaId);
-        LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
-
-        bool DeleteLiabilitiesItem(int id);
+        ProvidingDisabilitySummaryDto GetProvidingDisabilitySummary(int fnaId);
+        ProvidingDisabilitySummaryDto UpdateProvidingDisabilitySummary(ProvidingDisabilitySummaryDto dto);
     }
 
-    public class ProvidingDisabilitySummaryRepo : RepoBase<LiabilitiesModel>, IProvidingDisabilitySummaryRepo
+    public class ProvidingDisabilitySummaryRepo : RepoBase<ProvidingDisabilitySummaryModel>, IProvidingDisabilitySummaryRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
@@ -33,73 +32,24 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
 
-        public List<LiabilitiesDto> GetLiabilities(int fnaId)
+        public ProvidingDisabilitySummaryDto GetProvidingDisabilitySummary(int fnaId)
         {
-            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.FNAId == fnaId).ToList();
-            List<LiabilitiesDto> liabilities = new();
+            ProvidingDisabilitySummaryModel summaryValues = new ProvidingDisabilitySummaryModel();
+            summaryValues = _context.ProvidingDisabilitySummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
 
-            foreach (var item in data)
-            {
-                LiabilitiesDto liability = new();
-
-                liability.Id = item.Id;
-                liability.FNAId = item.FNAId;
-                liability.Description = item.Description;
-                liability.Value = item.Value;
-
-                liabilities.Add(liability);
-
-            }
-
-            return liabilities;
+            return _mapper.Map<ProvidingDisabilitySummaryDto>(summaryValues);
         }
 
-        public LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray)
+        public ProvidingDisabilitySummaryDto UpdateProvidingDisabilitySummary(ProvidingDisabilitySummaryDto dto)
         {
-            
-            foreach (var item in dtoArray)
-            {
-
-                bool existingItem = _context.Liabilities.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
-                {
-                    LiabilitiesModel updateItem = _context.Liabilities.Where(a => a.Id == item.Id).FirstOrDefault();
-                   
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
-
-                    _context.Liabilities.Update(updateItem);
-
-                }
-                else
-                {
-                    LiabilitiesModel newItem = new();
-
-                    newItem.FNAId = item.FNAId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-
-                    _context.Liabilities.Add(newItem);
-
-                }
-            }
-
-            _context.SaveChanges();
-            return null;
-
-        }
-
-        public bool DeleteLiabilitiesItem(int id)
-        {
-            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.Liabilities.Remove(item);
+            ProvidingDisabilitySummaryModel newValues = _mapper.Map<ProvidingDisabilitySummaryModel>(dto);
+            ProvidingDisabilitySummaryModel currValues = _context.ProvidingDisabilitySummary.Where(a => a.Id == dto.Id).FirstOrDefault();
+            currValues = newValues;
+            _context.ProvidingDisabilitySummary.Update(currValues);
             _context.SaveChanges();
 
-            return true;
+            return _mapper.Map<ProvidingDisabilitySummaryDto>(currValues);
         }
 
     }

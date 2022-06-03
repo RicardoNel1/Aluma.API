@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,14 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IRetirementSummaryRepo : IRepoBase<LiabilitiesModel>
+    public interface IRetirementSummaryRepo : IRepoBase<RetirementSummaryModel>
     {
-        List<LiabilitiesDto> GetLiabilities(int fnaId);
-        LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
+        RetirementSummaryDto GetRetirementSummary(int fnaId);
+        RetirementSummaryDto UpdateRetirementSummary(RetirementSummaryDto dto);
 
-        bool DeleteLiabilitiesItem(int id);
     }
 
-    public class RetirementSummaryRepo : RepoBase<LiabilitiesModel>, IRetirementSummaryRepo
+    public class RetirementSummaryRepo : RepoBase<RetirementSummaryModel>, IRetirementSummaryRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
@@ -33,74 +33,26 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-                
 
-        public List<LiabilitiesDto> GetLiabilities(int fnaId)
+        public RetirementSummaryDto GetRetirementSummary(int fnaId)
         {
-            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.FNAId == fnaId).ToList();
-            List<LiabilitiesDto> liabilities = new();
+            RetirementSummaryModel summaryValues = new RetirementSummaryModel();
+            summaryValues = _context.RetirementSummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
 
-            foreach (var item in data)
-            {
-                LiabilitiesDto liability = new();
-
-                liability.Id = item.Id;
-                liability.FNAId = item.FNAId;
-                liability.Description = item.Description;
-                liability.Value = item.Value;
-
-                liabilities.Add(liability);
-
-            }
-
-            return liabilities;
+            return _mapper.Map<RetirementSummaryDto>(summaryValues);
         }
 
-        public LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray)
+        public RetirementSummaryDto UpdateRetirementSummary(RetirementSummaryDto dto)
         {
-            
-            foreach (var item in dtoArray)
-            {
-
-                bool existingItem = _context.Liabilities.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
-                {
-                    LiabilitiesModel updateItem = _context.Liabilities.Where(a => a.Id == item.Id).FirstOrDefault();
-                   
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
-
-                    _context.Liabilities.Update(updateItem);
-
-                }
-                else
-                {
-                    LiabilitiesModel newItem = new();
-
-                    newItem.FNAId = item.FNAId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-
-                    _context.Liabilities.Add(newItem);
-
-                }
-            }
-
-            _context.SaveChanges();
-            return null;
-
-        }
-
-        public bool DeleteLiabilitiesItem(int id)
-        {
-            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.Liabilities.Remove(item);
+            RetirementSummaryModel newValues = _mapper.Map<RetirementSummaryModel>(dto);
+            RetirementSummaryModel currValues = _context.RetirementSummary.Where(a => a.Id == dto.Id).FirstOrDefault();
+            currValues = newValues;
+            _context.RetirementSummary.Update(currValues);
             _context.SaveChanges();
 
-            return true;
+            return _mapper.Map<RetirementSummaryDto>(currValues);
         }
+
 
     }
 }
