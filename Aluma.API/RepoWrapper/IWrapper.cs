@@ -65,6 +65,13 @@ namespace Aluma.API.RepoWrapper
         IAssumptionsRepo Assumptions { get; }
         ITaxLumpsumRepo TaxLumpsum { get; }
 
+        //FNA - SUMMARY
+        IAssetSummaryRepo AssetSummary { get; }
+        IInsuranceSummaryRepo InsuranceSummary { get; }
+        IProvidingDeathSummaryRepo ProvidingDeathSummary { get; }
+        IProvidingDisabilitySummaryRepo ProvidingDisabilitySummary { get; }
+        IRetirementSummaryRepo RetirementSummary{ get; }
+
         //Shared
         IDisclosureRepo Disclosures { get; }
 
