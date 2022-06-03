@@ -19,7 +19,7 @@ namespace Aluma.API.Controllers
              
 
         //Liabilities      
-        [HttpPut("liabilities"), AllowAnonymous]
+        [HttpPut("liabilities/update"), AllowAnonymous]
         public IActionResult UpdateLiabilities([FromBody] LiabilitiesDto[] dtoArray)
         {
             try
@@ -47,19 +47,26 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-        [HttpDelete("liabilities"), AllowAnonymous]
-        public IActionResult DeleteLiabilitiesItem(int id)
+        [HttpDelete("liabilities/delete"), AllowAnonymous]
+        public IActionResult DeleteLiabilitiesItem([FromQuery] int Id)
         {
+
             try
             {
-                bool deleted = _repo.Liabilities.DeleteLiabilitiesItem(id);
+                string result = _repo.Liabilities.DeleteLiabilities(Id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
+
         }
 
 

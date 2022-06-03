@@ -15,8 +15,7 @@ namespace Aluma.API.Repositories
     {
         List<LiabilitiesDto> GetLiabilities(int fnaId);
         LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
-
-        bool DeleteLiabilitiesItem(int id);
+        string DeleteLiabilities(int Id);
     }
 
     public class LiabilitiesRepo : RepoBase<LiabilitiesModel>, ILiabilitiesRepo
@@ -92,14 +91,32 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteLiabilitiesItem(int id)
+        public string DeleteLiabilities(int Id)
         {
-            LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.Liabilities.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
-            return true;
+                    LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == Id).First();
+
+                    db.Liabilities.Remove(item);
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        return "Liability Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
     }
