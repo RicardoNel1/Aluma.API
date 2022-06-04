@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignatureService", "Signatu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SMSService", "SMSService\SMSService.csproj", "{D5C7CA68-55A8-429F-9470-93D754A3FAB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorageService", "FileStorageService\FileStorageService.csproj", "{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorageService", "FileStorageService\FileStorageService.csproj", "{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentService", "DocumentService\DocumentService\DocumentService.csproj", "{7EFB4FD6-77EB-47F1-97BB-FD8C304AD9CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EFB4FD6-77EB-47F1-97BB-FD8C304AD9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EFB4FD6-77EB-47F1-97BB-FD8C304AD9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EFB4FD6-77EB-47F1-97BB-FD8C304AD9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EFB4FD6-77EB-47F1-97BB-FD8C304AD9CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
