@@ -5,18 +5,18 @@ namespace DocumentService.Services
 {
     public interface IFNAModulesService
     {
-        public string ClientModule(int ClientId);
-        public string OverviewModule(int ClientId);
-        public string ProvidingOnDisabilityCapitalSolution(int ClientId);
+        public string ClientModule(int FNAId);
+        public string OverviewModule(int FNAId);
+        public string ProvidingOnDisabilityCapitalSolution(int FNAId);
         //JavaScript
 
-        public string CapitalSolutionGraphJavascript(int ClientId);
+        public string CapitalSolutionGraphJavascript(int FNAId);
 
     }
 
     public class FNAModulesService : IFNAModulesService
     {
-        public string ClientModule(int ClientId)
+        public string ClientModule(int FNAId)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
 
@@ -26,7 +26,7 @@ namespace DocumentService.Services
             return result;
         }
 
-        public string OverviewModule(int ClientId)
+        public string OverviewModule(int FNAId)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-quick-review.html");
 
@@ -36,7 +36,7 @@ namespace DocumentService.Services
             return result;
         }
 
-        public string ProvidingOnDisabilityCapitalSolution(int ClientId)
+        public string ProvidingOnDisabilityCapitalSolution(int FNAId)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-disability.html");
 
@@ -58,7 +58,7 @@ namespace DocumentService.Services
             return result;
         }
 
-        public string CapitalSolutionGraphJavascript(int ClientId)
+        public string CapitalSolutionGraphJavascript(int FNAId)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/js/capital-solution-graph.js");
 

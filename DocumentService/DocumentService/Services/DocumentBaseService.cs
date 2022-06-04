@@ -111,17 +111,17 @@ namespace DocumentService.Services
                 result = result.Replace("[name]", "Tiago Van Niekerk").Replace("[date]", DateTime.Now.ToString("dd/MM/yyyy")).Replace("[logo]", logo);
 
 
-                result += _fNAModulesService.OverviewModule(dto.ClientId);
+                result += _fNAModulesService.OverviewModule(dto.FNAId);
 
-                if (dto.ClientId == 0)
+                if (dto.FNAId == 0)
                     return null;
 
                 if (dto.ClientModule)
-                    result += _fNAModulesService.ClientModule(dto.ClientId);
+                    result += _fNAModulesService.ClientModule(dto.FNAId);
 
 
                 if (dto.ProvidingOnDisability)
-                    result += _fNAModulesService.ProvidingOnDisabilityCapitalSolution(dto.ClientId);
+                    result += _fNAModulesService.ProvidingOnDisabilityCapitalSolution(dto.FNAId);
 
 
                 result += "</body>";
@@ -131,7 +131,7 @@ namespace DocumentService.Services
 
 
                 if (dto.ProvidingOnDisability)
-                    result += _fNAModulesService.CapitalSolutionGraphJavascript(dto.ClientId);
+                    result += _fNAModulesService.CapitalSolutionGraphJavascript(dto.FNAId);
                 result += "</script>";
 
 
