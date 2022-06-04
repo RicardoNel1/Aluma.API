@@ -3,7 +3,6 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
