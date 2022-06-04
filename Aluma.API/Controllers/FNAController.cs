@@ -1,5 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
+using DocumentService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -61,6 +62,26 @@ namespace Aluma.API.Controllers
             }
         }
 
+        //[HttpGet, AllowAnonymous]
+        //public IActionResult GetFNAReport(int clientId)
+        //{
 
+        //    FNAReportDto dto = new FNAReportDto()
+        //    {
+        //        ClientId = clientId,
+        //        ClientModule = true
+        //    };
+        //    try
+        //    {
+        //        IDocumentBaseService _documentService = new DocumentBaseService();
+        //        var result = _documentService.PDFGeneration(_documentService.FNAHtmlGeneration(dto));
+
+        //        return StatusCode(200, result);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, dto);
+        //    }
+        //}
     }
 }
