@@ -4,7 +4,6 @@ using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Net.Http.Headers;
 using System;
 using System.Threading.Tasks;
 

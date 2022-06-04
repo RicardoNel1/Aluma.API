@@ -6,7 +6,6 @@ using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;

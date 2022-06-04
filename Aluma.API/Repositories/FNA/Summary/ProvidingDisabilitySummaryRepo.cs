@@ -6,8 +6,6 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories

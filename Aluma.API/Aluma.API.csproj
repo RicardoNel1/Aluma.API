@@ -158,7 +158,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\FNA\Summary\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
