@@ -33,6 +33,10 @@ namespace Aluma.API.Controllers
                 else
                 {
                     dto = _repo.Assumptions.CreateAssumptions(dto);
+
+                    dto.Status = "Successful";
+                    dto.Message = "Assumptions Created";
+
                     if (dto.Status.ToLower().Contains("success"))
                     {
                         return Ok(dto);
