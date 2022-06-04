@@ -16,8 +16,7 @@ namespace Aluma.API.Repositories
     {
         List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId);
         List<RetirementPreservationFundsDto> UpdateRetirementPreservationFunds(List<RetirementPreservationFundsDto> dtoArray);
-
-        bool DeleteRetirementPreservationFundsItem(int id);
+        string DeleteRetirementPreservationFunds(int Id);
 
     }
 
@@ -87,16 +86,32 @@ namespace Aluma.API.Repositories
             return dtoArray;
         }
 
-
-
-        public bool DeleteRetirementPreservationFundsItem(int id)
+        public string DeleteRetirementPreservationFunds(int Id)
         {
-            RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.RetirementPreservationFunds.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
-            return true;
+                    RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == Id).First();
+
+                    db.RetirementPreservationFunds.Remove(item);
+
+                    if (db.SaveChanges() > 0)
+                    {
+                        return "Asset Retirement Preservation Fund Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
     }
