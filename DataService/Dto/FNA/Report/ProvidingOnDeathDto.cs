@@ -8,7 +8,6 @@ namespace DataService.Dto.FNA.Report
 {
     public class ProvidingOnDeathDto
     {
-        public string SpacerImgPath { get; set; }
         public string TotalDeathAvailable { get; set; }
         public string CapitalDreadNeeds { get; set; }
         public string SurplusProvDependants { get; set; }
@@ -19,6 +18,6 @@ namespace DataService.Dto.FNA.Report
         public string LifeExpectancy { get; set; }
         public string RiskInflation { get; set; }
         public string YearsTillLifeExpectancy { get; set; }
-        public string graph { get; set; }
+        public GraphDto Graph { get; set; }
     }
 }
