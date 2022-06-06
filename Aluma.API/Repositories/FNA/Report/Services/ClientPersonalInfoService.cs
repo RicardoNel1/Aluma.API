@@ -4,6 +4,7 @@ using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Dto.FNA.Report;
+using DataService.Enum;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using System;
@@ -35,7 +36,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
             string result = File.ReadAllText(path);
 
+            result = result.Replace("[FirstName]", client.FirstName);
             result = result.Replace("[LastName]", client.Lastname);
+            result = result.Replace("[SpouseFirstName]", client.SpouseFirstName);
+            result = result.Replace("[SpouseLastName]", client.SpouseLastName);
+            result = result.Replace("[RSAIdNumber]", client.RSAIdNumber);
+            result = result.Replace("[SpouseRSAIdNumber]", client.SpouseRSAIdNumber);
+            result = result.Replace("[DateOfBirth]", client.DateOfBirth);
+            result = result.Replace("[SpouseClientAge]", client.SpouseClientAge);
+            result = result.Replace("[SpouseGender]", client.SpouseGender);
+            result = result.Replace("[LifeExpectancy]", client.LifeExpectancy);
+            result = result.Replace("[MaritalStatus]", client.MaritalStatus);
+            result = result.Replace("[SpouseMaritalStatus]", client.SpouseMaritalStatus);
+            result = result.Replace("[DateOfMarriage]", client.DateOfMarriage);
+            result = result.Replace("[SpouseDateOfMarriage]", client.SpouseDateOfMarriage);
+            result = result.Replace("[Email]", client.Email);
+            result = result.Replace("[SpouseEmail]", client.SpouseEmail);
+            result = result.Replace("[WorkNumber]", client.WorkNumber);
+            result = result.Replace("[SpouseWorkNumber]", client.SpouseWorkNumber);
+            result = result.Replace("[ClientAddress]", client.ClientAddress);
+            result = result.Replace("[ClientPostal]", client.ClientPostal);
 
             return result;
 
@@ -48,7 +68,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 FirstName = user.FirstName,
                 Lastname = user.LastName,
                 SpouseFirstName = client.MaritalDetails?.FirstName,
-                SpouseLastName = user.LastName,
+                SpouseLastName = client.MaritalDetails?.Surname,
                 RSAIdNumber = user.RSAIdNumber,
                 SpouseRSAIdNumber = client.MaritalDetails?.IdNumber,
                 DateOfBirth = user.DateOfBirth,
@@ -64,8 +84,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 //SpouseEmail
                 WorkNumber = user.MobileNumber,
                 //SpouseWorkNumber
-               // ClientAddress = user.Address?.Where(x => x.Type == "1").
-               // ClientPostal
+                ClientAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Residential.ToString()).ToString(),
+                ClientPostal = user.Address?.Where(x => x.Type == AddressTypesEnum.Postal.ToString()).ToString()
             };
         }
 
