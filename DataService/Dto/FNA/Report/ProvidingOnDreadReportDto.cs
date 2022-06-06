@@ -13,8 +13,9 @@ namespace DataService.Dto
         public string MultipleGrossAnnualSalary { get; set; }
         public string TotalNeeds { get; set; }
         public string DreadCoverAvailable { get; set; }
+        public string DescDreadCoverAvailable { get; set; }
         public string TotalAvailableCapital { get; set; }
-        public string SurplusOnDread { get; set; }
+        public string TotalDreadDisease { get; set; }
         public string DreadCoverAllowed { get; set; }
         public string Age { get; set; }
         public string CurrentNetIncome { get; set; }

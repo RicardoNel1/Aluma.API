@@ -26,6 +26,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         public ProvidingDisabilityService(IWrapper repo)
         {
+
             _repo = repo;
         }
 
@@ -91,16 +92,25 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            int clientId =  (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-            ProvidingOnDisabilityDto disability = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
-            ProvidingDisabilitySummaryDto summary_disability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
-            EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+            try
+            {
+                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
+                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
+                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summary_disability, economy_variables));
+                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
+                ProvidingOnDisabilityDto disability = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
+                ProvidingDisabilitySummaryDto summary_disability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
+                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summary_disability, economy_variables));
+            }
+            catch (Exception e)
+            {
+                return string.Empty;
+            }
+
         }
 
         public async Task<string> SetDisabilityDetail(int fnaId)
