@@ -1,34 +1,78 @@
-﻿using DataService.Dto;
-using System;
+﻿using System;
+using System.Linq;
 
 namespace Aluma.API.Extensions
 {
     public static class StringExtensions
     {
-        //public static DateTime GetDateOfBirthFromRSAId(this string rsaId)
-        //{
-        //    string dob = rsaId.Substring(0, 6);
-        //    string year = dob.Substring(0,2);
-        //    string month = dob.Substring(2, 4);
-        //    string day = dob.Substring(4, 6);
-
-
-        //    return age;
-        //}
-
-        public static string FormatAddress(this AddressDto addressDto)
+        public static string GetDateOfBirthFromRsaIdNumber(this string idNumber)
         {
-            if (addressDto == null)
-                return string.Empty;
+            idNumber = (idNumber ?? string.Empty).Replace(" ", "");
+            string dateOfBirth = string.Empty;
 
-            string result = string.IsNullOrEmpty(addressDto.UnitNumber) && string.IsNullOrEmpty(addressDto.ComplexName) ? string.Empty : $"{addressDto.UnitNumber} {addressDto.ComplexName}";
-            result += $"{addressDto.StreetNumber} {addressDto.StreetName}, {Environment.NewLine}";
-            result += $"{addressDto.Suburb}, {Environment.NewLine}";
-            result += $"{addressDto.City}, {Environment.NewLine}";
-            result += $"{addressDto.Country}, {Environment.NewLine}";
-            result += $"{addressDto.PostalCode}";
+            if (idNumber.Length == 13)
+            {
+                var digits = new int[13];
+                string second = string.Empty;
+                int control2 = 0;
 
-            return result;
+                for (int i = 0; i < 13; i++)
+                {
+                    digits[i] = int.Parse(idNumber.Substring(i, 1));
+                }
+                int control1 = digits.Where((v, i) => i % 2 == 0 && i < 12).Sum();
+
+                digits.Where((v, i) => i % 2 != 0 && i < 12).ToList().ForEach(v => second += v.ToString());
+                var string2 = (int.Parse(second) * 2).ToString();
+                
+                for (int i = 0; i < string2.Length; i++)
+                {
+                    control2 += int.Parse(string2.Substring(i, 1));
+                }
+                
+                var control = (10-((control1 + control2) % 10))% 10;
+                if (digits[12] == control)
+                {
+                    dateOfBirth = DateTime.ParseExact(idNumber.Substring(0, 6), "yyMMdd", null).ToString("yyyy-MM-dd");
+                }
+            }
+
+            return dateOfBirth;
+        }
+
+        public static string GetGenderFromRsaIdNumber(this string idNumber)
+        {
+            idNumber = (idNumber ?? string.Empty).Replace(" ", "");
+            string gender = string.Empty;
+
+            if (idNumber.Length == 13)
+            {
+                var digits = new int[13];
+                string second = string.Empty;
+                int control2 = 0;
+
+                for (int i = 0; i < 13; i++)
+                {
+                    digits[i] = int.Parse(idNumber.Substring(i, 1));
+                }
+                int control1 = digits.Where((v, i) => i % 2 == 0 && i < 12).Sum();
+
+                digits.Where((v, i) => i % 2 != 0 && i < 12).ToList().ForEach(v => second += v.ToString());
+                var string2 = (int.Parse(second) * 2).ToString();
+
+                for (int i = 0; i < string2.Length; i++)
+                {
+                    control2 += int.Parse(string2.Substring(i, 1));
+                }
+
+                var control = (10 - ((control1 + control2) % 10)) % 10;
+                if (digits[12] == control)
+                {
+                    gender = digits[6] < 5 ? "Female" : "Male";
+                }
+            }
+
+            return gender;
         }
     }
 }
