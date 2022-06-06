@@ -36,7 +36,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string result = File.ReadAllText(path);
 
             result = result.Replace("[FirstName]", client.FirstName);
-            result = result.Replace("[LastName]", client.Lastname);
+            result = result.Replace("[LastName]", client.LastName);
             result = result.Replace("[RSAIdNumber]", client.RSAIdNumber);
             result = result.Replace("[DateOfBirth]", client.DateOfBirth);
             result = result.Replace("[ClientAge]", client.Age);
@@ -50,7 +50,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[ClientPostal]", client.Postal);
 
             result = result.Replace("[SpouseFirstName]", spouse.FirstName);
-            result = result.Replace("[SpouseLastName]", spouse.Lastname);
+            result = result.Replace("[SpouseLastName]", spouse.LastName);
             result = result.Replace("[SpouseRSAIdNumber]", spouse.RSAIdNumber);
             result = result.Replace("[SpouseDateOfBirth]", spouse.DateOfBirth);
             result = result.Replace("[SpouseAge]", spouse.Age);
@@ -75,7 +75,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return new PersonalDetailReportDto()
             {
                 FirstName = user.FirstName,
-                Lastname = user.LastName,
+                LastName = user.LastName,
                 RSAIdNumber = user.RSAIdNumber,
                 DateOfBirth = user.DateOfBirth,
                 Age = (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
@@ -98,7 +98,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return new()
             {
                 FirstName = client.MaritalDetails.FirstName,
-                Lastname = client.MaritalDetails.Surname,
+                LastName = client.MaritalDetails.Surname,
                 RSAIdNumber = client.MaritalDetails?.IdNumber,
                 DateOfBirth = string.Empty,
                 Age = string.Empty,
