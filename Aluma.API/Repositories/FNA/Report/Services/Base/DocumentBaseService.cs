@@ -43,7 +43,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             HtmlToPdf converter = new();
 
 
-            var text = new PdfTextSection(0, 10, "Aluma", new System.Drawing.Font("Open Sans", 8))
+            var text = new PdfTextSection(0, 10, "FNA Report", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Left,
 
@@ -52,7 +52,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             converter.Footer.Add(text);
 
+            string version = "1.0";
+
             // page numbers can be added using a PdfTextSection object
+            text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
+            {
+                HorizontalAlign = PdfTextHorizontalAlign.Center
+            };
+            converter.Footer.Add(text);
+            
             text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Center
