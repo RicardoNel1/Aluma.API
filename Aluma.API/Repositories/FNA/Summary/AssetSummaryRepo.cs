@@ -43,9 +43,25 @@ namespace Aluma.API.Repositories
         public AssetSummaryDto UpdateAssetSummary(AssetSummaryDto dto)
         {
             AssetSummaryModel newValues = _mapper.Map<AssetSummaryModel>(dto);
-            AssetSummaryModel currValues = _context.AssetSummary.Where(a => a.Id == dto.Id).FirstOrDefault();
-            currValues = newValues;
-            _context.AssetSummary.Update(currValues);
+            AssetSummaryModel currValues = _context.AssetSummary.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
+
+            if (dto.Id == 0)
+            {
+                _context.AssetSummary.Add(_mapper.Map<AssetSummaryModel>(dto));
+            }
+            else
+            {
+                currValues.TotalAssetsAttractingCGT = dto.TotalAssetsAttractingCGT;
+                currValues.TotalAssetsExcemptCGT = dto.TotalAssetsExcemptCGT;
+                currValues.TotalLiquidAssets = dto.TotalLiquidAssets;
+                currValues.TotalAccrual = dto.TotalAccrual;
+                currValues.TotalLiabilities = dto.TotalLiabilities;
+
+                _context.AssetSummary.Update(currValues);
+
+            }
+            //currValues = newValues;
+            //_context.AssetSummary.Update(currValues);
             _context.SaveChanges();
 
             return _mapper.Map<AssetSummaryDto>(currValues);
