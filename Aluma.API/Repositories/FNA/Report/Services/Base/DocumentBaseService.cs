@@ -106,26 +106,23 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         public async Task<string> FNAHtmlGeneration(FNAReportDto dto)
         {
 
-            IFNAModulesService _fNAModulesService = new FNAModulesService();
+            IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
 
 
             try
             {
-                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report.html");
-
-                string result = File.ReadAllText(path);
-
-                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
-
-                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
-
-                result = result.Replace("[name]", "Tiago Van Niekerk").Replace("[date]", DateTime.Now.ToString("dd/MM/yyyy")).Replace("[logo]", logo);
-
-
-                result += _fNAModulesService.OverviewModule(dto.FNAId);
-
                 if (dto.FNAId == 0)
                     return null;
+
+
+                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
+                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
+
+
+                string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
+                result += _fNAModulesService.OverviewModule(dto.FNAId);
+
+                
 
                 if (dto.ClientModule)
                 {
@@ -151,7 +148,6 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     result += await _providingRetirementService.SetRetirementDetail(dto.FNAId);
                 }
 
-
                 result += "</body>";
 
 
@@ -165,6 +161,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 result += "</html>";
 
+                result = result.Replace("[logo]", logo);
                 result = result.Replace("[spacer]", spacer);
 
                 return result;
