@@ -64,7 +64,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 //SpouseEmail
                 WorkNumber = user.MobileNumber,
                 //SpouseWorkNumber
-                //ClientAddress = user.Address?.Where(x => x.Type == "1")
+               // ClientAddress = user.Address?.Where(x => x.Type == "1").
                // ClientPostal
             };
         }
