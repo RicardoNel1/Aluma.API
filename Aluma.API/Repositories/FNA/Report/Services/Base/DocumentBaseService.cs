@@ -160,6 +160,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 result += graph;
                 result += "</html>";
 
+                result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
                 result = result.Replace("[spacer]", spacer);
 
