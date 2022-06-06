@@ -8,5 +8,24 @@ namespace DataService.Dto
 {
     public class RetirementPlanningReportDto
     {
+        public string IncomeNeed { get; set; }
+        public string Age { get; set; }
+        public string NeedsDisabilityTerm_Years { get; set; }
+        public string RetirementAge { get; set; }
+        public string EscalationPercent { get; set; }
+        public string LifeExpectancy { get; set; }
+        public string CapitalDisabilityNeeds { get; set; }
+        public string YearsBeforeRetirement { get; set; }
+        public string YearsAfterRetirement { get; set; }
+        public string RiskRating { get; set; }
+        public string InvestmentReturnRate { get; set; }
+        public string ShortTermProtectionIncome { get; set; }
+        public string TotalAvailable { get; set; }
+        public string InflationRate { get; set; }
+        public string NeedsRetirementTerm_Years { get; set; }
+
+
+
+
     }
 }
