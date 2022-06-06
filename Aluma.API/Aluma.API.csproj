@@ -69,10 +69,16 @@
     <Content Update="wwwroot\html\aluma-fna-report-providing-on-dread-disease.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\html\aluma-fna-report-providing-on-retirement.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\html\aluma-fna-report-quick-review.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\html\aluma-fna-report-retirement-planning.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\html\aluma-fna-report-summary.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\html\aluma-fna-report.html">

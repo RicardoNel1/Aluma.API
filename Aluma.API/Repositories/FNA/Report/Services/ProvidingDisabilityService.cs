@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 {
     public interface IProvidingDisabilityService
     {
-        Task<string> SetPersonalDetail(int fnaId);
+        Task<string> SetDisabilityDetail(int fnaId);
     }
 
     public class ProvidingDisabilityService : IProvidingDisabilityService
@@ -29,7 +29,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string PopulatePersonalDetail(PersonalDetailDto client)
+        private string ReplaceHtmlPlaceholders(PersonalDetailDto client)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-disability.html");
             string result = File.ReadAllText(path);
@@ -57,10 +57,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
             UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            return PopulatePersonalDetail(SetReportFields(client, user));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user));
         }
 
-        public async Task<string> SetPersonalDetail(int fnaId)
+        public async Task<string> SetDisabilityDetail(int fnaId)
         {
             return await GetReportData(fnaId);
         }

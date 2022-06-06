@@ -63,14 +63,8 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("get_fna_report"), AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport(int fnaId)
+        public async Task<IActionResult> GetFNAReport(FNAReportDto dto)
         {
-
-            FNAReportDto dto = new FNAReportDto()
-            {
-                FNAId = fnaId,
-                ClientModule = true
-            };
             try
             {
                 IDocumentBaseService _documentService = new DocumentBaseService(_repo);

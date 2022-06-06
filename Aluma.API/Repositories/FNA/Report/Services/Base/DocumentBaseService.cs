@@ -136,19 +136,19 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.ProvidingOnDisability)
                 {
                     IProvidingDisabilityService _providingDisabilityService = new ProvidingDisabilityService(_repo);
-                    result += _providingDisabilityService.SetPersonalDetail(dto.FNAId);
+                    result += _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
                 }
 
                 if (dto.ProvidingOnDreadDisease)
                 {
                     IProvidingDreadService _povidingDreadService = new ProvidingDreadService(_repo);
-                    result += _povidingDreadService.SetPersonalDetail(dto.FNAId);
+                    result += _povidingDreadService.SetDreadDetail(dto.FNAId);
                 }
 
                 if (dto.RetirementPlanning)
                 {
                     IProvidingRetirementService _providingRetirementService = new ProvidingRetirementService(_repo);
-                    result += _providingRetirementService.SetPersonalDetail(dto.FNAId);
+                    result += _providingRetirementService.SetRetirementDetail(dto.FNAId);
                 }
 
 

@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 {
     public interface IProvidingDreadService
     {
-        Task<string> SetPersonalDetail(int fnaId);
+        Task<string> SetDreadDetail(int fnaId);
     }
 
     public class ProvidingDreadService : IProvidingDreadService
@@ -29,7 +29,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string PopulatePersonalDetail(PersonalDetailDto client)
+        private string ReplaceHtmlPlaceholders(PersonalDetailDto client)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-dread-disease.html");
             string result = File.ReadAllText(path);
@@ -57,10 +57,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
             UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            return PopulatePersonalDetail(SetReportFields(client, user));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user));
         }
 
-        public async Task<string> SetPersonalDetail(int fnaId)
+        public async Task<string> SetDreadDetail(int fnaId)
         {
             return await GetReportData(fnaId);
         }

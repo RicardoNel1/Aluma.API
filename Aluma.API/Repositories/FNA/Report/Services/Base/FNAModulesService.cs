@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         
         public string OverviewModule(int FNAId)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-quick-review.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-summary.html");
 
             string result = File.ReadAllText(path);
 
