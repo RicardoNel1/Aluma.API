@@ -1,23 +1,15 @@
 ﻿using Aluma.API.RepoWrapper;
-using AutoMapper;
-using DataService.Context;
 using DataService.Dto;
 using DataService.Dto.FNA.Report;
-using DataService.Model;
-using Microsoft.AspNetCore.Hosting;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aluma.API.Repositories.FNA.Report.Service
 {
     public interface IProvidingRetirementService
     {
-        Task<string> SetPersonalDetail(int fnaId);
+        Task<string> SetRetirementDetail(int fnaId);
     }
 
     public class ProvidingRetirementService : IProvidingRetirementService
@@ -29,7 +21,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string PopulatePersonalDetail(PersonalDetailDto client)
+        private string ReplaceHtmlPlaceholders(PersonalDetailDto client)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-retirement-planning.html");
             string result = File.ReadAllText(path);
@@ -57,10 +49,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
             UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            return PopulatePersonalDetail(SetReportFields(client, user));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user));
         }
 
-        public async Task<string> SetPersonalDetail(int fnaId)
+        public async Task<string> SetRetirementDetail(int fnaId)
         {
             return await GetReportData(fnaId);
         }
