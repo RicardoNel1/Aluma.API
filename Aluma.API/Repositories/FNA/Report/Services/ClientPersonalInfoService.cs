@@ -31,61 +31,84 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string ReplaceHtmlPlaceholders(PersonalDetailDto client)
+        private string ReplaceHtmlPlaceholders(PersonalDetailReportDto client, PersonalDetailReportDto spouse)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[FirstName]", client.FirstName);
             result = result.Replace("[LastName]", client.Lastname);
-            result = result.Replace("[SpouseFirstName]", client.SpouseFirstName);
-            result = result.Replace("[SpouseLastName]", client.SpouseLastName);
             result = result.Replace("[RSAIdNumber]", client.RSAIdNumber);
-            result = result.Replace("[SpouseRSAIdNumber]", client.SpouseRSAIdNumber);
             result = result.Replace("[DateOfBirth]", client.DateOfBirth);
-            result = result.Replace("[SpouseClientAge]", client.SpouseClientAge);
-            result = result.Replace("[SpouseGender]", client.SpouseGender);
+            result = result.Replace("[ClientAge]", client.Age);
+            result = result.Replace("[Gender]", client.Gender);
             result = result.Replace("[LifeExpectancy]", client.LifeExpectancy);
             result = result.Replace("[MaritalStatus]", client.MaritalStatus);
-            result = result.Replace("[SpouseMaritalStatus]", client.SpouseMaritalStatus);
             result = result.Replace("[DateOfMarriage]", client.DateOfMarriage);
-            result = result.Replace("[SpouseDateOfMarriage]", client.SpouseDateOfMarriage);
             result = result.Replace("[Email]", client.Email);
-            result = result.Replace("[SpouseEmail]", client.SpouseEmail);
             result = result.Replace("[WorkNumber]", client.WorkNumber);
-            result = result.Replace("[SpouseWorkNumber]", client.SpouseWorkNumber);
-            result = result.Replace("[ClientAddress]", client.ClientAddress);
-            result = result.Replace("[ClientPostal]", client.ClientPostal);
+            result = result.Replace("[ClientAddress]", client.Address);
+            result = result.Replace("[ClientPostal]", client.Postal);
+
+            result = result.Replace("[SpouseFirstName]", spouse.FirstName);
+            result = result.Replace("[SpouseLastName]", spouse.Lastname);
+            result = result.Replace("[SpouseRSAIdNumber]", spouse.RSAIdNumber);
+            result = result.Replace("[SpouseDateOfBirth]", spouse.DateOfBirth);
+            result = result.Replace("[SpouseAge]", spouse.Age);
+            result = result.Replace("[SpouseGender]", spouse.Gender);
+            result = result.Replace("[SpouseLifeExpectancy]", spouse.LifeExpectancy);
+            result = result.Replace("[SpouseMaritalStatus]", spouse.MaritalStatus);
+            result = result.Replace("[SpouseDateOfMarriage]", spouse.DateOfMarriage);
+            result = result.Replace("[SpouseEmail]", spouse.Email);
+            result = result.Replace("[SpouseWorkNumber]", spouse.WorkNumber);
+            result = result.Replace("[SpouseClientAddress]", spouse.Address);
+            result = result.Replace("[SpouseClientPostal]", spouse.Postal);
 
             return result;
 
         }
 
-        private PersonalDetailDto SetReportFields(ClientDto client, UserDto user, AssumptionsDto assumptions)
+        private PersonalDetailReportDto SetReportFieldsClient(ClientDto client, UserDto user, AssumptionsDto assumptions)
         {
-            return new PersonalDetailDto()
+            AddressDto residentialAddress = user.Address?.Where(x => x.Type == ((int)AddressTypesEnum.Residential).ToString()).FirstOrDefault();
+            AddressDto postalAddress = user.Address?.Where(x => x.Type == ((int)AddressTypesEnum.Postal).ToString()).FirstOrDefault();
+
+            return new PersonalDetailReportDto()
             {
                 FirstName = user.FirstName,
                 Lastname = user.LastName,
-                SpouseFirstName = client.MaritalDetails?.FirstName,
-                SpouseLastName = client.MaritalDetails?.Surname,
                 RSAIdNumber = user.RSAIdNumber,
-                SpouseRSAIdNumber = client.MaritalDetails?.IdNumber,
                 DateOfBirth = user.DateOfBirth,
-                ClientAge = (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                //SpouseClientAge
-                //SpouseGender
+                Age = (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
+                Gender = string.Empty,
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
                 MaritalStatus = client.MaritalDetails?.MaritalStatus,
-                SpouseMaritalStatus = client.MaritalDetails?.MaritalStatus,
                 DateOfMarriage = client.MaritalDetails?.DateOfMarriage,
-                SpouseDateOfMarriage = client.MaritalDetails?.DateOfMarriage,
                 Email = user.Email,
-                //SpouseEmail
                 WorkNumber = user.MobileNumber,
-                //SpouseWorkNumber
-                ClientAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Residential.ToString()).ToString(),
-                ClientPostal = user.Address?.Where(x => x.Type == AddressTypesEnum.Postal.ToString()).ToString()
+                Address = residentialAddress == null ? string.Empty : residentialAddress.ToString(),
+                Postal = postalAddress == null ? string.Empty : postalAddress.ToString()
+            };
+        }
+
+        private PersonalDetailReportDto SetReportFieldsSpouse(ClientDto client)
+        {
+            if (client.MaritalDetails == null || client.MaritalDetails.MaritalStatus.ToLower() == "single")
+                return new();
+
+            return new()
+            {
+                FirstName = client.MaritalDetails.FirstName,
+                Lastname = client.MaritalDetails.Surname,
+                RSAIdNumber = client.MaritalDetails?.IdNumber,
+                DateOfBirth = string.Empty,
+                Age = string.Empty,
+                Gender = string.Empty,
+                LifeExpectancy = string.Empty,
+                MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                DateOfMarriage = client.MaritalDetails?.DateOfMarriage,
+                Email = string.Empty,
+                WorkNumber = string.Empty,
             };
         }
 
@@ -96,7 +119,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
             AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
 
-            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions));
+            PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
+            PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
+            return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
         }
 
         public async Task<string> SetPersonalDetail(int fnaId)
