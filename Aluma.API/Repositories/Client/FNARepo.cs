@@ -16,6 +16,7 @@ namespace Aluma.API.Repositories
         void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna);
         Task<ClientFNADto> CreateFNA(ClientFNADto dto);
         ClientFNADto GetClientFNA(int clientId);
+        Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId);
     }
 
     public class FNARepo : RepoBase<ClientFNAModel>, IFNARepo
@@ -44,6 +45,19 @@ namespace Aluma.API.Repositories
 
                 return dto;
             
+        }
+        
+        public async Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId)
+        {
+
+            var fnaModel = _context.clientFNA.Where(r => r.Id == fnaId);
+
+            if (fnaModel.Any())
+            {
+                return _mapper.Map<ClientFNADto>(fnaModel.First());
+            }
+            return null;
+
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna)

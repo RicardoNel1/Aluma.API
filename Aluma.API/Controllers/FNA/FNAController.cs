@@ -1,4 +1,5 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Repositories.FNA.Report.Services.Base;
+using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,26 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("get_fna_report"), AllowAnonymous]
+        public async Task<IActionResult> GetFNAReport(int fnaId)
+        {
 
+            FNAReportDto dto = new FNAReportDto()
+            {
+                FNAId = fnaId,
+                ClientModule = true
+            };
+            try
+            {
+                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
+                var result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
+
+                return StatusCode(200, result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, dto);
+            }
+        }
     }
 }
