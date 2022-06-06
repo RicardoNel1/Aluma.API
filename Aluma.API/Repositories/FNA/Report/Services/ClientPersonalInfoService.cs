@@ -69,8 +69,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private PersonalDetailReportDto SetReportFieldsClient(ClientDto client, UserDto user, AssumptionsDto assumptions)
         {
-            AddressDto residentialAddress = user.Address?.Where(x => x.Type == ((int)AddressTypesEnum.Residential).ToString()).FirstOrDefault();
-            AddressDto postalAddress = user.Address?.Where(x => x.Type == ((int)AddressTypesEnum.Postal).ToString()).FirstOrDefault();
+            AddressDto residentialAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Residential.ToString()).FirstOrDefault();
+            AddressDto postalAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Postal.ToString()).FirstOrDefault();
 
             return new PersonalDetailReportDto()
             {
@@ -79,7 +79,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 RSAIdNumber = user.RSAIdNumber,
                 DateOfBirth = user.DateOfBirth,
                 Age = (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                Gender = string.Empty,
+                Gender = user.RSAIdNumber.GetGenderFromRsaIdNumber(),
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
                 MaritalStatus = client.MaritalDetails?.MaritalStatus,
                 DateOfMarriage = client.MaritalDetails?.DateOfMarriage,
@@ -100,9 +100,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 FirstName = client.MaritalDetails.FirstName,
                 LastName = client.MaritalDetails.Surname,
                 RSAIdNumber = client.MaritalDetails?.IdNumber,
-                DateOfBirth = string.Empty,
-                Age = string.Empty,
-                Gender = string.Empty,
+                DateOfBirth = client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber(),
+                Age = (Convert.ToDateTime(client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber())).CalculateAge().ToString(),
+                Gender = client.MaritalDetails?.IdNumber.GetGenderFromRsaIdNumber(),
                 LifeExpectancy = string.Empty,
                 MaritalStatus = client.MaritalDetails?.MaritalStatus,
                 DateOfMarriage = client.MaritalDetails?.DateOfMarriage,
@@ -115,7 +115,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             int clientId =  (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
             ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+            UserDto user = _repo.User.GetUserWithAddress(new UserDto() { Id = client.UserId });
             AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
 
             PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
