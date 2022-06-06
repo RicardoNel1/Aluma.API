@@ -25,7 +25,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-retirement-planning.html");
             string result = File.ReadAllText(path);
 
-            result = result.Replace("[LastName]", client.Lastname);
+            result = result.Replace("[LastName]", client.LastName);
 
             return result;
 
@@ -36,9 +36,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return new PersonalDetailReportDto()
             {
                 FirstName = user.FirstName,
-                Lastname = user.LastName,
-                SpouseFirstName = client.MaritalDetails?.FirstName,
-                SpouseLastName = user.LastName
+                LastName = user.LastName,
             };
         }
 
