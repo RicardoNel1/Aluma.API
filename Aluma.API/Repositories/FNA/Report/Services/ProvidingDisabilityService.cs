@@ -21,6 +21,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         public ProvidingDisabilityService(IWrapper repo)
         {
+
             _repo = repo;
             _graph = new GraphService();
         }
