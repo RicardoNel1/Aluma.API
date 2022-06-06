@@ -12,7 +12,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         string CloseGraphJavaScript();
     }
 
-    public class GraphService: IGraphService
+    public class GraphService : IGraphService
     {
         public GraphResult SetGraphHtml(GraphReportDto dto)
         {
@@ -21,7 +21,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             string js = SetGraphScript(dto);
 
-            result = result.Replace("[id]", $"Graph_{dto.Name.Replace(" ","_")}");
+            result = result.Replace("[id]", $"Graph_{dto.Name.Replace(" ", "_")}");
             return new()
             {
                 Html = result,
@@ -52,7 +52,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             js += "]);";
             js += $"var options = {{ title: '{dto.Name}' }};";
 
-            switch(dto.Type)
+            switch (dto.Type)
             {
                 case GraphType.Line:
                     js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
@@ -63,7 +63,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     break;
 
                 case GraphType.Pie:
-                    js += $"var chart = new google.visualization.PieChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+                    {
+                        js += $"var chart = new google.visualization.PieChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+                        js += $"options = {{ title: '{dto.Name}',  pieSliceText: 'none', legend: {{ position: 'labeled', labeledValueText: 'both', }} }}; ";
+                    }
                     break;
 
                 default:

@@ -14,11 +14,21 @@
 		
 
 		<style type="text/css">
-			.displayMe {display: block;}
-			.printMe {display: block;}
-			.page-break {page-break-after  : always}
+            .displayMe {
+                display: block;
+            }
 
-			@media print {.displayMe {display: none;}}
+            .page-break {
+                page-break-after: always
+            }
+
+			@media print {
+				.displayMe {display: none;}
+
+                .printMe {
+                    display: block;
+                }
+			}
         </style>
 		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	</head>
