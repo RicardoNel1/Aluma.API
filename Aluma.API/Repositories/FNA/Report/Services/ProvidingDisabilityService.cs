@@ -67,7 +67,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, 
                                                                 AssumptionsDto assumptions,
                                                                 ProvidingOnDisabilityDto disability,
-                                                                ProvidingDisabilitySummaryDto summary_disability,
+                                                                ProvidingDisabilitySummaryDto summaryDisability,
                                                                 EconomyVariablesDto economy_variables)
         {
 
@@ -84,13 +84,13 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString(),
                 EscDisabilityPercent = economy_variables.InflationRate.ToString(),
                 CapitalDisabilityNeeds = disability.CapitalNeeds.ToString(),
-                ShortTermProtectionIncome = summary_disability.TotalExistingShortTermIncome.ToString(),
-                LongTermProtectionIncome = summary_disability.TotalExistingLongTermIncome.ToString(),
-                TotalAvailable = summary_disability.TotalAvailable.ToString(),
-                TotalNeeds = summary_disability.TotalNeeds.ToString(),
+                ShortTermProtectionIncome = summaryDisability.TotalExistingShortTermIncome.ToString(),
+                LongTermProtectionIncome = summaryDisability.TotalExistingLongTermIncome.ToString(),
+                TotalAvailable = summaryDisability.TotalAvailable.ToString(),
+                TotalNeeds = summaryDisability.TotalNeeds.ToString(),
                 CapitalNeeds = disability.CapitalNeeds.ToString(),
-                CapitalizedIncomeShortfall = summary_disability.TotalIncomeNeed.ToString(),
-                TotalCapShortfall = (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString(),
+                CapitalizedIncomeShortfall = summaryDisability.TotalIncomeNeed.ToString(),
+                TotalCapShortfall = (summaryDisability.TotalAvailable - summaryDisability.TotalNeeds).ToString(),
                 Graph = new()
                 {
                     Type = GraphType.Pie,
@@ -98,10 +98,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Data = new() {
-                        {"Capitalized Income Shortfall", summary_disability.TotalIncomeNeed.ToString()},
+                        {"Capitalized Income Shortfall", summaryDisability.TotalIncomeNeed.ToString()},
                         {"Lump sum Needs", disability.IncomeNeeds.ToString()}, 
-                        {"Available Lump sum", summary_disability.TotalAvailable.ToString()}, 
-                        {"Total Lump sum Shortfall", (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString()}, 
+                        {"Available Lump sum", summaryDisability.TotalAvailable.ToString()}, 
+                        {"Total Lump sum Shortfall", (summaryDisability.TotalAvailable - summaryDisability.TotalNeeds).ToString()}, 
                     }
                 }
             };
@@ -118,10 +118,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
                 ProvidingOnDisabilityDto disability = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
-                ProvidingDisabilitySummaryDto summary_disability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
+                ProvidingDisabilitySummaryDto summaryDisability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
                 EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summary_disability, economy_variables));
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summaryDisability, economy_variables));
             }
             catch (Exception ex)
             {

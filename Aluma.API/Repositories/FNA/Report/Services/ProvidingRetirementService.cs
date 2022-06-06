@@ -83,7 +83,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private RetirementPlanningReportDto SetReportFields(ClientDto client, UserDto user,
                                                         AssumptionsDto assumptions,
                                                         RetirementPlanningDto retirement,
-                                                        RetirementSummaryDto summary_retirement,
+                                                        RetirementSummaryDto summaryRetirement,
                                                         EconomyVariablesDto economy_variables)
         {
             string riskRating = "";
@@ -107,16 +107,16 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 IncomeNeed = retirement.IncomeNeeds.ToString(),
                 NeedsRetirementTerm_Years = retirement.NeedsTerm_Years.ToString(),
                 EscalationPercent = economy_variables.InflationRate.ToString(),
-                TotalNeeds = summary_retirement.TotalNeeds.ToString(),
+                TotalNeeds = summaryRetirement.TotalNeeds.ToString(),
                 CapitalNeeds = retirement.CapitalNeeds.ToString(),
                 OutstandingLiabilities = retirement.OutstandingLiabilities.ToString(),
                 AvailableCapital = retirement.CapitalAvailable.ToString(),
-                TotalAvailable = summary_retirement.TotalAvailable.ToString(),
+                TotalAvailable = summaryRetirement.TotalAvailable.ToString(),
                 IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString(),
                 IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString(),
-                MonthlySavingsRequired = summary_retirement.SavingsRequiredPremium.ToString(),
+                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium.ToString(),
                 MonthlySavingsEscalating = retirement.SavingsEscalation.ToString(),
-                TotalCapital = (summary_retirement.TotalAvailable - summary_retirement.TotalNeeds).ToString()
+                TotalCapital = (summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds).ToString()
 
             };
         }
@@ -131,10 +131,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
                 RetirementPlanningDto retirement = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-                RetirementSummaryDto summary_retirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
+                RetirementSummaryDto summaryRetirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
                 EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summary_retirement, economy_variables));
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summaryRetirement, economy_variables));
             }
             catch (Exception)
             {

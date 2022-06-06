@@ -9,6 +9,7 @@ namespace DataService.Dto
     public class ProvidingOnDeathReportDto
     {
         public string TotalDeathAvailable { get; set; }
+        public string TotalAvailable { get; set; }
         public string CapitalDreadNeeds { get; set; }
         public string SurplusProvDependants { get; set; }
         public string ShortfallSettEstate { get; set; }
