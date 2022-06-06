@@ -3,39 +3,38 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 
 namespace Aluma.API.Controllers
 {
     [ApiController, Route("api/[controller]"), Authorize]
-    public class ProvidingOnDreadDiseaseController : ControllerBase
+    public class ProvidingOnDisabilityController : ControllerBase
     {
         private readonly IWrapper _repo;
 
-        public ProvidingOnDreadDiseaseController(IWrapper repo)
+        public ProvidingOnDisabilityController(IWrapper repo)
         {
             _repo = repo;
         }
 
 
         [HttpPost, AllowAnonymous]
-        public IActionResult CreateProvidingOnDreadDisease([FromBody] ProvidingOnDreadDiseaseDto dto)
+        public IActionResult CreateProvidingOnDisability([FromBody] ProvidingOnDisabilityDto dto)
         {
             try
             {
-                bool providingOnDreadDiseaseExist = _repo.ProvidingOnDreadDisease.DoesProvidingOnDreadDiseaseExist(dto);
+                bool providingOnDisabilityExist = _repo.ProvidingOnDisability.DoesProvidingOnDisabilityExist(dto);
 
-                if (providingOnDreadDiseaseExist)
+                if (providingOnDisabilityExist)
                 {
-                    return BadRequest("Providing On Dread Disease Exists");
+                    return BadRequest("Providing On Disability Exists");
                 }
                 else
                 {
-                    _repo.ProvidingOnDreadDisease.CreateProvidingOnDreadDisease(dto);
+                    _repo.ProvidingOnDisability.CreateProvidingOnDisability(dto);
                 }
 
                 dto.Status = "Success";
-                dto.Message = "Providing On Dread Disease Created";
+                dto.Message = "Providing On Disability Created";
 
                 return Ok(dto);
             }
@@ -48,23 +47,23 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateProvidingOnDreadDisease([FromBody] ProvidingOnDreadDiseaseDto dto)
+        public IActionResult UpdateProvidingOnDisability([FromBody] ProvidingOnDisabilityDto dto)
         {
             try
             {
-                bool providingOnDreadDiseaseExist = _repo.ProvidingOnDreadDisease.DoesProvidingOnDreadDiseaseExist(dto);
+                bool providingOnDisabilityExist = _repo.ProvidingOnDisability.DoesProvidingOnDisabilityExist(dto);
 
-                if (!providingOnDreadDiseaseExist)
+                if (!providingOnDisabilityExist)
                 {
-                    CreateProvidingOnDreadDisease(dto);
+                    return CreateProvidingOnDisability(dto);
                 }
                 else
                 {
-                    _repo.ProvidingOnDreadDisease.UpdateProvidingOnDreadDisease(dto);
+                    _repo.ProvidingOnDisability.UpdateProvidingOnDisability(dto);
                 }
 
                 dto.Status = "Success";
-                dto.Message = "Providing On Dread Disease Created";
+                dto.Message = "Providing On Disability Updated";
 
                 return Ok(dto);
             }
@@ -77,11 +76,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetProvidingOnDreadDisease(int fnaId)
+        public IActionResult GetProvidingOnDisability(int fnaId)
         {
             try
             {
-                ProvidingOnDreadDiseaseDto dto = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(fnaId);
+                ProvidingOnDisabilityDto dto = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
 
                 return Ok(dto);
             }

@@ -9,14 +9,9 @@ using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SignatureService;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories

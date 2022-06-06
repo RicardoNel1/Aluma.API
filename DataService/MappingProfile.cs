@@ -1,5 +1,4 @@
-﻿using Aluma.API.Repositories;
-using AutoMapper;
+﻿using AutoMapper;
 using DataService.Dto;
 using DataService.Model;
 

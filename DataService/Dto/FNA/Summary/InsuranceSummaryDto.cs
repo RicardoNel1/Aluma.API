@@ -1,6 +1,6 @@
-﻿namespace Aluma.API.Repositories
+﻿namespace DataService.Dto
 {
-    public class InsuranceSummaryDto
+    public class InsuranceSummaryDto : ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }
