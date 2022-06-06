@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using DataService.Dto;
+using DataService.Dto.FNA.Report;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,17 +12,31 @@ namespace DocumentService.Services
 {
     public class ClientPersonalInfoService
     {
-        //private DataService.
-        //public ClientPersonalInfoService()
-        //{
-            
-        //}
+        public ClientPersonalInfoService()
+        {
 
+        }
 
-        //private UserDto getUsers(int fnaId)
-        //{
+        public PersonalDetailDto getUsers(int fnaId)
+        {
+            return getUsers_p(fnaId);
+        }
 
-        //    return _repo.User.GetUserByApplicationID(applicationId);
-        //}
+        private PersonalDetailDto getUsers_p(int fnaId)
+        {
+            return null;
+            //return _repo.User.GetUserByApplicationID(applicationId);
+        }
+
+        public string PopulatePersonalDetail(PersonalDetailDto dto)
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
+
+            string result = File.ReadAllText(path);
+
+            result = result.Replace("[clientSurname]", "Tiago");
+            return result;
+
+        }
     }
 }
