@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataService.Dto.FNA.Report
+namespace DataService.Dto
 {
-    public class QuickReview
+    public class QuickReviewReport
     {
         public string TotalAssets { get; set; }
         public string TotalLiquidAssets { get; set; }

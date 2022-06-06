@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataService.Dto.FNA.Report
+namespace DataService.Dto
 {
-    public class PersonalDetailDto
+    public class PersonalDetailReportDto
     {
         public string FirstName { get; set; }
         public string Lastname { get; set; }
