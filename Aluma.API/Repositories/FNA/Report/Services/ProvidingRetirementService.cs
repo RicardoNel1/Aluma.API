@@ -73,16 +73,23 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            int clientId =  (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+            try
+            {
+                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
+                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
+                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-            RetirementPlanningDto retirement = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-            RetirementSummaryDto summary_retirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
-            EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
+                RetirementPlanningDto retirement = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
+                RetirementSummaryDto summary_retirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
+                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
 
-            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summary_retirement, economy_variables));
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summary_retirement, economy_variables));
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public async Task<string> SetRetirementDetail(int fnaId)

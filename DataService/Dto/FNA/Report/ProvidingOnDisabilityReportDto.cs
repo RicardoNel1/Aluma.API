@@ -29,6 +29,6 @@ namespace DataService.Dto
         public string AvailableCapital { get; set; }
         public string TotalCapShortfall { get; set; }
         public string MaxAdditionalCap { get; set; }
-        public GraphReportDto CapitalSolutionGraph { get; set; }
+        public GraphReportDto Graph { get; set; }
     }
 }

@@ -43,29 +43,26 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             if (dto.Data != null && dto.Data.Count > 0)
             {
-                foreach (Dictionary<string, string> data in dto.Data)
+                foreach (KeyValuePair<string, string> kvp in dto.Data)
                 {
-                    foreach (KeyValuePair<string, string> kvp in data)
-                    {
-                        js += $"['{kvp.Key}', {kvp.Value}, '{kvp.Value}'],";
-                    }
+                    js += $"['{kvp.Key}', {kvp.Value}, '{kvp.Value}'],";
                 }
             }
 
             js += "]);";
-            js += $"var options = {{ title: '{dto.Name}' }}";
+            js += $"var options = {{ title: '{dto.Name}' }};";
 
-            switch(dto.Type.ToLower())
+            switch(dto.Type)
             {
-                case "line":
+                case GraphType.Line:
                     js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                     break;
 
-                case "bar":
+                case GraphType.Bar:
                     js += $"var chart = new google.visualization.BarChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                     break;
 
-                case "pie":
+                case GraphType.Pie:
                     js += $"var chart = new google.visualization.PieChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                     break;
 
@@ -76,6 +73,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
 
             js += "chart.draw(data, options);";
+            js += "}";
 
             return js;
         }

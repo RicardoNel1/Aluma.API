@@ -105,7 +105,6 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
         public async Task<string> FNAHtmlGeneration(FNAReportDto dto)
         {
-
             IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
             IGraphService _graphService = new GraphService();
 
@@ -130,7 +129,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.ProvidingOnDisability)
                 {
                     IProvidingDisabilityService _providingDisabilityService = new ProvidingDisabilityService(_repo);
-                    result += await _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
+                    ReportServiceResult serviceResult = await _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
                 if (dto.ProvidingOnDreadDisease)

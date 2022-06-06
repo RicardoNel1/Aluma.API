@@ -113,14 +113,21 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            int clientId =  (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUserWithAddress(new UserDto() { Id = client.UserId });
-            AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
+            try
+            {
+                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
+                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
+                UserDto user = _repo.User.GetUserWithAddress(new UserDto() { Id = client.UserId });
+                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
 
-            PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
-            PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
-            return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
+                PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
+                PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
+                return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public async Task<string> SetPersonalDetail(int fnaId)
