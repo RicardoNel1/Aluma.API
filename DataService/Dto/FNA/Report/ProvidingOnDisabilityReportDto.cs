@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataService.Dto.FNA.Report
+namespace DataService.Dto
 {
-    public class ProvidingOnDisabilityDto
+    public class ProvidingOnDisabilityReportDto
     {
         public string TotalIncomeNeed { get; set; }
         public string Age { get; set; }
@@ -28,6 +28,6 @@ namespace DataService.Dto.FNA.Report
         public string AvailableCapital { get; set; }
         public string TotalCapShortfall { get; set; }
         public string MaxAdditionalCap { get; set; }
-        public GraphDto CapitalSolutionGraph { get; set; }
+        public GraphReportDto CapitalSolutionGraph { get; set; }
     }
 }

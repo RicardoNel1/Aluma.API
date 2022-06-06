@@ -1,6 +1,5 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
-using DataService.Dto.FNA.Report;
 using System;
 using System.IO;
 using System.Threading.Tasks;

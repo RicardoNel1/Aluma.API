@@ -3,7 +3,6 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
-using DataService.Dto.FNA.Report;
 using DataService.Enum;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
