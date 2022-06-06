@@ -61,6 +61,7 @@ namespace Aluma.API.Repositories
                 currValues.TotalLiquidAssets = dto.TotalLiquidAssets;
                 currValues.TotalAccrual = dto.TotalAccrual;
                 currValues.TotalLiabilities = dto.TotalLiabilities;
+                currValues.TotalAssetsToEstate = dto.TotalAssetsToEstate ;
 
                 _context.AssetSummary.Update(currValues);
 
