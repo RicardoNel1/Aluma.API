@@ -22,6 +22,7 @@ namespace Aluma.API.Repositories
         public bool DoesUserExist(UserDto dto);
         public bool DoesUserExist(RegistrationDto dto);
         public UserDto GetUser(UserDto dto);
+        public UserDto GetUserWithAddress(UserDto dto);
         public UserDto GetUser(LoginDto dto);
 
         //public string CreateOTP(UserModel user, OtpTypesEnum otpType, Guid applicationID = new Guid());
@@ -146,6 +147,17 @@ namespace Aluma.API.Repositories
             //{
                 var user = _context.Users.Where(u => (u.Id == dto.Id)).FirstOrDefault();
                 return _mapper.Map<UserDto>(user);
+            //}
+
+            //return null;
+        }
+
+        public UserDto GetUserWithAddress(UserDto dto)
+        {
+            //if (DoesUserExist(dto))
+            //{
+            var user = _context.Users.Include(u => u.Address).Where(u => (u.Id == dto.Id)).FirstOrDefault();
+            return _mapper.Map<UserDto>(user);
             //}
 
             //return null;
