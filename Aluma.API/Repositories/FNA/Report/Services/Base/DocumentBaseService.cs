@@ -107,22 +107,19 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         {
 
             IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
-
+            IGraphService _graphService = new GraphService();
 
             try
             {
                 if (dto.FNAId == 0)
                     return null;
 
-
                 string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
                 string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
-
+                string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 result += _fNAModulesService.OverviewModule(dto.FNAId);
-
-                
 
                 if (dto.ClientModule)
                 {
@@ -149,16 +146,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 }
 
                 result += "</body>";
-
-
-                result += "<script type='text/javascript'>";
-
-
-                if (dto.ProvidingOnDisability)
-                    result += _fNAModulesService.CapitalSolutionGraphJavascript(dto.FNAId);
-                result += "</script>";
-
-
+                graph += _graphService.CloseGraphJavaScript();
+                result += graph;
                 result += "</html>";
 
                 result = result.Replace("[logo]", logo);

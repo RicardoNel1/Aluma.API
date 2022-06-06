@@ -94,7 +94,7 @@
     <Content Update="wwwroot\html\AssociateConsent.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\html\capital-solution-graph.html">
+    <Content Update="wwwroot\html\graph.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\html\ClientWelcome.html">
