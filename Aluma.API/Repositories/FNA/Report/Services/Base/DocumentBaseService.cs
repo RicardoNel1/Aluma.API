@@ -136,7 +136,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.ProvidingOnDisability)
                 {
                     IProvidingDisabilityService _providingDisabilityService = new ProvidingDisabilityService(_repo);
-                    result += _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
+                    result += await _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
                 }
 
                 if (dto.ProvidingOnDreadDisease)

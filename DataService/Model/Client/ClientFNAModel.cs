@@ -33,6 +33,7 @@ namespace DataService.Model
         public ICollection<RetirementPreservationFundsModel> RetirementPreservationFundsModel { get; set; }
         public TaxLumpsumModel TaxLumpsum { get; set; }
         public CapitalGainsTaxModel CapitalGainsTax { get; set; }
+        public EconomyVariablesModel EconomyVariables { get; set; }
 
 
         public AssetSummaryModel AssetSummary { get; set; }
@@ -168,6 +169,11 @@ namespace DataService.Model
             mb.HasOne(c => c.RetirementSummary)
                 .WithOne(c => c.FNA)
                 .HasForeignKey<RetirementSummaryModel>(c => c.FNAId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasOne(c => c.EconomyVariables)
+                .WithOne(c => c.FNA)
+                .HasForeignKey<EconomyVariablesModel>(c => c.FNAId)
                 .OnDelete(DeleteBehavior.Cascade);
 
         }
