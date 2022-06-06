@@ -1,4 +1,5 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Extensions;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
@@ -34,49 +35,45 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string result = File.ReadAllText(path);
 
             //result = result.Replace("[LastName]", client.Lastname);
+            //result = result.Replace("[LastName]", client.Lastname);
 
             return result;
 
         }
 
-        private ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, AssumptionsDto assumptions)
+        private ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, 
+                                                                AssumptionsDto assumptions,
+                                                                ProvidingOnDisabilityDto disability,
+                                                                ProvidingDisabilitySummaryDto summary_disability,
+                                                                EconomyVariablesDto economy_variables)
         {
-            //return new PersonalDetailDto()
-            //{
-            //    FirstName = user.FirstName,
-            //    Lastname = user.LastName,
-            //    SpouseFirstName = client.MaritalDetails?.FirstName,
-            //    SpouseLastName = user.LastName
-            //};
 
             return new ProvidingOnDisabilityReportDto()
             {
-                TotalIncomeNeed = "",
+                Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
+                RetirementAge = assumptions.RetirementAge.ToString(),
+                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
+                YearsTillRetirement = assumptions.YearsTillRetirement.ToString(),
+                CurrentNetIncome = assumptions.CurrentNetIncome.ToString(),
+                InvestmentReturnRate = economy_variables.InvestmentReturnRate.ToString(),
+                InflationRate = economy_variables.InflationRate.ToString(),
+                IncomeNeed = disability.IncomeNeeds.ToString(),
+                NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString(),
+                EscDisabilityPercent = economy_variables.InflationRate.ToString(),
+                CapitalDisabilityNeeds = disability.CapitalNeeds.ToString(),
+                ShortTermProtectionIncome = summary_disability.TotalExistingShortTermIncome.ToString(),
+                LongTermProtectionIncome = summary_disability.TotalExistingLongTermIncome.ToString(),
+                TotalAvailable = summary_disability.TotalAvailable.ToString(),
+                AvailableCapital = summary_disability.TotalAvailable.ToString(),
+                TotalNeeds = summary_disability.TotalNeeds.ToString(),
+                CapitalNeeds = disability.CapitalNeeds.ToString(),
+                Capital = summary_disability.TotalAvailable.ToString(),
+                CapitalizedIncomeShortfall = summary_disability.TotalIncomeNeed.ToString(),
+                TotalCapShortfall = (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString()
+
             };
 
-        //public string TotalIncomeNeed { get; set; }
-        //public string Age { get; set; }
-        //public string NeedsDisabilityTerm_Years { get; set; }
-        //public string RetirementAge { get; set; }
-        //public string EscDisabilityPercent { get; set; }
-        //public string LifeExpectancy { get; set; }
-        //public string CapitalDisabilityNeeds { get; set; }
-        //public string YearsTillRetirement { get; set; }
-        //public string InvestmentReturnRate { get; set; }
-        //public string ShortTermProtection { get; set; }
-        //public string InflationRate { get; set; }
-        //public string LongTermProtectionIncome { get; set; }
-        //public string Capital { get; set; }
-        //public string CurrentNetIncome { get; set; }
-        //public string CapitalAndCapitalizedNeeds { get; set; }
-        //public string CapitalNeeds { get; set; }
-        //public string CapitalizedIncomeShortfall { get; set; }
-        //public string AvailableCapital { get; set; }
-        //public string TotalCapShortfall { get; set; }
-        //public string MaxAdditionalCap { get; set; }
-        //public GraphDto CapitalSolutionGraph { get; set; }
-
-    }
+        }
 
         private async Task<string> GetReportData(int fnaId)
         {
@@ -84,42 +81,12 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
             UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
 
-            //Assumptions
-            //string age = (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString();
-
             AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
+            ProvidingOnDisabilityDto disability = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
+            ProvidingDisabilitySummaryDto summary_disability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
+            EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
 
-            string retirementAge = assumptions.RetirementAge.ToString();
-            string lifeExpectancy = assumptions.LifeExpectancy.ToString();
-            string yearsTillRetirement = assumptions.YearsTillRetirement.ToString();
-
-            string curreneNetIncome = assumptions.CurrentNetIncome.ToString();
-
-            //string investmentReturns
-            //string inflationRate
-
-            //Objective
-            //string IncomeNeedsObjective
-            //string termYearsNeedsObjective
-            //string escalationNeedsObjective
-            //string capitalNeedsObjective
-
-            //Available
-            //string shortTermIncomeAvailable
-            //string longTermIncomeAvailable
-            //string capitalAvailble
-
-            //Capital Solution
-            //string totalNeedsCapital
-            //string CapitalNeedsCapital
-            //string CapitalizedIncomeCapital
-            //string AvailiableCapital
-            //string TotalCapital
-
-            //string maxAdditionalCapital
-
-
-            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summary_disability, economy_variables));
         }
 
         public async Task<string> SetDisabilityDetail(int fnaId)

@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Repositories\FNA\Report\Services\ProvidingDisabilityService.cs~RF1f840ae2.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Azure.Storage.Files.Shares" Version="12.8.0" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.25" />
