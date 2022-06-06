@@ -2,7 +2,6 @@
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
-using DataService.Dto.FNA.Report;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using System;
@@ -29,7 +28,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string ReplaceHtmlPlaceholders(PersonalDetailDto client)
+        private string ReplaceHtmlPlaceholders(PersonalDetailReportDto client)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-dread-disease.html");
             string result = File.ReadAllText(path);
@@ -40,9 +39,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private PersonalDetailDto SetReportFields(ClientDto client, UserDto user)
+        private PersonalDetailReportDto SetReportFields(ClientDto client, UserDto user)
         {
-            return new PersonalDetailDto()
+            return new PersonalDetailReportDto()
             {
                 FirstName = user.FirstName,
                 Lastname = user.LastName,

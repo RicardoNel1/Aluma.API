@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataService.Dto.FNA.Report
+namespace DataService.Dto
 {
-    public class GraphDto
+    public class GraphReportDto
     {
         public string Type { get; set; }
         public string Name { get; set; }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataService.Dto.FNA.Report
+namespace DataService.Dto
 {
-    public class ProvidingOnDeathDto
+    public class ProvidingOnDeathReportDto
     {
         public string TotalDeathAvailable { get; set; }
         public string CapitalDreadNeeds { get; set; }
@@ -18,6 +18,6 @@ namespace DataService.Dto.FNA.Report
         public string LifeExpectancy { get; set; }
         public string RiskInflation { get; set; }
         public string YearsTillLifeExpectancy { get; set; }
-        public GraphDto Graph { get; set; }
+        public GraphReportDto Graph { get; set; }
     }
 }
