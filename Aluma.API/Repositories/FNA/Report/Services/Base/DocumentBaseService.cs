@@ -43,7 +43,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             HtmlToPdf converter = new();
 
 
-            var text = new PdfTextSection(0, 10, "Aluma", new System.Drawing.Font("Open Sans", 8))
+            var text = new PdfTextSection(0, 10, "FNA Report", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Left,
 
@@ -52,7 +52,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             converter.Footer.Add(text);
 
+            string version = "1.0";
+
             // page numbers can be added using a PdfTextSection object
+            text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
+            {
+                HorizontalAlign = PdfTextHorizontalAlign.Center
+            };
+            converter.Footer.Add(text);
+            
             text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
             {
                 HorizontalAlign = PdfTextHorizontalAlign.Center
@@ -105,24 +113,20 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
         public async Task<string> FNAHtmlGeneration(FNAReportDto dto)
         {
-
             IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
-
+            IGraphService _graphService = new GraphService();
 
             try
             {
                 if (dto.FNAId == 0)
                     return null;
 
-
                 string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
                 string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
-
+                string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 result += _fNAModulesService.OverviewModule(dto.FNAId);
-
-                
 
                 if (dto.ClientModule)
                 {
@@ -133,7 +137,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.ProvidingOnDisability)
                 {
                     IProvidingDisabilityService _providingDisabilityService = new ProvidingDisabilityService(_repo);
-                    result += await _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
+                    ReportServiceResult serviceResult = await _providingDisabilityService.SetDisabilityDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
                 if (dto.ProvidingOnDreadDisease)
@@ -149,16 +156,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 }
 
                 result += "</body>";
-
-
-                result += "<script type='text/javascript'>";
-
-
-                if (dto.ProvidingOnDisability)
-                    result += _fNAModulesService.CapitalSolutionGraphJavascript(dto.FNAId);
-                result += "</script>";
-
-
+                graph += _graphService.CloseGraphJavaScript();
+                result += graph;
                 result += "</html>";
 
                 result = result.Replace("[logo]", logo);

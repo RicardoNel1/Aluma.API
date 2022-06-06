@@ -1,36 +1,32 @@
 ﻿using Aluma.API.Extensions;
+using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
-using AutoMapper;
-using DataService.Context;
 using DataService.Dto;
-using DataService.Model;
-using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aluma.API.Repositories.FNA.Report.Service
 {
     public interface IProvidingDisabilityService
     {
-        Task<string> SetDisabilityDetail(int fnaId);
+        Task<ReportServiceResult> SetDisabilityDetail(int fnaId);
     }
 
     public class ProvidingDisabilityService : IProvidingDisabilityService
     {
         private readonly IWrapper _repo;
+        private readonly IGraphService _graph;
 
         public ProvidingDisabilityService(IWrapper repo)
         {
 
             _repo = repo;
+            _graph = new GraphService();
         }
 
-        private string ReplaceHtmlPlaceholders(ProvidingOnDisabilityReportDto disability)
+        private ReportServiceResult ReplaceHtmlPlaceholders(ProvidingOnDisabilityReportDto disability)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-disability.html");
             string result = File.ReadAllText(path);
@@ -54,7 +50,17 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalCapitalShortfall]", disability.TotalCapShortfall);
             result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
 
-            return result;
+            var graph = _graph.SetGraphHtml(disability.Graph);
+
+            result = result.Replace("[graph]", graph.Html);
+
+            ReportServiceResult returnResult = new()
+            {
+                Html = result,
+                Script = graph.Script
+            };
+
+            return returnResult;
 
         }
 
@@ -84,15 +90,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 TotalNeeds = summary_disability.TotalNeeds.ToString(),
                 CapitalNeeds = disability.CapitalNeeds.ToString(),
                 CapitalizedIncomeShortfall = summary_disability.TotalIncomeNeed.ToString(),
-                TotalCapShortfall = (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString()
-
+                TotalCapShortfall = (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString(),
+                Graph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Capital Solution",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Data = new() {
+                        {"Capitalized Income Shortfall", summary_disability.TotalIncomeNeed.ToString()},
+                        {"Lump sum Needs", disability.IncomeNeeds.ToString()}, 
+                        {"Available Lump sum", summary_disability.TotalAvailable.ToString()}, 
+                        {"Total Lump sum Shortfall", (summary_disability.TotalAvailable - summary_disability.TotalNeeds).ToString()}, 
+                    }
+                }
             };
 
         }
 
-        private async Task<string> GetReportData(int fnaId)
+        private async Task<ReportServiceResult> GetReportData(int fnaId)
         {
-
             try
             {
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
@@ -106,14 +123,13 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summary_disability, economy_variables));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return string.Empty;
+                return new ReportServiceResult();
             }
-
         }
 
-        public async Task<string> SetDisabilityDetail(int fnaId)
+        public async Task<ReportServiceResult> SetDisabilityDetail(int fnaId)
         {
             return await GetReportData(fnaId);
         }

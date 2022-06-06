@@ -123,7 +123,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-
             try
             {
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
@@ -137,7 +136,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summary_retirement, economy_variables));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return string.Empty;
             }
