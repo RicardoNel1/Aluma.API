@@ -36,6 +36,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[descSurplusProviding]", Convert.ToInt32(deathReport.TotalAvailable) > 0 ? "Surplus" : "Shortfall");
             result = result.Replace("[descShortfallSettling]", Convert.ToInt32(deathReport.TotalAvailable) > 0 ? "Surplus" : "Shortfall");
 
+            result = result.Replace("[ShortfallSetEstate]", deathReport.ShortfallSettEstate);
+            result = result.Replace("[TotalShortfallDeath]", deathReport.TotalShortfallDeath);
+
             var graph = _graph.SetGraphHtml(deathReport.Graph);
 
             result = result.Replace("[graph]", graph.Html);
@@ -66,6 +69,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 InvestmentReturns = economy_variables.InvestmentReturnRate.ToString(),
                 RiskInflation = economy_variables.InflationRate.ToString(),
                 TotalAvailable = summaryDeath.TotalAvailable.ToString(),
+                ShortfallSettEstate = assetSummary.TotalLiabilities.ToString(),
+                TotalShortfallDeath = (Convert.ToInt32(assetSummary.TotalLiquidAssets) - Convert.ToInt32(assetSummary.TotalLiabilities)).ToString(),
 
                 Graph = new()
                 {
