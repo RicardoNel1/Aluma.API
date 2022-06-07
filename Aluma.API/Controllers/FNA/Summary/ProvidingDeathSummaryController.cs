@@ -32,7 +32,7 @@ namespace Aluma.API.Controllers
                 dto = new ProvidingDeathSummaryDto
                 {
                     Message = "No records found",
-                    Status = "Falure"
+                    Status = "Failure"
                 };
 
                 return StatusCode(500, dto);
