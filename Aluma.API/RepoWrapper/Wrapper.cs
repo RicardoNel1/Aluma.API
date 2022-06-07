@@ -72,7 +72,6 @@ namespace Aluma.API.RepoWrapper
         private IEconomyVariablesSummaryRepo _economyVariablesSummary;
 
 
-
         private IFIRepo _fi;
         private IPEFRepo _pef;
         private IDocumentHelper _documentHelper;
