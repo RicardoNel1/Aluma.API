@@ -34,8 +34,13 @@ namespace Aluma.API.Repositories
 
         public RetirementSummaryDto GetRetirementSummary(int fnaId)
         {
-            RetirementSummaryModel summaryValues = new RetirementSummaryModel();
-            summaryValues = _context.RetirementSummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
+            RetirementSummaryModel summaryValues = new( ){ FNAId = fnaId};
+
+            var summaryValuesExist = _context.RetirementSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
+            if (summaryValuesExist.Any())
+            {
+                summaryValues = summaryValuesExist.FirstOrDefault();
+            }
 
             return _mapper.Map<RetirementSummaryDto>(summaryValues);
         }
