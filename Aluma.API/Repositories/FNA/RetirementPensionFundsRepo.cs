@@ -57,10 +57,10 @@ namespace Aluma.API.Repositories
                     {
                         var pModel = _mapper.Map<RetirementPensionFundsModel>(asset);
 
-                        if (db.RetirementPensionFunds.Where(a => a.Id == pModel.Id).Any())
+                        if (_context.RetirementPensionFunds.Where(a => a.Id == pModel.Id).Any())
                         {
-                            db.Entry(pModel).State = EntityState.Modified;
-                            if (db.SaveChanges() > 0)
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Status = "Success";
                                 asset.Message = "Asset Retirement Pension Fund Updated";
@@ -68,8 +68,8 @@ namespace Aluma.API.Repositories
                         }
                         else
                         {
-                            db.RetirementPensionFunds.Add(pModel);
-                            if (db.SaveChanges() > 0)
+                            _context.RetirementPensionFunds.Add(pModel);
+                            if (_context.SaveChanges() > 0)
                             {
                                 asset.Id = _mapper.Map<RetirementPensionFundsDto>(pModel).Id;
                                 asset.Status = "Success";
@@ -99,9 +99,9 @@ namespace Aluma.API.Repositories
 
                     RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == Id).First();
 
-                    db.RetirementPensionFunds.Remove(item);
+                    _context.RetirementPensionFunds.Remove(item);
 
-                    if (db.SaveChanges() > 0)
+                    if (_context.SaveChanges() > 0)
                     {
                         return "Asset Retirement Pension Fund Deleted Successfully";
                     }
