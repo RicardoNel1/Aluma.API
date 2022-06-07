@@ -115,6 +115,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         {
             IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
             IGraphService _graphService = new GraphService();
+            ISummaryService _summaryService = new SummaryService(_repo);
 
             try
             {
@@ -126,7 +127,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
-                result += _fNAModulesService.OverviewModule(dto.FNAId);
+                result += await _summaryService.SetSummaryDetail(dto.FNAId);
 
                 if (dto.ClientModule)
                 {

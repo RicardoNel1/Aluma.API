@@ -45,7 +45,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //string lineEstimatedIncome = "(Income [descEstimatedIncome] (PV) R [EstimatedIncome] pm)";
             //string lineMonthlyNetIncome = "A monthly net income withdrawal (PV) of R [IncomeNeed], your Capital will be exhausted after 6 years";
 
-            result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
             result = result.Replace("[Age]", retirement.Age);
             result = result.Replace("[RetirementAge]", retirement.RetirementAge);
             result = result.Replace("[EscalationPercent]", retirement.EscalationPercent);
@@ -83,12 +82,12 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private RetirementPlanningReportDto SetReportFields(ClientDto client, UserDto user,
                                                         AssumptionsDto assumptions,
                                                         RetirementPlanningDto retirement,
-                                                        RetirementSummaryDto summary_retirement,
+                                                        RetirementSummaryDto summaryRetirement,
                                                         EconomyVariablesDto economy_variables)
         {
             string riskRating = "";
             if (Enum.IsDefined(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk))
-                riskRating = ((RiskRatingsEnum)Convert.ToInt32(assumptions.RetirementInvestmentRisk)).ToString();
+                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
             else
                 riskRating = "";
 
@@ -107,16 +106,16 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 IncomeNeed = retirement.IncomeNeeds.ToString(),
                 NeedsRetirementTerm_Years = retirement.NeedsTerm_Years.ToString(),
                 EscalationPercent = economy_variables.InflationRate.ToString(),
-                TotalNeeds = summary_retirement.TotalNeeds.ToString(),
+                TotalNeeds = summaryRetirement.TotalNeeds.ToString(),
                 CapitalNeeds = retirement.CapitalNeeds.ToString(),
                 OutstandingLiabilities = retirement.OutstandingLiabilities.ToString(),
                 AvailableCapital = retirement.CapitalAvailable.ToString(),
-                TotalAvailable = summary_retirement.TotalAvailable.ToString(),
+                TotalAvailable = summaryRetirement.TotalAvailable.ToString(),
                 IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString(),
                 IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString(),
-                MonthlySavingsRequired = summary_retirement.SavingsRequiredPremium.ToString(),
+                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium.ToString(),
                 MonthlySavingsEscalating = retirement.SavingsEscalation.ToString(),
-                TotalCapital = (summary_retirement.TotalAvailable - summary_retirement.TotalNeeds).ToString()
+                TotalCapital = (summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds).ToString()
 
             };
         }
@@ -131,10 +130,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
                 RetirementPlanningDto retirement = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-                RetirementSummaryDto summary_retirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
+                RetirementSummaryDto summaryRetirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
                 EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summary_retirement, economy_variables));
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summaryRetirement, economy_variables));
             }
             catch (Exception)
             {
