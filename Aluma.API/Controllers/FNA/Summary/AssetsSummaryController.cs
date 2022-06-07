@@ -40,6 +40,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
+               
                 dto = _repo.AssetSummary.UpdateAssetSummary(dto);
                 dto.Status = "Success";
 

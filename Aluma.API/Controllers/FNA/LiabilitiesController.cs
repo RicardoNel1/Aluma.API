@@ -25,7 +25,7 @@ namespace Aluma.API.Controllers
             try
             {
                 _repo.Liabilities.UpdateLiabilities(dtoArray);
-                return Ok("Liabilities Updated");
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {

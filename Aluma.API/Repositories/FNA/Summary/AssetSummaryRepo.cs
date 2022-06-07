@@ -35,17 +35,39 @@ namespace Aluma.API.Repositories
         public AssetSummaryDto GetAssetSummary(int fnaId)
         {
             AssetSummaryModel summaryValues = new AssetSummaryModel();
-            summaryValues = _context.AssetSummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
-
+            var summaryValuesExist = _context.AssetSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
+            if (summaryValuesExist.Any())
+            {
+                summaryValues = summaryValuesExist.FirstOrDefault();
+            }
             return _mapper.Map<AssetSummaryDto>(summaryValues);
         }
 
         public AssetSummaryDto UpdateAssetSummary(AssetSummaryDto dto)
         {
             AssetSummaryModel newValues = _mapper.Map<AssetSummaryModel>(dto);
-            AssetSummaryModel currValues = _context.AssetSummary.Where(a => a.Id == dto.Id).FirstOrDefault();
-            currValues = newValues;
-            _context.AssetSummary.Update(currValues);
+            AssetSummaryModel currValues = new();
+            var currValuesExist = _context.AssetSummary.Where(a => a.FNAId == dto.FNAId);
+
+            if (!currValuesExist.Any())
+            {
+                _context.AssetSummary.Add(newValues);
+            }
+            else
+            {
+                currValues  = currValuesExist.FirstOrDefault(); 
+                currValues.TotalAssetsAttractingCGT = dto.TotalAssetsAttractingCGT;
+                currValues.TotalAssetsExcemptCGT = dto.TotalAssetsExcemptCGT;
+                currValues.TotalLiquidAssets = dto.TotalLiquidAssets;
+                currValues.TotalAccrual = dto.TotalAccrual;
+                currValues.TotalLiabilities = dto.TotalLiabilities;
+                currValues.TotalAssetsToEstate = dto.TotalAssetsToEstate ;
+
+                _context.AssetSummary.Update(currValues);
+
+            }
+            //currValues = newValues;
+            //_context.AssetSummary.Update(currValues);
             _context.SaveChanges();
 
             return _mapper.Map<AssetSummaryDto>(currValues);
