@@ -20,7 +20,7 @@ namespace Aluma.API.Controllers
 
         //Liabilities      
         [HttpPut("liabilities/update"), AllowAnonymous]
-        public IActionResult UpdateLiabilities([FromBody] LiabilitiesDto[] dtoArray)
+        public IActionResult UpdateLiabilities([FromBody] List<LiabilitiesDto> dtoArray)
         {
             try
             {
