@@ -1,6 +1,6 @@
 ﻿namespace DataService.Dto
 {
-    public class FNAReportDto
+    public class FNAReportDto : ApiResponseDto
     {
         public int FNAId { get; set; }
         public bool ClientModule { get; set; }
