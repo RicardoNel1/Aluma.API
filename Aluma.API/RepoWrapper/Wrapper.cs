@@ -69,7 +69,7 @@ namespace Aluma.API.RepoWrapper
         private IProvidingDeathSummaryRepo _providingDeathSummary;
         private IProvidingDisabilitySummaryRepo _providingDisabilitySummary;
         private IRetirementSummaryRepo _retirementSummary;
-
+        private IEconomyVariablesSummaryRepo _economyVariablesSummary;
 
 
         private IFIRepo _fi;
@@ -310,7 +310,10 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _retirementSummary == null ? new RetirementSummaryRepo(_dbContext, _host, _config, _mapper) : _retirementSummary; }
         }
-
+        public IEconomyVariablesSummaryRepo EconomyVariablesSummary
+        {
+            get { return _economyVariablesSummary == null ? new EconomyVariablesSummaryRepo(_dbContext, _host, _config, _mapper) : _economyVariablesSummary; }
+        }
 
 
         //Products and Documents

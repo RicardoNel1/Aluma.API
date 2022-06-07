@@ -71,6 +71,7 @@ namespace Aluma.API.RepoWrapper
         IProvidingDeathSummaryRepo ProvidingDeathSummary { get; }
         IProvidingDisabilitySummaryRepo ProvidingDisabilitySummary { get; }
         IRetirementSummaryRepo RetirementSummary{ get; }
+        IEconomyVariablesSummaryRepo EconomyVariablesSummary { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }

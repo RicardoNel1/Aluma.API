@@ -165,6 +165,7 @@ namespace DataService.Context
         public DbSet<ProvidingOnDreadDiseaseModel> ProvidingOnDreadDisease { get; set; }
         public DbSet<ProvidingOnDisabilityModel> ProvidingOnDisability { get; set; }
         public DbSet<TaxLumpsumModel> TaxLumpsum { get; set; }
+        public DbSet<EconomyVariablesModel> EconomyVariables { get; set; }
 
         //FNA - SUMMARY
         public DbSet<AssetSummaryModel> AssetSummary { get; set; }

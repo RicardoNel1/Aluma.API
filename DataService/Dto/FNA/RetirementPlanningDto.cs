@@ -14,6 +14,8 @@
         public double CapitalNeeds { get; set; }
         public double CapitalAvailable { get; set; }
         public double TotalCapitalNeeds { get; set; }
+        public double IncomeNeedsTotal { get; set; }
+        public double IncomeAvailableTotal { get; set; }
         public double TotalCapitalAvailable { get; set; }
         public double OutstandingLiabilities { get; set; }
         public double SavingsEscalation { get; set; }

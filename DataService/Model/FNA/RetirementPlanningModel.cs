@@ -16,6 +16,7 @@ namespace DataService.Model
         public double IncomeEscalation { get; set; }
         public double IncomeNeeds { get; set; }
         public double IncomeNeedsTotal { get; set; }
+        public double IncomeAvailableTotal { get; set; }
         public int NeedsTerm_Years { get; set; }
         public double IncomeNeedsEscalation { get; set; }
         public double CapitalNeeds { get; set; }
