@@ -100,9 +100,9 @@ namespace Aluma.API.Repositories
 
                     LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == Id).First();
 
-                    db.Liabilities.Remove(item);
+                    _context.Liabilities.Remove(item);
 
-                    if (db.SaveChanges() > 0)
+                    if (_context.SaveChanges() > 0)
                     {
                         return "Liability Deleted Successfully";
                     }
