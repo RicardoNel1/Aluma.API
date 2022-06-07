@@ -10,14 +10,12 @@ namespace DataService.Dto
     {
         public string TotalAssets { get; set; }
         public string TotalLiquidAssets { get; set; }
-        public string LiabilitiesLabel { get; set; }
         public string TotalLiabilities { get; set; }
+        public string LiquidityLabel { get; set; }
+        public string TotalLiquidity { get; set; }
         public string TotalRetirementLabel { get; set; }
         public string TotalRetirement { get; set; }
-        public string LiquidAssets { get; set; }
+        public string LiquidRetirementAssets { get; set; }
         public string Liabilities { get; set; }
-        public string TotalDeathNeeds { get; set; }
-        public string TotalDisability { get; set; }
-        public string TotalDreadDisease { get; set; }
     }
 }
