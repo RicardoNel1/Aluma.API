@@ -88,7 +88,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             string riskRating = "";
             if (Enum.IsDefined(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk))
-                riskRating = ((RiskRatingsEnum)Convert.ToInt32(assumptions.RetirementInvestmentRisk)).ToString();
+                riskRating = ((int)(RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
             else
                 riskRating = "";
 
