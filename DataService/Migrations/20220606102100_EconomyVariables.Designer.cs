@@ -4,14 +4,16 @@ using DataService.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataService.Migrations
 {
     [DbContext(typeof(AlumaDBContext))]
-    partial class AlumaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220606102100_EconomyVariables")]
+    partial class EconomyVariables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -631,9 +633,6 @@ namespace DataService.Migrations
                         .HasColumnType("float");
 
                     b.Property<double>("TotalAssetsExcemptCGT")
-                        .HasColumnType("float");
-
-                    b.Property<double>("TotalAssetsToEstate")
                         .HasColumnType("float");
 
                     b.Property<double>("TotalLiabilities")

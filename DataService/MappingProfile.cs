@@ -142,6 +142,9 @@ namespace DataService
             CreateMap<TaxLumpsumModel, TaxLumpsumDto>()
                 .ReverseMap();
 
+            CreateMap<EconomyVariablesModel, EconomyVariablesDto>()
+                .ReverseMap();
+
             //FNA - SUMMARY
             CreateMap<AssetSummaryModel, AssetSummaryDto>()
                 .ReverseMap();
@@ -174,6 +177,7 @@ namespace DataService
 
             CreateMap<UserDocumentModel, UserDocumentDto>()
                 .ReverseMap();
+
         }
     }
 

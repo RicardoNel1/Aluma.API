@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 150 137.6" style="enable-background:new 0 0 150 137.6;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:url(#SVGID_1_);}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#DBDBDB;}
+	.st2{fill:url(#SVGID_00000064325574998878964860000003433150491081703582_);}
+</style>
+<g>
+	
+		<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.443790e-05" y1="1213.5573" x2="150" y2="1213.5573" gradientTransform="matrix(1 0 0 1 0 -1160.7244)">
+		<stop  offset="0" style="stop-color:#0562AA"/>
+		<stop  offset="1" style="stop-color:#264C9A"/>
+	</linearGradient>
+	<polygon class="st0" points="67.2,17.5 18.8,106.1 0,106.1 58.2,-0.4 91.8,-0.4 150,106.1 131.2,106.1 82.8,17.5 	"/>
+	<polygon class="st1" points="124.1,106.1 113.8,87.3 55,87.3 80.3,40.8 88.4,40.8 78.2,22.1 71.8,22.1 25.9,106.1 	"/>
+	
+		<linearGradient id="SVGID_00000143587035890223315560000001025660556058760326_" gradientUnits="userSpaceOnUse" x1="2.443790e-05" y1="1286.9376" x2="150" y2="1286.9376" gradientTransform="matrix(1 0 0 1 0 -1160.7244)">
+		<stop  offset="0" style="stop-color:#0562AA"/>
+		<stop  offset="1" style="stop-color:#264C9A"/>
+	</linearGradient>
+	<path style="fill:url(#SVGID_00000143587035890223315560000001025660556058760326_);" d="M91.6,121.4c0,0.3,0,0.6,0,0.9V138h-4.2
+		v-23.6h3.8l10.7,14.4l10-14.4h4.2V138h-4.5v-15.8c0-0.3,0-0.7,0-1.1c-0.1,0.2-0.2,0.3-0.3,0.5l-8.8,12.8h-1.5L92,122
+		c-0.1-0.1-0.1-0.1-0.1-0.2C91.8,121.7,91.7,121.6,91.6,121.4z M63.8,114.4h-4.8v17.7c0,1.5,0.2,3.5,1.2,4.6
+		c1.1,1.1,3.1,1.3,4.5,1.3h13.4c1.5,0,3.4-0.2,4.5-1.3c1.1-1.1,1.2-3.1,1.2-4.6v-17.8h-4.7v19.5H63.8V114.4z M38.6,114.4h-4.8V138
+		h21.9v-4.2H38.6V114.4z M25.8,138h4.7l-12.9-23.6h-4.7L0,138h4.7l10.5-19.3L25.8,138z M145.3,138h4.7l-12.9-23.6h-4.7L119.5,138
+		h4.7l10.5-19.3L145.3,138z"/>
+</g>
+</svg>
