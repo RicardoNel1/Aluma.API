@@ -1,5 +1,4 @@
-﻿
-using Aluma.API.Extensions;
+﻿using Aluma.API.Extensions;
 using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
@@ -8,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Aluma.API.Repositories.FNA.Report.Service
+namespace Aluma.API.Repositories.FNA.Report.Services
 {
     public interface IProvidingDeathService
     {
@@ -63,7 +62,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             return new ProvidingOnDeathReportDto()
             {
-                Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
+                Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
                 YearsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString(),
                 InvestmentReturns = economy_variables.InvestmentReturnRate.ToString(),
