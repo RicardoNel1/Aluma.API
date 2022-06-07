@@ -17,5 +17,8 @@ namespace DataService.Dto
         public string TotalRetirement { get; set; }
         public string LiquidRetirementAssets { get; set; }
         public string Liabilities { get; set; }
+        public string TotalDeathNeeds { get; set; }
+        public string TotalDisabilityNeeds { get; set; }
+        public string TotalDreadDisease { get; set; }
     }
 }
