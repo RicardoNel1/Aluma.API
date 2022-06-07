@@ -43,9 +43,28 @@ namespace Aluma.API.Repositories
         public RetirementSummaryDto UpdateRetirementSummary(RetirementSummaryDto dto)
         {
             RetirementSummaryModel newValues = _mapper.Map<RetirementSummaryModel>(dto);
-            RetirementSummaryModel currValues = _context.RetirementSummary.Where(a => a.Id == dto.Id).FirstOrDefault();
-            currValues = newValues;
-            _context.RetirementSummary.Update(currValues);
+            RetirementSummaryModel currValues = new();
+            var currValuesExist = _context.RetirementSummary.Where(a => a.FNAId == dto.FNAId);
+
+            if (!currValuesExist.Any())
+            {
+                _context.RetirementSummary.Add(newValues);
+            }
+            else
+            {
+
+                currValues = currValuesExist.FirstOrDefault();
+                currValues.TotalPensionFund = dto.TotalPensionFund;
+                currValues.TotalPreservation = dto.TotalPreservation;
+                currValues.SavingsRequiredPremium = dto.SavingsRequiredPremium;
+                currValues.TotalAvailable = dto.TotalAvailable;
+                currValues.TotalNeeds = dto.TotalNeeds;
+
+
+                _context.RetirementSummary.Update(currValues);
+
+            }
+
             _context.SaveChanges();
 
             return _mapper.Map<RetirementSummaryDto>(currValues);

@@ -42,9 +42,25 @@ namespace Aluma.API.Repositories
         public ProvidingDisabilitySummaryDto UpdateProvidingDisabilitySummary(ProvidingDisabilitySummaryDto dto)
         {
             ProvidingDisabilitySummaryModel newValues = _mapper.Map<ProvidingDisabilitySummaryModel>(dto);
-            ProvidingDisabilitySummaryModel currValues = _context.ProvidingDisabilitySummary.Where(a => a.Id == dto.Id).FirstOrDefault();
-            currValues = newValues;
-            _context.ProvidingDisabilitySummary.Update(currValues);
+            ProvidingDisabilitySummaryModel currValues = new();
+            var currValuesExist = _context.ProvidingDisabilitySummary.Where(a => a.FNAId == dto.FNAId);
+
+            if (!currValuesExist.Any())
+            {
+                _context.ProvidingDisabilitySummary.Add(newValues);
+            }
+            else
+            {
+                currValues = currValuesExist.FirstOrDefault();
+                currValues.TotalAvailable = dto.TotalAvailable;
+                currValues.TotalNeeds = dto.TotalNeeds;
+                currValues.TotalExistingLongTermIncome = dto.TotalExistingLongTermIncome;
+                currValues.TotalExistingShortTermIncome = dto.TotalExistingShortTermIncome;
+                currValues.TotalIncomeNeed = dto.TotalIncomeNeed;
+
+                _context.ProvidingDisabilitySummary.Update(currValues);
+
+            }
             _context.SaveChanges();
 
             return _mapper.Map<ProvidingDisabilitySummaryDto>(currValues);
