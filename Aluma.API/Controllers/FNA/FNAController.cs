@@ -4,6 +4,11 @@ using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
@@ -62,25 +67,38 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("get_fna_report"), AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport(FNAReportDto dto)
+        [HttpGet("get_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
+        public async Task<IActionResult> GetFNAReport( int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool petirementPlanning = true)
         {
             try
             {
-                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
-                var result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
+                FNAReportDto dto = new FNAReportDto()
+                {
+                    FNAId = fnaId,
+                    ClientModule = clientModule,
+                    ProvidingOnDisability = providingOnDisability,
+                    ProvidingOnDreadDisease = providingOnDreadDisease,
+                    ProvidingOnDeath = providingOnDeath,
+                    RetirementPlanning = petirementPlanning
+                };
 
-                return StatusCode(200, result);
+                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
+                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
+                byte[] pdf = Convert.FromBase64String(base64result);
+
+                if (pdf != null && pdf.Length > 0)
+                {
+                    Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
+                    stream.Position = 0;
+
+                    return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                }
+
+                return BadRequest("Could not download the 'FNA Report.pdf'");
             }
             catch (Exception e)
             {
-                dto.Status = "Error";
-                dto.Message = e.Message;
-
-                if (e.InnerException != null)
-                    dto.Message += $"{Environment.NewLine}{e.InnerException.Message}";
-
-                return StatusCode(500, dto);
+                return BadRequest("Could not download the 'FNA Report.pdf'");
             }
         }
     }
