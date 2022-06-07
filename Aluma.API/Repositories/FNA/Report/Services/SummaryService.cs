@@ -75,7 +75,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 double TotalLiquidAssets = 0;
                 if (liquidAssets != null && liquidAssets.Count > 0)
                 {
-                    
                     foreach (var liquidAsset in liquidAssets)
                     {
                         TotalLiquidAssets += liquidAsset.Value;
