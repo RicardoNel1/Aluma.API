@@ -74,6 +74,12 @@ namespace Aluma.API.Controllers
             }
             catch (Exception e)
             {
+                dto.Status = "Error";
+                dto.Message = e.Message;
+
+                if (e.InnerException != null)
+                    dto.Message += $"{Environment.NewLine}{e.InnerException.Message}";
+
                 return StatusCode(500, dto);
             }
         }
