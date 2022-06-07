@@ -29,8 +29,7 @@ namespace DataService.Dto
         public string IncomeAvailableTotal{ get; set; }
         public string MonthlySavingsRequired { get; set; }
         public string MonthlySavingsEscalating { get; set; }
-
-
+        public GraphReportDto Graph { get; set; }
 
 
     }
