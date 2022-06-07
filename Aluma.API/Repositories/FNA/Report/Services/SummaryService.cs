@@ -27,38 +27,30 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-summary.html");
             string result = File.ReadAllText(path);
-;
-            result = result.Replace("[TotalAssets]", retirement.TotalAssets);
-            result = result.Replace("[TotalLiquidAssets]", retirement.TotalLiquidAssets);
-            result = result.Replace("[LiabilitiesLabel]", retirement.LiabilitiesLabel);
-            result = result.Replace("[TotalLiabilities]", retirement.TotalLiabilities);
-            result = result.Replace("[TotalRetirementLabel]", retirement.TotalRetirementLabel);
-            result = result.Replace("[TotalRetirement]", retirement.TotalRetirement);
-            result = result.Replace("[LiquidAssets]", retirement.LiquidAssets);
-            result = result.Replace("[Liabilities]", retirement.Liabilities);
-            result = result.Replace("[TotalDeathNeeds]", retirement.TotalDeathNeeds);
-            result = result.Replace("[TotalDisability]", retirement.TotalDisability);
-            result = result.Replace("[TotalDreadDisease]", retirement.TotalDreadDisease);
+
+            //result = result.Replace("[TotalAssets]", retirement.TotalAssets);
+            //result = result.Replace("[TotalLiquidAssets]", retirement.TotalLiquidAssets);
+            //result = result.Replace("[LiabilitiesLabel]", retirement.LiabilitiesLabel);
+            //result = result.Replace("[TotalLiabilities]", retirement.TotalLiabilities);
+            //result = result.Replace("[TotalRetirementLabel]", retirement.TotalRetirementLabel);
+            //result = result.Replace("[TotalRetirement]", retirement.TotalRetirement);
+            //result = result.Replace("[LiquidAssets]", retirement.LiquidAssets);
+            //result = result.Replace("[Liabilities]", retirement.Liabilities);
+            //result = result.Replace("[TotalDeathNeeds]", retirement.TotalDeathNeeds);
+            //result = result.Replace("[TotalDisability]", retirement.TotalDisability);
+            //result = result.Replace("[TotalDreadDisease]", retirement.TotalDreadDisease);
 
             return result;
 
         }
 
-        private SummaryReportDto SetReportFields(PrimaryResidenceDto primaryResidence, AssetSummaryDto assetSummary, InsuranceSummaryDto insuranceSummary, RetirementSummaryDto retirementSummaryDto, string totalLiquidAssets, ProvidingDeathSummaryDto providingDeathSummary)
+        private SummaryReportDto SetReportFields(PrimaryResidenceDto primaryResidence, AssetSummaryDto assetSummary, InsuranceSummaryDto insuranceSummary, 
+            RetirementSummaryDto retirementSummaryDto, string totalLiquidAssets, ProvidingDeathSummaryDto providingDeathSummary, ProvidingOnDreadDiseaseDto providingOnDreadDisease)
         {
             return new()
             {
                 TotalAssets = (primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT).ToString(),
-                TotalLiquidAssets = assetSummary.TotalLiquidAssets.ToString(),
-                LiabilitiesLabel = assetSummary.TotalLiabilities >= 0 ? "Surplus" : "Shortfall",
-                TotalLiabilities = assetSummary.TotalLiabilities >= 0 ? assetSummary.TotalLiabilities.ToString() : $"({assetSummary.TotalLiabilities * -1})",
-                TotalRetirementLabel = string.Empty,
-                TotalRetirement = string.Empty,
-                LiquidAssets = totalLiquidAssets,
-                Liabilities = string.Empty,
-                TotalDeathNeeds = string.Empty,
-                TotalDisability = string.Empty,
-                TotalDreadDisease = string.Empty,
+                
             };
         }
 
@@ -89,9 +81,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                         TotalLiquidAssets += liquidAsset.Value;
                     }
                 }
-                return ReplaceHtmlPlaceholders(SetReportFields(primaryResidence, assetSummary, insuranceSummary, retirementSummaryDto, TotalLiquidAssets.ToString(), providingDeathSummary));
+                return ReplaceHtmlPlaceholders(SetReportFields(primaryResidence, assetSummary, insuranceSummary, retirementSummaryDto, TotalLiquidAssets.ToString(), 
+                    providingDeathSummary, providingOnDreadDisease));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return string.Empty;
             }

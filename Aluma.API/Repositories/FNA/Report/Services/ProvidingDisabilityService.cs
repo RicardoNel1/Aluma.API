@@ -48,7 +48,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalNeeds]", disability.TotalNeeds);
             result = result.Replace("[CapitalizedIncomeShortfall]", disability.CapitalizedIncomeShortfall);
             result = result.Replace("[TotalCapitalShortfall]", disability.TotalCapShortfall);
-            result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
 
             var graph = _graph.SetGraphHtml(disability.Graph);
 

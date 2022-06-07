@@ -45,7 +45,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //string lineEstimatedIncome = "(Income [descEstimatedIncome] (PV) R [EstimatedIncome] pm)";
             //string lineMonthlyNetIncome = "A monthly net income withdrawal (PV) of R [IncomeNeed], your Capital will be exhausted after 6 years";
 
-            result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
             result = result.Replace("[Age]", retirement.Age);
             result = result.Replace("[RetirementAge]", retirement.RetirementAge);
             result = result.Replace("[EscalationPercent]", retirement.EscalationPercent);
@@ -88,7 +87,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             string riskRating = "";
             if (Enum.IsDefined(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk))
-                riskRating = ((int)(RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
+                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
             else
                 riskRating = "";
 
