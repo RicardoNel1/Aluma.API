@@ -141,6 +141,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
                 }
 
+                if (dto.ProvidingOnDeath)
+                {
+                    IProvidingDeathService _providingDeathService = new ProvidingDeathService(_repo);
+                    ReportServiceResult serviceResult = await _providingDeathService.SetDeathDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
+                }
+
                 if (dto.ProvidingOnDisability)
                 {
                     IProvidingDisabilityService _providingDisabilityService = new ProvidingDisabilityService(_repo);
@@ -156,19 +165,13 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     result += await _povidingDreadService.SetDreadDetail(dto.FNAId);
                 }
 
-                if (dto.ProvidingOnDeath)
-                {
-                    IProvidingDeathService _providingDeathService = new ProvidingDeathService(_repo);
-                    ReportServiceResult serviceResult = await _providingDeathService.SetDeathDetail(dto.FNAId);
-
-                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
-                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
-                }
-
                 if (dto.RetirementPlanning)
                 {
                     IProvidingRetirementService _providingRetirementService = new ProvidingRetirementService(_repo);
-                    result += await _providingRetirementService.SetRetirementDetail(dto.FNAId);
+                    ReportServiceResult serviceResult = await _providingRetirementService.SetRetirementDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
                 result += "</body>";

@@ -21,7 +21,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             string js = SetGraphScript(dto);
 
-            result = result.Replace("[id]", $"Graph_{dto.Name.Replace(" ", "_")}");
+            result = result.Replace("[Id]", $"Graph_{dto.Name.Replace(" ", "_")}");
+            result = result.Replace("[Width]", dto.Width < 0 ? $"{dto.Width * -1}" : dto.Width.ToString());
+            result = result.Replace("[Height]", dto.Height < 0 ? $"{dto.Height * -1}" : dto.Height.ToString());
             return new()
             {
                 Html = result,
@@ -35,36 +37,62 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             string js = $"google.charts.setOnLoadCallback({functionName});";
             js += $"function {functionName}() {{";
-            js += $"var data = new google.visualization.DataTable();";
-            js += $"data.addColumn('string', '{dto.XaxisHeader}');";
-            js += $"data.addColumn('number', '{dto.YaxisHeader}');";
-            js += "data.addColumn({ type: 'string', role: 'annotation' });";
-            js += "data.addRows([";
-
-            if (dto.Data != null && dto.Data.Count > 0)
-            {
-                foreach (KeyValuePair<string, string> kvp in dto.Data)
-                {
-                    js += $"['{kvp.Key}', {kvp.Value}, '{kvp.Value}'],";
-                }
-            }
-
-            js += "]);";
             js += $"var options = {{ title: '{dto.Name}' }};";
+            
 
             switch (dto.Type)
             {
-                case GraphType.Line:
-                    js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
-                    break;
-
                 case GraphType.Bar:
                     js += $"var chart = new google.visualization.BarChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                     break;
 
+                case GraphType.Line:
+                    js += $"var data = new google.visualization.DataTable();";
+                    js += $"data.addColumn('string', '{dto.XaxisHeader}');";
+                    js += $"data.addColumn('number', '{dto.YaxisHeader}');";
+                    js += "data.addColumn({ type: 'string', role: 'annotation' });";
+                    js += "data.addRows([";
+
+
+
+
+
+                    js += "]);";
+                    js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+                    break;
+
                 case GraphType.Pie:
                     {
+                        js += $"var data = new google.visualization.arrayToDataTable([";
+                        js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";
+
+                        if (dto.Data != null && dto.Data.Count > 0)
+                        {
+                            foreach (string kvp in dto.Data)
+                            {
+                                string[] values = kvp.Split(",");
+                                js += $"[";
+                                for (int i = 0; i < values.Length; i++)
+                                {
+                                    if (i == 0)
+                                        js += $"'{values[i]}'";
+                                    else
+                                        js += $", {values[i]}";
+
+                                }
+                                js += "],";
+                            }
+                        }
+
+                        js += "]);";
                         js += $"var chart = new google.visualization.PieChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+                        js += $"options = {{ title: '{dto.Name}',  pieSliceText: 'none', legend: {{ position: 'labeled', labeledValueText: 'both', }} }}; ";
+                    }
+                    break;
+
+                case GraphType.Column:
+                    {
+                        js += $"var chart = new google.visualization.ColumnChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                         js += $"options = {{ title: '{dto.Name}',  pieSliceText: 'none', legend: {{ position: 'labeled', labeledValueText: 'both', }} }}; ";
                     }
                     break;

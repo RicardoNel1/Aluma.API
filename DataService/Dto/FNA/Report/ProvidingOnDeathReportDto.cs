@@ -8,17 +8,17 @@ namespace DataService.Dto
 {
     public class ProvidingOnDeathReportDto
     {
-        public string TotalDeathAvailable { get; set; }
-        public string TotalAvailable { get; set; }
-        public string CapitalDreadNeeds { get; set; }
-        public string SurplusProvDependants { get; set; }
-        public string ShortfallSettEstate { get; set; }
-        public string TotalShortfallDeath { get; set; }
+        public string AvailableCapital { get; set; }
+        public string descSurplusProviding { get; set; }
+        public string descSettlingEstate { get; set; }
+        public string SettlingEstate { get; set; }
+        public string descTotalOnDeath { get; set; }
+        public string TotalOnDeath { get; set; }
         public string Age { get; set; }
         public string InvestmentReturns { get; set; }
         public string LifeExpectancy { get; set; }
-        public string RiskInflation { get; set; }
-        public string YearsTillLifeExpectancy { get; set; }
+        public string InflationRate { get; set; }
+        public string YrsTillLifeExpectancy { get; set; }
         public List<GraphReportDto> Graphs { get; set; }
     }
 }

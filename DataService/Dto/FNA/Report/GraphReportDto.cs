@@ -10,7 +10,8 @@ namespace DataService.Dto
     {
         Line,
         Bar,
-        Pie
+        Pie,
+        Column
     }
 
     public class GraphReportDto
@@ -19,7 +20,9 @@ namespace DataService.Dto
         public string Name { get; set; }
         public string XaxisHeader { get; set; }
         public string YaxisHeader { get; set; }
-        public Dictionary<string, string> Data { get; set; }
+        public int Height { get; set; } = 500;
+        public int Width { get; set; } = 900;
+        public List<string> Data { get; set; }
     }
 
     public class GraphResult
