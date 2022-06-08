@@ -57,7 +57,6 @@ namespace Aluma.API.Repositories
             }
             else
             {
-
                 currValues = currValuesExist.FirstOrDefault();
                 currValues.TotalPensionFund = dto.TotalPensionFund;
                 currValues.TotalPreservation = dto.TotalPreservation;
@@ -65,9 +64,7 @@ namespace Aluma.API.Repositories
                 currValues.TotalAvailable = dto.TotalAvailable;
                 currValues.TotalNeeds = dto.TotalNeeds;
 
-
                 _context.RetirementSummary.Update(currValues);
-
             }
 
             _context.SaveChanges();
