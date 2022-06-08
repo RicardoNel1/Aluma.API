@@ -124,6 +124,9 @@ namespace DataService
             CreateMap<LiabilitiesModel, LiabilitiesDto>()
                 .ReverseMap();
 
+            CreateMap<InsuranceModel, InsuranceDto>()
+                .ReverseMap();
+
             CreateMap<RetirementPreservationFundsModel, RetirementPreservationFundsDto>()
                 .ReverseMap();
 

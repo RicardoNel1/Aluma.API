@@ -251,13 +251,13 @@ namespace Aluma.API.Controllers
 
 
         //Insurance      
-        [HttpPut("insurance"), AllowAnonymous]
-        public IActionResult UpdateInsurance([FromBody] InsuranceDto[] dtoArray)
+        [HttpPut("insurance/update"), AllowAnonymous]
+        public IActionResult UpdateInsurance([FromBody] List<InsuranceDto> dtoArray)
         {
             try
             {
                 _repo.Insurance.UpdateInsurance(dtoArray);
-                return Ok("Insurance Updated");
+                return Ok(dtoArray);
             }
             catch (Exception e)
             {
@@ -280,14 +280,19 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("insurance"), AllowAnonymous]
-        public IActionResult DeleteInsuranceItem(int id)
+        [HttpDelete("insurance/delete"), AllowAnonymous]
+        public IActionResult DeleteInsuranceItem(int Id)
         {
             try
             {
-                bool deleted = _repo.Insurance.DeleteInsuranceItem(id);
+                string result = _repo.Insurance.DeleteInsurance(Id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
