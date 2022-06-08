@@ -42,9 +42,22 @@ namespace Aluma.API.Repositories
         public ProvidingDeathSummaryDto UpdateProvidingDeathSummary(ProvidingDeathSummaryDto dto)
         {
             ProvidingDeathSummaryModel newValues = _mapper.Map<ProvidingDeathSummaryModel>(dto);
-            ProvidingDeathSummaryModel currValues = _context.ProvidingDeathSummary.Where(a => a.Id == dto.Id).FirstOrDefault();
-            currValues = newValues;
-            _context.ProvidingDeathSummary.Update(currValues);
+            ProvidingDeathSummaryModel currValues = new();
+            var currValuesExist = _context.ProvidingDeathSummary.Where(a => a.FNAId == dto.FNAId);
+
+            if (!currValuesExist.Any())
+            {
+                _context.ProvidingDeathSummary.Add(newValues);
+            }
+            else
+            {
+                currValues = currValuesExist.FirstOrDefault();
+                currValues.TotalAvailable = dto.TotalAvailable;
+                currValues.TotalNeeds = dto.TotalNeeds;
+
+                _context.ProvidingDeathSummary.Update(currValues);
+
+            }
             _context.SaveChanges();
 
             return _mapper.Map<ProvidingDeathSummaryDto>(currValues);
