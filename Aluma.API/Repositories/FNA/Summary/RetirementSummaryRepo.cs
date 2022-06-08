@@ -34,7 +34,7 @@ namespace Aluma.API.Repositories
 
         public RetirementSummaryDto GetRetirementSummary(int fnaId)
         {
-            RetirementSummaryModel summaryValues = new( ){ FNAId = fnaId};
+            RetirementSummaryModel summaryValues = new() { FNAId = fnaId };
 
             var summaryValuesExist = _context.RetirementSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
             if (summaryValuesExist.Any())
