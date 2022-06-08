@@ -26,89 +26,95 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
         public string PDFGeneration(string html)
         {
-
-            string pdf_page_size = "A4";
-            var pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
-                pdf_page_size, true);
-
-            string pdf_orientation = "Portrait";
-            var pdfOrientation =
-                (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
-                pdf_orientation, true);
-
-            int webPageWidth = 1024;
-            int webPageHeight = 1356;
-
-            // instantiate a html to pdf converter object
-            HtmlToPdf converter = new();
-
-
-            var text = new PdfTextSection(0, 10, "FNA Report", new System.Drawing.Font("Open Sans", 8))
+            try
             {
-                HorizontalAlign = PdfTextHorizontalAlign.Left,
+                string pdf_page_size = "A4";
+                var pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
+                    pdf_page_size, true);
 
-            };
+                string pdf_orientation = "Portrait";
+                var pdfOrientation =
+                    (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
+                    pdf_orientation, true);
+
+                int webPageWidth = 1024;
+                int webPageHeight = 1356;
+
+                // instantiate a html to pdf converter object
+                HtmlToPdf converter = new();
 
 
-            converter.Footer.Add(text);
+                var text = new PdfTextSection(0, 10, "FNA Report", new System.Drawing.Font("Open Sans", 8))
+                {
+                    HorizontalAlign = PdfTextHorizontalAlign.Left,
 
-            string version = "1.0";
+                };
 
-            // page numbers can be added using a PdfTextSection object
-            text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
+
+                converter.Footer.Add(text);
+
+                string version = "1.0";
+
+                // page numbers can be added using a PdfTextSection object
+                text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
+                {
+                    HorizontalAlign = PdfTextHorizontalAlign.Center
+                };
+                converter.Footer.Add(text);
+
+                text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
+                {
+                    HorizontalAlign = PdfTextHorizontalAlign.Center
+                };
+                converter.Footer.Add(text);
+
+
+                converter.Options.DisplayFooter = true;
+                converter.Footer.DisplayOnFirstPage = true;
+                converter.Footer.DisplayOnOddPages = true;
+                converter.Footer.DisplayOnEvenPages = true;
+                converter.Footer.Height = 50;
+
+                // set converter options
+                converter.Options.PdfPageSize = pageSize;
+                converter.Options.PdfPageOrientation = pdfOrientation;
+                converter.Options.WebPageWidth = webPageWidth;
+                converter.Options.WebPageHeight = webPageHeight;
+                converter.Options.DrawBackground = false;
+                converter.Options.MarginTop = 30;
+                converter.Options.MarginLeft = 30;
+
+
+
+                // create a new pdf document converting an url
+                PdfDocument doc = converter.ConvertHtmlString(html);
+
+                MemoryStream ms = new();
+
+                doc.Save(ms);
+
+
+                byte[] buffer = ms.ToArray();
+
+                string base64 = Convert.ToBase64String(buffer);
+
+                buffer = Convert.FromBase64String(base64);
+
+                doc.Save(ms);
+
+                // close pdf document
+                doc.Close();
+
+                byte[] file = ms.ToArray();
+
+                ms.Close();
+
+                return Convert.ToBase64String(file);
+            }
+            catch (Exception ex)
             {
-                HorizontalAlign = PdfTextHorizontalAlign.Center
-            };
-            converter.Footer.Add(text);
-            
-            text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
-            {
-                HorizontalAlign = PdfTextHorizontalAlign.Center
-            };
-            converter.Footer.Add(text);
-
-
-            converter.Options.DisplayFooter = true;
-            converter.Footer.DisplayOnFirstPage = true;
-            converter.Footer.DisplayOnOddPages = true;
-            converter.Footer.DisplayOnEvenPages = true;
-            converter.Footer.Height = 50;
-
-            // set converter options
-            converter.Options.PdfPageSize = pageSize;
-            converter.Options.PdfPageOrientation = pdfOrientation;
-            converter.Options.WebPageWidth = webPageWidth;
-            converter.Options.WebPageHeight = webPageHeight;
-            converter.Options.DrawBackground = false;
-            converter.Options.MarginTop = 30;
-            converter.Options.MarginLeft = 30;
-
-
-
-            // create a new pdf document converting an url
-            PdfDocument doc = converter.ConvertHtmlString(html);
-
-            MemoryStream ms = new();
-
-            doc.Save(ms);
-
-
-            byte[] buffer = ms.ToArray();
-
-            string base64 = Convert.ToBase64String(buffer);
-
-            buffer = Convert.FromBase64String(base64);
-
-            doc.Save(ms);
-
-            // close pdf document
-            doc.Close();
-
-            byte[] file = ms.ToArray();
-
-            ms.Close();
-
-            return Convert.ToBase64String(file);
+                throw new Exception(ex.Message, ex);
+            }
         }
 
         public async Task<string> FNAHtmlGeneration(FNAReportDto dto)
@@ -148,6 +154,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 {
                     IProvidingDreadService _povidingDreadService = new ProvidingDreadService(_repo);
                     result += await _povidingDreadService.SetDreadDetail(dto.FNAId);
+                }
+
+                if (dto.ProvidingOnDeath)
+                {
+                    IProvidingDeathService _providingDeathService = new ProvidingDeathService(_repo);
+                    ReportServiceResult serviceResult = await _providingDeathService.SetDeathDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
                 if (dto.RetirementPlanning)
