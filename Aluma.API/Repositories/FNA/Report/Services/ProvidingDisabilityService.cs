@@ -36,6 +36,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TermYears]", disability.NeedsDisabilityTerm_Years);
             result = result.Replace("[RetirementAge]", disability.RetirementAge);
             result = result.Replace("[EscPercent]", disability.EscDisabilityPercent);
+            result = result.Replace("[EscPercentage]", disability.EscDisabilityPercent);
             result = result.Replace("[LifeExpectancy]", disability.LifeExpectancy);
             result = result.Replace("[CapitalNeeds]", disability.CapitalDisabilityNeeds);
             result = result.Replace("[YearsTillRetirement]", disability.YearsTillRetirement);
@@ -70,6 +71,12 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                                                                 EconomyVariablesDto economy_variables)
         {
 
+            double totalLumpSum = summaryDisability.TotalAvailable - summaryDisability.TotalNeeds;
+            string totalLumpSumLabel = totalLumpSum < 0 ? "Shortfall" : "Surplus";
+
+            totalLumpSum = totalLumpSum < 0 ? totalLumpSum * -1 : totalLumpSum;
+
+
             return new ProvidingOnDisabilityReportDto()
             {
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
@@ -100,7 +107,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                         {"Capitalized Income Shortfall", summaryDisability.TotalIncomeNeed.ToString()},
                         {"Lump sum Needs", disability.IncomeNeeds.ToString()}, 
                         {"Available Lump sum", summaryDisability.TotalAvailable.ToString()}, 
-                        {"Total Lump sum Shortfall", (summaryDisability.TotalAvailable - summaryDisability.TotalNeeds).ToString()}, 
+                        {$"Total Lump sum {totalLumpSumLabel}", totalLumpSum.ToString()}, 
                     }
                 }
             };
