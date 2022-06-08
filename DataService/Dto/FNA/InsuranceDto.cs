@@ -1,6 +1,6 @@
 ﻿namespace DataService.Dto
 {
-    public class InsuranceDto
+    public class InsuranceDto: ApiResponseDto
     {
         public int Id { get; set; }
         public int FNAId { get; set; }
