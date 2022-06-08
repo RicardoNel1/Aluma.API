@@ -33,8 +33,13 @@ namespace Aluma.API.Repositories
 
         public ProvidingDisabilitySummaryDto GetProvidingDisabilitySummary(int fnaId)
         {
-            ProvidingDisabilitySummaryModel summaryValues = new ProvidingDisabilitySummaryModel();
-            summaryValues = _context.ProvidingDisabilitySummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
+            ProvidingDisabilitySummaryModel summaryValues = new() { FNAId = fnaId};
+            var summaryValuesExist = _context.ProvidingDisabilitySummary.AsNoTracking().Where(a => a.FNAId == fnaId);
+
+            if (summaryValuesExist.Any())
+            {
+                summaryValues = summaryValuesExist.FirstOrDefault();
+            }
 
             return _mapper.Map<ProvidingDisabilitySummaryDto>(summaryValues);
         }

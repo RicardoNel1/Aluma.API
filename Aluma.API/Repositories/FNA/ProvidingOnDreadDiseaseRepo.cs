@@ -56,7 +56,13 @@ namespace Aluma.API.Repositories
 
         public ProvidingOnDreadDiseaseDto GetProvidingOnDreadDisease(int fnaId)
         {
-            ProvidingOnDreadDiseaseModel data = _context.ProvidingOnDreadDisease.Where(c => c.FNAId == fnaId).First();
+            ProvidingOnDreadDiseaseModel data = new() { FNAId = fnaId };
+            var entryExist = _context.ProvidingOnDreadDisease.Where(c => c.FNAId == fnaId);
+
+            if (entryExist.Any())
+            {
+                data = entryExist.First();
+            }
             return _mapper.Map<ProvidingOnDreadDiseaseDto>(data);
 
         }
@@ -71,6 +77,7 @@ namespace Aluma.API.Repositories
             data.Needs_GrossAnnualSalaryMultiple = dto.Needs_GrossAnnualSalaryMultiple;
             data.Available_DreadDiseaseDescription = dto.Available_DreadDiseaseDescription;
             data.Available_DreadDiseaseAmount = dto.Available_DreadDiseaseAmount;
+            data.Needs_GrossAnnualSalaryTotal = dto.Needs_GrossAnnualSalaryTotal;
             data.TotalDreadDisease = dto.TotalDreadDisease;
 
             _context.ProvidingOnDreadDisease.Update(data);
