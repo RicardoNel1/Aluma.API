@@ -21,128 +21,13 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
         public ProvidingDeathService(IWrapper repo)
         {
-
             _repo = repo;
             _graph = new GraphService();
         }
 
-        private ReportServiceResult ReplaceHtmlPlaceholders(ProvidingOnDeathReportDto deathReport)
+        public async Task<ReportServiceResult> SetDeathDetail(int fnaId)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-death.html");
-            string result = File.ReadAllText(path);
-
-            result = result.Replace("[AvailableCapital]", deathReport.AvailableCapital);
-            result = result.Replace("[descSurplusProviding]", deathReport.descSurplusProviding);
-            result = result.Replace("[descSettlingEstate]", deathReport.descSettlingEstate);
-            result = result.Replace("[SettlingEstate]", deathReport.SettlingEstate);
-            result = result.Replace("[descTotalOnDeath]", deathReport.descTotalOnDeath);
-            result = result.Replace("[TotalOnDeath]", deathReport.TotalOnDeath);
-            result = result.Replace("[Age]", deathReport.Age);
-            result = result.Replace("[InvestmentReturns]", deathReport.InvestmentReturns);
-            result = result.Replace("[LifeExpectancy]", deathReport.LifeExpectancy);
-            result = result.Replace("[InflationRate]", deathReport.InflationRate);
-            result = result.Replace("[YrsTillLifeExpectancy]", deathReport.YrsTillLifeExpectancy);
-
-            string script = string.Empty;
-            if (deathReport.Graphs != null && deathReport.Graphs.Count > 0)
-            {
-                foreach (var graphData in deathReport.Graphs)
-                {
-                    var graph = _graph.SetGraphHtml(graphData);
-                    script += graph.Script;
-
-                    if (graphData.Name.ToLower().Contains("capital"))
-                        result = result.Replace("[CapitalGraph]", graph.Html);
-                    else if (graphData.Name.ToLower().Contains("annual"))
-                        result = result.Replace("[AnnualGraph]", graph.Html);
-                }
-            }
-            else
-            {
-                result = result.Replace("[CapitalGraph]", string.Empty);
-                result = result.Replace("[AnnualGraph]", string.Empty);
-            }
-
-            ReportServiceResult returnResult = new()
-            {
-                Html = result,
-                Script = script
-            };
-
-            return returnResult;
-
-        }
-
-        private ProvidingOnDeathReportDto SetReportFields(
-            ClientDto client, UserDto user, AssumptionsDto assumptions, ProvidingOnDeathDto deathDto,
-            ProvidingDeathSummaryDto summaryDeath, AssetSummaryDto assetSummary, EconomyVariablesDto economy_variables
-        )
-        {
-            double available = summaryDeath.TotalAvailable;
-            double settling = assetSummary.TotalLiabilities;
-            double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities;
-            double capitalSustainableIncome = Math.Round(summaryDeath.TotalAvailable + (summaryDeath.TotalAvailable * economy_variables.InvestmentReturnRate / 100));
-
-            string capitalGraphAvailable = available < 0 ? $"{available * -1}" : available.ToString();
-            string capitalGraphSustainableIncome = capitalSustainableIncome < 0 ? $"{capitalSustainableIncome * -1}" : capitalSustainableIncome.ToString();
-            string capitalGraphProposed = "0";
-
-            string annualGraphAvailable = available < 0 ? $"{available * -1}" : available.ToString();
-            string annualGraphSustainableIncome = "0";
-            string annualGraphProposed = summaryDeath.TotalNeeds < 0 ? $"{summaryDeath.TotalNeeds * -1}" : summaryDeath.TotalNeeds.ToString();
-
-            GraphReportDto capitalPositionGraph = new()
-            {
-                Type = GraphType.Pie,
-                Name = "Capital Position over planning term",
-                XaxisHeader = "Capital",
-                YaxisHeader = "Amount",
-                Height = 350,
-                Data = new List<string>() {
-                        $"Available Capital: Full Income, {capitalGraphAvailable}",
-                        $"Available Capital: Sustainable Income, {capitalGraphSustainableIncome}",
-                        $"Proposed Capital, {capitalGraphProposed}",
-                }
-            };
-
-            GraphReportDto annualPositionGraph = new()
-            {
-                Type = GraphType.Pie,
-                Name = "Annual Income Position over planning term",
-                XaxisHeader = "Capital",
-                YaxisHeader = "Amount",
-                Height = 350,
-                Data = new List<string>() {
-                        $"Full Income from available capital, {annualGraphAvailable}",
-                        $"Sustainable income from available capital, {annualGraphSustainableIncome}",
-                        $"Income Need, {annualGraphProposed}",
-                }
-            };
-
-
-            return new ProvidingOnDeathReportDto()
-            {
-                AvailableCapital = available < 0 ? $"({available * -1})" : available.ToString(),
-                descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
-
-                descSettlingEstate = settling < 0 ? "Shortfall" : "Surplus",
-                SettlingEstate = settling < 0 ? $"({settling * -1})" : settling.ToString(),
-
-                descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
-                TotalOnDeath = totalOnDeath < 0 ? $"({totalOnDeath * -1})" : totalOnDeath.ToString(),
-
-                Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
-                InvestmentReturns = economy_variables.InvestmentReturnRate.ToString(),
-                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
-                InflationRate = economy_variables.InflationRate.ToString(),
-                YrsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString(),
-
-                Graphs = new List<GraphReportDto> {
-                    capitalPositionGraph,
-                    annualPositionGraph
-                }
-            };
-
+            return await GetReportData(fnaId);
         }
 
         private async Task<ReportServiceResult> GetReportData(int fnaId)
@@ -167,12 +52,159 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             }
         }
 
-        public async Task<ReportServiceResult> SetDeathDetail(int fnaId)
+        private ReportServiceResult ReplaceHtmlPlaceholders(ProvidingOnDeathReportDto deathReport)
         {
-            return await GetReportData(fnaId);
+            string script = string.Empty;
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-death.html");
+            string result = File.ReadAllText(path);
+
+            result = result.Replace("[AvailableCapital]", deathReport.AvailableCapital);
+            result = result.Replace("[descSurplusProviding]", deathReport.descSurplusProviding);
+            result = result.Replace("[descSettlingEstate]", deathReport.descSettlingEstate);
+            result = result.Replace("[SettlingEstate]", deathReport.SettlingEstate);
+            result = result.Replace("[descTotalOnDeath]", deathReport.descTotalOnDeath);
+            result = result.Replace("[TotalOnDeath]", deathReport.TotalOnDeath);
+            result = result.Replace("[Age]", deathReport.Age);
+            result = result.Replace("[InvestmentReturns]", deathReport.InvestmentReturns);
+            result = result.Replace("[LifeExpectancy]", deathReport.LifeExpectancy);
+            result = result.Replace("[InflationRate]", deathReport.InflationRate);
+            result = result.Replace("[YrsTillLifeExpectancy]", deathReport.YrsTillLifeExpectancy);
+
+            if (deathReport.IncomeGraph != null)
+            {
+                var graph = _graph.SetGraphHtml(deathReport.IncomeGraph);
+                script += graph.Script;
+                result = result.Replace("[IncomeGraph]", graph.Html);
+            }
+            else
+            {
+                result = result.Replace("[IncomeGraph]", string.Empty);
+            }
+
+            if (deathReport.LumpsumGraph != null)
+            {
+                var graph = _graph.SetGraphHtml(deathReport.LumpsumGraph);
+                script += graph.Script;
+                result = result.Replace("[LumpsumGraph]", graph.Html);
+            }
+            else
+            {
+                result = result.Replace("[LumpsumGraph]", string.Empty);
+            }
+
+            if (deathReport.CapitalizedGraph != null)
+            {
+                var graph = _graph.SetGraphHtml(deathReport.CapitalizedGraph);
+                script += graph.Script;
+                result = result.Replace("[CapitalizedGraph]", graph.Html);
+            }
+            else
+            {
+                result = result.Replace("[CapitalizedGraph]", string.Empty);
+            }
+
+            return new()
+            {
+                Html = result,
+                Script = script
+            }; ;
+
         }
 
+        private ProvidingOnDeathReportDto SetReportFields(
+            ClientDto client, UserDto user, AssumptionsDto assumptions, ProvidingOnDeathDto deathDto,
+            ProvidingDeathSummaryDto summaryDeath, AssetSummaryDto assetSummary, EconomyVariablesDto economy_variables
+        )
+        {
+            double available = summaryDeath.TotalAvailable;
+            double settling = assetSummary.TotalLiabilities;
+            double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities;
+            double capitalSustainableIncome = Math.Round(summaryDeath.TotalAvailable + (summaryDeath.TotalAvailable * economy_variables.InvestmentReturnRate / 100));
 
+            return new ProvidingOnDeathReportDto()
+            {
+                AvailableCapital = available < 0 ? $"({available * -1})" : available.ToString(),
+                descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
+                descSettlingEstate = settling < 0 ? "Shortfall" : "Surplus",
+                SettlingEstate = settling < 0 ? $"({settling * -1})" : settling.ToString(),
+                descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
+                TotalOnDeath = totalOnDeath < 0 ? $"({totalOnDeath * -1})" : totalOnDeath.ToString(),
+                Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
+                InvestmentReturns = economy_variables.InvestmentReturnRate.ToString(),
+                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
+                InflationRate = economy_variables.InflationRate.ToString(),
+                YrsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString(),
+
+                IncomeGraph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Income",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Height = 350,
+                    Data = SetIncomeGraphData(deathDto)
+                },
+                LumpsumGraph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Lumpsum",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Height = 350,
+                    Data = SetLumpsumGraphhData(deathDto)
+                },
+                CapitalizedGraph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Capitalized",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Height = 350,
+                    Data = SetCapitalizedGraphData(available, settling)
+                }
+            };
+
+        }
+
+        private List<string> SetIncomeGraphData(ProvidingOnDeathDto deathDto)
+        {
+            string retirementDescription = deathDto.RetirementFunds < 0 ? "Shortfall" : "Surplus";
+            double retirementFunds = deathDto.RetirementFunds < 0 ? deathDto.RetirementFunds * -1 : deathDto.RetirementFunds;
+
+            return new()
+            {
+                $"Insurance: {deathDto.Available_InsuranceDescription},{deathDto.Available_Insurance_Amount}",
+                $"Retirement {retirementDescription},{retirementFunds}",
+                $"Available Pre-Tax Income,{deathDto.Available_PreTaxIncome_Amount}"
+            };
+        }
+
+        private List<string> SetLumpsumGraphhData(ProvidingOnDeathDto deathDto)
+        {
+            double incomeNeeds = deathDto.IncomeNeeds < 0 ? deathDto.IncomeNeeds * -1 : deathDto.IncomeNeeds;
+            double capitalNeeds = deathDto.CapitalNeeds < 0 ? deathDto.CapitalNeeds * -1 : deathDto.CapitalNeeds;
+
+            return new()
+            {
+                $"Income Needs,{incomeNeeds}",
+                $"Capital Needs,{capitalNeeds}"
+            };
+        }
+
+        private List<string> SetCapitalizedGraphData(double available, double lumpsum)
+        {
+            string availableDescription = available < 0 ? "Shortfall" : "Surplus";
+            string lumpsumDescription = lumpsum < 0 ? "Shortfall" : "Surplus";
+
+            available = available < 0 ? available * -1 : available;
+            lumpsum = lumpsum < 0 ? lumpsum * -1 : lumpsum;
+
+            return new()
+            {
+                $"Total Income {availableDescription}, {available}",
+                $"Total lumpsum {lumpsumDescription}, {lumpsum}",
+            };
+        }
     }
 }
 
