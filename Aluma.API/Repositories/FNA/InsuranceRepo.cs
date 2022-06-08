@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace Aluma.API.Repositories
     public interface IInsuranceRepo : IRepoBase<InsuranceModel>
     {
         List<InsuranceDto> GetInsurance(int fnaId);
-        InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray);
-        bool DeleteInsuranceItem(int id);
+        List<InsuranceDto> UpdateInsurance(List<InsuranceDto> dtoArray);
+        string DeleteInsurance(int Id);
 
     }
 
@@ -63,63 +64,120 @@ namespace Aluma.API.Repositories
             return insurance;
         }
 
-        public InsuranceDto UpdateInsurance(InsuranceDto[] dtoArray)
+        public List<InsuranceDto> UpdateInsurance(List<InsuranceDto> dtoArray)
         {
 
-            foreach (var item in dtoArray)
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.Insurance.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    InsuranceModel updateItem = _context.Insurance.Where(a => a.Id == item.Id).FirstOrDefault();
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    updateItem.Description = item.Description;
-                    updateItem.Owner = item.Owner;
-                    updateItem.LifeCover = item.LifeCover;
-                    updateItem.Disability = item.Disability;
-                    updateItem.DreadDisease = item.DreadDisease;
-                    updateItem.AbsoluteIpPm = item.AbsoluteIpPm;
-                    updateItem.ExtendedIpPm = item.ExtendedIpPm;
-                    updateItem.AllocateTo = parsedAllocation;
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<InsuranceModel>(asset);
 
-                    _context.Insurance.Update(updateItem);
+                        if (_context.Insurance.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Asset Insurance Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.Insurance.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<InsuranceDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Asset Insurance Created";
+                            }
+                        }
 
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    InsuranceModel newItem = new();
-
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    newItem.FNAId = item.FNAId;
-                    newItem.Description = item.Description;
-                    newItem.Owner = item.Owner;
-                    newItem.LifeCover = item.LifeCover;
-                    newItem.Disability = item.Disability;
-                    newItem.DreadDisease = item.DreadDisease;
-                    newItem.AbsoluteIpPm = item.AbsoluteIpPm;
-                    newItem.ExtendedIpPm = item.ExtendedIpPm;
-                    newItem.AllocateTo = parsedAllocation;
-
-                    _context.Insurance.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
             }
 
-            _context.SaveChanges();
-            return null;
+            return dtoArray;
+
+            //foreach (var item in dtoArray)
+            //{
+
+            //    bool existingItem = _context.Insurance.Where(a => a.Id == item.Id).Any();
+
+            //    if (existingItem)
+            //    {
+            //        InsuranceModel updateItem = _context.Insurance.Where(a => a.Id == item.Id).FirstOrDefault();
+            //        Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            //        updateItem.Description = item.Description;
+            //        updateItem.Owner = item.Owner;
+            //        updateItem.LifeCover = item.LifeCover;
+            //        updateItem.Disability = item.Disability;
+            //        updateItem.DreadDisease = item.DreadDisease;
+            //        updateItem.AbsoluteIpPm = item.AbsoluteIpPm;
+            //        updateItem.ExtendedIpPm = item.ExtendedIpPm;
+            //        updateItem.AllocateTo = parsedAllocation;
+
+            //        _context.Insurance.Update(updateItem);
+
+            //    }
+            //    else
+            //    {
+            //        InsuranceModel newItem = new();
+
+            //        Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            //        newItem.FNAId = item.FNAId;
+            //        newItem.Description = item.Description;
+            //        newItem.Owner = item.Owner;
+            //        newItem.LifeCover = item.LifeCover;
+            //        newItem.Disability = item.Disability;
+            //        newItem.DreadDisease = item.DreadDisease;
+            //        newItem.AbsoluteIpPm = item.AbsoluteIpPm;
+            //        newItem.ExtendedIpPm = item.ExtendedIpPm;
+            //        newItem.AllocateTo = parsedAllocation;
+
+            //        _context.Insurance.Add(newItem);
+
+            //    }
+            //}
+
+            //_context.SaveChanges();
+            //return null;
 
         }
 
-        public bool DeleteInsuranceItem(int id)
+        public string DeleteInsurance(int Id)
         {
-            InsuranceModel item = _context.Insurance.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.Insurance.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
-            return true;
+                    InsuranceModel item = _context.Insurance.Where(a => a.Id == Id).First();
+
+                    _context.Insurance.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Insurance Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
     }
