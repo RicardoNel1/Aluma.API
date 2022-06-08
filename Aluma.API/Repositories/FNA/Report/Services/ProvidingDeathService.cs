@@ -93,15 +93,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             GraphReportDto capitalPositionGraph = new()
             {
-                Type = GraphType.Bar,
+                Type = GraphType.Pie,
                 Name = "Capital Position over planning term",
                 XaxisHeader = "Capital",
                 YaxisHeader = "Amount",
                 Height = 350,
                 Data = new List<string>() {
-                        $"[Available Capital: Full Income, {capitalGraphAvailable}]",
-                        $"[Available Capital: Sustainable Income, {capitalGraphSustainableIncome}]",
-                        $"[Proposed Capital, {capitalGraphProposed}]",
+                        $"Available Capital: Full Income, {capitalGraphAvailable}",
+                        $"Available Capital: Sustainable Income, {capitalGraphSustainableIncome}",
+                        $"Proposed Capital, {capitalGraphProposed}",
                 }
             };
 
@@ -113,9 +113,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                 YaxisHeader = "Amount",
                 Height = 350,
                 Data = new List<string>() {
-                        $"[Full Income from available capital, {annualGraphAvailable}]",
-                        $"[Sustainable income from available capital, {annualGraphSustainableIncome}]",
-                        $"[Income Need, {annualGraphProposed}]",
+                        $"Full Income from available capital, {annualGraphAvailable}",
+                        $"Sustainable income from available capital, {annualGraphSustainableIncome}",
+                        $"Income Need, {annualGraphProposed}",
                 }
             };
 
