@@ -33,8 +33,12 @@ namespace Aluma.API.Repositories
 
         public ProvidingDeathSummaryDto GetProvidingDeathSummary(int fnaId)
         {
-            ProvidingDeathSummaryModel summaryValues = new ProvidingDeathSummaryModel();
-            summaryValues = _context.ProvidingDeathSummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
+            ProvidingDeathSummaryModel summaryValues = new() { FNAId = fnaId};
+            var summaryValuesExist = _context.ProvidingDeathSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
+            if (summaryValuesExist.Any())
+            {
+                summaryValues = summaryValuesExist.FirstOrDefault();
+            }
 
             return _mapper.Map<ProvidingDeathSummaryDto>(summaryValues);
         }
