@@ -19,6 +19,6 @@ namespace DataService.Dto
         public string LifeExpectancy { get; set; }
         public string RiskInflation { get; set; }
         public string YearsTillLifeExpectancy { get; set; }
-        public GraphReportDto Graph { get; set; }
+        public List<GraphReportDto> Graphs { get; set; }
     }
 }

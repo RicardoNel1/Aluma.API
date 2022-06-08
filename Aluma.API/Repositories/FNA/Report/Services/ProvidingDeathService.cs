@@ -38,14 +38,14 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             result = result.Replace("[ShortfallSetEstate]", deathReport.ShortfallSettEstate);
             result = result.Replace("[TotalShortfallDeath]", deathReport.TotalShortfallDeath);
 
-            var graph = _graph.SetGraphHtml(deathReport.Graph);
+            ///var graph = _graph.SetGraphHtml(deathReport.Graph);
 
-            result = result.Replace("[graph]", graph.Html);
+            //result = result.Replace("[graph]", graph.Html);
 
             ReportServiceResult returnResult = new()
             {
                 Html = result,
-                Script = graph.Script
+                //Script = graph.Script
             };
 
             return returnResult;
@@ -71,19 +71,19 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                 ShortfallSettEstate = assetSummary.TotalLiabilities.ToString(),
                 TotalShortfallDeath = (Convert.ToInt32(assetSummary.TotalLiquidAssets) - Convert.ToInt32(assetSummary.TotalLiabilities)).ToString(),
 
-                Graph = new()
-                {
-                    Type = GraphType.Pie,
-                    Name = "Capital Solution",
-                    XaxisHeader = "Capital",
-                    YaxisHeader = "Amount",
-                    Data = new() {
-                        {"Capitalized Income Shortfall", summaryDeath.TotalNeeds.ToString()},
-                        {"Lump sum Needs", deathDto.IncomeNeeds.ToString()},
-                        {"Available Lump sum", summaryDeath.TotalAvailable.ToString()},
-                        {"Total Lump sum Shortfall", (summaryDeath.TotalAvailable - summaryDeath.TotalNeeds).ToString()},
-                    }
-                }
+                //Graph = new()
+                //{
+                //    Type = GraphType.Pie,
+                //    Name = "Capital Solution",
+                //    XaxisHeader = "Capital",
+                //    YaxisHeader = "Amount",
+                //    Data = new() {
+                //        {"Capitalized Income Shortfall", summaryDeath.TotalNeeds.ToString()},
+                //        {"Lump sum Needs", deathDto.IncomeNeeds.ToString()},
+                //        {"Available Lump sum", summaryDeath.TotalAvailable.ToString()},
+                //        {"Total Lump sum Shortfall", (summaryDeath.TotalAvailable - summaryDeath.TotalNeeds).ToString()},
+                //    }
+                //}
             };
 
         }
