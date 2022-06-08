@@ -104,10 +104,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Data = new List<string>() {
-                        $"[Capitalized Income Shortfall, {summaryDisability.TotalIncomeNeed}]",
-                        $"[Lump sum Needs, {disability.IncomeNeeds}]",
-                        $"[Available Lump sum, {summaryDisability.TotalAvailable}]",
-                        $"[Total Lump sum {totalLumpSumLabel}, {totalLumpSum}]", 
+                        $"Capitalized Income Shortfall, {summaryDisability.TotalIncomeNeed}",
+                        $"Lump sum Needs, {disability.IncomeNeeds}",
+                        $"Available Lump sum, {summaryDisability.TotalAvailable}",
+                        $"Total Lump sum {totalLumpSumLabel}, {totalLumpSum}", 
                     }
                 }
             };
