@@ -17,15 +17,25 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetAssetsSummary(int fnaId)
+        public IActionResult GetProvidingDeathSummary(int fnaId)
         {
             ProvidingDeathSummaryDto dto = new();
             try
             {
                 dto = _repo.ProvidingDeathSummary.GetProvidingDeathSummary(fnaId);
+                if (dto != null)
+                {
+                    dto.Status = "Success";
+                    return Ok(dto);
+                }
 
-                dto.Status = "Success";
-                return Ok(dto);
+                dto = new ProvidingDeathSummaryDto
+                {
+                    Message = "No records found",
+                    Status = "Failure"
+                };
+
+                return StatusCode(500, dto);
             }
             catch (Exception e)
             {

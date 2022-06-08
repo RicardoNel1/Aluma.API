@@ -18,7 +18,6 @@ namespace Aluma.API.Repositories
         RetirementPlanningDto GetRetirementPlanning(int fnaId);
         RetirementPlanningDto UpdateRetirementPlanning(RetirementPlanningDto dto);
 
-
     }
 
     public class RetirementPlanningRepo : RepoBase<RetirementPlanningModel>, IRetirementPlanningRepo
