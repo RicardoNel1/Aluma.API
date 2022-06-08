@@ -1,7 +1,9 @@
 ﻿using Aluma.API.Extensions;
+using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,41 +12,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 {
     public interface IProvidingRetirementService
     {
-        Task<string> SetRetirementDetail(int fnaId);
+        Task<ReportServiceResult> SetRetirementDetail(int fnaId);
     }
 
     public class ProvidingRetirementService : IProvidingRetirementService
     {
         private readonly IWrapper _repo;
+        private readonly IGraphService _graph;
 
         public ProvidingRetirementService(IWrapper repo)
         {
             _repo = repo;
+            _graph = new GraphService();
         }
 
-        private string ReplaceHtmlPlaceholders(RetirementPlanningReportDto retirement)
+        private ReportServiceResult ReplaceHtmlPlaceholders(RetirementPlanningReportDto retirement)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-retirement-planning.html");
             string result = File.ReadAllText(path);
 
             string descTotalCapital = Convert.ToInt32(retirement.TotalCapital) > 0 ? "Surplus" : "Shortfall";
-            //int EstimatedNetIncome = 0;
-
-            //bool showEstimatedNetIncome = true;
-
-            //if (Convert.ToInt32(retirement.TotalAvailable) > Convert.ToInt32(retirement.TotalNeeds))
-            //{
-            //    showEstimatedNetIncome = false;
-            //}
-            //else
-            //{
-            //    EstimatedNetIncome = Convert.ToInt32(retirement.CapitalNeeds);
-            //}
-
-            //string lineEstimatedNetIncome = "This is estimated to provide a net income (PV) of R [EstimatedNetIncome]";
-            //string lineEstimatedIncome = "(Income [descEstimatedIncome] (PV) R [EstimatedIncome] pm)";
-            //string lineMonthlyNetIncome = "A monthly net income withdrawal (PV) of R [IncomeNeed], your Capital will be exhausted after 6 years";
-
             result = result.Replace("[Age]", retirement.Age);
             result = result.Replace("[RetirementAge]", retirement.RetirementAge);
             result = result.Replace("[EscalationPercent]", retirement.EscalationPercent);
@@ -54,20 +41,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[RiskRating]", retirement.RiskRating);
             result = result.Replace("[InvestmentReturns]", retirement.InvestmentReturnRate);
             result = result.Replace("[InflationRate]", retirement.InflationRate);
-            
+
             result = result.Replace("[CapitalNeeds]", retirement.CapitalNeeds);
             result = result.Replace("[TotalNeeds]", retirement.TotalNeeds);
             result = result.Replace("[OutstandingLiabilities]", retirement.OutstandingLiabilities);
             result = result.Replace("[AvailableCapital]", retirement.AvailableCapital);
             result = result.Replace("[TotalAvailable]", retirement.TotalAvailable);
             result = result.Replace("[descTotalCapital]", descTotalCapital);
-            //result = result.Replace("[lineEstimatedNetIncome]", showEstimatedNetIncome == true ? lineEstimatedNetIncome : "");
-            //result = result.Replace("[lineEstimatedIncome]", showEstimatedNetIncome == true ? lineEstimatedIncome : "");
             result = result.Replace("[lineEstimatedNetIncome]", "");
             result = result.Replace("[lineEstimatedIncome]", "");
-            //result = result.Replace("[EstimatedNetIncome]", EstimatedNetIncome.ToString());
-            //result = result.Replace("[EstimatedIncome]", EstimatedNetIncome.ToString());
-            //result = result.Replace("[lineMonthlyNetIncome]", showEstimatedNetIncome == true ? lineMonthlyNetIncome : "");
             result = result.Replace("[lineMonthlyNetIncome]", "");
             result = result.Replace("[IncomeNeedsTotal]", retirement.IncomeNeedsTotal);
             result = result.Replace("[IncomeAvailableTotal]", retirement.IncomeAvailableTotal);
@@ -75,7 +57,33 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[MonthlySavingsEscalating]", retirement.MonthlySavingsEscalating);
             result = result.Replace("[IncomeNeed]", retirement.IncomeNeed); //Important to be replaced last
 
-            return result;
+            string script = string.Empty;
+            if (retirement.Graphs != null && retirement.Graphs.Count > 0)
+            {
+                foreach (var graphData in retirement.Graphs)
+                {
+                    var graph = _graph.SetGraphHtml(graphData);
+                    script += graph.Script;
+
+                    if (graphData.Name.ToLower().Contains("capital"))
+                        result = result.Replace("[CapitalGraph]", graph.Html);
+                    else if (graphData.Name.ToLower().Contains("annual"))
+                        result = result.Replace("[AnnualGraph]", graph.Html);
+                }
+            }
+            else
+            {
+                result = result.Replace("[CapitalGraph]", string.Empty);
+                result = result.Replace("[AnnualGraph]", string.Empty);
+            }
+
+            ReportServiceResult returnResult = new()
+            {
+                Html = result,
+                Script = script
+            };
+
+            return returnResult;
 
         }
 
@@ -102,7 +110,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 InvestmentReturnRate = economy_variables.InvestmentReturnRate.ToString(),
                 InflationRate = economy_variables.InflationRate.ToString(),
 
-
                 IncomeNeed = retirement.IncomeNeeds.ToString(),
                 NeedsRetirementTerm_Years = retirement.NeedsTerm_Years.ToString(),
                 EscalationPercent = economy_variables.InflationRate.ToString(),
@@ -120,7 +127,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             };
         }
 
-        private async Task<string> GetReportData(int fnaId)
+        private async Task<ReportServiceResult> GetReportData(int fnaId)
         {
             try
             {
@@ -137,15 +144,13 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             }
             catch (Exception)
             {
-                return string.Empty;
+                return new ReportServiceResult();
             }
         }
 
-        public async Task<string> SetRetirementDetail(int fnaId)
+        public async Task<ReportServiceResult> SetRetirementDetail(int fnaId)
         {
             return await GetReportData(fnaId);
         }
-
-
     }
 }
