@@ -19,6 +19,8 @@ namespace DataService.Dto
         public string TotalRetirement { get; set; }
         public string SavingsRequired { get; set; }
         public string EscPercentage { get; set; }
+        public string ExistingRetirementFund { get; set; }
+        public string YearsToRetirement { get; set; }
 
         public string DeathNeedsLabel { get; set; }
         public string TotalDeathNeeds { get; set; }
