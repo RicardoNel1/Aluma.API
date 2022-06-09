@@ -171,11 +171,6 @@ namespace DataService.Model
                 .HasForeignKey<RetirementSummaryModel>(c => c.FNAId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            mb.HasOne(c => c.EconomyVariables)
-                .WithOne(c => c.FNA)
-                .HasForeignKey<EconomyVariablesModel>(c => c.FNAId)
-                .OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 
