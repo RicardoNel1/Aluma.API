@@ -70,9 +70,11 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     tottalInsurance += insurance.LifeCover;
                 }
             }
+            
+            double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT + 
+                assetSummary.TotalLiquidAssets + tottalInsurance;
 
-            //                             100000                           1000                                1000                            1000
-            double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT + assetSummary.TotalLiabilities + tottalInsurance;
+
             double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate;
             double estateTotalLiabilities = assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses;
             double totalLiquidity = estateTotalLiquidAssets - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
@@ -82,7 +84,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             double totalDeath = providingDeathSummary.TotalAvailable - providingDeathSummary.TotalNeeds;
             double totalDisability = providingDisabilitySummary.TotalAvailable - providingDisabilitySummary.TotalNeeds;
-            double totalDread = providingOnDreadDisease.Available_DreadDiseaseAmount - (providingOnDreadDisease.Needs_CapitalNeeds + providingOnDreadDisease.Needs_GrossAnnualSalaryTotal);
+            double totalDread = providingOnDreadDisease.TotalDreadDisease;
 
             return new()
             {
