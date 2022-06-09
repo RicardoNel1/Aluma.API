@@ -40,7 +40,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[descDreadCoverAvailable]", dreadDisease.DescDreadCoverAvailable);
             result = result.Replace("[DreadCoverAvailable]", dreadDisease.DreadCoverAvailable);
             result = result.Replace("[TotalAvailableCapital]", dreadDisease.TotalAvailableCapital);
-            result = result.Replace("[DreadDiseaseSurplus]", Convert.ToInt32(dreadDisease.TotalDreadDisease) > 0 ? "Surplus" : "Shortfall" );
+            result = result.Replace("[DreadDiseaseSurplus]", Convert.ToInt32(dreadDisease.TotalDreadDisease) > 0 ? "Surplus" : "Shortfall");
             result = result.Replace("[TotalDreadDisease]", dreadDisease.TotalDreadDisease);
             result = result.Replace("[Age]", dreadDisease.Age);
             result = result.Replace("[CurrentNetIncome]", dreadDisease.CurrentNetIncome);
