@@ -96,11 +96,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                                                         RetirementSummaryDto summaryRetirement,
                                                         EconomyVariablesDto economy_variables)
         {
-            string riskRating = "";
+            RiskRatingsEnum? riskRating = null;
             if (Enum.IsDefined(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk))
-                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
-            else
-                riskRating = "";
+                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk));
 
             double totalcapital = summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds;
             int exhaustionPeriod = (int)Math.Round(retirement.CapitalAvailable / (retirement.IncomeNeeds * 12));
@@ -121,8 +119,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 AvailableCapital = retirement.CapitalAvailable.ToString(),
                 TotalAvailable = summaryRetirement.TotalAvailable.ToString(),
                 IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString(),
-                RiskRating = riskRating,
-                InvestmentReturnRate = economy_variables.InvestmentReturnRate.ToString(),
+                RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
+                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
                 InflationRate = economy_variables.InflationRate.ToString(),
                 ExhaustionPeriod = exhaustionPeriod.ToString(),
                 IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString(),

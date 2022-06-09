@@ -21,7 +21,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         public ProvidingDisabilityService(IWrapper repo)
         {
-
             _repo = repo;
             _graph = new GraphService();
         }
@@ -84,7 +83,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
                 YearsTillRetirement = assumptions.YearsTillRetirement.ToString(),
                 CurrentNetIncome = assumptions.CurrentNetIncome.ToString(),
-                InvestmentReturnRate = economy_variables.InvestmentReturnRate.ToString(),
+                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
                 InflationRate = economy_variables.InflationRate.ToString(),
                 IncomeNeed = disability.IncomeNeeds.ToString(),
                 NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString(),

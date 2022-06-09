@@ -95,20 +95,40 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             if (client.MaritalDetails == null || client.MaritalDetails.MaritalStatus.ToLower() == "single")
                 return new();
 
-            return new()
+            try
             {
-                FirstName = client.MaritalDetails.FirstName,
-                LastName = client.MaritalDetails.Surname,
-                RSAIdNumber = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber : string.Empty,
-                DateOfBirth = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber() : string.Empty,
-                Age = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? (Convert.ToDateTime(client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber())).CalculateAge().ToString() : string.Empty,
-                Gender = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetGenderFromRsaIdNumber() : string.Empty,
-                LifeExpectancy = string.Empty,
-                MaritalStatus = client.MaritalDetails?.MaritalStatus,
-                DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
-                Email = string.Empty,
-                WorkNumber = string.Empty,
-            };
+                return new()
+                {
+                    FirstName = client.MaritalDetails.FirstName,
+                    LastName = client.MaritalDetails.Surname,
+                    RSAIdNumber = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber : string.Empty,
+                    DateOfBirth = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber() : string.Empty,
+                    Age = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? (Convert.ToDateTime(client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber())).CalculateAge().ToString() : string.Empty,
+                    Gender = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetGenderFromRsaIdNumber() : string.Empty,
+                    LifeExpectancy = string.Empty,
+                    MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                    DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
+                    Email = string.Empty,
+                    WorkNumber = string.Empty,
+                };
+            }
+            catch (Exception ex)
+            {
+                return new()
+                {
+                    FirstName = client.MaritalDetails.FirstName,
+                    LastName = client.MaritalDetails.Surname,
+                    RSAIdNumber = string.Empty,
+                    DateOfBirth = string.Empty,
+                    Age = string.Empty,
+                    Gender = string.Empty,
+                    LifeExpectancy = string.Empty,
+                    MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                    DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
+                    Email = string.Empty,
+                    WorkNumber = string.Empty,
+                };
+            }
         }
 
         private async Task<string> GetReportData(int fnaId)

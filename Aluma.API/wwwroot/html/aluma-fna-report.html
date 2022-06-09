@@ -1,62 +1,31 @@
 <!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>Aluma FNA Report</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
-    </style>
-    <style type="text/css">
-        .displayMe {
-            display: block;
-        }
-
-        .page-break {
-            page-break-after: always
-        }
-
-        @media print {
-            .displayMe {
-                display: none;
-            }
-
-            .printMe {
-                display: block;
-            }
-        }
-    </style>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-</head>
-
-<body>
-    <!-- Start of Cover Page print -->
-    <table width="915" height="1356" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td>
-                <img src="[logo]" width="150" height="140" alt="" style="display:block;">
-            </td>
-            <td colspan="2" valign="top" align="right">
-                <h1 style="font-family: 'Open Sans', sans-serif; font-weight:300;text-align:right;font-size:32pt;margin-bottom:0px;color:#264B93;margin-top:0px;">Financial Needs Analysis</h1>
-                <span style="font-family: 'Open Sans', sans-serif; font-weight:300;text-align:right;font-size:13px;margin-top:0px;">FNA Completion Date: [date]</span>
-            </td>
-        </tr>
-
-        <tr>
-            <td colspan="3" height="1150" valign="middle">
-                <center>
-                    <img src="[spacer]" width="10" height="300" alt="">
-                    <span style="font-family: 'Open Sans', sans-serif;font-weight:300;font-size:12pt;margin-bottom:0;">Prepared for</span>
-                    <h2 style="font-family: 'Open Sans', sans-serif;font-weight:600;font-size:24pt;margin-top:0;color:#264B93;">[FirstName] [LastName]</h2>
-                    <img src="[spacer]" width="10" height="400" alt="">
-                    <span style="font-family: 'Open Sans', sans-serif;font-weight:300;font-size:12pt;color:#264B93;"><i>Strictly Confidential</i></span>
-                    <span style="font-family: 'Open Sans', sans-serif;font-weight:300;font-size:12pt;">
-                        This report is based on information provided by the client.<br>
-                        <strong style="color:#264B93;">NB:</strong> This document is for discussion purposes only
-                    </span>
-                </center>
-            </td>
-        </tr>
-    </table>
-    <!-- End of Cover Page print -->
-</body>
+	
+	<head>
+		<title>FNA Report</title>
+		[css]
+	</head>
+	
+	<body>
+		
+		<div class="main-page">
+			<div class="sub-page-cover">
+				
+				<center><img src="[logo]" width="190" height="188" alt=""></center>
+				
+				<div class="coverTitle">
+					Financial Needs Analysis
+				</div>
+				
+				<div class="coverContent">
+					<p>Prepared for</p>
+					<h3>[name]</h3>
+					<span class="confidential"><em>Strictly Confidential:</em> This report is based on information provided by the client.<br />
+						<strong>NB:</strong> This document is for discussion purposes only</span>
+				</div>
+			
+			</div>
+		</div>
+		
+	</body>
 </html>

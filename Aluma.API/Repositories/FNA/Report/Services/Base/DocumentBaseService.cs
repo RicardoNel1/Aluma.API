@@ -53,13 +53,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 converter.Footer.Add(text);
 
-                string version = "1.0";
 
                 // page numbers can be added using a PdfTextSection object
-                text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
-                {
-                    HorizontalAlign = PdfTextHorizontalAlign.Center
-                };
                 converter.Footer.Add(text);
 
                 text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
@@ -128,11 +123,13 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.FNAId == 0)
                     return null;
 
+                string version = "1.0";
                 string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
                 string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
+                string css = _fNAModulesService.GetCSS();
                 result += await _summaryService.SetSummaryDetail(dto.FNAId);
 
                 if (dto.ClientModule)
@@ -181,6 +178,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
+                result = result.Replace("[css]", css);
+                result = result.Replace("[version]", version);
                 result = result.Replace("[spacer]", spacer);
 
                 return result;

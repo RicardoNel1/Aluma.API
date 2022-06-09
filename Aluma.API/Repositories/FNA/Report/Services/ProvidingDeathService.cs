@@ -107,7 +107,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             {
                 Html = result,
                 Script = script
-            }; ;
+            };
 
         }
 
@@ -130,7 +130,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                 descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
                 TotalOnDeath = totalOnDeath < 0 ? $"({totalOnDeath * -1})" : totalOnDeath.ToString(),
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
-                InvestmentReturns = economy_variables.InvestmentReturnRate.ToString(),
+                InvestmentReturns = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
                 InflationRate = economy_variables.InflationRate.ToString(),
                 YrsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString(),
