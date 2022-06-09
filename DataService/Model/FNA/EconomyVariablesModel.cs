@@ -1,4 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using DataService.Migrations;
 
 namespace DataService.Model
 {
@@ -6,10 +10,22 @@ namespace DataService.Model
     public class EconomyVariablesModel : BaseModel
     {    
         public int Id { get; set; }
-        public ClientFNAModel FNA { get; set; }
-        public int FNAId { get; set; }
         public double InflationRate { get; set; }
-        public double InvestmentReturnRate { get; set; }
     }
 
+
+    public class EconomyVariablesBuilder : IEntityTypeConfiguration<EconomyVariablesModel>
+    {
+        public void Configure(EntityTypeBuilder<EconomyVariablesModel> mb)
+        {
+            mb.HasKey(x => x.Id);
+            mb.Property(x => x.Id).ValueGeneratedOnAdd();
+
+            mb.HasData(new EconomyVariablesModel()
+            {
+                Id = 1,
+                InflationRate = 6
+            });
+        }
+    }
 }

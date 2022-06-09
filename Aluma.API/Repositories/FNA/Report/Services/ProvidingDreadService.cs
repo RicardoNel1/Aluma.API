@@ -61,7 +61,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 MultipleGrossAnnualSalary = dreadDisease.Needs_GrossAnnualSalaryTotal.ToString(),
                 TotalNeeds = (Convert.ToInt32(dreadDisease.Needs_CapitalNeeds) + Convert.ToInt32(dreadDisease.Needs_GrossAnnualSalaryTotal)).ToString(),
                 DreadCoverAvailable = dreadDisease.Available_DreadDiseaseAmount.ToString(),
-                DescDreadCoverAvailable = dreadDisease.Available_DreadDiseaseDescription.ToString(),
+                DescDreadCoverAvailable = string.IsNullOrEmpty(dreadDisease.Available_DreadDiseaseDescription)? string.Empty : dreadDisease.Available_DreadDiseaseDescription.ToString(),
                 TotalAvailableCapital = dreadDisease.Available_DreadDiseaseAmount.ToString(),
                 TotalDreadDisease = (Convert.ToInt32(dreadDisease.Available_DreadDiseaseAmount) - Convert.ToInt32(dreadDisease.Needs_CapitalNeeds)).ToString(),
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),

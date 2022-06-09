@@ -34,7 +34,7 @@ namespace Aluma.API.Repositories
         public EconomyVariablesDto GetEconomyVariablesSummary(int fnaId)
         {
             EconomyVariablesModel summaryValues = new EconomyVariablesModel();
-            summaryValues = _context.EconomyVariables.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
+            summaryValues = _context.EconomyVariables.AsNoTracking().FirstOrDefault();
 
             return _mapper.Map<EconomyVariablesDto>(summaryValues);
         }
