@@ -34,7 +34,7 @@ namespace Aluma.API.Repositories
 
         public AssetSummaryDto GetAssetSummary(int fnaId)
         {
-            AssetSummaryModel summaryValues = new AssetSummaryModel();
+            AssetSummaryModel summaryValues = new() { FNAId = fnaId};
             var summaryValuesExist = _context.AssetSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
             if (summaryValuesExist.Any())
             {
