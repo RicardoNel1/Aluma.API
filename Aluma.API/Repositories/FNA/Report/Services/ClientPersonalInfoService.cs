@@ -30,7 +30,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string ReplaceHtmlPlaceholders(PersonalDetailReportDto client, PersonalDetailReportDto spouse)
+        private static string ReplaceHtmlPlaceholders(PersonalDetailReportDto client, PersonalDetailReportDto spouse)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
             string result = File.ReadAllText(path);
@@ -67,7 +67,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private PersonalDetailReportDto SetReportFieldsClient(ClientDto client, UserDto user, AssumptionsDto assumptions)
+        private static PersonalDetailReportDto SetReportFieldsClient(ClientDto client, UserDto user, AssumptionsDto assumptions)
         {
             AddressDto residentialAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Residential.ToString()).FirstOrDefault();
             AddressDto postalAddress = user.Address?.Where(x => x.Type == AddressTypesEnum.Postal.ToString()).FirstOrDefault();
@@ -90,7 +90,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             };
         }
 
-        private PersonalDetailReportDto SetReportFieldsSpouse(ClientDto client)
+        private static PersonalDetailReportDto SetReportFieldsSpouse(ClientDto client)
         {
             if (client.MaritalDetails == null || client.MaritalDetails.MaritalStatus.ToLower() == "single")
                 return new();
@@ -112,7 +112,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     WorkNumber = string.Empty,
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new()
                 {

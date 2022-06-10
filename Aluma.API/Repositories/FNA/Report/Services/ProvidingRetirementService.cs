@@ -149,7 +149,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             };
         }
 
-        private List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();
@@ -191,7 +191,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return result;
         }
 
-        private List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();

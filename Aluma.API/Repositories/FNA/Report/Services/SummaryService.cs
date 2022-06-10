@@ -23,7 +23,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string ReplaceHtmlPlaceholders(SummaryReportDto summary)
+        private static string ReplaceHtmlPlaceholders(SummaryReportDto summary)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-summary.html");
             string result = File.ReadAllText(path);
@@ -52,7 +52,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private SummaryReportDto SetReportFields(
+        private static SummaryReportDto SetReportFields(
             RetirementPlanningDto retirementPlanning, AssetSummaryDto assetSummary, EstateExpensesDto estateExpenses, InsuranceSummaryDto insuranceSummary, List<InsuranceDto> insurances, AssumptionsDto assumptions,
             RetirementSummaryDto retirementSummaryDto, ProvidingDeathSummaryDto providingDeathSummary, ProvidingDisabilitySummaryDto providingDisabilitySummary,
             ProvidingOnDreadDiseaseDto providingOnDreadDisease, PrimaryResidenceDto primaryResidence)

@@ -29,7 +29,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             _repo = repo;
         }
 
-        private string ReplaceHtmlPlaceholders(ProvidingOnDreadReportDto dreadDisease)
+        private static string ReplaceHtmlPlaceholders(ProvidingOnDreadReportDto dreadDisease)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-dread-disease.html");
             string result = File.ReadAllText(path);
@@ -50,7 +50,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private ProvidingOnDreadReportDto SetReportFields(ClientDto client, UserDto user,
+        private static ProvidingOnDreadReportDto SetReportFields(ClientDto client, UserDto user,
                                                         AssumptionsDto assumptions,
                                                         ProvidingOnDreadDiseaseDto dreadDisease,
                                                         EconomyVariablesDto economy_variables)
