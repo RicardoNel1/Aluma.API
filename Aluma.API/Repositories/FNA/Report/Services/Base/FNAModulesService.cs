@@ -9,6 +9,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
     public interface IFNAModulesService
     {
         Task<string> GetCoverPage(int fnaId);
+        string GetCSS();
     }
 
     public class FNAModulesService : IFNAModulesService
@@ -29,17 +30,24 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return ReplaceCoverPageHtmlPlaceholders(client, user);
         }
 
-        private string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
+        private static string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report.html");
             string result = File.ReadAllText(path);
 
-            result = result.Replace("[date]", DateTime.Now.ToString("yyyy-MM-dd"));
-            result = result.Replace("[FirstName]", user.FirstName);
-            result = result.Replace("[LastName]", user.LastName);
-            result = result.Replace("[LastName]", user.LastName);
+            result = result.Replace("[name]", $"{user.LastName} {user.LastName}");
             result = result.Replace("</body>", null);
             result = result.Replace("</html>", null);
+            return result;
+        }
+
+        public string GetCSS()
+        {
+            //"wwwroot/css/print.css"
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/css/print.css");
+            string result = $"<style rel=\"stylesheet\" type=\"text/css\">{File.ReadAllText(path)}</style>";
+
+            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/"));
             return result;
         }
     }

@@ -37,32 +37,12 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
                     pdf_orientation, true);
 
-                int webPageWidth = 1024;
-                int webPageHeight = 1356;
 
                 // instantiate a html to pdf converter object
                 HtmlToPdf converter = new();
 
 
-                var text = new PdfTextSection(0, 10, "FNA Report", new System.Drawing.Font("Open Sans", 8))
-                {
-                    HorizontalAlign = PdfTextHorizontalAlign.Left,
-
-                };
-
-
-                converter.Footer.Add(text);
-
-                string version = "1.0";
-
-                // page numbers can be added using a PdfTextSection object
-                text = new PdfTextSection(-25, 10, $"Version {version}", new System.Drawing.Font("Open Sans", 8))
-                {
-                    HorizontalAlign = PdfTextHorizontalAlign.Center
-                };
-                converter.Footer.Add(text);
-
-                text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
+                var text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
                 {
                     HorizontalAlign = PdfTextHorizontalAlign.Center
                 };
@@ -78,11 +58,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 // set converter options
                 converter.Options.PdfPageSize = pageSize;
                 converter.Options.PdfPageOrientation = pdfOrientation;
-                converter.Options.WebPageWidth = webPageWidth;
-                converter.Options.WebPageHeight = webPageHeight;
                 converter.Options.DrawBackground = false;
-                converter.Options.MarginTop = 30;
-                converter.Options.MarginLeft = 30;
 
 
 
@@ -128,17 +104,20 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.FNAId == 0)
                     return null;
 
+                string version = "1.0";
                 string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
+                string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/front-cover.jpg");
                 string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
-                result += await _summaryService.SetSummaryDetail(dto.FNAId);
+                string css = _fNAModulesService.GetCSS();
 
                 if (dto.ClientModule)
                 {
                     IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
                     result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
+                    result += await _summaryService.SetSummaryDetail(dto.FNAId);
                 }
 
                 if (dto.ProvidingOnDeath)
@@ -181,6 +160,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
+                result = result.Replace("[css]", css);
+                result = result.Replace("[frontCover]", frontCover);
+                result = result.Replace("[version]", version);
                 result = result.Replace("[spacer]", spacer);
 
                 return result;

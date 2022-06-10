@@ -1,0 +1,439 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap');
+
+
+img {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: #264B93;
+}
+
+* {
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.main-page {
+    page-break-after: always;
+}
+
+.sub-page-cover {
+    padding: 1cm;
+    height: 1050px;
+}
+
+.sub-page {
+    padding: 1cm;
+    height: 1350px;
+    background: white;
+    position: relative;
+}
+
+@page {
+    size: A4;
+}
+
+.coverTitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    color: #264B93;
+    font-size: 42px;
+    text-align: center;
+    margin-top: 550px;
+}
+
+.coverContent {
+    font-family: 'Roboto', sans-serif;
+    color: #264B93;
+    text-align: center;
+    margin-top: 40px;
+}
+
+    .coverContent p {
+        font-size: 14px;
+        line-height: 10px;
+        color: #000;
+    }
+
+    .coverContent h3 {
+        font-size: 30px;
+        line-height: 10px;
+        font-weight: 400;
+        margin-bottom: 50px;
+    }
+
+    .coverContent em {
+        font-weight: 700;
+        color: #264B93;
+    }
+
+.confidential {
+    color: #000;
+}
+
+    .confidential strong {
+        color: #264B93;
+    }
+
+.blue {
+    color: #264B93;
+}
+
+.header {
+    font-family: 'Roboto', sans-serif;
+    width: 100%;
+    color: #264B93;
+    top: 0;
+    vertical-align: top;
+}
+
+.headerLogo {
+    float: left;
+    width: 100px;
+}
+
+.headerText {
+    float: right;
+    text-align: right;
+}
+
+    .headerText h2 {
+        align: top;
+        font-weight: 300;
+        font-size: 32px;
+        margin: 0px;
+    }
+
+    .headerText p {
+        font-weight: 300;
+        font-size: 14px;
+        margin: 0px;
+        color: #000;
+    }
+
+.header:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.footer {
+    font-family: 'Roboto', sans-serif;
+    color: #264B93;
+    bottom: 18px;
+    position: absolute;
+}
+
+.footerLogo {
+    float: left;
+    margin-top: 5px;
+    margin-right: 20px;
+    vertical-align: bottom;
+    display: block;
+}
+
+    .footerLogo:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+.footerText {
+    float: left;
+    font-size: 10px;
+    width: 615px;
+    vertical-align: bottom;
+}
+
+    .footerText:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+.reg {
+    font-size: 8px;
+}
+
+.footerTitle {
+    float: left;
+    width: 75%;
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+.footerPage {
+    font-size: 10px;
+    width: 25%;
+    text-align: right;
+    float: right;
+    margin-top: 5px;
+}
+
+.footer:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.content {
+    margin-top: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+}
+
+    .content h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0px;
+        color: #264B93;
+    }
+
+    .content p {
+        margin: 3px;
+    }
+
+.border-box {
+    border: 1px solid #264B93;
+    padding: 2px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Create unequal columns that floats next to each other */
+/* 2 Column */
+.column-60-left {
+    float: left;
+    width: 60%;
+    padding: 0 7px;
+    margin: 0 -5px;
+}
+
+.column-40-right {
+    float: left;
+    width: 40%;
+    padding: 0 7px;
+    margin: 0 5px;
+}
+
+.row-2 {
+    margin: 0 -5px;
+}
+
+.column-2 {
+    float: left;
+}
+
+.col-2 {
+    width: 50%;
+}
+
+.col-2-item {
+    width: 60%;
+}
+
+.col-2-amount {
+    width: 40%;
+    text-align: right;
+}
+
+.col-2-1 {
+    width: 68%;
+}
+
+.col-2-2 {
+    width: 27%;
+    text-align: right;
+}
+
+.col-2-3 {
+    width: 2%;
+    text-align: left;
+}
+
+.column-personal {
+    float: left;
+    width: 50%;
+    padding: 0 10px;
+}
+
+.column-personal-3 {
+    float: left;
+    width: 33.3%;
+    padding: 0 8px;
+    margin-top: 15px;
+}
+
+.column-details {
+    float: left;
+    margin-bottom: 5px;
+}
+
+    .column-details p {
+        float: left;
+        font-size: 12px;
+    }
+
+.column-details-section {
+    width: 32%;
+    font-weight: 600;
+    color: #264B93;
+    padding: 1px;
+    padding-left: 0px;
+    vertical-align: middle;
+}
+
+.column-details-info {
+    width: 67%;
+    border: 1px solid rgba(38, 75, 147, 0.3);
+    border-radius: 3px;
+    background-color: #ffffff;
+    padding: 1px;
+}
+
+.column-address {
+    width: 15%;
+    font-weight: 600;
+    color: #264B93;
+    padding: 1px;
+    padding-left: 0px;
+    vertical-align: middle;
+}
+
+.column-address-info {
+    width: 85%;
+    border: 1px solid rgba(38, 75, 147, 0.3);
+    border-radius: 3px;
+    background-color: #ffffff;
+    padding: 1px;
+}
+
+
+.row-personal {
+    margin: 0 -5px;
+}
+
+    .row-personal:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+.card {
+    border: 1px solid #264B93;
+    border-radius: 10px;
+    box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    background-color: #f1f1f1;
+}
+
+    .card h2 {
+        margin: 0px;
+        margin-bottom: 8px;
+        font-size: 18px;
+        color: #264B93;
+    }
+
+    .card h3 {
+        margin: 0px;
+        margin-top: 10px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #264B93;
+    }
+
+/* 3 Column */
+.column-3 {
+    float: left;
+}
+
+.col-3-1 {
+    width: 60%;
+}
+
+.col-3-2, .col-3-3 {
+    width: 20%;
+    text-align: right;
+}
+
+/* 4 Column */
+.column-4 {
+    float: left;
+}
+
+.col-4-1, .col-4-2, .col-4-3 {
+    width: 12%;
+    text-align: right;
+    padding-right: 3px;
+}
+
+.col-4 {
+    width: 64%;
+}
+
+.col-4-even {
+    width: 25%;
+}
+
+.col-4-even-space {
+    width: 10%
+}
+
+.col-4-even-2 {
+    width: 20%;
+    text-align: right;
+    padding-right: 3px;
+}
+
+/* 5 Column */
+
+.column-5 {
+    float: left;
+}
+
+.col-5 {
+    width: 53%;
+}
+
+.col-5-1, .col-5-3 {
+    width: 20%;
+    text-align: right;
+    padding-right: 3px;
+}
+
+.col-5-2, .col-5-4 {
+    width: 2%;
+}
+
+/* Create equal columns that floats next to each other */
+.column-6 {
+    float: left;
+}
+
+.col-6-1 {
+    width: 25%
+}
+
+.col-6-4, .col-6-7 {
+    width: 25%;
+    padding-left: 10px;
+}
+
+.col-6-2, .col-6-5, .col-6-8 {
+    width: 6%;
+    text-align: right;
+}
+
+.col-6-3, .col-6-6, .col-6-9 {
+    width: 2%;
+}
+
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}

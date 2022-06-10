@@ -49,7 +49,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalAvailable]", retirement.TotalAvailable);
             result = result.Replace("[IncomeAvailableTotal]", retirement.IncomeAvailableTotal);
             result = result.Replace("[RiskRating]", retirement.RiskRating);
-            result = result.Replace("[InvestmentReturnRate]", retirement.InvestmentReturnRate);
+            result = result.Replace("[InvestmentReturnRate]", EnumConvertions.RiskExpectations(retirement.InvestmentReturnRate).ToString());
             result = result.Replace("[InflationRate]", retirement.InflationRate);
             result = result.Replace("[ExhaustionPeriod]", retirement.ExhaustionPeriod);
             result = result.Replace("[IncomeNeedsTotal]", retirement.IncomeNeedsTotal);
@@ -96,11 +96,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                                                         RetirementSummaryDto summaryRetirement,
                                                         EconomyVariablesDto economy_variables)
         {
-            string riskRating = "";
+            RiskRatingsEnum? riskRating = null;
             if (Enum.IsDefined(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk))
-                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk)).ToString();
-            else
-                riskRating = "";
+                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), assumptions.RetirementInvestmentRisk));
 
             double totalcapital = summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds;
             int exhaustionPeriod = (int)Math.Round(retirement.CapitalAvailable / (retirement.IncomeNeeds * 12));
@@ -121,8 +119,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 AvailableCapital = retirement.CapitalAvailable.ToString(),
                 TotalAvailable = summaryRetirement.TotalAvailable.ToString(),
                 IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString(),
-                RiskRating = riskRating,
-                InvestmentReturnRate = economy_variables.InvestmentReturnRate.ToString(),
+                RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
+                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
                 InflationRate = economy_variables.InflationRate.ToString(),
                 ExhaustionPeriod = exhaustionPeriod.ToString(),
                 IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString(),
@@ -151,7 +149,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             };
         }
 
-        private List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();
@@ -193,7 +191,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return result;
         }
 
-        private List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();
