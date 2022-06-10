@@ -49,7 +49,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalAvailable]", retirement.TotalAvailable);
             result = result.Replace("[IncomeAvailableTotal]", retirement.IncomeAvailableTotal);
             result = result.Replace("[RiskRating]", retirement.RiskRating);
-            result = result.Replace("[InvestmentReturnRate]", retirement.InvestmentReturnRate);
+            result = result.Replace("[InvestmentReturnRate]", EnumConvertions.RiskExpectations(retirement.InvestmentReturnRate).ToString());
             result = result.Replace("[InflationRate]", retirement.InflationRate);
             result = result.Replace("[ExhaustionPeriod]", retirement.ExhaustionPeriod);
             result = result.Replace("[IncomeNeedsTotal]", retirement.IncomeNeedsTotal);
