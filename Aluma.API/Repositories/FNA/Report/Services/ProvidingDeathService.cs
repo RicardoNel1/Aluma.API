@@ -72,6 +72,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             if (deathReport.IncomeGraph != null)
             {
+                deathReport.IncomeGraph.Width = 500;
                 var graph = _graph.SetGraphHtml(deathReport.IncomeGraph);
                 script += graph.Script;
                 result = result.Replace("[IncomeGraph]", graph.Html);
@@ -83,6 +84,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             if (deathReport.LumpsumGraph != null)
             {
+                deathReport.LumpsumGraph.Width = 500;
                 var graph = _graph.SetGraphHtml(deathReport.LumpsumGraph);
                 script += graph.Script;
                 result = result.Replace("[LumpsumGraph]", graph.Html);
