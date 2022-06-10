@@ -49,7 +49,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalDreadDisease]", summary.TotalDreadDisease);
 
             return result;
-
         }
 
         private static SummaryReportDto SetReportFields(
