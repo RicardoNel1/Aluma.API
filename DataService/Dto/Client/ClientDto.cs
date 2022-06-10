@@ -7,6 +7,7 @@ namespace DataService.Dto
         public UserDto User { get; set; }
         public EmploymentDetailsDto EmploymentDetails { get; set; }
         public MaritalDetailsDto MaritalDetails { get; set; }
+        
         public int Id { get; set; }
         public int UserId { get; set; }
         public System.Nullable<int> AdvisorId { get; set; }
