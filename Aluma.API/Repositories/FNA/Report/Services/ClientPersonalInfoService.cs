@@ -181,8 +181,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         //NASTY AS ALL HELL
         public SummaryReportDto BuildSummaryReportDto(int fnaId, int clientId)
         {
-
-
             AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
             AssetSummaryDto assetSummary = _repo.AssetSummary.GetAssetSummary(fnaId);
             InsuranceSummaryDto insuranceSummary = _repo.InsuranceSummary.GetInsuranceSummary(fnaId);
