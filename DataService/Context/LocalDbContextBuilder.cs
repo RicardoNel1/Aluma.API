@@ -24,7 +24,7 @@ namespace DataService.Context
             return new AlumaDBContext(builder.Options);
         }
 
-        private string GetConnectionString()
+        private static string GetConnectionString()
         {
             var config = new ConfigurationBuilder();
             config.SetBasePath(Directory.GetCurrentDirectory())

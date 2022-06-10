@@ -49,7 +49,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalAvailable]", retirement.TotalAvailable);
             result = result.Replace("[IncomeAvailableTotal]", retirement.IncomeAvailableTotal);
             result = result.Replace("[RiskRating]", retirement.RiskRating);
-            result = result.Replace("[InvestmentReturnRate]", retirement.InvestmentReturnRate);
+            result = result.Replace("[InvestmentReturnRate]", EnumConvertions.RiskExpectations(retirement.InvestmentReturnRate).ToString());
             result = result.Replace("[InflationRate]", retirement.InflationRate);
             result = result.Replace("[ExhaustionPeriod]", retirement.ExhaustionPeriod);
             result = result.Replace("[IncomeNeedsTotal]", retirement.IncomeNeedsTotal);
@@ -149,7 +149,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             };
         }
 
-        private List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();
@@ -191,7 +191,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return result;
         }
 
-        private List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+        private static List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
         {
             List<string> result = new List<string>();
             List<double> totals = new List<double>();

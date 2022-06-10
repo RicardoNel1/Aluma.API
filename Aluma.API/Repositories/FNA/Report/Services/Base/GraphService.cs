@@ -79,7 +79,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return js;
         }
 
-        private string GetPieChart(GraphReportDto dto)
+        private static string GetPieChart(GraphReportDto dto)
         {
             string js = $"var data = new google.visualization.arrayToDataTable([";
             js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";
@@ -110,7 +110,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return js;
         }
 
-        private string GetColumnChart(GraphReportDto dto)
+        private static string GetColumnChart(GraphReportDto dto)
         {
             string js = $"var data = new google.visualization.arrayToDataTable([";
             js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";

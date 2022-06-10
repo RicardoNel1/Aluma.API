@@ -260,7 +260,7 @@ namespace FileStorageService
             return directory;
         }
 
-        private async Task<ShareDirectoryClient> CreateDirectoryAsync(ShareClient share, string fileDirectory)
+        private static async Task<ShareDirectoryClient> CreateDirectoryAsync(ShareClient share, string fileDirectory)
         {
             ShareDirectoryClient directory = share.GetDirectoryClient(fileDirectory);
             try
@@ -278,7 +278,7 @@ namespace FileStorageService
             return directory;
         }
 
-        private async Task<byte[]> GetBytesFromStream(Stream stream)
+        private static async Task<byte[]> GetBytesFromStream(Stream stream)
         {
             int bufferSize = 16 * 1024;
             using (MemoryStream ms = new())

@@ -168,7 +168,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
         }
 
-        private List<string> SetIncomeGraphData(ProvidingOnDeathDto deathDto)
+        private static List<string> SetIncomeGraphData(ProvidingOnDeathDto deathDto)
         {
             string retirementDescription = deathDto.RetirementFunds < 0 ? "Shortfall" : "Surplus";
             double retirementFunds = deathDto.RetirementFunds < 0 ? deathDto.RetirementFunds * -1 : deathDto.RetirementFunds;
@@ -181,7 +181,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             };
         }
 
-        private List<string> SetLumpsumGraphhData(ProvidingOnDeathDto deathDto)
+        private static List<string> SetLumpsumGraphhData(ProvidingOnDeathDto deathDto)
         {
             double incomeNeeds = deathDto.IncomeNeeds < 0 ? deathDto.IncomeNeeds * -1 : deathDto.IncomeNeeds;
             double capitalNeeds = deathDto.CapitalNeeds < 0 ? deathDto.CapitalNeeds * -1 : deathDto.CapitalNeeds;
@@ -193,7 +193,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             };
         }
 
-        private List<string> SetCapitalizedGraphData(double available, double lumpsum)
+        private static List<string> SetCapitalizedGraphData(double available, double lumpsum)
         {
             string availableDescription = available < 0 ? "Shortfall" : "Surplus";
             string lumpsumDescription = lumpsum < 0 ? "Shortfall" : "Surplus";

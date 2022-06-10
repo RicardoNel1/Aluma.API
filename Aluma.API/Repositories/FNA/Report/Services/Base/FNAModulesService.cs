@@ -30,7 +30,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return ReplaceCoverPageHtmlPlaceholders(client, user);
         }
 
-        private string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
+        private static string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report.html");
             string result = File.ReadAllText(path);

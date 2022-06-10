@@ -40,7 +40,7 @@ namespace DataService.Context
             optionsBuilder.UseSqlServer(GetConnectionString());
         }
 
-        private string GetConnectionString()
+        private static string GetConnectionString()
         {
             if (string.IsNullOrWhiteSpace(connectionString))
             {

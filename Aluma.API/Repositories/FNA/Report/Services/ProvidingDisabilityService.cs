@@ -63,7 +63,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, 
+        private static ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, 
                                                                 AssumptionsDto assumptions,
                                                                 ProvidingOnDisabilityDto disability,
                                                                 ProvidingDisabilitySummaryDto summaryDisability,

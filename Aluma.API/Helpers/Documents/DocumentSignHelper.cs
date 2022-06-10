@@ -205,7 +205,7 @@ namespace Aluma.API.Helpers
 
 
 
-        private SignerDto CreateSignItem(UserModel user, int x, int y, int h, int w, int p)
+        private static SignerDto CreateSignItem(UserModel user, int x, int y, int h, int w, int p)
         {
             return new SignerDto()
             {
