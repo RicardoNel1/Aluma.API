@@ -30,11 +30,11 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-disability.html");
             string result = File.ReadAllText(path);
 
-            result = result.Replace("[IncomeNeed]", disability.IncomeNeed);
+            result = result.Replace("[TotalIncomeNeed]", disability.IncomeNeed);
             result = result.Replace("[Age]", disability.Age);
-            result = result.Replace("[TermYears]", disability.NeedsDisabilityTerm_Years);
+            result = result.Replace("[NeedsDisabilityTerm_Years]", disability.NeedsDisabilityTerm_Years);
             result = result.Replace("[RetirementAge]", disability.RetirementAge);
-            result = result.Replace("[EscPercent]", disability.EscDisabilityPercent);
+            result = result.Replace("[EscDisabilityPercent]", disability.EscDisabilityPercent);
             result = result.Replace("[EscPercentage]", disability.EscDisabilityPercent);
             result = result.Replace("[LifeExpectancy]", disability.LifeExpectancy);
             result = result.Replace("[CapitalNeeds]", disability.CapitalDisabilityNeeds);
@@ -43,15 +43,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[ShortTermProtection]", disability.ShortTermProtectionIncome);
             result = result.Replace("[InflationRate]", disability.InflationRate);
             result = result.Replace("[LongTermProtectionIncome]", disability.LongTermProtectionIncome);
-            result = result.Replace("[TotalAvailable]", disability.TotalAvailable);
+            result = result.Replace("[AvailableCapital]", disability.TotalAvailable);
             result = result.Replace("[CurrentNetIncome]", disability.CurrentNetIncome);
             result = result.Replace("[TotalNeeds]", disability.TotalNeeds);
             result = result.Replace("[CapitalizedIncomeShortfall]", disability.CapitalizedIncomeShortfall);
-            result = result.Replace("[TotalCapitalShortfall]", disability.TotalCapShortfall);
+            result = result.Replace("[TotalCapShortfall]", disability.TotalCapShortfall);
 
             var graph = _graph.SetGraphHtml(disability.Graph);
 
-            result = result.Replace("[graph]", graph.Html);
+            result = result.Replace("[CapitalSolutionGraph]", graph.Html);
 
             ReportServiceResult returnResult = new()
             {
