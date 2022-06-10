@@ -77,7 +77,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 RSAIdNumber = user.RSAIdNumber,
-                DateOfBirth = user.DateOfBirth != null ? user.DateOfBirth : string.Empty,
+                DateOfBirth = user.DateOfBirth ?? string.Empty,
                 Age = user.DateOfBirth != null ? (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString() : string.Empty,
                 Gender = user.RSAIdNumber.GetGenderFromRsaIdNumber(),
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
