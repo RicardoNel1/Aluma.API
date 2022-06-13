@@ -31,7 +31,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static string ReplaceHtmlPlaceholders(ProvidingOnDreadReportDto dreadDisease)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-dread-disease.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-providing-on-dread-disease.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[CapitalNeeds]", dreadDisease.CapitalNeeds);

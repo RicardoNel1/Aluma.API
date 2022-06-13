@@ -32,7 +32,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static string ReplaceHtmlPlaceholders(PersonalDetailReportDto client, PersonalDetailReportDto spouse, SummaryReportDto summary)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-personal-details.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-personal-details.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[FirstName]", client.FirstName);

@@ -27,7 +27,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private ReportServiceResult ReplaceHtmlPlaceholders(ProvidingOnDisabilityReportDto disability)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-disability.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-providing-on-disability.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[TotalIncomeNeed]", disability.IncomeNeed);

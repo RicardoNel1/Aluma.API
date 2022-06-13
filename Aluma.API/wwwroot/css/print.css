@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap');
 
-
 img {
     display: block;
 }
@@ -21,7 +20,11 @@ a {
 
 .sub-page-cover {
     padding: 1cm;
-    height: 1050px;
+    height: 1350px;
+    background-image: url("../images/front-cover.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .sub-page {
