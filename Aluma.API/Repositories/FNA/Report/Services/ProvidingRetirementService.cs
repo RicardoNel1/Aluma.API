@@ -134,7 +134,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Capital position over planning term",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 300,
+                    Height = 260,
                     Data = SetCapitalPositionGraph(summaryRetirement.TotalAvailable, summaryRetirement.TotalNeeds, economy_variables.InflationRate, economy_variables.InvestmentReturnRate, assumptions.RetirementAge, assumptions.LifeExpectancy)
                 },
                 AnnualGraph = new()
@@ -143,7 +143,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Annual Income position over planning term",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 30,
+                    Height = 260,
                     Data = SetAnnualPositionGraph(summaryRetirement.TotalAvailable, summaryRetirement.TotalNeeds, economy_variables.InflationRate, economy_variables.InvestmentReturnRate, assumptions.RetirementAge, assumptions.LifeExpectancy)
                 },
             };
