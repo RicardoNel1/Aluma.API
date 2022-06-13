@@ -8,7 +8,6 @@
         public double TotalAssetsExcemptCGT { get; set; }
         public double TotalLiquidAssets { get; set; }
         public double TotalAssetsToEstate { get; set; }
-        public double TotalAccrual { get; set; }
         public double TotalLiabilities { get; set; }
     }
 }
