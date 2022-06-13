@@ -46,7 +46,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, deathDto, summaryDeath, assetsSummary, economy_variables));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new ReportServiceResult();
             }
@@ -60,6 +60,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             result = result.Replace("[AvailableCapital]", deathReport.AvailableCapital);
             result = result.Replace("[descSurplusProviding]", deathReport.descSurplusProviding);
+            result = result.Replace("[SurplusProviding]", deathReport.SurplusProviding);
             result = result.Replace("[descSettlingEstate]", deathReport.descSettlingEstate);
             result = result.Replace("[SettlingEstate]", deathReport.SettlingEstate);
             result = result.Replace("[descTotalOnDeath]", deathReport.descTotalOnDeath);
@@ -72,7 +73,6 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             if (deathReport.IncomeGraph != null)
             {
-                deathReport.IncomeGraph.Width = 500;
                 var graph = _graph.SetGraphHtml(deathReport.IncomeGraph);
                 script += graph.Script;
                 result = result.Replace("[IncomeGraph]", graph.Html);
@@ -84,7 +84,6 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             if (deathReport.LumpsumGraph != null)
             {
-                deathReport.LumpsumGraph.Width = 500;
                 var graph = _graph.SetGraphHtml(deathReport.LumpsumGraph);
                 script += graph.Script;
                 result = result.Replace("[LumpsumGraph]", graph.Html);
@@ -127,15 +126,16 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             {
                 AvailableCapital = available < 0 ? $"({available * -1})" : available.ToString(),
                 descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
+                SurplusProviding = available < 0 ? $"({available * -1})" : available.ToString(),
                 descSettlingEstate = settling < 0 ? "Shortfall" : "Surplus",
                 SettlingEstate = settling < 0 ? $"({settling * -1})" : settling.ToString(),
                 descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
                 TotalOnDeath = totalOnDeath < 0 ? $"({totalOnDeath * -1})" : totalOnDeath.ToString(),
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
-                InvestmentReturns = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
-                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
-                InflationRate = economy_variables.InflationRate.ToString(),
-                YrsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString(),
+                InvestmentReturns = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
+                LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
+                InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
+                YrsTillLifeExpectancy = assumptions.YearsTillLifeExpectancy.ToString() ?? string.Empty,
 
                 IncomeGraph = new()
                 {
@@ -144,6 +144,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 350,
+                    Width = 450,
                     Data = SetIncomeGraphData(deathDto)
                 },
                 LumpsumGraph = new()
@@ -153,6 +154,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 350,
+                    Width = 450,
                     Data = SetLumpsumGraphhData(deathDto)
                 },
                 CapitalizedGraph = new()

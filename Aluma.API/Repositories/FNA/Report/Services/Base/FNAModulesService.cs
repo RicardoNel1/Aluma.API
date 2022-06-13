@@ -35,7 +35,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report.html");
             string result = File.ReadAllText(path);
 
-            result = result.Replace("[name]", $"{user.LastName} {user.LastName}");
+            result = result.Replace("[name]", $"{user.LastName ?? string.Empty} {user.LastName ?? string.Empty}");
             result = result.Replace("</body>", null);
             result = result.Replace("</html>", null);
             return result;
