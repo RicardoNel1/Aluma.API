@@ -6,6 +6,7 @@ using System.Linq;
 using Aluma.API.Repositories.FNA.Report.Service;
 using Aluma.API.RepoWrapper;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -105,9 +106,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     return null;
 
                 string version = "1.0";
-                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/aluma-logo-2.png");
-                string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/front-cover.jpg");
-                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/spacer.png");
+                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png");
+                string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg");
+                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png");
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
@@ -153,10 +154,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
-                result += "</body>";
+                result += $"{Environment.NewLine}</body>{Environment.NewLine}";
                 graph += _graphService.CloseGraphJavaScript();
                 result += graph;
-                result += "</html>";
+                result += $"{Environment.NewLine}</html>";
 
                 result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
@@ -165,6 +166,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 result = result.Replace("[version]", version);
                 result = result.Replace("[spacer]", spacer);
 
+                result = HttpUtility.HtmlDecode(result);
                 return result;
             }
             catch (Exception e)

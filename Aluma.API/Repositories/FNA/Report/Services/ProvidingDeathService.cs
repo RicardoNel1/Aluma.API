@@ -55,7 +55,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
         private ReportServiceResult ReplaceHtmlPlaceholders(ProvidingOnDeathReportDto deathReport)
         {
             string script = string.Empty;
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-providing-on-death.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-providing-on-death.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[AvailableCapital]", deathReport.AvailableCapital);

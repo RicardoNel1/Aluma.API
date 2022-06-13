@@ -32,7 +32,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
         private static string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[name]", $"{user.LastName} {user.LastName}");
@@ -44,10 +44,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         public string GetCSS()
         {
             //"wwwroot/css/print.css"
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/css/print.css");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\css\print.css");
             string result = $"<style rel=\"stylesheet\" type=\"text/css\">{File.ReadAllText(path)}</style>";
 
-            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/img/"));
+            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("\\","/"), @"wwwroot/img/"));
             return result;
         }
     }

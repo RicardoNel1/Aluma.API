@@ -25,7 +25,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static string ReplaceHtmlPlaceholders(SummaryReportDto summary)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/aluma-fna-report-summary.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-summary.html");
             string result = File.ReadAllText(path);
 
             result = result.Replace("[TotalAssets]", summary.TotalAssets);

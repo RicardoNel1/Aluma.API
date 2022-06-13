@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
     {
         public GraphResult SetGraphHtml(GraphReportDto dto)
         {
-            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot/html/graph.html");
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\graph.html");
             string result = File.ReadAllText(path);
 
             string js = SetGraphScript(dto);
@@ -36,45 +36,30 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         {
             string functionName = $"drawGraph_{dto.Name.Replace(" ", "_")}Chart";
 
-            string js = $"google.charts.setOnLoadCallback({functionName});";
+            string js = $"{Environment.NewLine} google.charts.setOnLoadCallback({functionName});";
             js += $"function {functionName}() {{";
-            
+
 
             switch (dto.Type)
             {
-                //case GraphType.Bar:
-                //    js += $"var chart = new google.visualization.BarChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
-                //    break;
-
-                //case GraphType.Line:
-                //    js += $"var data = new google.visualization.DataTable();";
-                //    js += $"data.addColumn('string', '{dto.XaxisHeader}');";
-                //    js += $"data.addColumn('number', '{dto.YaxisHeader}');";
-                //    js += "data.addColumn({ type: 'string', role: 'annotation' });";
-                //    js += "data.addRows([";
-
-
-
-
-
-                //    js += "]);";
-                //    js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
-                //    break;
-
                 case GraphType.Pie:
-                    js += GetPieChart(dto);
+                    js += $"{Environment.NewLine} {GetPieChart(dto)} {Environment.NewLine}";
                     break;
-
                 case GraphType.Column:
-                    js += GetColumnChart(dto);
+                    js += $"{Environment.NewLine} {GetColumnChart(dto)} {Environment.NewLine}";
                     break;
-
+                    js += $"{Environment.NewLine}";
+                case GraphType.Line:
+                    break;
+                    js += $"{Environment.NewLine}";
+                case GraphType.Bar:
+                    break;
                 default:
-                    js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+                    js += $"{Environment.NewLine} var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
                     break;
             }
 
-            js += $"}}";
+            js += $"}} {Environment.NewLine}";
 
             return js;
         }
