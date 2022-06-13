@@ -43,7 +43,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 HtmlToPdf converter = new();
 
 
-                var text = new PdfTextSection(460, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
+                var text = new PdfTextSection(450, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
                 {
                     HorizontalAlign = PdfTextHorizontalAlign.Center
                 };
@@ -51,10 +51,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
 
                 converter.Options.DisplayFooter = true;
-                converter.Footer.DisplayOnFirstPage = true;
+                converter.Footer.DisplayOnFirstPage = false;
                 converter.Footer.DisplayOnOddPages = true;
                 converter.Footer.DisplayOnEvenPages = true;
-                converter.Footer.Height = 50;
+                converter.Footer.Height = 40;
 
                 // set converter options
                 converter.Options.PdfPageSize = pageSize;
@@ -114,12 +114,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 string css = _fNAModulesService.GetCSS();
 
-                if (dto.ClientModule)
-                {
-                    IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
-                    result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
-                    result += await _summaryService.SetSummaryDetail(dto.FNAId);
-                }
+                
+                IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
+                result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
+                result += await _summaryService.SetSummaryDetail(dto.FNAId);
+                
 
                 if (dto.ProvidingOnDeath)
                 {
