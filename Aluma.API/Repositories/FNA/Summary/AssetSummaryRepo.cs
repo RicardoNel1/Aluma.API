@@ -35,11 +35,12 @@ namespace Aluma.API.Repositories
         public AssetSummaryDto GetAssetSummary(int fnaId)
         {
             AssetSummaryModel summaryValues = new() { FNAId = fnaId};
-            var summaryValuesExist = _context.AssetSummary.AsNoTracking().Where(a => a.FNAId == fnaId);
-            if (summaryValuesExist.Any())
+            var summaryValuesExist = _context.AssetSummary.AsNoTracking().Where(a => a.FNAId == fnaId).FirstOrDefault();
+            if (summaryValuesExist != null)
             {
-                summaryValues = summaryValuesExist.FirstOrDefault();
+                return _mapper.Map<AssetSummaryDto>(summaryValuesExist);
             }
+
             return _mapper.Map<AssetSummaryDto>(summaryValues);
         }
 

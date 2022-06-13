@@ -142,7 +142,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insuranceSummary, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
                     providingDisabilitySummary, providingOnDreadDisease, primaryResidence));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return string.Empty;
             }
