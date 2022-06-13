@@ -10,6 +10,7 @@ namespace DataService.Dto
     {
         public string AvailableCapital { get; set; }
         public string descSurplusProviding { get; set; }
+        public string SurplusProviding { get; set; }
         public string descSettlingEstate { get; set; }
         public string SettlingEstate { get; set; }
         public string descTotalOnDeath { get; set; }

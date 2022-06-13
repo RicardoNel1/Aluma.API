@@ -94,17 +94,17 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             return new PersonalDetailReportDto()
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                RSAIdNumber = user.RSAIdNumber,
+                FirstName = user.FirstName ?? string.Empty,
+                LastName = user.LastName ?? string.Empty,
+                RSAIdNumber = user.RSAIdNumber ?? string.Empty,
                 DateOfBirth = user.DateOfBirth ?? string.Empty,
                 Age = user.DateOfBirth != null ? (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString() : string.Empty,
-                Gender = user.RSAIdNumber.GetGenderFromRsaIdNumber(),
-                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
-                MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                Gender = user.RSAIdNumber.GetGenderFromRsaIdNumber() ?? string.Empty,
+                LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
+                MaritalStatus = client.MaritalDetails?.MaritalStatus ?? string.Empty,
                 DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
-                Email = user.Email,
-                WorkNumber = user.MobileNumber,
+                Email = user.Email ?? string.Empty,
+                WorkNumber = user.MobileNumber ?? string.Empty,
                 Address = residentialAddress == null ? string.Empty : residentialAddress.ToString(),
                 Postal = postalAddress == null ? string.Empty : postalAddress.ToString()
             };
@@ -119,14 +119,14 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             {
                 return new()
                 {
-                    FirstName = client.MaritalDetails.FirstName,
-                    LastName = client.MaritalDetails.Surname,
+                    FirstName = client.MaritalDetails.FirstName ?? string.Empty,
+                    LastName = client.MaritalDetails.Surname ?? string.Empty,
                     RSAIdNumber = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber : string.Empty,
                     DateOfBirth = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber() : string.Empty,
                     Age = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? (Convert.ToDateTime(client.MaritalDetails?.IdNumber.GetDateOfBirthFromRsaIdNumber())).CalculateAge().ToString() : string.Empty,
                     Gender = !string.IsNullOrEmpty(client.MaritalDetails?.IdNumber) ? client.MaritalDetails?.IdNumber.GetGenderFromRsaIdNumber() : string.Empty,
                     LifeExpectancy = string.Empty,
-                    MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                    MaritalStatus = client.MaritalDetails?.MaritalStatus ?? string.Empty,
                     DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
                     Email = string.Empty,
                     WorkNumber = string.Empty,
@@ -136,14 +136,14 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             {
                 return new()
                 {
-                    FirstName = client.MaritalDetails.FirstName,
-                    LastName = client.MaritalDetails.Surname,
+                    FirstName = client.MaritalDetails.FirstName ?? string.Empty,
+                    LastName = client.MaritalDetails.Surname ?? string.Empty,
                     RSAIdNumber = string.Empty,
                     DateOfBirth = string.Empty,
                     Age = string.Empty,
                     Gender = string.Empty,
                     LifeExpectancy = string.Empty,
-                    MaritalStatus = client.MaritalDetails?.MaritalStatus,
+                    MaritalStatus = client.MaritalDetails?.MaritalStatus ?? string.Empty,
                     DateOfMarriage = client.MaritalDetails?.DateOfMarriage != null ? Convert.ToDateTime(client.MaritalDetails?.DateOfMarriage).ToString("yyyy-MM-dd") : string.Empty,
                     Email = string.Empty,
                     WorkNumber = string.Empty,

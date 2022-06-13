@@ -105,29 +105,29 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             return new RetirementPlanningReportDto()
             {
-                IncomeNeed = retirement.IncomeNeeds.ToString(),
-                TermYears = retirement.NeedsTerm_Years.ToString(),
+                IncomeNeed = retirement.IncomeNeeds.ToString() ?? string.Empty,
+                TermYears = retirement.NeedsTerm_Years.ToString() ?? string.Empty,
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                EscalationPercent = economy_variables.InflationRate.ToString(),
-                RetirementAge = assumptions.RetirementAge.ToString(),
-                TotalNeeds = summaryRetirement.TotalNeeds.ToString(),
-                YearsBeforeRetirement = assumptions.YearsTillRetirement.ToString(),
-                YearsAfterRetirement = assumptions.YearsAfterRetirement.ToString(),
-                CapitalNeeds = retirement.CapitalNeeds.ToString(),
-                OutstandingLiabilities = retirement.OutstandingLiabilities.ToString(),
-                LifeExpectancy = assumptions.LifeExpectancy.ToString(),
-                AvailableCapital = retirement.CapitalAvailable.ToString(),
-                TotalAvailable = summaryRetirement.TotalAvailable.ToString(),
-                IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString(),
+                EscalationPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
+                RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
+                TotalNeeds = summaryRetirement.TotalNeeds.ToString() ?? string.Empty,
+                YearsBeforeRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
+                YearsAfterRetirement = assumptions.YearsAfterRetirement.ToString() ?? string.Empty,
+                CapitalNeeds = retirement.CapitalNeeds.ToString() ?? string.Empty,
+                OutstandingLiabilities = retirement.OutstandingLiabilities.ToString() ?? string.Empty,
+                LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
+                AvailableCapital = retirement.CapitalAvailable.ToString() ?? string.Empty,
+                TotalAvailable = summaryRetirement.TotalAvailable.ToString() ?? string.Empty,
+                IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString() ?? string.Empty,
                 RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
-                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
-                InflationRate = economy_variables.InflationRate.ToString(),
-                ExhaustionPeriod = exhaustionPeriod.ToString(),
-                IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString(),
+                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
+                InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
+                ExhaustionPeriod = exhaustionPeriod.ToString() ?? string.Empty,
+                IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString() ?? string.Empty,
                 DescTotalCapital = totalcapital < 0 ? "Shortfall" : "Surplus",
                 TotalCapital = totalcapital < 0 ? $"({totalcapital * -1})" : totalcapital.ToString(),
-                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium.ToString(),
-                MonthlySavingsEscalating = retirement.SavingsEscalation.ToString(),
+                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium < 0 ? $"({summaryRetirement.SavingsRequiredPremium * -1})" : summaryRetirement.SavingsRequiredPremium.ToString() ?? string.Empty,
+                MonthlySavingsEscalating = retirement.SavingsEscalation.ToString() ?? string.Empty,
                 CapitalGraph = new()
                 {
                     Type = GraphType.Column,
@@ -143,7 +143,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Annual Income position over planning term",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 300,
+                    Height = 30,
                     Data = SetAnnualPositionGraph(summaryRetirement.TotalAvailable, summaryRetirement.TotalNeeds, economy_variables.InflationRate, economy_variables.InvestmentReturnRate, assumptions.RetirementAge, assumptions.LifeExpectancy)
                 },
             };
@@ -165,17 +165,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     needValue = Math.Round(needValue + (needValue * (escalation / 100)));
                 }
 
-                //for (int month = 0; month < 12; month++)
-                //{
                 var calcValue = Math.Round(annualTotal - (needValue * 12));
-
-
-
-
-
-                //var calValue = Math.Round((annualTotal - needValue) * (1 + (investment / 1200)));
                 annualTotal = calcValue;
-                //}
 
                 totals.Add(annualTotal);
             }
@@ -207,17 +198,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     needValue = Math.Round(needValue + (needValue * (escalation / 100)));
                 }
 
-                //for (int month = 0; month < 12; month++)
-                //{
                 var calcValue = Math.Round(annualTotal - (needValue * 12));
-
-
-
-
-
-                //var calValue = Math.Round((annualTotal - needValue) * (1 + (investment / 1200)));
                 annualTotal = calcValue;
-                //}
 
                 totals.Add(annualTotal);
             }

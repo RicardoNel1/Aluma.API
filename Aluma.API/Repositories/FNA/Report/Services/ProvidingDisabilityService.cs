@@ -35,19 +35,22 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[NeedsDisabilityTerm_Years]", disability.NeedsDisabilityTerm_Years);
             result = result.Replace("[RetirementAge]", disability.RetirementAge);
             result = result.Replace("[EscDisabilityPercent]", disability.EscDisabilityPercent);
-            result = result.Replace("[EscPercentage]", disability.EscDisabilityPercent);
             result = result.Replace("[LifeExpectancy]", disability.LifeExpectancy);
-            result = result.Replace("[CapitalNeeds]", disability.CapitalDisabilityNeeds);
+            result = result.Replace("[CapitalDisabilityNeeds]", disability.CapitalDisabilityNeeds);
             result = result.Replace("[YearsTillRetirement]", disability.YearsTillRetirement);
             result = result.Replace("[InvestmentReturnRate]", disability.InvestmentReturnRate);
-            result = result.Replace("[ShortTermProtection]", disability.ShortTermProtectionIncome);
+            result = result.Replace("[ShortTermProtectionIncome]", disability.ShortTermProtectionIncome);
+            result = result.Replace("[TotalAvailable]", disability.TotalAvailable);
             result = result.Replace("[InflationRate]", disability.InflationRate);
             result = result.Replace("[LongTermProtectionIncome]", disability.LongTermProtectionIncome);
-            result = result.Replace("[AvailableCapital]", disability.TotalAvailable);
+            result = result.Replace("[Capital]", disability.Capital);
             result = result.Replace("[CurrentNetIncome]", disability.CurrentNetIncome);
             result = result.Replace("[TotalNeeds]", disability.TotalNeeds);
+            result = result.Replace("[CapitalNeeds]", disability.CapitalNeeds);
             result = result.Replace("[CapitalizedIncomeShortfall]", disability.CapitalizedIncomeShortfall);
+            result = result.Replace("[AvailableCapital]", disability.AvailableCapital);
             result = result.Replace("[TotalCapShortfall]", disability.TotalCapShortfall);
+            result = result.Replace("[MaxAdditionalCap]", disability.MaxAdditionalCap);
 
             var graph = _graph.SetGraphHtml(disability.Graph);
 
@@ -79,23 +82,27 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return new ProvidingOnDisabilityReportDto()
             {
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                RetirementAge = assumptions.RetirementAge.ToString(),
+                RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
                 LifeExpectancy = assumptions.LifeExpectancy.ToString(),
-                YearsTillRetirement = assumptions.YearsTillRetirement.ToString(),
-                CurrentNetIncome = assumptions.CurrentNetIncome.ToString(),
-                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString(),
-                InflationRate = economy_variables.InflationRate.ToString(),
-                IncomeNeed = disability.IncomeNeeds.ToString(),
-                NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString(),
-                EscDisabilityPercent = economy_variables.InflationRate.ToString(),
-                CapitalDisabilityNeeds = disability.CapitalNeeds.ToString(),
-                ShortTermProtectionIncome = summaryDisability.TotalExistingShortTermIncome.ToString(),
-                LongTermProtectionIncome = summaryDisability.TotalExistingLongTermIncome.ToString(),
-                TotalAvailable = summaryDisability.TotalAvailable.ToString(),
-                TotalNeeds = summaryDisability.TotalNeeds.ToString(),
-                CapitalNeeds = disability.CapitalNeeds.ToString(),
-                CapitalizedIncomeShortfall = summaryDisability.TotalIncomeNeed.ToString(),
-                TotalCapShortfall = (summaryDisability.TotalAvailable - summaryDisability.TotalNeeds).ToString(),
+                YearsTillRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
+                CurrentNetIncome = assumptions.CurrentNetIncome.ToString() ?? string.Empty,
+                InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
+                InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
+                IncomeNeed = disability.IncomeNeeds.ToString() ?? string.Empty,
+                NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString() ?? string.Empty,
+                EscDisabilityPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
+                CapitalDisabilityNeeds = disability.CapitalNeeds.ToString() ?? string.Empty,
+                ShortTermProtectionIncome = summaryDisability.TotalExistingShortTermIncome.ToString() ?? string.Empty,
+                LongTermProtectionIncome = summaryDisability.TotalExistingLongTermIncome.ToString() ?? string.Empty,
+                TotalAvailable = summaryDisability.TotalAvailable.ToString() ?? string.Empty,
+                TotalNeeds = summaryDisability.TotalNeeds.ToString() ?? string.Empty,
+                CapitalNeeds = disability.CapitalNeeds.ToString() ?? string.Empty,
+                CapitalizedIncomeShortfall = summaryDisability.TotalIncomeNeed.ToString() ?? string.Empty,
+                TotalCapShortfall = (summaryDisability.TotalAvailable - summaryDisability.TotalNeeds).ToString() ?? string.Empty,
+
+                // Where to get the value from ???
+                MaxAdditionalCap = string.Empty,
+
                 Graph = new()
                 {
                     Type = GraphType.Pie,

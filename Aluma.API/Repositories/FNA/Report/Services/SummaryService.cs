@@ -95,11 +95,11 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
                 TotalRetirement = totalRetirement < 0 ? $"({totalRetirement * -1})" : totalRetirement.ToString(),
-                SavingsRequired = retirementSummaryDto.SavingsRequiredPremium.ToString(),
-                EscPercentage = retirementPlanning.SavingsEscalation.ToString(),
+                SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({retirementSummaryDto.SavingsRequiredPremium * -1})" : retirementSummaryDto.SavingsRequiredPremium.ToString(),
+                EscPercentage = retirementPlanning.SavingsEscalation.ToString() ?? string.Empty,
 
-                ExistingRetirementFund = totalRetirementFunds.ToString(),
-                YearsToRetirement = assumptions.YearsTillRetirement.ToString(),
+                ExistingRetirementFund = totalRetirementFunds.ToString() ?? string.Empty,
+                YearsToRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
 
                 DeathNeedsLabel = totalDeath < 0 ? "Shortfall" : "Surplus",
                 TotalDeathNeeds = totalDeath < 0 ? $"({totalDeath * -1})" : totalDeath.ToString(),
