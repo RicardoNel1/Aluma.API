@@ -2,7 +2,7 @@
 
 namespace DataService.Model
 {
-    [Table("fna_summary_assets")]
+    [Table("fna_summary_estate")]
     public class AssetSummaryModel : BaseModel
     { 
         public int Id { get; set; }
