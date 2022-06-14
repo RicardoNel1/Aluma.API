@@ -1,4 +1,4 @@
-﻿using Aluma.API.Extensions;
+﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
@@ -137,7 +137,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             {
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
                 ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUserWithAddress(new UserDto() { Id = client.UserId });
+                UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
                 AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
 
                 //Find a way to get the dto

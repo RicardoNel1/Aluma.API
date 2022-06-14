@@ -1,9 +1,10 @@
-﻿using Aluma.API.Extensions;
+﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -87,26 +88,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             return new()
             {
-                TotalAssets = estateTotalAssets < 0 ? $"({estateTotalAssets * -1})" : estateTotalAssets.ToString(),
-                TotalLiquidAssets = estateTotalLiquidAssets < 0 ? $"({estateTotalLiquidAssets * -1})" : estateTotalLiquidAssets.ToString(),
-                TotalLiabilities = estateTotalLiabilities < 0 ? $"({estateTotalLiabilities * -1})" : $"({estateTotalLiabilities})",
+                TotalAssets = estateTotalAssets < 0 ? $"({(estateTotalAssets * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : estateTotalAssets.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                TotalLiquidAssets = estateTotalLiquidAssets < 0 ? $"({(estateTotalLiquidAssets * -1).ToString("C", CultureInfo.CreateSpecificCulture("en - za"))})" : estateTotalLiquidAssets.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                TotalLiabilities = estateTotalLiabilities < 0 ? $"({(estateTotalLiabilities * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : $"({(estateTotalLiabilities).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})",
                 LiquidityLabel = totalLiquidity < 0 ? "Shortfall" : "Surplus",
-                TotalLiquidity = totalLiquidity < 0 ? $"({totalLiquidity * -1})" : totalLiquidity.ToString(),
+                TotalLiquidity = totalLiquidity < 0 ? $"({(totalLiquidity * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalLiquidity.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
 
                 TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
-                TotalRetirement = totalRetirement < 0 ? $"({totalRetirement * -1})" : totalRetirement.ToString(),
-                SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({retirementSummaryDto.SavingsRequiredPremium * -1})" : retirementSummaryDto.SavingsRequiredPremium.ToString(),
+                TotalRetirement = totalRetirement < 0 ? $"({(totalRetirement * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalRetirement.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({(retirementSummaryDto.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : retirementSummaryDto.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 EscPercentage = retirementPlanning.SavingsEscalation.ToString() ?? string.Empty,
 
-                ExistingRetirementFund = totalRetirementFunds.ToString() ?? string.Empty,
+                ExistingRetirementFund = totalRetirementFunds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 YearsToRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
 
                 DeathNeedsLabel = totalDeath < 0 ? "Shortfall" : "Surplus",
-                TotalDeathNeeds = totalDeath < 0 ? $"({totalDeath * -1})" : totalDeath.ToString(),
+                TotalDeathNeeds = totalDeath < 0 ? $"({(totalDeath * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalDeath.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 DisabilityNeedsLabel = totalDisability < 0 ? "Shortfall" : "Surplus",
-                TotalDisabilityNeeds = totalDisability < 0 ? $"({totalDisability * -1})" : totalDisability.ToString(),
+                TotalDisabilityNeeds = totalDisability < 0 ? $"({(totalDisability * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalDisability.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 DreadDiseaseLabel = totalDread < 0 ? "Shortfall" : "Surplus",
-                TotalDreadDisease = totalDread < 0 ? $"({totalDread * -1})" : totalDread.ToString(),
+                TotalDreadDisease = totalDread < 0 ? $"({(totalDread * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalDread.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
             };
         }
 

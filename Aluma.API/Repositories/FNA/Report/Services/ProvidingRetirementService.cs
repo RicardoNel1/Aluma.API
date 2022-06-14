@@ -1,4 +1,4 @@
-﻿using Aluma.API.Extensions;
+﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
@@ -7,6 +7,7 @@ using DataService.Migrations;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -105,28 +106,28 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             return new RetirementPlanningReportDto()
             {
-                IncomeNeed = retirement.IncomeNeeds.ToString() ?? string.Empty,
+                IncomeNeed = retirement.IncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 TermYears = retirement.NeedsTerm_Years.ToString() ?? string.Empty,
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
                 EscalationPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
                 RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
-                TotalNeeds = summaryRetirement.TotalNeeds.ToString() ?? string.Empty,
+                TotalNeeds = summaryRetirement.TotalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 YearsBeforeRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
                 YearsAfterRetirement = assumptions.YearsAfterRetirement.ToString() ?? string.Empty,
-                CapitalNeeds = retirement.CapitalNeeds.ToString() ?? string.Empty,
-                OutstandingLiabilities = retirement.OutstandingLiabilities.ToString() ?? string.Empty,
+                CapitalNeeds = retirement.CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                OutstandingLiabilities = retirement.OutstandingLiabilities.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
-                AvailableCapital = retirement.CapitalAvailable.ToString() ?? string.Empty,
-                TotalAvailable = summaryRetirement.TotalAvailable.ToString() ?? string.Empty,
-                IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString() ?? string.Empty,
+                AvailableCapital = retirement.CapitalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalAvailable = summaryRetirement.TotalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                IncomeAvailableTotal = retirement.IncomeAvailableTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
                 InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
                 InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
                 ExhaustionPeriod = exhaustionPeriod.ToString() ?? string.Empty,
-                IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString() ?? string.Empty,
+                IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 DescTotalCapital = totalcapital < 0 ? "Shortfall" : "Surplus",
-                TotalCapital = totalcapital < 0 ? $"({totalcapital * -1})" : totalcapital.ToString(),
-                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium < 0 ? $"({summaryRetirement.SavingsRequiredPremium * -1})" : summaryRetirement.SavingsRequiredPremium.ToString() ?? string.Empty,
+                TotalCapital = totalcapital < 0 ? $"({(totalcapital * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalcapital.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium < 0 ? $"({(summaryRetirement.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : summaryRetirement.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 MonthlySavingsEscalating = retirement.SavingsEscalation.ToString() ?? string.Empty,
                 CapitalGraph = new()
                 {

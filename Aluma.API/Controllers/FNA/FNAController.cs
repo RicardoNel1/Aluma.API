@@ -101,5 +101,40 @@ namespace Aluma.API.Controllers
                 return BadRequest("Could not download the 'FNA Report.pdf'");
             }
         }
+
+        [HttpGet("save_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
+        public async Task<IActionResult> SaveFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool petirementPlanning = true)
+        {
+            try
+            {
+                FNAReportDto dto = new FNAReportDto()
+                {
+                    FNAId = fnaId,
+                    ClientModule = clientModule,
+                    ProvidingOnDisability = providingOnDisability,
+                    ProvidingOnDreadDisease = providingOnDreadDisease,
+                    ProvidingOnDeath = providingOnDeath,
+                    RetirementPlanning = petirementPlanning
+                };
+
+                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
+                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
+                byte[] pdf = Convert.FromBase64String(base64result);
+
+                if (pdf != null && pdf.Length > 0)
+                {
+                    Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
+                    stream.Position = 0;
+
+                    return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                }
+
+                return BadRequest("Could not download the 'FNA Report.pdf'");
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Could not download the 'FNA Report.pdf'");
+            }
+        }
     }
 }

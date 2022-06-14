@@ -1,7 +1,7 @@
 ﻿using DataService.Enum;
 using System;
 
-namespace Aluma.API.Extensions
+namespace Aluma.API.Helpers.Extensions
 {
     public class EnumConvertions
     {
@@ -9,7 +9,7 @@ namespace Aluma.API.Extensions
         {
             RiskRatingsEnum? riskRating = null;
             if (Enum.IsDefined(typeof(RiskRatingsEnum), risk))
-                riskRating = ((RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), risk));
+                riskRating = (RiskRatingsEnum)Enum.Parse(typeof(RiskRatingsEnum), risk);
 
             switch (riskRating)
             {
