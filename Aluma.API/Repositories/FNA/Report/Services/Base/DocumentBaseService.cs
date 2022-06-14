@@ -211,5 +211,10 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         {
             return base64;
         }
+
+        private string DencryptFileData(string base64)
+        {
+            return base64;
+        }
     }
 }

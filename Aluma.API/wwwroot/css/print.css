@@ -294,6 +294,7 @@ a {
     border-radius: 3px;
     background-color: #ffffff;
     padding: 1px;
+    min-height: 24px;
 }
 
 .column-address {
