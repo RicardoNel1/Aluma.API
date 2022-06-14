@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aluma.API.Extensions
+namespace Aluma.API.Helpers.Extensions
 {
     public static class DateTimeExtensions
     {

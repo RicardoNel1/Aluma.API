@@ -1,4 +1,4 @@
-﻿using Aluma.API.Extensions;
+﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
@@ -7,6 +7,7 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -59,19 +60,19 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             return new ProvidingOnDreadReportDto()
             {
-                CapitalNeeds = dreadDisease.Needs_CapitalNeeds.ToString() ?? string.Empty,
-                MultipleGrossAnnualSalary = dreadDisease.Needs_GrossAnnualSalaryTotal.ToString() ?? string.Empty,
-                TotalNeeds = (Convert.ToInt32(dreadDisease.Needs_CapitalNeeds) + Convert.ToInt32(dreadDisease.Needs_GrossAnnualSalaryTotal)).ToString() ?? string.Empty,
-                DreadCoverAvailable = dreadDisease.Available_DreadDiseaseAmount.ToString() ?? string.Empty,
+                CapitalNeeds = dreadDisease.Needs_CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                MultipleGrossAnnualSalary = dreadDisease.Needs_GrossAnnualSalaryTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalNeeds = (dreadDisease.Needs_CapitalNeeds + dreadDisease.Needs_GrossAnnualSalaryTotal).ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                DreadCoverAvailable = dreadDisease.Available_DreadDiseaseAmount.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 DescDreadCoverAvailable = string.IsNullOrEmpty(dreadDisease.Available_DreadDiseaseDescription) ? string.Empty : dreadDisease.Available_DreadDiseaseDescription.ToString(),
-                TotalAvailableCapital = dreadDisease.Available_DreadDiseaseAmount.ToString() ?? string.Empty,
-                TotalDreadDisease = (Convert.ToInt32(dreadDisease.Available_DreadDiseaseAmount) - Convert.ToInt32(dreadDisease.Needs_CapitalNeeds)).ToString() ?? string.Empty,
+                TotalAvailableCapital = dreadDisease.Available_DreadDiseaseAmount.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalDreadDisease = (dreadDisease.Available_DreadDiseaseAmount - dreadDisease.Needs_CapitalNeeds).ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                CurrentNetIncome = assumptions.CurrentNetIncome.ToString() ?? string.Empty,
-                GrossMonthlyIncome = assumptions.CurrentGrossIncome.ToString() ?? string.Empty,
+                CurrentNetIncome = assumptions.CurrentNetIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                GrossMonthlyIncome = assumptions.CurrentGrossIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
 
                 // Where to ge the data from ?????
-                DreadCoverAllowed = "6000000"
+                DreadCoverAllowed = (6000000).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))
 
             };
         }

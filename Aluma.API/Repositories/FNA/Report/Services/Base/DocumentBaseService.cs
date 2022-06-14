@@ -25,6 +25,13 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             _repo = repo;
         }
 
+        public async void SavePDF(FNAReportDto dto)
+        {
+            int clientId = (await _repo.FNA.GetClientFNAbyFNAId(dto.FNAId)).ClientId;
+            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
+            UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
+        }
+
         public string PDFGeneration(string html)
         {
             try

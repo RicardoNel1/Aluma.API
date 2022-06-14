@@ -1,9 +1,10 @@
-﻿using Aluma.API.Extensions;
+﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -124,13 +125,13 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
             return new ProvidingOnDeathReportDto()
             {
-                AvailableCapital = available < 0 ? $"({available * -1})" : available.ToString(),
+                AvailableCapital = available < 0 ? $"({(available * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : available.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
-                SurplusProviding = available < 0 ? $"({available * -1})" : available.ToString(),
+                SurplusProviding = available < 0 ? $"({(available * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : available.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descSettlingEstate = settling < 0 ? "Shortfall" : "Surplus",
-                SettlingEstate = settling < 0 ? $"({settling * -1})" : settling.ToString(),
+                SettlingEstate = settling < 0 ? $"({(settling * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : settling.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
-                TotalOnDeath = totalOnDeath < 0 ? $"({totalOnDeath * -1})" : totalOnDeath.ToString(),
+                TotalOnDeath = totalOnDeath < 0 ? $"({(totalOnDeath * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalOnDeath.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),
                 InvestmentReturns = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
                 LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
