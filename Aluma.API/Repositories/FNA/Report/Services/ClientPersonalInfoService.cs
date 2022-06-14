@@ -140,9 +140,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
                 AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
 
-                //Find a way to get the dto
-                //SummaryReportDto summary = BuildSummaryReportDto(fnaId, clientId);
-
                 PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
                 PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
                 return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
@@ -157,77 +154,5 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         {
             return await GetReportData(fnaId);
         }
-
-        //NASTY AS ALL HELL
-        public SummaryReportDto BuildSummaryReportDto(int fnaId, int clientId)
-        {
-            //AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-            //AssetSummaryDto assetSummary = _repo.AssetSummary.GetAssetSummary(fnaId);
-            //InsuranceSummaryDto insuranceSummary = _repo.InsuranceSummary.GetInsuranceSummary(fnaId);
-            //RetirementSummaryDto retirementSummaryDto = _repo.RetirementSummary.GetRetirementSummary(fnaId);
-
-            //List<InsuranceDto> insurances = _repo.Insurance.GetInsurance(fnaId);
-            //PrimaryResidenceDto primaryResidence = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
-            //EstateExpensesDto estateExpenses = _repo.EstateExpenses.GetEstateExpenses(fnaId);
-            //RetirementPlanningDto retirementPlanning = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-            //ProvidingDeathSummaryDto providingDeathSummary = _repo.ProvidingDeathSummary.GetProvidingDeathSummary(fnaId);
-            //ProvidingDisabilitySummaryDto providingDisabilitySummary = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
-            //ProvidingOnDreadDiseaseDto providingOnDreadDisease = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(clientId);
-            //double tottalInsurance = 0;
-
-            //if (insuranceSummary != null)
-            //{
-            //    tottalInsurance = insuranceSummary.TotalToSpouse + insuranceSummary.TotalToThirdParty + insuranceSummary.TotalToLiquidity;
-            //}
-            //else if (insurances != null && insurances.Count > 0)
-            //{
-            //    tottalInsurance = 0;
-            //    foreach (InsuranceDto insurance in insurances)
-            //    {
-            //        tottalInsurance += insurance.LifeCover;
-            //    }
-            //}
-
-            //double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT +
-            //    assetSummary.TotalLiquidAssets + tottalInsurance;
-
-
-            //double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate;
-            //double estateTotalLiabilities = assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses;
-            //double totalLiquidity = estateTotalLiquidAssets - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
-
-            //double totalRetirement = retirementSummaryDto.TotalAvailable - retirementSummaryDto.TotalNeeds;
-            //double totalRetirementFunds = retirementSummaryDto.TotalPensionFund + retirementSummaryDto.TotalPreservation;
-
-            //double totalDeath = providingDeathSummary.TotalAvailable - providingDeathSummary.TotalNeeds;
-            //double totalDisability = providingDisabilitySummary.TotalAvailable - providingDisabilitySummary.TotalNeeds;
-            //double totalDread = providingOnDreadDisease.TotalDreadDisease;
-
-            return new()
-            {
-                //TotalAssets = estateTotalAssets < 0 ? $"({estateTotalAssets * -1})" : estateTotalAssets.ToString(),
-                //TotalLiquidAssets = estateTotalLiquidAssets < 0 ? $"({estateTotalLiquidAssets * -1})" : estateTotalLiquidAssets.ToString(),
-                //TotalLiabilities = estateTotalLiabilities < 0 ? $"({estateTotalLiabilities * -1})" : $"({estateTotalLiabilities})",
-                //LiquidityLabel = totalLiquidity < 0 ? "Shortfall" : "Surplus",
-                //TotalLiquidity = totalLiquidity < 0 ? $"({totalLiquidity * -1})" : totalLiquidity.ToString(),
-
-                //TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
-                //TotalRetirement = totalRetirement < 0 ? $"({totalRetirement * -1})" : totalRetirement.ToString(),
-                //SavingsRequired = retirementSummaryDto.SavingsRequiredPremium.ToString(),
-                //EscPercentage = retirementPlanning.SavingsEscalation.ToString(),
-
-                //ExistingRetirementFund = totalRetirementFunds.ToString(),
-                //YearsToRetirement = assumptions.YearsTillRetirement.ToString(),
-
-                //DeathNeedsLabel = totalDeath < 0 ? "Shortfall" : "Surplus",
-                //TotalDeathNeeds = totalDeath < 0 ? $"({totalDeath * -1})" : totalDeath.ToString(),
-                //DisabilityNeedsLabel = totalDisability < 0 ? "Shortfall" : "Surplus",
-                //TotalDisabilityNeeds = totalDisability < 0 ? $"({totalDisability * -1})" : totalDisability.ToString(),
-                //DreadDiseaseLabel = totalDread < 0 ? "Shortfall" : "Surplus",
-                //TotalDreadDisease = totalDread < 0 ? $"({totalDread * -1})" : totalDread.ToString(),
-            };
-        }
-
-
     }
 }
