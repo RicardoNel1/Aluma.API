@@ -1,5 +1,6 @@
 ﻿using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
+using AutoMapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,12 @@ namespace Aluma.API.Controllers
     public class FNAController : ControllerBase
     {
         private readonly IWrapper _repo;
+        private IDocumentBaseService _documentService;
 
-        public FNAController(IWrapper repo)
+        public FNAController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
+            _documentService = new DocumentBaseService(_repo, mapper);
         }
 
         [HttpGet, AllowAnonymous]
@@ -82,7 +85,6 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = petirementPlanning
                 };
 
-                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
                 var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
                 byte[] pdf = Convert.FromBase64String(base64result);
 
@@ -96,7 +98,7 @@ namespace Aluma.API.Controllers
 
                 return BadRequest("Could not download the 'FNA Report.pdf'");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest("Could not download the 'FNA Report.pdf'");
             }
@@ -117,23 +119,13 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = petirementPlanning
                 };
 
-                IDocumentBaseService _documentService = new DocumentBaseService(_repo);
-                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
-                byte[] pdf = Convert.FromBase64String(base64result);
+                await _documentService.SavePDF(dto);
 
-                if (pdf != null && pdf.Length > 0)
-                {
-                    Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
-                    stream.Position = 0;
-
-                    return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
-                }
-
-                return BadRequest("Could not download the 'FNA Report.pdf'");
+                return NoContent();
             }
             catch (Exception e)
             {
-                return BadRequest("Could not download the 'FNA Report.pdf'");
+                return BadRequest(e.Message);
             }
         }
     }

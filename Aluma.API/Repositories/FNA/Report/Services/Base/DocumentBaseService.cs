@@ -7,6 +7,10 @@ using Aluma.API.Repositories.FNA.Report.Service;
 using Aluma.API.RepoWrapper;
 using System.Threading.Tasks;
 using System.Web;
+using Aluma.API.Helpers;
+using DataService.Model;
+using AutoMapper;
+using DataService.Enum;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -15,21 +19,42 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
     {
         string PDFGeneration(string html);
         Task<string> FNAHtmlGeneration(FNAReportDto dto);
+        Task SavePDF(FNAReportDto dto);
     }
 
     public class DocumentBaseService : IDocumentBaseService
     {
         private readonly IWrapper _repo;
-        public DocumentBaseService(IWrapper repo)
+        private readonly IMapper _mapper;
+
+        public DocumentBaseService(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
-        public async void SavePDF(FNAReportDto dto)
+        public async Task SavePDF(FNAReportDto dto)
         {
-            int clientId = (await _repo.FNA.GetClientFNAbyFNAId(dto.FNAId)).ClientId;
-            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
+            try
+            {
+                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(dto.FNAId)).ClientId;
+                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
+                UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
+                UserModel userModel = _mapper.Map<UserModel>(user);
+
+
+                string pdf = PDFGeneration(await FNAHtmlGeneration(dto));
+                pdf = EncryptFileData(pdf);
+
+                byte[] pdfBytes = Convert.FromBase64String(pdf);
+                await _repo.DocumentHelper.SaveFNAReport(pdfBytes, DocumentTypesEnum.FNAReport, userModel);
+
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.Message);
+                throw;
+            }
         }
 
         public string PDFGeneration(string html)
@@ -180,7 +205,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 Console.WriteLine(e.Message);
                 throw;
             }
+        }
 
+        private string EncryptFileData(string base64)
+        {
+            return base64;
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Aluma.API.Helpers
     public interface IDocumentHelper
     {
         Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
+        Task SaveFNAReport(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user);
         byte[] GetDocumentData(string url, string name);
         Task<byte[]> GetDocumentDataAsync(string url, string name);
         void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document);
@@ -57,10 +58,11 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"Aluma Capital - Disclosure Letter.pdf"},
                     {DocumentTypesEnum.PEFDOA,          "Aluma Capital - Private Equity - Growth - Deed of Adherence.pdf"},
                     {DocumentTypesEnum.PEF2DOA,         "Aluma Capital - Private Equity - Income - Deed of Adherence.pdf"},
-                    {DocumentTypesEnum.FIDOA,         "Aluma Capital - Fixed Income - Deed of Adherence.pdf"},
+                    {DocumentTypesEnum.FIDOA,           "Aluma Capital - Fixed Income - Deed of Adherence.pdf"},
                     {DocumentTypesEnum.PEFQuote,        "Aluma Capital - Private Equity - Growth - Quote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,       "Aluma Capital - Private Equity - Income - Quote.pdf"},
-                    {DocumentTypesEnum.FIQuote,       "Aluma Capital - Fixed Income - Quote.pdf"},
+                    {DocumentTypesEnum.FIQuote,         "Aluma Capital - Fixed Income - Quote.pdf"},
+                    {DocumentTypesEnum.FNAReport,       "Aluma Capital - Financial Needs Analysis.pdf"},
                 };
 
         public Dictionary<DocumentTypesEnum, string> DocumentTemplates = new()
@@ -76,6 +78,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
                     {DocumentTypesEnum.FIQuote,"FIQuote.pdf"},
+                    {DocumentTypesEnum.FNAReport,"FNAReport.pdf"},
                 };
 
         public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
@@ -152,6 +155,11 @@ namespace Aluma.API.Helpers
             ms.Close();
 
             return file;
+        }
+
+        public async Task SaveFNAReport(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user)
+        {
+            await UploadFile(fileBytes, fileType, user, null);
         }
 
 
