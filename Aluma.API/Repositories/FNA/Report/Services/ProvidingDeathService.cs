@@ -145,7 +145,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 350,
-                    Width = 450,
+                    //Width = 450,
                     Data = SetIncomeGraphData(deathDto)
                 },
                 LumpsumGraph = new()
@@ -155,7 +155,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 350,
-                    Width = 450,
+                    //Width = 450,
                     Data = SetLumpsumGraphhData(deathDto)
                 },
                 CapitalizedGraph = new()

@@ -1,5 +1,6 @@
 ﻿using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
+using AutoMapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +20,10 @@ namespace Aluma.API.Controllers
         private readonly IWrapper _repo;
         private IDocumentBaseService _documentService;
 
-        public FNAController(IWrapper repo, IDocumentBaseService documentService)
+        public FNAController(IWrapper repo, IMapper mapper)
         {
             _repo = repo;
-            _documentService = documentService;
+            _documentService = new DocumentBaseService(_repo, mapper);
         }
 
         [HttpGet, AllowAnonymous]
@@ -103,7 +104,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost("save_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
+        [HttpGet("save_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
         public async Task<IActionResult> SaveFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool petirementPlanning = true)
         {
             try
