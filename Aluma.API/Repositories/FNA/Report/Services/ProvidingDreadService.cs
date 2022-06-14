@@ -71,7 +71,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 GrossMonthlyIncome = assumptions.CurrentGrossIncome.ToString() ?? string.Empty,
 
                 // Where to ge the data from ?????
-                DreadCoverAllowed = string.Empty
+                DreadCoverAllowed = "6000000"
 
             };
         }
