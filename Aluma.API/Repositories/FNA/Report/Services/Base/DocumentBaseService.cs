@@ -100,6 +100,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 MemoryStream ms = new();
 
+                //TODO: doc.Security.UserPassword = client.user.rsaid
+
                 doc.Save(ms);
 
 
