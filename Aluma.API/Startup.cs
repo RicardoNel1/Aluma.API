@@ -76,15 +76,16 @@ namespace Aluma.API
                 
 
                 app.UseHangfireDashboard();
+                //dev only move back
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v1.0.8"));
 
             }
             else
             {
                 app.UseHsts();
             }
-            //dev only move back
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API.UAT v1.0.7"));
+           
 
             //app.UseHttpsRedirection();
 
