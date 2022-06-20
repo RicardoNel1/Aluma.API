@@ -91,6 +91,6 @@ namespace Aluma.API.RepoWrapper
         IStringHasher StrHasher { get; }
 
         // Short-term Insurance
-        ISortTermInsuranceRepo SortTermInsurance { get; }
+        IShortTermInsuranceRepo ShortTermInsurance { get; }
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DataService.Model
 {
     [Table("ShortTermInsurance")]
-    public class SortTermInsuranceModel : BaseModel
+    public class ShortTermInsuranceModel : BaseModel
     {
         public int Id { get; set; }
         public ClientModel Client { get; set; }
@@ -16,9 +16,9 @@ namespace DataService.Model
         public double MonthlyPremium { get; set; }
     }
 
-    public class SortTermInsuranceModelBuilder : IEntityTypeConfiguration<SortTermInsuranceModel>
+    public class ShortTermInsuranceModelBuilder : IEntityTypeConfiguration<ShortTermInsuranceModel>
     {
-        public void Configure(EntityTypeBuilder<SortTermInsuranceModel> mb)
+        public void Configure(EntityTypeBuilder<ShortTermInsuranceModel> mb)
         {
             mb.HasKey(x => x.Id);
             mb.Property(x => x.Id).ValueGeneratedOnAdd();

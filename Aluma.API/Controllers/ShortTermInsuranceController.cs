@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
@@ -19,25 +21,51 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetShortTerm(int clientId)
         {
-            return Ok();
-        }
-
-        [HttpPost, AllowAnonymous]
-        public IActionResult CreateShortTerm([FromBody] List<SortTermInsuranceDTO> dtoArray)
-        {
-            return Ok();
+            try
+            {
+                List<ShortTermInsuranceDTO> sortTermInsuranceDTOs = _repo.ShortTermInsurance.GetSortTermInsurance(clientId);
+                return Ok(sortTermInsuranceDTOs);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateShortTerm([FromBody] List<SortTermInsuranceDTO> dtoArray)
+        public IActionResult UpdateShortTerm([FromBody] List<ShortTermInsuranceDTO> dtoArray)
         {
-            return Ok();
+            try
+            {
+                dtoArray = _repo.ShortTermInsurance.UpdateSortTermInsurance(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpDelete, AllowAnonymous]
         public IActionResult DeleteShortTerm(int id)
         {
-            return NoContent();
+            try
+            {
+                bool deleted = _repo.ShortTermInsurance.DeleteSortTermInsurance(id);
+                
+                if (deleted)
+                    return NoContent();
+                
+                return BadRequest("Short-term insurance could not be deleted.");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }

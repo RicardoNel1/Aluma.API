@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DataService.Dto
 {
-    public class SortTermInsuranceDTO
+    public class ShortTermInsuranceDTO : ApiResponseDto
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
