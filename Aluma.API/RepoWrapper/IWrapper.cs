@@ -47,6 +47,7 @@ namespace Aluma.API.RepoWrapper
         IPrimaryResidenceRepo PrimaryResidence { get; }
         IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
         IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
+        IInvestmentsRepo Investments { get; }
         ILiquidAssetsRepo LiquidAssets { get; }
         IInsuranceRepo Insurance { get; }
         ILiabilitiesRepo Liabilities { get; }
