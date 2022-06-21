@@ -91,6 +91,9 @@ namespace Aluma.API.RepoWrapper
         // Short-term Insurance
         private IShortTermInsuranceRepo _shortTermInsurance;
 
+        // Medical Aid
+        private IMedicalAidRepo _medicalAid;
+
         private IStringHasher _hasher;
 
         private AlumaDBContext _dbContext;
@@ -320,6 +323,12 @@ namespace Aluma.API.RepoWrapper
         public IShortTermInsuranceRepo ShortTermInsurance
         {
             get { return _shortTermInsurance == null ? new ShortTermInsuranceRepo(_dbContext, _host, _config, _mapper) : _shortTermInsurance; }
+        }
+
+        // Medical Aid
+        public IMedicalAidRepo MedicalAid
+        {
+            get { return _medicalAid == null ? new MedicalAidRepo(_dbContext, _host, _config, _mapper) : _medicalAid; }
         }
 
 
