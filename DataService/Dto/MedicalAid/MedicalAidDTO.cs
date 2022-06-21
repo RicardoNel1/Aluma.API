@@ -12,7 +12,7 @@ namespace DataService.Dto
         public string Provider { get; set; }
         public string Type { get; set; }
         public string MedicalAidNumber { get; set; }
-        public bool MainMember { get; set; }
+        public bool MainMember { get; set; } = true;
         public int NumberOfDependants { get; set; }
         public double MonthlyPremium { get; set; }
     }

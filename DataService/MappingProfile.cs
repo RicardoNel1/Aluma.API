@@ -167,6 +167,10 @@ namespace DataService
             CreateMap<ShortTermInsuranceModel, ShortTermInsuranceDTO>()
                 .ReverseMap();
 
+            // MedicalAid   
+            CreateMap<MedicalAidModel, MedicalAidDTO>()
+                .ReverseMap();
+
             //Shared
             CreateMap<DisclosureModel, DisclosureDto>()
                 .ReverseMap();
