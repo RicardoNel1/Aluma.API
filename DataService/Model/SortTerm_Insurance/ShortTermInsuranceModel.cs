@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataService.Model
 {
-    [Table("ShortTermInsurance")]
+    [Table("short_term_insurance")]
     public class ShortTermInsuranceModel : BaseModel
     {
         public int Id { get; set; }
