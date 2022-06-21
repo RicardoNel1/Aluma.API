@@ -188,5 +188,8 @@ namespace DataService.Context
 
         // Short-term Insurance
         public DbSet<ShortTermInsuranceModel> SortTermInsurance { get; set; }
+
+        // Medical aid
+        public DbSet<MedicalAidModel> MedicalAid { get; set; }
     }
 }

@@ -92,5 +92,8 @@ namespace Aluma.API.RepoWrapper
 
         // Short-term Insurance
         IShortTermInsuranceRepo ShortTermInsurance { get; }
+
+        // Medical Aid
+        IMedicalAidRepo MedicalAid { get; }
     }
 }
