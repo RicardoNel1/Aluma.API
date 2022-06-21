@@ -96,6 +96,9 @@ namespace DataService.Context
             mb.ApplyConfiguration(new CapitalGainsTaxModelBuilder());
             mb.ApplyConfiguration(new AssumptionsModelBuilder());
 
+            // Short-term Insurance
+            mb.ApplyConfiguration(new ShortTermInsuranceModelBuilder());
+
 
             foreach (var property in mb.Model.GetEntityTypes().SelectMany(t => t.GetProperties()).Where(p => p.ClrType == typeof(string)))
             {
@@ -183,6 +186,7 @@ namespace DataService.Context
         public DbSet<UserModel> Users { get; set; }
         public DbSet<UserDocumentModel> UserDocuments { get; set; }
 
-
+        // Short-term Insurance
+        public DbSet<ShortTermInsuranceModel> SortTermInsurance { get; set; }
     }
 }
