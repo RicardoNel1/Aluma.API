@@ -174,7 +174,7 @@ namespace Aluma.API.Controllers
                 }
 
 
-                if (dto.UserName == "dev@aluma.co.za")
+                if (dto.UserName == "dev@aluma.co.za" || dto.UserName == "uat@aluma.co.za")
                 {
                     token = _repo.JwtRepo.CreateJwtToken(user.Id, user.Role, jwtSettings.LifeSpan);
 

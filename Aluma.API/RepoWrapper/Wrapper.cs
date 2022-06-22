@@ -89,7 +89,11 @@ namespace Aluma.API.RepoWrapper
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
 
+        // Short-term Insurance
+        private IShortTermInsuranceRepo _shortTermInsurance;
 
+        // Medical Aid
+        private IMedicalAidRepo _medicalAid;
 
         private IStringHasher _hasher;
 
@@ -318,6 +322,18 @@ namespace Aluma.API.RepoWrapper
         public IEconomyVariablesSummaryRepo EconomyVariablesSummary
         {
             get { return _economyVariablesSummary == null ? new EconomyVariablesSummaryRepo(_dbContext, _host, _config, _mapper) : _economyVariablesSummary; }
+        }
+
+        // Short-term Insurance
+        public IShortTermInsuranceRepo ShortTermInsurance
+        {
+            get { return _shortTermInsurance == null ? new ShortTermInsuranceRepo(_dbContext, _host, _config, _mapper) : _shortTermInsurance; }
+        }
+
+        // Medical Aid
+        public IMedicalAidRepo MedicalAid
+        {
+            get { return _medicalAid == null ? new MedicalAidRepo(_dbContext, _host, _config, _mapper) : _medicalAid; }
         }
 
 

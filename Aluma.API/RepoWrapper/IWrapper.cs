@@ -90,5 +90,11 @@ namespace Aluma.API.RepoWrapper
         ISignatureRepo SignatureRepo { get; }
         IFileStorageRepo FileStorageRepo { get; }
         IStringHasher StrHasher { get; }
+
+        // Short-term Insurance
+        IShortTermInsuranceRepo ShortTermInsurance { get; }
+
+        // Medical Aid
+        IMedicalAidRepo MedicalAid { get; }
     }
 }
