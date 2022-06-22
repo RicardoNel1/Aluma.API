@@ -23,6 +23,7 @@ namespace DataService.Model
         public EstateExpensesModel EstateExpenses { get; set; }
         public ICollection<InsuranceModel> Insurances { get; set; }
         public ICollection<LiabilitiesModel> Liabilities { get; set; }
+        public ICollection<InvestmentsModel> Investments { get; set; }
         public ICollection<LiquidAssetsModel> LiquidAssets { get; set; }
         public PrimaryResidenceModel PrimaryResidence { get; set; }
         public ProvidingOnDeathModel ProvidingDeathModel { get; set; }
@@ -91,6 +92,11 @@ namespace DataService.Model
                 .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasMany(c => c.Liabilities)
+                .WithOne(c => c.FNA)
+                .HasForeignKey(c => c.FNAId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasMany(c => c.Investments)
                 .WithOne(c => c.FNA)
                 .HasForeignKey(c => c.FNAId)
                 .OnDelete(DeleteBehavior.Cascade);

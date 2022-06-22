@@ -84,6 +84,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new AssetsAttractingCGTModelBuilder());
             mb.ApplyConfiguration(new AssetsExemptFromCGTModelBuilder());
             mb.ApplyConfiguration(new InsuranceModelBuilder());
+            mb.ApplyConfiguration(new InvestmentsModelBuilder());
             mb.ApplyConfiguration(new LiquidAssetsModelBuilder());
             mb.ApplyConfiguration(new LiabilitiesModelBuilder());
             mb.ApplyConfiguration(new EstateExpensesModelBuilder());
@@ -149,6 +150,7 @@ namespace DataService.Context
         public DbSet<PrimaryResidenceModel> PrimaryResidence { get; set; }
         public DbSet<AssetsAttractingCGTModel> AssetsAttractingCGT { get; set; }
         public DbSet<AssetsExemptFromCGTModel> AssetsExemptFromCGT { get; set; }
+        public DbSet<InvestmentsModel> Investments { get; set; }
         public DbSet<LiquidAssetsModel> LiquidAssets { get; set; }
         public DbSet<InsuranceModel> Insurance { get; set; }
         public DbSet<LiabilitiesModel> Liabilities { get; set; }

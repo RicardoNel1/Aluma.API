@@ -200,6 +200,57 @@ namespace Aluma.API.Controllers
         }
 
 
+
+        //Investments      
+        [HttpPut("investments"), AllowAnonymous]
+        public IActionResult UpdateInvestments([FromBody] List<InvestmentsDto> dtoArray)
+        {
+            try
+            {
+                dtoArray = _repo.Investments.UpdateInvestments(dtoArray);
+
+                if (dtoArray.Where(x => x.Status != "Success" && !string.IsNullOrEmpty(x.Status)).Any())
+                    return BadRequest(dtoArray);
+
+                return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("investments"), AllowAnonymous]
+        public IActionResult GetInvestments(int fnaId)
+        {
+            try
+            {
+                List<InvestmentsDto> dtoList = _repo.Investments.GetInvestments(fnaId);
+
+                return Ok(dtoList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("investments"), AllowAnonymous]
+        public IActionResult DeleteInvestments(int id)
+        {
+            try
+            {
+                bool deleted = _repo.Investments.DeleteInvestmentsItem(id);
+
+                return Ok(deleted);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
         //Liquid Assets      
         [HttpPut("liquid_assets"), AllowAnonymous]
         public IActionResult UpdateLiquidAssets([FromBody] List<LiquidAssetsDto> dtoArray)

@@ -72,7 +72,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             }
             
             double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT + 
-                assetSummary.TotalLiquidAssets + tottalInsurance;
+                assetSummary.TotalLiquidAssets + assetSummary.TotalInvestmentsExemptCGT + tottalInsurance;      //not adding TotalInvestmentsAttractingCGT yet
 
 
             double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate;

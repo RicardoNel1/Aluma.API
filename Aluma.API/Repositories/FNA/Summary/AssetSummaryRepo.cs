@@ -60,9 +60,10 @@ namespace Aluma.API.Repositories
                 currValues.TotalAssetsAttractingCGT = dto.TotalAssetsAttractingCGT;
                 currValues.TotalAssetsExcemptCGT = dto.TotalAssetsExcemptCGT;
                 currValues.TotalLiquidAssets = dto.TotalLiquidAssets;
-                //currValues.TotalAccrual = dto.TotalAccrual;
                 currValues.TotalLiabilities = dto.TotalLiabilities;
                 currValues.TotalAssetsToEstate = dto.TotalAssetsToEstate;
+                currValues.TotalInvestmentsExemptCGT = dto.TotalInvestmentsExemptCGT;
+                //not adding TotalInvestmentsAttractingCGT yet
 
                 _context.AssetSummary.Update(currValues);
 

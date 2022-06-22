@@ -47,6 +47,7 @@ namespace Aluma.API.RepoWrapper
         private IPrimaryResidenceRepo _primaryResidence;
         private IAssetsAttractingCGTRepo _assetsAttractingCGT;
         private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
+        private IInvestmentsRepo _investments;
         private ILiquidAssetsRepo _liquidAssets;
         private IInsuranceRepo _insurance;
         private ILiabilitiesRepo _liabilities;
@@ -213,6 +214,10 @@ namespace Aluma.API.RepoWrapper
         public IAssetsExemptFromCGTRepo AssetsExemptFromCGT
         {
             get { return _assetsExemptFromCGT == null ? new AssetsExemptFromCGTRepo(_dbContext, _host, _config, _mapper) : _assetsExemptFromCGT; }
+        }
+        public IInvestmentsRepo Investments
+        {
+            get { return _investments == null ? new InvestmentsRepo(_dbContext, _host, _config, _mapper) : _investments; }
         }
         public ILiquidAssetsRepo LiquidAssets
         {
