@@ -40,6 +40,7 @@ namespace Aluma.API.RepoWrapper
         private IRiskProfileRepo _riskProfile;
 
         private IDisclosureRepo _disclosures;
+        private IClientOverviewRepo _clientOverview;
 
         private IProductRepo _product;
 
@@ -194,6 +195,11 @@ namespace Aluma.API.RepoWrapper
         public IDisclosureRepo Disclosures
         {
             get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _fileStorage, _userDocuments) : _disclosures; }
+        }
+
+        public IClientOverviewRepo ClientOverview
+        {
+            get { return _clientOverview == null ? new ClientOverviewRepo(_dbContext, _host, _config, _mapper) : _clientOverview; }
         }
 
         //Product
