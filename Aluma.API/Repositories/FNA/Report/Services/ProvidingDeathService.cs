@@ -120,7 +120,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
         {
             double available = summaryDeath.TotalAvailable;
             double settling = assetSummary.TotalLiabilities;
-            double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities;
+            double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities; //is this correct? JS
             double capitalSustainableIncome = Math.Round(summaryDeath.TotalAvailable + (summaryDeath.TotalAvailable * economy_variables.InvestmentReturnRate / 100));
 
             return new ProvidingOnDeathReportDto()
