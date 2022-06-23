@@ -37,15 +37,28 @@ namespace Aluma.API.Repositories
 
         public ClientPortfolioDto GetClientPortfolio(int clientId)
         {
-            //
+
             ClientPortfolioDto dto = new ClientPortfolioDto();
             dto.FNA = GetClientFNA(clientId);
             dto.Investments = GetInvestments(dto.FNA.Id);
+            //List<InvestmentsModel> Investments = _context.Investments.Where(a => a.FNAId == dto.FNA.Id).ToList();
+            //dto.InvestmentsTotal = Investments.Sum(a => a.Value);
+            dto.Retirement = GetRetirement(dto.FNA.Id);
+            dto.ProvidingDisability = GetProvidingDisability(dto.FNA.Id);
+            dto.ProvidingDeath = GetProvidingDeath(dto.FNA.Id);
+            dto.ProvidingDread = GetProvidingDread(dto.FNA.Id);       
+            dto.ShortTermInsurance = GetShortTerm(dto.Client.Id);
+            dto.MedicalAid = GetMedical(dto.Client.Id);
 
-            
+            return dto;
 
-            return null;
+        }
+              
 
+        private ClientFNADto GetClientFNA(int clientId)
+        {
+            FNARepo _fna = new FNARepo(_context, _host, _config, _mapper, null);
+            return _fna.GetClientFNA(clientId);
         }
 
         private List<InvestmentsDto> GetInvestments(int fnaId)
@@ -54,11 +67,40 @@ namespace Aluma.API.Repositories
             return _investments.GetInvestments(fnaId);
         }
 
-        private ClientFNADto GetClientFNA(int clientId)
+        private RetirementSummaryDto GetRetirement(int fnaId)
         {
-            FNARepo _fna = new FNARepo(_context, _host, _config, _mapper, null);
-            return _fna.GetClientFNA(clientId);
+            RetirementSummaryRepo _retirement = new RetirementSummaryRepo(_context, _host, _config, _mapper);
+            return _retirement.GetRetirementSummary(fnaId);
         }
 
+        private ProvidingOnDisabilityDto GetProvidingDisability(int fnaId)
+        {
+            ProvidingOnDisabilityRepo _disability = new ProvidingOnDisabilityRepo(_context, _host, _config, _mapper);
+            return _disability.GetProvidingOnDisability(fnaId);
+        }
+
+        private ProvidingOnDeathDto GetProvidingDeath(int fnaId)
+        {
+            ProvidingOnDeathRepo _death = new ProvidingOnDeathRepo(_context, _host, _config, _mapper);
+            return _death.GetProvidingOnDeath(fnaId);
+        }
+
+        private ProvidingOnDreadDiseaseDto GetProvidingDread(int fnaId)
+        {
+            ProvidingOnDreadDiseaseRepo _dread = new ProvidingOnDreadDiseaseRepo(_context, _host, _config, _mapper);
+            return _dread.GetProvidingOnDreadDisease(fnaId);
+        }
+
+        private List<ShortTermInsuranceDTO> GetShortTerm(int cliendId)
+        {
+            ShortTermInsuranceRepo _shortTerm = new ShortTermInsuranceRepo(_context, _host, _config, _mapper);
+            return _shortTerm.GetSortTermInsurance(cliendId);
+        }
+
+        private MedicalAidDTO GetMedical(int clientId)
+        {
+            MedicalAidRepo _medical = new MedicalAidRepo(_context, _host, _config, _mapper);
+            return _medical.GetMedicalAid(clientId);
+        }
     }
 }

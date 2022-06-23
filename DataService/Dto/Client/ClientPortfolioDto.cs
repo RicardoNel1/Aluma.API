@@ -8,6 +8,13 @@ namespace DataService.Dto
         public ClientDto Client { get; set; }
         public ClientFNADto FNA { get; set; }
         public List<InvestmentsDto> Investments { get; set; }
+        public RetirementSummaryDto Retirement { get; set; }
+        public ProvidingOnDisabilityDto ProvidingDisability { get; set; }
+        public ProvidingOnDeathDto ProvidingDeath { get; set; }
+        public ProvidingOnDreadDiseaseDto ProvidingDread { get; set; }
+        public List<ShortTermInsuranceDTO> ShortTermInsurance { get; set; }
+        public MedicalAidDTO MedicalAid { get; set; }
+
         public double Salary { get; set; }
         public double PensionFunds { get; set; }
         public double PreservationFunds { get; set; }
@@ -15,8 +22,8 @@ namespace DataService.Dto
         public double DisabilityLumpSum { get; set; }
         public double DisabilityTemporary { get; set; }
         public double DisabilityPermanent { get; set; }
-        public double MedicalAid { get; set; }
         public double HomeValue { get; set; }
+        public double InvestmentsTotal { get; set; }
         public double InvestedBonds { get; set; }
         public double InvestedEuity { get; set; }
         public double InvestedProperty { get; set; }
