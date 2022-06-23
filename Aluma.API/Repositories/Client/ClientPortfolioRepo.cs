@@ -18,14 +18,14 @@ namespace Aluma.API.Repositories
 
     }
 
-    public class ClientOverviewRepo : RepoBase<ClientOverviewDto>, IClientOverviewRepo
+    public class ClientPortfolioRepo : RepoBase<ClientOverviewDto>, IClientOverviewRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public ClientOverviewRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
+        public ClientPortfolioRepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
         {
             _context = databaseContext;
             _host = host;
@@ -37,12 +37,28 @@ namespace Aluma.API.Repositories
 
         public ClientOverviewDto GetClientOverview(int clientId)
         {
+            //
+            ClientOverviewDto dto = new ClientOverviewDto();
+            dto.FNA = GetClientFNA(clientId);
+            dto.Investments = GetInvestments(dto.FNA.Id);
+
             
+
             return null;
 
         }
 
+        private List<InvestmentsDto> GetInvestments(int fnaId)
+        {
+            InvestmentsRepo _investments = new InvestmentsRepo(_context, _host, _config, _mapper);
+            return _investments.GetInvestments(fnaId);
+        }
 
+        private ClientFNADto GetClientFNA(int clientId)
+        {
+            FNARepo _fna = new FNARepo(_context, _host, _config, _mapper, null);
+            return _fna.GetClientFNA(clientId);
+        }
 
     }
 }

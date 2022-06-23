@@ -199,7 +199,7 @@ namespace Aluma.API.RepoWrapper
 
         public IClientOverviewRepo ClientOverview
         {
-            get { return _clientOverview == null ? new ClientOverviewRepo(_dbContext, _host, _config, _mapper) : _clientOverview; }
+            get { return _clientOverview == null ? new ClientPortfolioRepo(_dbContext, _host, _config, _mapper) : _clientOverview; }
         }
 
         //Product

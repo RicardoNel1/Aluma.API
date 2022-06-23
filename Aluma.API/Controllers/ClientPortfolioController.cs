@@ -10,23 +10,23 @@ using System.Threading.Tasks;
 namespace Aluma.API.Controllers
 {
     [ApiController, Route("api/[controller]"), Authorize]
-    public class ClientOverviewController : ControllerBase
+    public class ClientPortfolioController : ControllerBase
     {
         private readonly IWrapper _repo;
 
-        public ClientOverviewController(IWrapper repo)
+        public ClientPortfolioController(IWrapper repo)
         {
             _repo = repo;
         }
                 
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetClientOverview(int fnaId)
+        public IActionResult GetClientPortfolio(int clientId)
         {
             ClientOverviewDto dto = new();
             try
             {
-                dto = _repo.ClientOverview.GetClientOverview(fnaId);
+                dto = _repo.ClientOverview.GetClientOverview(clientId);
 
                 dto.Status = "Success";
                 dto.Message = "";

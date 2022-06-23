@@ -1,29 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DataService.Dto
 {
     public class ClientOverviewDto : ApiResponseDto
     {
         public ClientDto Client { get; set; }
-        public int Id { get; set; }
-        public int ClientId { get; set; }
-        public int Salary { get; set; }
-        public int PensionFunds { get; set; }
-        public int PreservationFunds { get; set; }
-        public int FuneralCover { get; set; }
-        public int DisabilityLumpSum { get; set; }
-        public int DisabilityTemporary { get; set; }
-        public int DisabilityPermanent { get; set; }
-        public int MedicalAid { get; set; }
-        public int HomeValue { get; set; }
-        public int InvestedBonds { get; set; }
-        public int InvestedEuity { get; set; }
-        public int InvestedProperty { get; set; }
-        public int InvestedOffshoreBonds { get; set; }
-        public int InvestedOffshoreEuity { get; set; }
-        public int InvestedOffshoreProperty { get; set; }
-        public int InvestedPrivateEquity { get; set; }
-        public int InvestedCash { get; set; }
+        public ClientFNADto FNA { get; set; }
+        public List<InvestmentsDto> Investments { get; set; }
+        public double Salary { get; set; }
+        public double PensionFunds { get; set; }
+        public double PreservationFunds { get; set; }
+        public double FuneralCover { get; set; }
+        public double DisabilityLumpSum { get; set; }
+        public double DisabilityTemporary { get; set; }
+        public double DisabilityPermanent { get; set; }
+        public double MedicalAid { get; set; }
+        public double HomeValue { get; set; }
+        public double InvestedBonds { get; set; }
+        public double InvestedEuity { get; set; }
+        public double InvestedProperty { get; set; }
+        public double InvestedOffshoreBonds { get; set; }
+        public double InvestedOffshoreEuity { get; set; }
+        public double InvestedOffshoreProperty { get; set; }
+        public double InvestedPrivateEquity { get; set; }
+        public double InvestedCash { get; set; }
 
 
 
