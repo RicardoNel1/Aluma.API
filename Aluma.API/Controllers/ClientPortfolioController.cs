@@ -23,10 +23,10 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetClientPortfolio(int clientId)
         {
-            ClientOverviewDto dto = new();
+            ClientPortfolioDto dto = new();
             try
             {
-                dto = _repo.ClientOverview.GetClientOverview(clientId);
+                dto = _repo.ClientPortfolio.GetClientPortfolio(clientId);
 
                 dto.Status = "Success";
                 dto.Message = "";

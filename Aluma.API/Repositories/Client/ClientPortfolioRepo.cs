@@ -12,13 +12,13 @@ using System.Linq;
 
 namespace Aluma.API.Repositories
 {
-    public interface IClientOverviewRepo : IRepoBase<ClientOverviewDto>
+    public interface IClientPortfolioRepo : IRepoBase<ClientPortfolioDto>
     {
-        ClientOverviewDto GetClientOverview(int clientId);
+        ClientPortfolioDto GetClientPortfolio(int clientId);
 
     }
 
-    public class ClientPortfolioRepo : RepoBase<ClientOverviewDto>, IClientOverviewRepo
+    public class ClientPortfolioRepo : RepoBase<ClientPortfolioDto>, IClientPortfolioRepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
@@ -35,10 +35,10 @@ namespace Aluma.API.Repositories
 
 
 
-        public ClientOverviewDto GetClientOverview(int clientId)
+        public ClientPortfolioDto GetClientPortfolio(int clientId)
         {
             //
-            ClientOverviewDto dto = new ClientOverviewDto();
+            ClientPortfolioDto dto = new ClientPortfolioDto();
             dto.FNA = GetClientFNA(clientId);
             dto.Investments = GetInvestments(dto.FNA.Id);
 

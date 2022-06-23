@@ -38,7 +38,7 @@ namespace Aluma.API.RepoWrapper
         IRiskProfileRepo RiskProfile { get; }
         ITaxResidencyRepo TaxResidency { get; }
         IConsumerProtectionRepo ConsumerProtection { get; }
-        IClientOverviewRepo ClientOverview { get; }
+        IClientPortfolioRepo ClientPortfolio { get; }
 
         //Product
         IProductRepo ProductRepo { get; }

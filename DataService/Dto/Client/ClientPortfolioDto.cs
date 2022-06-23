@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataService.Dto
 {
-    public class ClientOverviewDto : ApiResponseDto
+    public class ClientPortfolioDto : ApiResponseDto
     {
         public ClientDto Client { get; set; }
         public ClientFNADto FNA { get; set; }
