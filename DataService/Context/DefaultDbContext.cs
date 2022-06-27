@@ -105,7 +105,7 @@ namespace DataService.Context
             {
                 if (property.GetMaxLength() == null)
                 {
-                    if (property.Name == "Description" || property.Name == "MaterialInformation" || property.Name == "Introduction")
+                    if (property.Name == "Description" || property.Name == "MaterialInformation" || property.Name == "Introduction" || property.Name == "AdvisorNotes" || property.Name == "DisagreeReason" )
                         property.SetColumnType("varchar(MAX)");
                     else
                         property.SetColumnType("varchar(100)");
