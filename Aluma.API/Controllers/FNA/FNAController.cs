@@ -98,9 +98,9 @@ namespace Aluma.API.Controllers
 
                 return BadRequest("Could not download the 'FNA Report.pdf'");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest("Could not download the 'FNA Report.pdf'");
+                return BadRequest($"Could not download the 'FNA Report.pdf', {ex.Message}");
             }
         }
 
