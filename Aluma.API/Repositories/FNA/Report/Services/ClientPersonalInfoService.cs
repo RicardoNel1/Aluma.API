@@ -1,4 +1,5 @@
 ﻿using Aluma.API.Helpers.Extensions;
+using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
@@ -21,10 +22,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         Task<string> SetPersonalDetail(int fnaId);
     }
 
-    public class ClientPersonalInfoService : IClientPersonalInfoService
+    public class ClientPersonalInfoService : BaseReportData, IClientPersonalInfoService
     {
-        private readonly IWrapper _repo;
-
         public ClientPersonalInfoService(IWrapper repo)
         {
             _repo = repo;
@@ -133,21 +132,14 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            try
-            {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
+            ClientDto client = await GetClient(fnaId);
+            UserDto user = await GetUser(client.Id);
+            AssumptionsDto assumptions = GetAssumptions(fnaId);
 
-                PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
-                PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
-                return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
+            PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);
+            PersonalDetailReportDto spouseInfo = SetReportFieldsSpouse(client);
+            return ReplaceHtmlPlaceholders(clientInfo, spouseInfo);
+
         }
 
         public async Task<string> SetPersonalDetail(int fnaId)

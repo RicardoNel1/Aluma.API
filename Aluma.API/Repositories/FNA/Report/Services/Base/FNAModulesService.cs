@@ -12,9 +12,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         string GetCSS();
     }
 
-    public class FNAModulesService : IFNAModulesService
+    public class FNAModulesService : BaseReportData, IFNAModulesService
     {
-        private readonly IWrapper _repo;
 
         public FNAModulesService(IWrapper repo)
         {
@@ -23,12 +22,12 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
         public async Task<string> GetCoverPage(int fnaId)
         {
-            int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-            ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-            UserDto user = _repo.User.GetUserWithAddress(new UserDto() { Id = client.UserId });
+            ClientDto client = await GetClient(fnaId);
+            UserDto user = await GetUser(client.UserId);
 
             return ReplaceCoverPageHtmlPlaceholders(client, user);
         }
+
 
         private static string ReplaceCoverPageHtmlPlaceholders(ClientDto client, UserDto user)
         {
@@ -47,7 +46,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\css\print.css");
             string result = $"<style rel=\"stylesheet\" type=\"text/css\">{File.ReadAllText(path)}</style>";
 
-            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("\\","/"), @"wwwroot/img/"));
+            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/"), @"wwwroot/img/"));
             return result;
         }
     }
