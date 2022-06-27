@@ -1,4 +1,5 @@
 ﻿using Aluma.API.Helpers.Extensions;
+using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
@@ -21,9 +22,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         Task<string> SetDreadDetail(int fnaId);
     }
 
-    public class ProvidingDreadService : IProvidingDreadService
+    public class ProvidingDreadService : BaseReportData, IProvidingDreadService
     {
-        private readonly IWrapper _repo;
 
         public ProvidingDreadService(IWrapper repo)
         {
@@ -79,22 +79,14 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            try
-            {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+                ClientDto client = await GetClient(fnaId);
+                UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-                ProvidingOnDreadDiseaseDto dreadDisease = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(fnaId);
-                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+                AssumptionsDto assumptions = GetAssumptions(fnaId);
+                ProvidingOnDreadDiseaseDto dreadDisease = GetProvidingOnDreadDisease(client.UserId);
+                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, dreadDisease, economy_variables));
-            }
-            catch (Exception e)
-            {
-                return string.Empty;
-            }
         }
 
         public async Task<string> SetDreadDetail(int fnaId)

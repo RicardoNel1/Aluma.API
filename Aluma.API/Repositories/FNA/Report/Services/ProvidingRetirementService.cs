@@ -18,9 +18,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         Task<ReportServiceResult> SetRetirementDetail(int fnaId);
     }
 
-    public class ProvidingRetirementService : IProvidingRetirementService
+    public class ProvidingRetirementService : BaseReportData, IProvidingRetirementService
     {
-        private readonly IWrapper _repo;
         private readonly IGraphService _graph;
 
         public ProvidingRetirementService(IWrapper repo)
@@ -218,23 +217,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<ReportServiceResult> GetReportData(int fnaId)
         {
-            try
-            {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+                ClientDto client = await GetClient(fnaId);
+                UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-                RetirementPlanningDto retirement = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-                RetirementSummaryDto summaryRetirement = _repo.RetirementSummary.GetRetirementSummary(fnaId);
-                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+                AssumptionsDto assumptions = GetAssumptions(fnaId);
+                RetirementPlanningDto retirement = GetRetirementPlanning(fnaId);
+                RetirementSummaryDto summaryRetirement = GetRetirementSummary(fnaId);
+                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, retirement, summaryRetirement, economy_variables));
-            }
-            catch (Exception)
-            {
-                return new ReportServiceResult();
-            }
         }
 
         public async Task<ReportServiceResult> SetRetirementDetail(int fnaId)

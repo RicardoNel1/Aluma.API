@@ -15,9 +15,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         Task<ReportServiceResult> SetDisabilityDetail(int fnaId);
     }
 
-    public class ProvidingDisabilityService : IProvidingDisabilityService
+    public class ProvidingDisabilityService : BaseReportData, IProvidingDisabilityService
     {
-        private readonly IWrapper _repo;
         private readonly IGraphService _graph;
 
         public ProvidingDisabilityService(IWrapper repo)
@@ -127,23 +126,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<ReportServiceResult> GetReportData(int fnaId)
         {
-            try
-            {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+                ClientDto client = await GetClient(fnaId);
+                UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-                ProvidingOnDisabilityDto disability = _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
-                ProvidingDisabilitySummaryDto summaryDisability = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
-                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+                AssumptionsDto assumptions = GetAssumptions(fnaId);
+                ProvidingOnDisabilityDto disability = GetProvidingOnDisability(fnaId);
+                ProvidingDisabilitySummaryDto summaryDisability = GetProvidingDisabilitySummary(fnaId);
+                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summaryDisability, economy_variables));
-            }
-            catch (Exception ex)
-            {
-                return new ReportServiceResult();
-            }
         }
 
         public async Task<ReportServiceResult> SetDisabilityDetail(int fnaId)

@@ -15,9 +15,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services
         Task<ReportServiceResult> SetDeathDetail(int fnaId);
     }
 
-    public class ProvidingDeathService : IProvidingDeathService
+    public class ProvidingDeathService : BaseReportData, IProvidingDeathService
     {
-        private readonly IWrapper _repo;
         private readonly IGraphService _graph;
 
         public ProvidingDeathService(IWrapper repo)
@@ -35,15 +34,14 @@ namespace Aluma.API.Repositories.FNA.Report.Services
         {
             try
             {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+                ClientDto client = await GetClient(fnaId);
+                UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-                ProvidingOnDeathDto deathDto = _repo.ProvidingOnDeath.GetProvidingOnDeath(fnaId);
-                ProvidingDeathSummaryDto summaryDeath = _repo.ProvidingDeathSummary.GetProvidingDeathSummary(fnaId);
-                AssetSummaryDto assetsSummary = _repo.AssetSummary.GetAssetSummary(fnaId);
-                EconomyVariablesDto economy_variables = _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
+                AssumptionsDto assumptions = GetAssumptions(fnaId);
+                ProvidingOnDeathDto deathDto = GetProvidingOnDeath(fnaId);
+                ProvidingDeathSummaryDto summaryDeath = GetProvidingDeathSummary(fnaId);
+                AssetSummaryDto assetsSummary = GetAssetSummary(fnaId);
+                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, deathDto, summaryDeath, assetsSummary, economy_variables));
             }
