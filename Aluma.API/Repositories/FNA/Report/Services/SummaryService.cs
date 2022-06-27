@@ -18,8 +18,6 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
     public class SummaryService : BaseReportData, ISummaryService
     {
-        private readonly IWrapper _repo;
-
         public SummaryService(IWrapper repo)
         {
             _repo = repo;
@@ -128,7 +126,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 RetirementPlanningDto retirementPlanning = GetRetirementPlanning(fnaId);
                 ProvidingDeathSummaryDto providingDeathSummary = GetProvidingDeathSummary(fnaId);
                 ProvidingDisabilitySummaryDto providingDisabilitySummary = GetProvidingDisabilitySummary(fnaId);
-                ProvidingOnDreadDiseaseDto providingOnDreadDisease = GetProvidingOnDreadDisease(client.UserId);
+                ProvidingOnDreadDiseaseDto providingOnDreadDisease = GetProvidingOnDreadDisease(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insuranceSummary, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
                     providingDisabilitySummary, providingOnDreadDisease, primaryResidence));

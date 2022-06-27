@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
     {
         ProvidingOnDreadDiseaseDto CreateProvidingOnDreadDisease(ProvidingOnDreadDiseaseDto dto);
         bool DoesProvidingOnDreadDiseaseExist(ProvidingOnDreadDiseaseDto dto);
-        ProvidingOnDreadDiseaseDto GetProvidingOnDreadDisease(int clientId);
+        ProvidingOnDreadDiseaseDto GetProvidingOnDreadDisease(int fnaId);
         ProvidingOnDreadDiseaseDto UpdateProvidingOnDreadDisease(ProvidingOnDreadDiseaseDto dto);
 
 
