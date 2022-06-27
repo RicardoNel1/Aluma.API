@@ -21,7 +21,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
                 return _repo.Client.GetClient(new() { Id = clientId });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -36,7 +36,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return await _repo.User.GetUserWithAddress(new UserDto() { Id = userId });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -51,7 +51,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.Assumptions.GetAssumptions(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -66,7 +66,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.ProvidingOnDisability.GetProvidingOnDisability(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -81,7 +81,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -96,7 +96,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.ProvidingOnDeath.GetProvidingOnDeath(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -111,22 +111,22 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.ProvidingDeathSummary.GetProvidingDeathSummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
         }
 
-        public ProvidingOnDreadDiseaseDto GetProvidingOnDreadDisease(int clientId)
+        public ProvidingOnDreadDiseaseDto GetProvidingOnDreadDisease(int fnaId)
         {
-            if (clientId == 0)
+            if (fnaId == 0)
                 return new();
 
             try
             {
-                return _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(clientId);
+                return _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -141,7 +141,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.AssetSummary.GetAssetSummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -156,7 +156,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -171,7 +171,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.RetirementSummary.GetRetirementSummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -186,7 +186,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.EconomyVariablesSummary.GetEconomyVariablesSummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -201,7 +201,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.EstateExpenses.GetEstateExpenses(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -216,7 +216,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -231,7 +231,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.Insurance.GetInsurance(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }
@@ -246,7 +246,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 return _repo.InsuranceSummary.GetInsuranceSummary(fnaId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new();
             }

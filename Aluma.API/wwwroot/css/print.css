@@ -16,6 +16,8 @@ a {
 
 .main-page {
     page-break-before: always;
+    /* page-break-after: always; */
+    /* page-break-inside: always; */
 }
 
 .sub-page-cover {

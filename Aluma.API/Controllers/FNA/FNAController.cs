@@ -71,7 +71,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("get_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport( int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool petirementPlanning = true)
+        public async Task<IActionResult> GetFNAReport( int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Aluma.API.Controllers
                     ProvidingOnDisability = providingOnDisability,
                     ProvidingOnDreadDisease = providingOnDreadDisease,
                     ProvidingOnDeath = providingOnDeath,
-                    RetirementPlanning = petirementPlanning
+                    RetirementPlanning = retirementPlanning
                 };
 
                 var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
