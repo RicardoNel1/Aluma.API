@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Aluma.API.Helpers;
 using FileStorageService;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -22,7 +23,7 @@ namespace Aluma.API.Repositories
         public bool DoesUserExist(UserDto dto);
         public bool DoesUserExist(RegistrationDto dto);
         public UserDto GetUser(UserDto dto);
-        public UserDto GetUserWithAddress(UserDto dto);
+        public Task<UserDto> GetUserWithAddress(UserDto dto);
         public UserDto GetUser(LoginDto dto);
 
         //public string CreateOTP(UserModel user, OtpTypesEnum otpType, Guid applicationID = new Guid());
@@ -152,11 +153,11 @@ namespace Aluma.API.Repositories
             //return null;
         }
 
-        public UserDto GetUserWithAddress(UserDto dto)
+        public async Task<UserDto> GetUserWithAddress(UserDto dto)
         {
             //if (DoesUserExist(dto))
             //{
-            var user = _context.Users.Include(u => u.Address).Where(u => (u.Id == dto.Id)).FirstOrDefault();
+            var user = await _context.Users.Include(u => u.Address).Where(u => (u.Id == dto.Id)).FirstOrDefaultAsync();
             return _mapper.Map<UserDto>(user);
             //}
 

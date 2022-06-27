@@ -1,4 +1,5 @@
 ﻿using Aluma.API.Helpers.Extensions;
+using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
@@ -15,10 +16,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         Task<string> SetSummaryDetail(int fnaId);
     }
 
-    public class SummaryService : ISummaryService
+    public class SummaryService : BaseReportData, ISummaryService
     {
-        private readonly IWrapper _repo;
-
         public SummaryService(IWrapper repo)
         {
             _repo = repo;
@@ -113,40 +112,24 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private async Task<string> GetReportData(int fnaId)
         {
-            try
-            {
-                int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
-                ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUser(new UserDto() { Id = client.UserId });
+                ClientDto client = await GetClient(fnaId);
+                UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = _repo.Assumptions.GetAssumptions(fnaId);
-                AssetSummaryDto assetSummary = _repo.AssetSummary.GetAssetSummary(fnaId);
-                InsuranceSummaryDto insuranceSummary = _repo.InsuranceSummary.GetInsuranceSummary(fnaId);
-                RetirementSummaryDto retirementSummaryDto = _repo.RetirementSummary.GetRetirementSummary(fnaId);
+                AssumptionsDto assumptions = GetAssumptions(fnaId);
+                AssetSummaryDto assetSummary = GetAssetSummary(fnaId);
+                InsuranceSummaryDto insuranceSummary = GetInsuranceSummary(fnaId);
+                RetirementSummaryDto retirementSummaryDto = GetRetirementSummary(fnaId);
 
-                List<InsuranceDto> insurances = _repo.Insurance.GetInsurance(fnaId);
-                PrimaryResidenceDto primaryResidence = _repo.PrimaryResidence.GetPrimaryResidence(fnaId);
-                EstateExpensesDto estateExpenses = _repo.EstateExpenses.GetEstateExpenses(fnaId);
-                RetirementPlanningDto retirementPlanning = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
-                ProvidingDeathSummaryDto providingDeathSummary = _repo.ProvidingDeathSummary.GetProvidingDeathSummary(fnaId);
-                ProvidingDisabilitySummaryDto providingDisabilitySummary = _repo.ProvidingDisabilitySummary.GetProvidingDisabilitySummary(fnaId);
-                ProvidingOnDreadDiseaseDto providingOnDreadDisease = _repo.ProvidingOnDreadDisease.GetProvidingOnDreadDisease(clientId);
-
-                assetSummary = assetSummary == null ? new AssetSummaryDto() : assetSummary;
-                retirementSummaryDto = retirementSummaryDto == null ? new RetirementSummaryDto() : retirementSummaryDto;
-                insurances = insurances == null ? new List<InsuranceDto>() : insurances;
-                retirementPlanning = retirementPlanning == null ? new RetirementPlanningDto() : retirementPlanning;
-                providingDeathSummary = providingDeathSummary == null ? new ProvidingDeathSummaryDto() : providingDeathSummary;
-                providingDisabilitySummary = providingDisabilitySummary == null ? new ProvidingDisabilitySummaryDto() : providingDisabilitySummary;
-                providingOnDreadDisease = providingOnDreadDisease == null ? new ProvidingOnDreadDiseaseDto() : providingOnDreadDisease;
+                List<InsuranceDto> insurances = GetInsurance(fnaId);
+                PrimaryResidenceDto primaryResidence = GetPrimaryResidence(fnaId);
+                EstateExpensesDto estateExpenses = GetEstateExpenses(fnaId);
+                RetirementPlanningDto retirementPlanning = GetRetirementPlanning(fnaId);
+                ProvidingDeathSummaryDto providingDeathSummary = GetProvidingDeathSummary(fnaId);
+                ProvidingDisabilitySummaryDto providingDisabilitySummary = GetProvidingDisabilitySummary(fnaId);
+                ProvidingOnDreadDiseaseDto providingOnDreadDisease = GetProvidingOnDreadDisease(fnaId);
 
                 return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insuranceSummary, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
                     providingDisabilitySummary, providingOnDreadDisease, primaryResidence));
-            }
-            catch (Exception ex)
-            {
-                return string.Empty;
-            }
         }
 
         public async Task<string> SetSummaryDetail(int fnaId)

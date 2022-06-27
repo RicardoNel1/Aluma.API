@@ -39,7 +39,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             {
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(dto.FNAId)).ClientId;
                 ClientDto client = _repo.Client.GetClient(new() { Id = clientId });
-                UserDto user = _repo.User.GetUserWithAddress(new() { Id = client.UserId });
+                UserDto user = await _repo.User.GetUserWithAddress(new() { Id = client.UserId });
                 UserModel userModel = _mapper.Map<UserModel>(user);
 
 
