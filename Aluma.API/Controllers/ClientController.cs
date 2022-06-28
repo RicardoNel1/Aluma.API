@@ -185,6 +185,8 @@ namespace Aluma.API.Controllers
 
                     //Create Client
                     client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
+                    client.MaritalDetails = new();
+                    client.EmploymentDetails = new();
                     client = await _repo.Client.CreateClient(client);
 
                     //Send Verification OTP

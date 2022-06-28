@@ -60,11 +60,11 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Include(a => a.User).Include(a => a.EmploymentDetails).Include(a => a.MaritalDetails).Where(c => c.isDeleted == false).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
-
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -97,11 +97,11 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId)
         {
-            List<ClientModel> clients = _context.Clients.Include(c => c.User).Where(c => c.AdvisorId == advisorId).ToList();
+            List<ClientModel> clients = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.AdvisorId == advisorId).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
-
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -178,9 +178,9 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClientByUserId(int userId)
         {
-            ClientModel client = _context.Clients.Include(x => x.MaritalDetails).Where(c => c.UserId == userId).First();
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
-
+            response.User.MobileNumber = "0" + response.User.MobileNumber;
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
             response = CheckForDisclosures(response);
@@ -248,8 +248,9 @@ namespace Aluma.API.Repositories
             dto.ClientType = "Primary";
             dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);            
+            _context.Clients.Add(client);
             _context.SaveChanges();
+
             dto = _mapper.Map<ClientDto>(client);
 
             await _ms.SendClientWelcomeEmail(client);
