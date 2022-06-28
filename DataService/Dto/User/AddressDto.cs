@@ -26,7 +26,7 @@ namespace DataService.Dto
                 && !string.IsNullOrEmpty(Suburb) && !string.IsNullOrEmpty(City)
                 && !string.IsNullOrEmpty(Country) && !string.IsNullOrEmpty(PostalCode))
             {
-                string result = string.IsNullOrEmpty(UnitNumber) && string.IsNullOrEmpty(ComplexName) ? string.Empty : $"{UnitNumber} {ComplexName}";
+                string result = string.IsNullOrEmpty(UnitNumber) && string.IsNullOrEmpty(ComplexName) ? string.Empty : $"{UnitNumber} {ComplexName}, {Environment.NewLine}";
                 result += $"{StreetNumber} {StreetName}, {Environment.NewLine}";
                 result += $"{Suburb}, {Environment.NewLine}";
                 result += $"{City}, {Environment.NewLine}";
