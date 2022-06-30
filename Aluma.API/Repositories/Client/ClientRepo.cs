@@ -153,7 +153,8 @@ namespace Aluma.API.Repositories
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+            //dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+            dto.User.MobileNumber = dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
