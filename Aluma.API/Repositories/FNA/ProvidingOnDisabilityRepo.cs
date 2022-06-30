@@ -14,7 +14,7 @@ namespace Aluma.API.Repositories
     {
         ProvidingOnDisabilityDto CreateProvidingOnDisability(ProvidingOnDisabilityDto dto);
         bool DoesProvidingOnDisabilityExist(ProvidingOnDisabilityDto dto);
-        ProvidingOnDisabilityDto GetProvidingOnDisability(int clientId);
+        ProvidingOnDisabilityDto GetProvidingOnDisability(int fnaId);
         ProvidingOnDisabilityDto UpdateProvidingOnDisability(ProvidingOnDisabilityDto dto);
 
 

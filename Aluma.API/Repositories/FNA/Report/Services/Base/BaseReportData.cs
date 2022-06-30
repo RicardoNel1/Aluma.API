@@ -22,6 +22,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 int clientId = (await _repo.FNA.GetClientFNAbyFNAId(fnaId)).ClientId;
                 ClientDto result = _repo.Client.GetClient(new() { Id = clientId });
 
+
                 if (result == null)
                     return new();
 

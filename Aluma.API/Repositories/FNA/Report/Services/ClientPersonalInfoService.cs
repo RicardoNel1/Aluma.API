@@ -133,7 +133,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private async Task<string> GetReportData(int fnaId)
         {
             ClientDto client = await GetClient(fnaId);
-            UserDto user = await GetUser(client.Id);
+            UserDto user = await GetUser(client.UserId);
             AssumptionsDto assumptions = GetAssumptions(fnaId);
 
             PersonalDetailReportDto clientInfo = SetReportFieldsClient(client, user, assumptions);

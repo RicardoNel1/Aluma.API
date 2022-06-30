@@ -13,7 +13,7 @@ namespace Aluma.API.Repositories
     {
         ProvidingOnDeathDto CreateProvidingOnDeath(ProvidingOnDeathDto dto);
         bool DoesProvidingOnDeathExist(ProvidingOnDeathDto dto);
-        ProvidingOnDeathDto GetProvidingOnDeath(int clientId);
+        ProvidingOnDeathDto GetProvidingOnDeath(int fnaId);
         ProvidingOnDeathDto UpdateProvidingOnDeath(ProvidingOnDeathDto dto);
 
 
