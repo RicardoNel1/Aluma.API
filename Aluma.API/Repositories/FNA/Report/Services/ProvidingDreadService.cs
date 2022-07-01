@@ -42,6 +42,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalNeeds]", dreadDisease.TotalNeeds);
             result = result.Replace("[descDreadCoverAvailable]", dreadDisease.DescDreadCoverAvailable);
             result = result.Replace("[DreadCoverAvailable]", dreadDisease.DreadCoverAvailable);
+            result = result.Replace("[AvailableCapital]", dreadDisease.AvailableCapital);
             result = result.Replace("[TotalAvailableCapital]", dreadDisease.TotalAvailableCapital);
             result = result.Replace("[DreadDiseaseSurplus]", dreadDisease.TotalDreadDisease >= 0 ? "Surplus" : "Shortfall");
             result = result.Replace("[SurplusOnDread]", dreadDisease.TotalDreadDisease >= 0 ? totalDreadDiseaseSTR : $"({totalDreadDiseaseSTR})");
@@ -58,17 +59,31 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private static ProvidingOnDreadReportDto SetReportFields(ClientDto client, UserDto user,
                                                         AssumptionsDto assumptions,
                                                         ProvidingOnDreadDiseaseDto dreadDisease,
-                                                        EconomyVariablesDto economy_variables)
+                                                        EconomyVariablesDto economy_variables,
+                                                        List<InsuranceDto> insurances)
         {
+
+            double totalNeed = dreadDisease.Needs_CapitalNeeds + dreadDisease.Needs_GrossAnnualSalaryTotal;
+            double capitalAvailable = 0;
+            if (insurances != null && insurances.Count > 0)
+            {
+                foreach (InsuranceDto insurance in insurances)
+                {
+                    capitalAvailable += insurance.DreadDisease;
+                }
+            }
+            double totalCapitalAvailable = dreadDisease.Available_DreadDiseaseAmount + capitalAvailable;
+
             return new ProvidingOnDreadReportDto()
             {
                 CapitalNeeds = dreadDisease.Needs_CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 MultipleGrossAnnualSalary = dreadDisease.Needs_GrossAnnualSalaryTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                TotalNeeds = (dreadDisease.Needs_CapitalNeeds + dreadDisease.Needs_GrossAnnualSalaryTotal).ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                DreadCoverAvailable = dreadDisease.Available_DreadDiseaseAmount.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalNeeds = totalNeed.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 DescDreadCoverAvailable = string.IsNullOrEmpty(dreadDisease.Available_DreadDiseaseDescription) ? string.Empty : dreadDisease.Available_DreadDiseaseDescription.ToString(),
-                TotalAvailableCapital = dreadDisease.Available_DreadDiseaseAmount.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                TotalDreadDisease = dreadDisease.Available_DreadDiseaseAmount - dreadDisease.Needs_CapitalNeeds,
+                DreadCoverAvailable = dreadDisease.Available_DreadDiseaseAmount.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                AvailableCapital = capitalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalAvailableCapital = totalCapitalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalDreadDisease = totalCapitalAvailable - totalNeed,
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
                 CurrentNetIncome = assumptions.CurrentNetIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 GrossMonthlyIncome = assumptions.CurrentGrossIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
@@ -86,9 +101,10 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             AssumptionsDto assumptions = GetAssumptions(fnaId);
             ProvidingOnDreadDiseaseDto dreadDisease = GetProvidingOnDreadDisease(fnaId);
+            List<InsuranceDto> insurances = GetInsurance(fnaId);
             EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
-            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, dreadDisease, economy_variables));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, dreadDisease, economy_variables, insurances));
         }
 
         public async Task<string> SetDreadDetail(int fnaId)
