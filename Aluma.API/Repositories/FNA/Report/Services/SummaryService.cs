@@ -52,18 +52,13 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         }
 
         private static SummaryReportDto SetReportFields(
-            RetirementPlanningDto retirementPlanning, AssetSummaryDto assetSummary, EstateExpensesDto estateExpenses, InsuranceSummaryDto insuranceSummary, List<InsuranceDto> insurances, AssumptionsDto assumptions,
+            RetirementPlanningDto retirementPlanning, AssetSummaryDto assetSummary, EstateExpensesDto estateExpenses, List<InsuranceDto> insurances, AssumptionsDto assumptions,
             RetirementSummaryDto retirementSummaryDto, ProvidingDeathSummaryDto providingDeathSummary, ProvidingDisabilitySummaryDto providingDisabilitySummary,
             ProvidingOnDreadDiseaseDto providingOnDreadDisease, PrimaryResidenceDto primaryResidence)
         {
             double tottalInsurance = 0;
-            if (insuranceSummary != null)
+            if (insurances != null && insurances.Count > 0)
             {
-                tottalInsurance = insuranceSummary.TotalToSpouse + insuranceSummary.TotalToThirdParty + insuranceSummary.TotalToLiquidity;
-            }
-            else if (insurances != null && insurances.Count > 0)
-            {
-                tottalInsurance = 0;
                 foreach (InsuranceDto insurance in insurances)
                 {
                     tottalInsurance += insurance.LifeCover;
@@ -85,7 +80,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             double totalDisability = providingDisabilitySummary.TotalAvailable - providingDisabilitySummary.TotalNeeds;
             double totalDread = providingOnDreadDisease.TotalDreadDisease;
 
-            return new()
+            SummaryReportDto summaryReportDto = new()
             {
                 TotalAssets = estateTotalAssets < 0 ? $"({(estateTotalAssets * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : estateTotalAssets.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 TotalLiquidAssets = estateTotalLiquidAssets < 0 ? $"({(estateTotalLiquidAssets * -1).ToString("C", CultureInfo.CreateSpecificCulture("en - za"))})" : estateTotalLiquidAssets.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
@@ -96,7 +91,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
                 TotalRetirement = totalRetirement < 0 ? $"({(totalRetirement * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalRetirement.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({(retirementSummaryDto.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : retirementSummaryDto.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
-                EscPercentage = retirementPlanning.SavingsEscalation.ToString() ?? string.Empty,
+                EscPercentage = String.IsNullOrEmpty(retirementPlanning.SavingsEscalation.ToString()) ? $"{retirementPlanning.SavingsEscalation.ToString()} %" : "0 %",
 
                 ExistingRetirementFund = totalRetirementFunds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 YearsToRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
@@ -108,6 +103,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 DreadDiseaseLabel = totalDread < 0 ? "Shortfall" : "Surplus",
                 TotalDreadDisease = totalDread < 0 ? $"({(totalDread * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalDread.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
             };
+
+            return summaryReportDto;
         }
 
         private async Task<string> GetReportData(int fnaId)
@@ -117,7 +114,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
                 AssumptionsDto assumptions = GetAssumptions(fnaId);
                 AssetSummaryDto assetSummary = GetAssetSummary(fnaId);
-                InsuranceSummaryDto insuranceSummary = GetInsuranceSummary(fnaId);
+                //InsuranceSummaryDto insuranceSummary = GetInsuranceSummary(fnaId);
                 RetirementSummaryDto retirementSummaryDto = GetRetirementSummary(fnaId);
 
                 List<InsuranceDto> insurances = GetInsurance(fnaId);
@@ -128,7 +125,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 ProvidingDisabilitySummaryDto providingDisabilitySummary = GetProvidingDisabilitySummary(fnaId);
                 ProvidingOnDreadDiseaseDto providingOnDreadDisease = GetProvidingOnDreadDisease(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insuranceSummary, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
+                return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
                     providingDisabilitySummary, providingOnDreadDisease, primaryResidence));
         }
 
