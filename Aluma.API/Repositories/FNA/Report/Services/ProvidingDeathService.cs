@@ -121,7 +121,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities; //is this correct? JS
             double capitalSustainableIncome = Math.Round(summaryDeath.TotalAvailable + (summaryDeath.TotalAvailable * economy_variables.InvestmentReturnRate / 100));
 
-            return new ProvidingOnDeathReportDto()
+            ProvidingOnDeathReportDto providingOnDeathReportDto = new()
             {
                 AvailableCapital = available < 0 ? $"({(available * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : available.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
@@ -167,6 +167,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                 }
             };
 
+            return providingOnDeathReportDto;
         }
 
         private static List<string> SetIncomeGraphData(ProvidingOnDeathDto deathDto)
