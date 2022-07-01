@@ -22,15 +22,20 @@ namespace Aluma.API.Controllers
         [HttpGet, AllowAnonymous]
         public IActionResult GetClient(int clientId)
         {
+            ClientDto dto = new();
             try
             {
-                ClientDto client = _repo.Client.GetClient(new ClientDto() { Id = clientId });
+                dto = _repo.Client.GetClient(new ClientDto() { Id = clientId });
 
-                return Ok(client);
+                dto.Status = "Success";
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                dto.Status = "Failure";
+                dto.Message = e.Message;
+                return StatusCode(500, dto);
             }
         }
 
@@ -87,29 +92,48 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPut, AllowAnonymous]
-        public IActionResult UpdateClient(ClientDto dto)
+        public async Task<IActionResult> UpdateClient(ClientDto dto)
         {
             try
             {
                 //var claims = _repo.JwtService.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
+                UserDto user = new();
                 bool clientExist = _repo.Client.DoesClientExist(dto);
                 bool idExists = _repo.Client.DoesIDExist(dto);
-                if (!clientExist)
-                {
-                    return BadRequest("Client Does Not Exist");
-                }
-                else if(idExists)
+                if (idExists)
                 {
                     dto.Status = "Failure";
                     dto.Message = "Invalid-RSAID";
                     return StatusCode(405, dto);
                 }
+                else if (!clientExist)
+                {
+
+                    //RegistrationDto registerDto = new RegistrationDto
+                    //{
+                    //    FirstName = dto.User.FirstName,
+                    //    LastName = dto.User.LastName,
+                    //    Email = dto.User.Email,
+                    //    MobileNumber = dto.User.MobileNumber,
+                    //};
+
+                    ////Create User
+                    //user = _repo.User.CreateClientUser(registerDto);
+
+                    //Create Client
+                    //dto.UserId = user.Id;
+                   
+                    dto = await _repo.Client.CreateClient(dto);
+
+                    dto.Status = "Success";
+                    return Ok(dto);
+                }
                 else
                 {
 
                     _repo.Client.UpdateClient(dto);
-                    dto.Status = "Success";                    
+                    dto.Status = "Success";
                 }
                 return Ok(dto);
             }
@@ -141,7 +165,7 @@ namespace Aluma.API.Controllers
         [HttpPost("register"), AllowAnonymous]
         public async Task<IActionResult> RegisterClient(RegistrationDto dto)
         {
-            AuthResponseDto response = new AuthResponseDto();
+            AuthResponseDto response = new();
             UserDto user = null;
             ClientDto client = null;
 
@@ -161,6 +185,8 @@ namespace Aluma.API.Controllers
 
                     //Create Client
                     client = new ClientDto() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
+                    client.MaritalDetails = new();
+                    client.EmploymentDetails = new();
                     client = await _repo.Client.CreateClient(client);
 
                     //Send Verification OTP

@@ -36,7 +36,7 @@ namespace Aluma.API.Controllers
 
                         byte[] bytes = _repo.DocumentHelper.GetDocumentData(model.URL, dto.DocumentName);
 
-                        UserDocumentDto response = new UserDocumentDto()
+                        UserDocumentDto response = new()
                         {
                             Id = model.Id,
                             DocumentName = model.Name,
@@ -56,7 +56,7 @@ namespace Aluma.API.Controllers
                         ApplicationDocumentModel model = document.First();
                         byte[] bytes = _repo.DocumentHelper.GetDocumentData(model.URL, dto.DocumentName);
 
-                        ApplicationDocumentDto response = new ApplicationDocumentDto()
+                        ApplicationDocumentDto response = new()
                         {
                             Id = model.Id,
                             DocumentName = model.Name,

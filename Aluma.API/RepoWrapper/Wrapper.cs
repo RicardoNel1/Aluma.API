@@ -24,7 +24,6 @@ namespace Aluma.API.RepoWrapper
 
         //private IDividendTaxRepo _dividendTax;
         private IFspMandateRepo _fspMandate;
-        private IFNARepo _fna;
 
         private IIRSW8Repo _irsw8;
         private IIRSW9Repo _irsw9;
@@ -32,6 +31,7 @@ namespace Aluma.API.RepoWrapper
         private IRecordOfAdviceRepo _recordOfAdvice;
 
 
+        private ILeadRepo _lead;
         private IBankDetailsRepo _bankDetails;
         private ITaxResidencyRepo _taxResidency;
         private IConsumerProtectionRepo _consumerProtection;
@@ -40,17 +40,39 @@ namespace Aluma.API.RepoWrapper
         private IRiskProfileRepo _riskProfile;
 
         private IDisclosureRepo _disclosures;
+        private IClientPortfolioRepo _clientPortfolio;
 
         private IProductRepo _product;
+
+        private IFNARepo _fna;
         private IPrimaryResidenceRepo _primaryResidence;
         private IAssetsAttractingCGTRepo _assetsAttractingCGT;
         private IAssetsExemptFromCGTRepo _assetsExemptFromCGT;
+        private IInvestmentsRepo _investments;
         private ILiquidAssetsRepo _liquidAssets;
         private IInsuranceRepo _insurance;
         private ILiabilitiesRepo _liabilities;
         private IEstateExpensesRepo _estateExpenses;
+        private IEstateDutiesRepo _estateDuties;
+        private ICapitalGainsTaxRepo _capitalGainsTax;
         private IRetirementPensionFundsRepo _retirementPensionFunds;
         private IRetirementPreservationFundsRepo _retirementPreservationFunds;
+        private IAccrualRepo _accrual;
+        private IRetirementPlanningRepo _retirementPlanning;
+        private IProvidingOnDeathRepo _providingOnDeath;
+        private IProvidingOnDreadDiseaseRepo _providingOnDreadDisease;
+        private IProvidingOnDisabilityRepo _providingOnDisability;
+        private IAssumptionsRepo _assumptions;
+        private IAdministrationCostsRepo _administrationCosts;
+        private ITaxLumpsumRepo _taxLumpsum;
+
+        private IAssetSummaryRepo _assetSummary;
+        private IInsuranceSummaryRepo _insuranceSummary;
+        private IProvidingDeathSummaryRepo _providingDeathSummary;
+        private IProvidingDisabilitySummaryRepo _providingDisabilitySummary;
+        private IRetirementSummaryRepo _retirementSummary;
+        private IEconomyVariablesSummaryRepo _economyVariablesSummary;
+
 
         private IFIRepo _fi;
         private IPEFRepo _pef;
@@ -68,7 +90,11 @@ namespace Aluma.API.RepoWrapper
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
 
+        // Short-term Insurance
+        private IShortTermInsuranceRepo _shortTermInsurance;
 
+        // Medical Aid
+        private IMedicalAidRepo _medicalAid;
 
         private IStringHasher _hasher;
 
@@ -111,11 +137,11 @@ namespace Aluma.API.RepoWrapper
             get { return _fspMandate == null ? new FspMandateRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fspMandate; }
         }
 
-        public IFNARepo FNA
-        {
-            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
-        }
 
+        public ILeadRepo Leads
+        {
+            get { return _lead == null ? new LeadRepo(_dbContext, _host, _config, _mapper) : _lead; }
+        }
         public IIRSW8Repo IRSW8
         {
             get { return _irsw8 == null ? new IRSW8Repo(_dbContext, _host, _config, _mapper) : _irsw8; }
@@ -171,6 +197,11 @@ namespace Aluma.API.RepoWrapper
             get { return _disclosures == null ? new DisclosureRepo(_dbContext, _host, _config, _mapper, _fileStorage, _userDocuments) : _disclosures; }
         }
 
+        public IClientPortfolioRepo ClientPortfolio
+        {
+            get { return _clientPortfolio == null ? new ClientPortfolioRepo(_dbContext, _host, _config, _mapper) : _clientPortfolio; }
+        }
+
         //Product
         public IProductRepo ProductRepo
         {
@@ -178,6 +209,10 @@ namespace Aluma.API.RepoWrapper
         }
 
         //FNA
+        public IFNARepo FNA
+        {
+            get { return _fna == null ? new FNARepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fna; }
+        }
         public IPrimaryResidenceRepo PrimaryResidence
         {
             get { return _primaryResidence == null ? new PrimaryResidenceRepo(_dbContext, _host, _config, _mapper) : _primaryResidence; }
@@ -190,6 +225,10 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _assetsExemptFromCGT == null ? new AssetsExemptFromCGTRepo(_dbContext, _host, _config, _mapper) : _assetsExemptFromCGT; }
         }
+        public IInvestmentsRepo Investments
+        {
+            get { return _investments == null ? new InvestmentsRepo(_dbContext, _host, _config, _mapper) : _investments; }
+        }
         public ILiquidAssetsRepo LiquidAssets
         {
             get { return _liquidAssets == null ? new LiquidAssetsRepo(_dbContext, _host, _config, _mapper) : _liquidAssets; }
@@ -197,7 +236,7 @@ namespace Aluma.API.RepoWrapper
 
         public ILiabilitiesRepo Liabilities
         {
-            get { return _liabilities== null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
+            get { return _liabilities == null ? new LiabilitiesRepo(_dbContext, _host, _config, _mapper) : _liabilities; }
         }
 
         public IInsuranceRepo Insurance
@@ -210,6 +249,16 @@ namespace Aluma.API.RepoWrapper
             get { return _estateExpenses == null ? new EstateExpensesRepo(_dbContext, _host, _config, _mapper) : _estateExpenses; }
         }
 
+        public IEstateDutiesRepo EstateDuties
+        {
+            get { return _estateDuties == null ? new EstateDutyRepo(_dbContext, _host, _config, _mapper) : _estateDuties; }
+        }
+
+        public IAdministrationCostsRepo AdministrationCosts
+        {
+            get { return _administrationCosts == null ? new AdministrationCostsRepo(_dbContext, _host, _config, _mapper) : _administrationCosts; }
+        }
+
         public IRetirementPensionFundsRepo RetirementPensionFunds
         {
             get { return _retirementPensionFunds == null ? new RetirementPensionFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPensionFunds; }
@@ -220,9 +269,84 @@ namespace Aluma.API.RepoWrapper
             get { return _retirementPreservationFunds == null ? new RetirementPreservationFundsRepo(_dbContext, _host, _config, _mapper) : _retirementPreservationFunds; }
         }
 
+        public IRetirementPlanningRepo RetirementPlanning
+        {
+            get { return _retirementPlanning == null ? new RetirementPlanningRepo(_dbContext, _host, _config, _mapper) : _retirementPlanning; }
+        }
+
+        public IProvidingOnDeathRepo ProvidingOnDeath
+        {
+            get { return _providingOnDeath == null ? new ProvidingOnDeathRepo(_dbContext, _host, _config, _mapper) : _providingOnDeath; }
+        }
+
+        public IProvidingOnDreadDiseaseRepo ProvidingOnDreadDisease
+        {
+            get { return _providingOnDreadDisease == null ? new ProvidingOnDreadDiseaseRepo(_dbContext, _host, _config, _mapper) : _providingOnDreadDisease; }
+        }
+
+        public IProvidingOnDisabilityRepo ProvidingOnDisability
+        {
+            get { return _providingOnDisability == null ? new ProvidingOnDisabilityRepo(_dbContext, _host, _config, _mapper) : _providingOnDisability; }
+        }
+
+        public IAssumptionsRepo Assumptions
+        {
+            get { return _assumptions == null ? new AssumptionsRepo(_dbContext, _host, _config, _mapper) : _assumptions; }
+        }
+
+        public ICapitalGainsTaxRepo CapitalGainsTax
+        {
+            get { return _capitalGainsTax == null ? new CapitalGainsTaxRepo(_dbContext, _host, _config, _mapper) : _capitalGainsTax; }
+        }
+
+        public ITaxLumpsumRepo TaxLumpsum
+        {
+            get { return _taxLumpsum == null ? new TaxLumpsumRepo(_dbContext, _host, _config, _mapper) : _taxLumpsum; }
+        }
+
+        //FNA - SUMMARY
+        public IAssetSummaryRepo AssetSummary
+        {
+            get { return _assetSummary == null ? new AssetSummaryRepo(_dbContext, _host, _config, _mapper) : _assetSummary; }
+        }
+        public IInsuranceSummaryRepo InsuranceSummary
+        {
+            get { return _insuranceSummary == null ? new InsuranceSummaryRepo(_dbContext, _host, _config, _mapper) : _insuranceSummary; }
+        }
+        public IProvidingDeathSummaryRepo ProvidingDeathSummary
+        {
+            get { return _providingDeathSummary == null ? new ProvidingDeathSummaryRepo(_dbContext, _host, _config, _mapper) : _providingDeathSummary; }
+        }
+        public IProvidingDisabilitySummaryRepo ProvidingDisabilitySummary
+        {
+            get { return _providingDisabilitySummary == null ? new ProvidingDisabilitySummaryRepo(_dbContext, _host, _config, _mapper) : _providingDisabilitySummary; }
+        }
+        public IRetirementSummaryRepo RetirementSummary
+        {
+            get { return _retirementSummary == null ? new RetirementSummaryRepo(_dbContext, _host, _config, _mapper) : _retirementSummary; }
+        }
+        public IEconomyVariablesSummaryRepo EconomyVariablesSummary
+        {
+            get { return _economyVariablesSummary == null ? new EconomyVariablesSummaryRepo(_dbContext, _host, _config, _mapper) : _economyVariablesSummary; }
+        }
+
+        // Short-term Insurance
+        public IShortTermInsuranceRepo ShortTermInsurance
+        {
+            get { return _shortTermInsurance == null ? new ShortTermInsuranceRepo(_dbContext, _host, _config, _mapper) : _shortTermInsurance; }
+        }
+
+        // Medical Aid
+        public IMedicalAidRepo MedicalAid
+        {
+            get { return _medicalAid == null ? new MedicalAidRepo(_dbContext, _host, _config, _mapper) : _medicalAid; }
+        }
+
+
+        //Products and Documents
         public IFIRepo FI
         {
-            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper,_fileStorage) : _fi; }
+            get { return _fi == null ? new FIRepo(_dbContext, _host, _config, _mapper, _fileStorage) : _fi; }
         }
         public IPEFRepo PEF
         {
@@ -230,11 +354,15 @@ namespace Aluma.API.RepoWrapper
         }
         public IDocumentHelper DocumentHelper
         {
-            get { return _documentHelper == null ? new DocumentHelper(_dbContext,_config,_fileStorage,_host) : _documentHelper; }
+            get { return _documentHelper == null ? new DocumentHelper(_dbContext, _config, _fileStorage, _host) : _documentHelper; }
         }
         public IDocumentSignHelper SignHelper
         {
-            get { return _signHelper == null ? new DocumentSignHelper(_dbContext,_config,_fileStorage,_host) : _signHelper; }
+            get { return _signHelper == null ? new DocumentSignHelper(_dbContext, _config, _fileStorage, _host) : _signHelper; }
+        }
+        public IAccrualRepo Accrual
+        {
+            get { return _accrual == null ? new AccrualRepo(_dbContext, _host, _config, _mapper) : _accrual; }
         }
 
         //User
@@ -288,5 +416,7 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _hasher == null ? new StringHasherRepo() : _hasher; }
         }
+
+
     }
 }

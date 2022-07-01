@@ -36,6 +36,8 @@ namespace Aluma.API.Repositories
         void GenerateClientDocuments(int clientId);
         void UpdateClientPassports(List<PassportDto> dto);
         bool DoesIDExist(ClientDto dto);
+
+        ClientDto CheckForFNA(ClientDto client);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -58,11 +60,11 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClients()
         {
-            List<ClientModel> clients = _context.Clients.Include(a => a.User).Where(c => c.isDeleted == false).ToList();
+            List<ClientModel> clients = _context.Clients.Include(a => a.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.isDeleted == false).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
-            foreach (var dto in response)
+            foreach (ClientDto dto in response)
             {
-
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -79,6 +81,14 @@ namespace Aluma.API.Repositories
                 }
 
                 dto.hasDisclosure = discExists.Any();
+
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
+                if (fnaExists.Any())
+                {
+                    dto.FNADate = fnaExists.First().Created;
+                }
+
+                dto.hasFNA = fnaExists.Any();
             }
 
 
@@ -87,11 +97,11 @@ namespace Aluma.API.Repositories
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId)
         {
-            List<ClientModel> clients = _context.Clients.Include(c => c.User).Where(c => c.AdvisorId == advisorId).ToList();
+            List<ClientModel> clients = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.AdvisorId == advisorId).ToList();
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
-
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -108,6 +118,14 @@ namespace Aluma.API.Repositories
                 }
 
                 dto.hasDisclosure = discExists.Any();
+
+                var fnaExists = _context.clientFNA.Where(d => d.ClientId == dto.Id);
+                if (fnaExists.Any())
+                {
+                    dto.FNADate = fnaExists.First().Created;
+                }
+
+                dto.hasFNA = fnaExists.Any();
             }
             return response;
         }
@@ -132,10 +150,11 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClient(ClientDto dto)
         {
-            ClientModel client = _context.Clients.Include(c => c.User).Where(c => c.Id == dto.Id).First();
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+            //dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+            dto.User.MobileNumber = dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -160,27 +179,51 @@ namespace Aluma.API.Repositories
 
         public ClientDto GetClientByUserId(int userId)
         {
-            ClientModel client = _context.Clients.Where(c => c.UserId == userId).First();
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
-
+            response.User.MobileNumber = "0" + response.User.MobileNumber;
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
-            var discExists = _context.Disclosures.Where(d => d.ClientId == response.Id);
-            if (discExists.Any())
-            {
-                response.DisclosureDate = discExists.First().Created;
-            }
-
-
-            response.hasDisclosure = discExists.Any();
+            response = CheckForDisclosures(response);
+            response = CheckForFNA(response);
 
             return response;
+        }
+
+        private ClientDto CheckForDisclosures(ClientDto client)
+        {
+
+            var disclosureExists = _context.Disclosures.Where(d => d.ClientId == client.Id);
+
+            if (disclosureExists.Any())
+            {
+                client.DisclosureDate = disclosureExists.First().Created;
+            }
+
+            client.hasDisclosure = disclosureExists.Any();
+
+            return client;
+        }
+
+        public ClientDto CheckForFNA(ClientDto client)
+        {
+
+            var fnaExists = _context.clientFNA.Where(d => d.ClientId == client.Id);
+
+            if (fnaExists.Any())
+            {
+                client.FNADate = fnaExists.First().Created;
+            }
+
+            client.hasFNA = fnaExists.Any();
+
+            return client;
         }
 
         public bool DoesClientExist(RegistrationDto dto)
         {
             bool clientExists = false;
-            UserRepo ur = new UserRepo(_context, _host, _config, _fileStorage, _mapper);
+            UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
             bool userExists = ur.DoesUserExist(dto);
 
             if (userExists)
@@ -203,10 +246,12 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
+            dto.ClientType = "Primary";
+            dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            
             _context.Clients.Add(client);
             _context.SaveChanges();
+
             dto = _mapper.Map<ClientDto>(client);
 
             await _ms.SendClientWelcomeEmail(client);
@@ -299,21 +344,21 @@ namespace Aluma.API.Repositories
 
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
-            FNAModel fna = _context.FNA.SingleOrDefault(r => r.ClientId == client.Id);
+            ClientFNAModel fna = _context.clientFNA.SingleOrDefault(r => r.ClientId == client.Id);
 
             
 
             //Risk Profile
-            RiskProfileRepo riskRepo = new RiskProfileRepo(_context, _host, _config, _mapper, _fileStorage);
+            RiskProfileRepo riskRepo = new(_context, _host, _config, _mapper, _fileStorage);
             riskRepo.GenerateRiskProfile(client, advisor, risk);
 
             //FSP Mandate
-            FspMandateRepo fspRepo = new FspMandateRepo(_context, _host, _config, _mapper, _fileStorage);
+            FspMandateRepo fspRepo = new(_context, _host, _config, _mapper, _fileStorage);
             fspRepo.GenerateMandate(client, advisor, fsp);
 
             //FNA
-            FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
-            fnaRepo.GenerateFNA(client, advisor, fna);
+            //FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
+            //fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 
@@ -333,9 +378,16 @@ namespace Aluma.API.Repositories
         {
             try
             {
-                bool idExists = false;                
+                bool idExists = false;
 
-                idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                if (dto.User.Id != 0) {
+
+                    idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                }
+                else
+                {
+                    idExists = _context.Users.Where(a => a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                }
 
                 return idExists;
             }

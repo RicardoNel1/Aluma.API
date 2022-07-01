@@ -14,7 +14,7 @@ namespace Aluma.API.Helpers.Extensions
         {
             var jwtSettings = config.GetSection("JwtSettings").Get<JwtSettingsDto>();
 
-            var key = Encoding.ASCII.GetBytes(jwtSettings.Secret.ToString());
+            var key = Encoding.UTF8.GetBytes(jwtSettings.Secret.ToString());
 
             services.AddAuthentication(x =>
             {
@@ -30,12 +30,10 @@ namespace Aluma.API.Helpers.Extensions
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    RequireExpirationTime = false,
+                    RequireExpirationTime = true,
                     ValidateLifetime = true,
-
                     //ValidIssuer = jwtSettings.Issuer,
                     //ValidAudience = jwtSettings.Audience
                 };

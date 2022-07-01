@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ namespace Aluma.API.Repositories
 {
     public interface ILiabilitiesRepo : IRepoBase<LiabilitiesModel>
     {
-        List<LiabilitiesDto> GetLiabilities(int clientId);
-        LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray);
-
+        List<LiabilitiesDto> GetLiabilities(int fnaId);
+        List<LiabilitiesDto> UpdateLiabilities(List<LiabilitiesDto> dtoArray);
+        string DeleteLiabilities(int Id);
     }
 
     public class LiabilitiesRepo : RepoBase<LiabilitiesModel>, ILiabilitiesRepo
@@ -34,17 +35,17 @@ namespace Aluma.API.Repositories
         }
                 
 
-        public List<LiabilitiesDto> GetLiabilities(int clientId)
+        public List<LiabilitiesDto> GetLiabilities(int fnaId)
         {
-            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.ClientId == clientId).ToList();
-            List<LiabilitiesDto> liabilities = new List<LiabilitiesDto>();
+            ICollection<LiabilitiesModel> data = _context.Liabilities.Where(c => c.FNAId == fnaId).ToList();
+            List<LiabilitiesDto> liabilities = new();
 
             foreach (var item in data)
             {
-                LiabilitiesDto liability = new LiabilitiesDto();
+                LiabilitiesDto liability = new();
 
                 liability.Id = item.Id;
-                liability.ClientId = item.ClientId;
+                liability.FNAId = item.FNAId;
                 liability.Description = item.Description;
                 liability.Value = item.Value;
 
@@ -55,43 +56,77 @@ namespace Aluma.API.Repositories
             return liabilities;
         }
 
-        public LiabilitiesDto UpdateLiabilities(LiabilitiesDto[] dtoArray)
+        public List<LiabilitiesDto> UpdateLiabilities(List<LiabilitiesDto> dtoArray)
         {
-            
-            foreach (var item in dtoArray)
+
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.Liabilities.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    LiabilitiesModel updateItem = _context.Liabilities.Where(a => a.Id == item.Id).FirstOrDefault();
-                   
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<LiabilitiesModel>(asset);
 
-                    _context.Liabilities.Update(updateItem);
+                        if (_context.Liabilities.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Asset Liability Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.Liabilities.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<LiabilitiesDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Asset Liability Created";
+                            }
+                        }
 
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    LiabilitiesModel newItem = new LiabilitiesModel();
-
-                    newItem.ClientId = item.ClientId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-
-                    _context.Liabilities.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
             }
 
-            _context.SaveChanges();
-            return null;
+            return dtoArray;
 
         }
 
+        public string DeleteLiabilities(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
+                    LiabilitiesModel item = _context.Liabilities.Where(a => a.Id == Id).First();
+
+                    _context.Liabilities.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Liability Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+        }
 
     }
 }

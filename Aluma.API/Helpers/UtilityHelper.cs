@@ -9,7 +9,7 @@ namespace Aluma.API.Helpers
 {
     public class UtilityHelper
     {
-        public Dictionary<string, int> BanksDictionary = new Dictionary<string, int>()
+        public Dictionary<string, int> BanksDictionary = new()
                 {
                     {"FNB",250655},
                     {"NEDBANK",198765},
@@ -25,7 +25,7 @@ namespace Aluma.API.Helpers
                     {"TYMEBANK",678910},
                 };
 
-        public Dictionary<string, string> AccountTypes = new Dictionary<string, string>()
+        public Dictionary<string, string> AccountTypes = new()
                 {
                     {"00","Unknown"},
                     {"01","Current / Cheque Account"},
@@ -55,11 +55,11 @@ namespace Aluma.API.Helpers
 
                 ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
 
-                using (MemoryStream memoryStream = new MemoryStream())
+                using (MemoryStream memoryStream = new())
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    using (CryptoStream cryptoStream = new((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
                     {
-                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                        using (StreamWriter streamWriter = new((Stream)cryptoStream))
                         {
                             streamWriter.Write(plainText);
                         }
@@ -83,11 +83,11 @@ namespace Aluma.API.Helpers
                 aes.IV = iv;
                 ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
 
-                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (MemoryStream memoryStream = new(buffer))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    using (CryptoStream cryptoStream = new((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
                     {
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        using (StreamReader streamReader = new((Stream)cryptoStream))
                         {
                             return streamReader.ReadToEnd();
                         }

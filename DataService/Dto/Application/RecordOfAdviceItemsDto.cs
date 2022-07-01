@@ -11,5 +11,6 @@
         public double RecommendedRecurringPremium { get; set; }
         public double AcceptedRecurringPremium { get; set; }
         public string DeviationReason { get; set; }
+        public int CapitalProtection { get; set; }
     }
 }

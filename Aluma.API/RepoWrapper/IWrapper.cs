@@ -19,7 +19,6 @@ namespace Aluma.API.RepoWrapper
 
         //IDividendTaxRepo DividendTax { get; }
         IFspMandateRepo FSPMandate { get; }
-        IFNARepo FNA { get; }
 
         IFIRepo FI { get; }
         IPEFRepo PEF { get; }
@@ -32,44 +31,71 @@ namespace Aluma.API.RepoWrapper
         IRecordOfAdviceRepo RecordOfAdvice { get; }
 
         //Client
+        ILeadRepo Leads { get; }
         IClientRepo Client { get; }
         IBankDetailsRepo BankDetails { get; }
         IKYCDataRepo KycData { get; }
         IRiskProfileRepo RiskProfile { get; }
         ITaxResidencyRepo TaxResidency { get; }
         IConsumerProtectionRepo ConsumerProtection { get; }
+        IClientPortfolioRepo ClientPortfolio { get; }
 
         //Product
         IProductRepo ProductRepo { get; }
 
         //FNA
+        IFNARepo FNA { get; }
         IPrimaryResidenceRepo PrimaryResidence { get; }
         IAssetsAttractingCGTRepo AssetsAttractingCGT { get; }
         IAssetsExemptFromCGTRepo AssetsExemptFromCGT { get; }
+        IInvestmentsRepo Investments { get; }
         ILiquidAssetsRepo LiquidAssets { get; }
         IInsuranceRepo Insurance { get; }
         ILiabilitiesRepo Liabilities { get; }
         IEstateExpensesRepo EstateExpenses { get; }
         IRetirementPensionFundsRepo RetirementPensionFunds { get; }
         IRetirementPreservationFundsRepo RetirementPreservationFunds { get; }
+        IAccrualRepo Accrual { get; }
+        IRetirementPlanningRepo RetirementPlanning { get; }
+        IProvidingOnDeathRepo ProvidingOnDeath { get; }
+        IProvidingOnDreadDiseaseRepo ProvidingOnDreadDisease { get; }
+        IProvidingOnDisabilityRepo ProvidingOnDisability { get; }
+
+        IAdministrationCostsRepo AdministrationCosts { get; }
+        IEstateDutiesRepo EstateDuties { get; }
+        ICapitalGainsTaxRepo CapitalGainsTax { get; }
+        IAssumptionsRepo Assumptions { get; }
+        ITaxLumpsumRepo TaxLumpsum { get; }
+
+        //FNA - SUMMARY
+        IAssetSummaryRepo AssetSummary { get; }
+        IInsuranceSummaryRepo InsuranceSummary { get; }
+        IProvidingDeathSummaryRepo ProvidingDeathSummary { get; }
+        IProvidingDisabilitySummaryRepo ProvidingDisabilitySummary { get; }
+        IRetirementSummaryRepo RetirementSummary{ get; }
+        IEconomyVariablesSummaryRepo EconomyVariablesSummary { get; }
 
         //Shared
         IDisclosureRepo Disclosures { get; }
 
         //User
         IOtpRepo Otp { get; }
-
         IUserRepo User { get; }
         IUserDocumentsRepo UserDocuments { get; }
 
         // Third Party Services
         ISmsRepo SmsRepo { get; }
-
         IJwtRepo JwtRepo { get; }
         IKycFactoryRepo KycRepo { get; }
         IBankValidationServiceRepo BankValidationRepo { get; }
         ISignatureRepo SignatureRepo { get; }
         IFileStorageRepo FileStorageRepo { get; }
         IStringHasher StrHasher { get; }
+
+        // Short-term Insurance
+        IShortTermInsuranceRepo ShortTermInsurance { get; }
+
+        // Medical Aid
+        IMedicalAidRepo MedicalAid { get; }
     }
 }

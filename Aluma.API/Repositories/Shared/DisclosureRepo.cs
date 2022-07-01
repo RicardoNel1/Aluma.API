@@ -323,14 +323,14 @@ namespace Aluma.API.Repositories
             //}
 
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.DisclosureLetter, d, client.User);
         }
 
         public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
-            Dictionary<string, string> d = new Dictionary<string, string>();
+            Dictionary<string, string> d = new();
 
             d["fullName"] = $"{client.User.FirstName} {client.User.LastName}";
             d["idNumber"] = client.User.RSAIdNumber;
@@ -354,7 +354,7 @@ namespace Aluma.API.Repositories
             else
                 d["smokerFalse"] = "x";
 
-            if (client.LeadType == "Own")
+            if (client.Lead.LeadType == LeadTypesEnum.Direct)
                 d["leadType"] = "x";
 
             if (client.Education != null)
@@ -362,7 +362,7 @@ namespace Aluma.API.Repositories
                 d[$"education_{client.Education}"] = "x";
             }
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.ClientConsent, d, client.User);
         }

@@ -50,7 +50,7 @@ namespace FileStorageService
             ShareFileClient file = directory.GetFileClient(dto.FileName);
 
             // Upload file
-            using MemoryStream stream = new MemoryStream(dto.FileBytes, 0, dto.FileBytes.Length);
+            using MemoryStream stream = new(dto.FileBytes, 0, dto.FileBytes.Length);
             {
                 try
                 {
@@ -62,18 +62,18 @@ namespace FileStorageService
 
                         int blockSize = 1 * 1024;
                         long offset = 0;//Define http range offset
-                        BinaryReader reader = new BinaryReader(stream);
+                        BinaryReader reader = new(stream);
                         while (true)
                         {
                             byte[] buffer = reader.ReadBytes(blockSize);
                             if (buffer.Length == 0)
                                 break;
 
-                            MemoryStream uploadChunk = new MemoryStream();
+                            MemoryStream uploadChunk = new();
                             uploadChunk.Write(buffer, 0, buffer.Length);
                             uploadChunk.Position = 0;
 
-                            HttpRange httpRange = new HttpRange(offset, buffer.Length);
+                            HttpRange httpRange = new(offset, buffer.Length);
                             await file.UploadRangeAsync(httpRange, uploadChunk);
                             offset += buffer.Length;//Shift the offset by number of bytes already written
                         }
@@ -260,7 +260,7 @@ namespace FileStorageService
             return directory;
         }
 
-        private async Task<ShareDirectoryClient> CreateDirectoryAsync(ShareClient share, string fileDirectory)
+        private static async Task<ShareDirectoryClient> CreateDirectoryAsync(ShareClient share, string fileDirectory)
         {
             ShareDirectoryClient directory = share.GetDirectoryClient(fileDirectory);
             try
@@ -278,10 +278,10 @@ namespace FileStorageService
             return directory;
         }
 
-        private async Task<byte[]> GetBytesFromStream(Stream stream)
+        private static async Task<byte[]> GetBytesFromStream(Stream stream)
         {
             int bufferSize = 16 * 1024;
-            using (MemoryStream ms = new MemoryStream())
+            using (MemoryStream ms = new())
             {
                 await stream.CopyToAsync(ms, bufferSize);
                 return ms.ToArray();

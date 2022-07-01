@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace Aluma.API.Repositories
     public interface IRetirementPreservationFundsRepo : IRepoBase<RetirementPreservationFundsModel>
     {
         List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId);
-        RetirementPreservationFundsDto UpdateRetirementPreservationFunds(RetirementPreservationFundsDto[] dtoArray);
+        List<RetirementPreservationFundsDto> UpdateRetirementPreservationFunds(List<RetirementPreservationFundsDto> dtoArray);
+        string DeleteRetirementPreservationFunds(int Id);
 
     }
 
@@ -34,64 +36,83 @@ namespace Aluma.API.Repositories
         }
 
 
-        public List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int clientId)
+        public List<RetirementPreservationFundsDto> GetRetirementPreservationFunds(int fnaId)
         {
-            ICollection<RetirementPreservationFundsModel> data = _context.RetirementPreservationFunds.Where(c => c.ClientId == clientId).ToList();
-            List<RetirementPreservationFundsDto> funds = new List<RetirementPreservationFundsDto>();
-
-            foreach (var item in data)
-            {
-                RetirementPreservationFundsDto fund = new RetirementPreservationFundsDto();
-
-                fund.Id = item.Id;
-                fund.ClientId = item.ClientId;
-                fund.Description = item.Description;
-                fund.Value = item.Value;
-
-
-                funds.Add(fund);
-
-            }
+            List<RetirementPreservationFundsModel> data = _context.RetirementPreservationFunds.Where(c => c.FNAId == fnaId).ToList();
+            var funds = _mapper.Map<List<RetirementPreservationFundsDto>>(data);
 
             return funds;
         }
 
-        public RetirementPreservationFundsDto UpdateRetirementPreservationFunds(RetirementPreservationFundsDto[] dtoArray)
+        public List<RetirementPreservationFundsDto> UpdateRetirementPreservationFunds(List<RetirementPreservationFundsDto> dtoArray)
         {
-
-            foreach (var item in dtoArray)
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.RetirementPreservationFunds.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    RetirementPreservationFundsModel updateItem = _context.RetirementPreservationFunds.Where(a => a.Id == item.Id).FirstOrDefault();
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<RetirementPreservationFundsModel>(asset);
 
-                    _context.RetirementPreservationFunds.Update(updateItem);
+                        if (_context.RetirementPreservationFunds.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Retirement Preservation Fund Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.RetirementPreservationFunds.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<RetirementPreservationFundsDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Retirement Preservation Fund Created";
+                            }
+                        }
 
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    RetirementPreservationFundsModel newItem = new RetirementPreservationFundsModel();
-
-                    newItem.ClientId = item.ClientId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-
-                    _context.RetirementPreservationFunds.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
             }
 
-            _context.SaveChanges();
-            return null;
-
+            return dtoArray;
         }
 
+        public string DeleteRetirementPreservationFunds(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
+                    RetirementPreservationFundsModel item = _context.RetirementPreservationFunds.Where(a => a.Id == Id).First();
+
+                    _context.RetirementPreservationFunds.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Asset Retirement Preservation Fund Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+        }
 
     }
 }

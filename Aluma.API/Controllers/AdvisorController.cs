@@ -3,12 +3,13 @@ using AutoMapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Roles = "Admin,Broker")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "Advisor,Admin")]
     public class AdvisorController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -25,7 +26,7 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                AuthResponseDto response = new AuthResponseDto();
+                AuthResponseDto response = new();
                 bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
                 if (advisorExists)
                 {
@@ -90,7 +91,24 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("list"), AllowAnonymous]
+        [HttpGet("claim"), AllowAnonymous]
+        public IActionResult getClaim()
+        {
+            try
+            {
+                var claims = _repo.JwtRepo.IsTokenValid(Request.Headers[HeaderNames.Authorization].ToString());//.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+                
+
+                return Ok(claims);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("list")]
         public IActionResult GetAllAdvisors()
         {
             try

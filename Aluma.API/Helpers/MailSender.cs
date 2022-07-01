@@ -57,7 +57,7 @@ namespace Aluma.API.Helpers
                 string templatePath = $"{_host.WebRootPath}{slash}html{slash}NewApplication.html";
 
                 // Create Body Builder
-                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+                MimeKit.BodyBuilder bb = new();
 
                 // Create streamreader to read content of the the given template
                 using (StreamReader sr = File.OpenText(templatePath))
@@ -110,7 +110,7 @@ namespace Aluma.API.Helpers
 
         public async void SendApplicationDocumentsToBroker(ApplicationModel app, AdvisorModel advisor, ClientModel client)
         {
-            UserMail um = new UserMail()
+            UserMail um = new()
             {
                 Email = advisor.User.Email,
                 Name = client.User.FirstName + " " + client.User.LastName,
@@ -197,7 +197,7 @@ namespace Aluma.API.Helpers
 
         public async Task SendClientWelcomeEmail(ClientModel client)
         {
-            UserMail um = new UserMail()
+            UserMail um = new()
             {
                 Email = client.User.Email,
                 Name = client.User.FirstName + " " + client.User.LastName,
@@ -222,7 +222,7 @@ namespace Aluma.API.Helpers
                 string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
 
                 // Create Body Builder
-                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+                MimeKit.BodyBuilder bb = new();
 
                 // Create streamreader to read content of the the given template
                 using (StreamReader sr = File.OpenText(templatePath))
@@ -278,7 +278,7 @@ namespace Aluma.API.Helpers
 
         public async Task SendAdvisorWelcomeEmail(AdvisorModel advisor)
         {
-            UserMail um = new UserMail()
+            UserMail um = new()
             {
                 Email = advisor.User.Email,
                 Name = advisor.User.FirstName + " " + advisor.User.LastName,
@@ -304,7 +304,7 @@ namespace Aluma.API.Helpers
                 string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
 
                 // Create Body Builder
-                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+                MimeKit.BodyBuilder bb = new();
 
                 // Create streamreader to read content of the the given template
                 using (StreamReader sr = File.OpenText(templatePath))
@@ -358,10 +358,10 @@ namespace Aluma.API.Helpers
 
         public async Task SendForgotPasswordMail(UserModel user)
         {
-            JwtRepo jwt = new JwtRepo();
+            JwtRepo jwt = new();
             string key = _config.GetSection("SystemSettings").Get<SystemSettingsDto>().EncryptionKey;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
-            UserMail um = new UserMail()
+            UserMail um = new()
             {
                 Email = user.Email,
                 Name = user.FirstName + " " + user.LastName,
@@ -386,7 +386,7 @@ namespace Aluma.API.Helpers
                 string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
 
                 // Create Body Builder
-                MimeKit.BodyBuilder bb = new MimeKit.BodyBuilder();
+                MimeKit.BodyBuilder bb = new();
 
                 // Create streamreader to read content of the the given template
                 using (StreamReader sr = File.OpenText(templatePath))

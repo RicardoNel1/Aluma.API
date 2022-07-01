@@ -1,19 +1,25 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
+using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
-    public interface IFNARepo : IRepoBase<FNAModel>
+    public interface IFNARepo : IRepoBase<ClientFNAModel>
     {
-        void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna);
+        void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna);
+        Task<ClientFNADto> CreateFNA(ClientFNADto dto);
+        ClientFNADto GetClientFNA(int clientId);
+        Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId);
     }
 
-    public class FNARepo : RepoBase<FNAModel>, IFNARepo
+    public class FNARepo : RepoBase<ClientFNAModel>, IFNARepo
     {
         private readonly AlumaDBContext _context;
         private readonly IWebHostEnvironment _host;
@@ -29,7 +35,32 @@ namespace Aluma.API.Repositories
             _fileStorage = fileStorage;
         }
 
-        public void GenerateFNA(ClientModel user, AdvisorModel advisor, FNAModel fna)
+        public async Task<ClientFNADto> CreateFNA(ClientFNADto dto)
+        {
+            
+                ClientFNAModel newFna = _mapper.Map<ClientFNAModel>(dto);
+                _context.clientFNA.Add(newFna);
+                _context.SaveChanges();
+                dto = _mapper.Map<ClientFNADto>(newFna);
+
+                return dto;
+            
+        }
+        
+        public async Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId)
+        {
+
+            var fnaModel = _context.clientFNA.Where(r => r.Id == fnaId);
+
+            if (fnaModel.Any())
+            {
+                return _mapper.Map<ClientFNADto>(fnaModel.First());
+            }
+            return null;
+
+        }
+
+        public void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna)
         {
             //var data = new Dictionary<string, string>();
 
@@ -69,6 +100,17 @@ namespace Aluma.API.Repositories
 
             //_context.UserDocuments.Add(udm);
             //_context.SaveChanges();
+        }
+
+        public ClientFNADto GetClientFNA(int clientId)
+        {
+            var fnaModel = _context.clientFNA.Where(r => r.ClientId == clientId);
+
+            if (fnaModel.Any())
+            {
+                return _mapper.Map<ClientFNADto>(fnaModel.First());
+            }
+            return null;
         }
     }
 }

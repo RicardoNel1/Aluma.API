@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,13 @@ namespace Aluma.API.Repositories
     public interface ILiquidAssetsRepo : IRepoBase<LiquidAssetsModel>
     {
         bool DoesLiquidAssetsExist(LiquidAssetsDto dto);
-        List<LiquidAssetsDto> GetLiquidAssets(int clientId);
-        LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray);
+        List<LiquidAssetsDto> GetLiquidAssets(int fnaId);
+        List<LiquidAssetsDto> UpdateLiquidAssets(List<LiquidAssetsDto> dtoArray);
 
+        bool DeleteLiquidAssetsItem(int id);
 
     }
 
-    /// <summary>
-    /// </summary>
     public class LiquidAssetsRepo : RepoBase<LiquidAssetsModel>, ILiquidAssetsRepo
     {
         private readonly AlumaDBContext _context;
@@ -36,78 +36,112 @@ namespace Aluma.API.Repositories
             _config = config;
             _mapper = mapper;
         }
-               
+
 
         public bool DoesLiquidAssetsExist(LiquidAssetsDto dto)
         {
             bool liquidAssetsExist = false;
-            liquidAssetsExist = _context.LiquidAssets.Where(a => a.ClientId == dto.ClientId).Any();
+            liquidAssetsExist = _context.LiquidAssets.Where(a => a.FNAId == dto.FNAId).Any();
             return liquidAssetsExist;
 
         }
 
-        public List<LiquidAssetsDto> GetLiquidAssets(int clientId)
+        public List<LiquidAssetsDto> GetLiquidAssets(int fnaId)
         {
-            ICollection<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.ClientId == clientId).ToList();
-            List<LiquidAssetsDto> assets = new List<LiquidAssetsDto>();
-
-            foreach (var item in data)
-            {
-                LiquidAssetsDto asset = new LiquidAssetsDto();
-
-                asset.Id = item.Id;
-                asset.ClientId = item.ClientId;
-                asset.Description = item.Description;
-                asset.Value = item.Value;
-                asset.AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo);
-
-                assets.Add(asset);
-
-            }
+            List<LiquidAssetsModel> data = _context.LiquidAssets.Where(c => c.FNAId == fnaId).ToList();
+            var assets = _mapper.Map<List<LiquidAssetsDto>>(data);
 
             return assets;
         }
 
-        public LiquidAssetsDto UpdateLiquidAssets(LiquidAssetsDto[] dtoArray)
+        public List<LiquidAssetsDto> UpdateLiquidAssets(List<LiquidAssetsDto>dtoArray)
         {
-
-            foreach (var item in dtoArray)
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.LiquidAssets.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
-                    updateItem.AllocateTo = parsedAllocation;
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<LiquidAssetsModel>(asset);
 
-                    _context.LiquidAssets.Update(updateItem);
+                        if (_context.LiquidAssets.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Liquid Asset Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.LiquidAssets.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<LiquidAssetsDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Liquid Asset Created";
+                            }
+                        }
 
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    LiquidAssetsModel newItem = new LiquidAssetsModel();
-
-                    Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
-                    newItem.ClientId = item.ClientId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-                    newItem.AllocateTo = parsedAllocation;
-
-                    _context.LiquidAssets.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
+
+                // bool existingItem = _context.LiquidAssets.Where(a => a.Id == item.Id).Any();
+
+                // if (existingItem)
+                // {
+                //     LiquidAssetsModel updateItem = _context.LiquidAssets.Where(a => a.Id == item.Id).FirstOrDefault();
+
+                //     Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                //     updateItem.Description = item.Description;
+                //     updateItem.Value = item.Value;
+                //     updateItem.AllocateTo = parsedAllocation;
+
+                //     updateItem.DisposedOnDisability = item.DisposedOnDisability;
+                //     updateItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                //     updateItem.Growth = item.Growth;
+
+                //     _context.LiquidAssets.Update(updateItem);
+
+                // }
+                // else
+                // {
+                //     LiquidAssetsModel newItem = new LiquidAssetsModel();
+
+                //     Enum.TryParse(item.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+                //     newItem.FNAId = item.FNAId;
+                //     newItem.Description = item.Description;
+                //     newItem.Value = item.Value;
+                //     newItem.AllocateTo = parsedAllocation;
+
+                //     newItem.DisposedOnDisability = item.DisposedOnDisability;
+                //     newItem.DisposedAtRetirement = item.DisposedAtRetirement;
+                //     newItem.Growth = item.Growth;
+
+                //     _context.LiquidAssets.Add(newItem);
+
+                // }
             }
 
-            _context.SaveChanges();
-            return null;
+            return dtoArray;
 
         }
 
+        public bool DeleteLiquidAssetsItem(int id)
+        {
+            LiquidAssetsModel item = _context.LiquidAssets.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.LiquidAssets.Remove(item);
+            _context.SaveChanges();
 
+            return true;
+        }
 
     }
 }

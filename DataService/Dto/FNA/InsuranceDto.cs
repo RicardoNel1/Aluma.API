@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataService.Dto
+﻿namespace DataService.Dto
 {
-    public class InsuranceDto
+    public class InsuranceDto: ApiResponseDto
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
+        public int FNAId { get; set; }
         public string Description { get; set; }
         public string Owner { get; set; }
         public double LifeCover { get; set; }

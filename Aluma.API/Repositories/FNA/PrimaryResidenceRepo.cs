@@ -6,7 +6,6 @@ using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -14,18 +13,12 @@ namespace Aluma.API.Repositories
     public interface IPrimaryResidenceRepo : IRepoBase<PrimaryResidenceModel>
     {
         PrimaryResidenceDto CreatePrimaryResidence(PrimaryResidenceDto dto);
-
         bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto);
-        PrimaryResidenceDto GetPrimaryResidence(int clientId);
+        PrimaryResidenceDto GetPrimaryResidence(int fnaId);
         PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto);
-
-        //bool DeleteAsset(int id);
-
 
     }
 
-    /// <summary>
-    /// </summary>
     public class PrimaryResidenceRepo : RepoBase<PrimaryResidenceModel>, IPrimaryResidenceRepo
     {
         private readonly AlumaDBContext _context;
@@ -56,29 +49,31 @@ namespace Aluma.API.Repositories
         public bool DoesPrimaryResidenceExist(PrimaryResidenceDto dto)
         {
             bool primaryResidenceExist = false;
-            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).Any();
+            primaryResidenceExist = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).Any();
             return primaryResidenceExist;
 
         }
 
-        public PrimaryResidenceDto GetPrimaryResidence(int clientId)
+        public PrimaryResidenceDto GetPrimaryResidence(int fnaId)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.ClientId == clientId).First();
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<PrimaryResidenceDto>(data);
 
         }
 
         public PrimaryResidenceDto UpdatePrimaryResidence(PrimaryResidenceDto dto)
         {
-            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();            
-            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
+            PrimaryResidenceModel data = _context.PrimaryResidence.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
 
-            //set fields to be updated       
+            Enum.TryParse(dto.AllocateTo, true, out DataService.Enum.EstateAllocationEnum parsedAllocation);
             data.Description = dto.Description;
             data.AllocateTo = parsedAllocation;
             data.Value = dto.Value;
             data.BaseCost = dto.BaseCost;
 
+            data.DisposedOnDisability = dto.DisposedOnDisability;
+            data.DisposedAtRetirement = dto.DisposedAtRetirement;
+            data.Growth = dto.Growth;
 
             _context.PrimaryResidence.Update(data);
             _context.SaveChanges();
@@ -86,8 +81,6 @@ namespace Aluma.API.Repositories
             return dto;
 
         }
-
-       
 
     }
 }

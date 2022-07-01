@@ -16,8 +16,8 @@ namespace DataService.Model
         public PurposeAndFundingModel PurposeAndFunding { get; set; }
         //public FSPMandateModel FSPMandate { get; set; }
         public RecordOfAdviceModel RecordOfAdvice { get; set; }
-        public IRSW8Model IRSW8 { get; set; }
-        public IRSW9Model IRSW9 { get; set; }
+        //public IRSW8Model IRSW8 { get; set; }
+        //public IRSW9Model IRSW9 { get; set; }
 
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -69,15 +69,15 @@ namespace DataService.Model
                 .HasForeignKey<RecordOfAdviceModel>(c => c.ApplicationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            mb.HasOne(c => c.IRSW8)
-                .WithOne(c => c.Application)
-                .HasForeignKey<IRSW8Model>(c => c.ApplicationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //mb.HasOne(c => c.IRSW8)
+            //    .WithOne(c => c.Application)
+            //    .HasForeignKey<IRSW8Model>(c => c.ApplicationId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            mb.HasOne(c => c.IRSW9)
-                .WithOne(c => c.Application)
-                .HasForeignKey<IRSW9Model>(c => c.ApplicationId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //mb.HasOne(c => c.IRSW9)
+            //    .WithOne(c => c.Application)
+            //    .HasForeignKey<IRSW9Model>(c => c.ApplicationId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasMany(c => c.Documents)
                 .WithOne(c => c.Application)

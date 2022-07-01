@@ -6,7 +6,6 @@ using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -67,7 +66,7 @@ namespace Aluma.API.Repositories
 
         public async Task<UserDocumentDto> GetDocument(UserDocumentDto dto)
         {
-            FileStorageDto fileDto = new FileStorageDto()
+            FileStorageDto fileDto = new()
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,
@@ -106,7 +105,7 @@ namespace Aluma.API.Repositories
 
         public async Task<UserDocumentDto> UploadDocument(UserDocumentDto dto)
         {
-            FileStorageDto fileDto = new FileStorageDto()
+            FileStorageDto fileDto = new()
             {
                 BaseDocumentPath = _config.GetSection("AzureSettings:DocumentsRootPath").Value,
                 FileDirectory = dto.Url,

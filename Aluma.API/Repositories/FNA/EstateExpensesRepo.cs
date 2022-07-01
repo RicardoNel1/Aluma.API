@@ -5,8 +5,6 @@ using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Aluma.API.Repositories
@@ -15,7 +13,7 @@ namespace Aluma.API.Repositories
     {
         EstateExpensesDto CreateEstateExpenses(EstateExpensesDto dto);
         bool DoesEstateExpensesExist(EstateExpensesDto dto);
-        EstateExpensesDto GetEstateExpenses(int clientId);
+        EstateExpensesDto GetEstateExpenses(int fnaId);
         EstateExpensesDto UpdateEstateExpenses(EstateExpensesDto dto);
 
 
@@ -50,28 +48,30 @@ namespace Aluma.API.Repositories
 
         public bool DoesEstateExpensesExist(EstateExpensesDto dto)
         {
-            bool estaeExpensesExist = false;
-            estaeExpensesExist = _context.EstateExpenses.Where(a => a.ClientId == dto.ClientId).Any();
-            return estaeExpensesExist;
+            bool estateExpensesExist = false;
+            estateExpensesExist = _context.EstateExpenses.Where(a => a.FNAId == dto.FNAId).Any();
+            return estateExpensesExist;
 
         }
 
-        public EstateExpensesDto GetEstateExpenses(int clientId)
+        public EstateExpensesDto GetEstateExpenses(int fnaId)
         {
-            EstateExpensesModel data = _context.EstateExpenses.Where(c => c.ClientId == clientId).First();
+            EstateExpensesModel data = _context.EstateExpenses.Where(c => c.FNAId == fnaId).First();
             return _mapper.Map<EstateExpensesDto>(data);
 
         }
 
         public EstateExpensesDto UpdateEstateExpenses(EstateExpensesDto dto)
         {
-            EstateExpensesModel data = _context.EstateExpenses.Where(a => a.ClientId == dto.ClientId).FirstOrDefault();
+            EstateExpensesModel data = _context.EstateExpenses.Where(a => a.FNAId == dto.FNAId).FirstOrDefault();
             
             //set fields to be updated       
             data.AdminCosts = dto.AdminCosts;
             data.FuneralExpenses = dto.FuneralExpenses;
             data.CashBequests = dto.CashBequests;
             data.Other = dto.Other;
+            data.ExecutorsFees = dto.ExecutorsFees;
+            data.TotalEstateExpenses = dto.TotalEstateExpenses;
 
 
             _context.EstateExpenses.Update(data);

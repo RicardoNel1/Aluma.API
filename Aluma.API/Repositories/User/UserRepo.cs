@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Aluma.API.Helpers;
 using FileStorageService;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -22,6 +23,7 @@ namespace Aluma.API.Repositories
         public bool DoesUserExist(UserDto dto);
         public bool DoesUserExist(RegistrationDto dto);
         public UserDto GetUser(UserDto dto);
+        public Task<UserDto> GetUserWithAddress(UserDto dto);
         public UserDto GetUser(LoginDto dto);
 
         //public string CreateOTP(UserModel user, OtpTypesEnum otpType, Guid applicationID = new Guid());
@@ -151,6 +153,17 @@ namespace Aluma.API.Repositories
             //return null;
         }
 
+        public async Task<UserDto> GetUserWithAddress(UserDto dto)
+        {
+            //if (DoesUserExist(dto))
+            //{
+            var user = await _context.Users.Include(u => u.Address).Where(u => (u.Id == dto.Id)).FirstOrDefaultAsync();
+            return _mapper.Map<UserDto>(user);
+            //}
+
+            //return null;
+        }
+
         public UserDto GetUser(LoginDto dto)
         {
             if (DoesUserNameExist(dto))
@@ -253,7 +266,7 @@ namespace Aluma.API.Repositories
 
         public bool IsPasswordVerified(LoginDto dto)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
             UserModel user = _context.Users.Where(c => c.Email == dto.UserName).First();
             bool match = str.ValidateHash(user.Password, dto.Password);
 
@@ -278,7 +291,7 @@ namespace Aluma.API.Repositories
         public UserDto CreateClientUser(RegistrationDto dto)
         {
             //create user            
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
@@ -299,7 +312,7 @@ namespace Aluma.API.Repositories
         }
         public UserDto CreateAdvisorUser(RegistrationDto dto)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
 
             //Create User
             UserModel user = _mapper.Map<UserModel>(dto);
@@ -370,7 +383,7 @@ namespace Aluma.API.Repositories
 
         public void ResetPassword(int userId, string password)
         {
-            StringHasherRepo str = new StringHasherRepo();
+            StringHasherRepo str = new();
             UserModel user = _context.Users.Where(u => u.Id == userId).First();
 
             user.Password = str.CreateHash(password);

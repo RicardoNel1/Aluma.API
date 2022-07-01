@@ -203,8 +203,8 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                AuthResponseDto response = new AuthResponseDto();
-                ApplicationDto dto = new ApplicationDto() { Id = applicationId };
+                AuthResponseDto response = new();
+                ApplicationDto dto = new() { Id = applicationId };
 
 
                 bool applicationExist = _repo.Applications.DoesApplicationExist(dto);

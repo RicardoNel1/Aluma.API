@@ -164,36 +164,38 @@ namespace Aluma.API.Repositories
 
 
 
-            d["businessTel"] = client.WorkNumber ?? String.Empty;
+            d["businessTel"] = client.EmploymentDetails.WorkNumber ?? String.Empty;
             d["mobile"] = "0" + client.User.MobileNumber ?? string.Empty;
             d["email"] = client.User.Email;
 
 
 
-            d[$"{client.MaritalStatus}"] = "x";
+            d[$"{client.MaritalDetails.MaritalStatus}"] = "x";
 
 
 
-            if (client.MaritalStatus != "single")
+            if (client.MaritalDetails.MaritalStatus != "single")
             {
-                d["dateOfMarriage"] = client.DateOfMarriage;
+                d["dateOfMarriage"] = client.MaritalDetails.DateOfMarriage;
                 //d["dateOfMarriage_month"] = clientDetails.DateOfMarriage.ToString().Substring(5, 2);
                 //d["dateOfMarriage_year"] = (clientDetails.DateOfMarriage).ToString().Substring(0, 4);
 
-                if (client.ForeignMarriage == true)
+                if (client.MaritalDetails.ForeignMarriage == true)
                     d["foreignMarriage_Y"] = "x";
                 else
                     d["foreignMarriage_N"] = "x";
 
-                d["countryOfMarriage"] = client.CountryOfMarriage;
-                d["spouseName"] = client.SpouseName;
-                d["maidenName"] = client.MaidenName;
+                d["countryOfMarriage"] = client.MaritalDetails.CountryOfMarriage;
+                d["firstName"] = client.MaritalDetails.FirstName;
+                d["surname"] = client.MaritalDetails.Surname;
+                d["idNumber"] = client.MaritalDetails.IdNumber;
+                d["maidenName"] = client.MaritalDetails.MaidenName;
                 //d["spouseDateOfBirth"] = clientDetails.SpouseDateOfBirth;
-                d["spouseDateOfBirth"] = client.SpouseDateOfBirth;
+                d["spouseDateOfBirth"] = client.MaritalDetails.SpouseDateOfBirth;
                 //d["spouseDateOfBirth_month"] = clientDetails.SpouseDateOfBirth.ToString().Substring(5, 2);
                 //d["spouseDateOfBirth_year"] = (clientDetails.SpouseDateOfBirth).ToString().Substring(0, 4);
 
-                if (client.PowerOfAttorney == true)
+                if (client.MaritalDetails.PowerOfAttorney == true)
                     d["powerOfAttorney_Y"] = "x";
                 else
                     d["powerOfAttorney_N"] = "x";
@@ -219,7 +221,7 @@ namespace Aluma.API.Repositories
                 bv = client.BankDetails.First();
             }
 
-            UtilityHelper uh = new UtilityHelper();
+            UtilityHelper uh = new();
             d["accountHolder"] = $"{uh.Initials(client.User.FirstName)}";
             d["bank"] = bv.BankName ?? string.Empty;
             d["branchNo"] = bv.BranchCode ?? string.Empty;
@@ -319,7 +321,7 @@ namespace Aluma.API.Repositories
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
 
-            DocumentHelper dh = new DocumentHelper(_context, _config, _fileStorage, _host);
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
 
             await dh.PopulateAndSaveDocument(DocumentTypesEnum.FSPMandate, d, client.User);
         }

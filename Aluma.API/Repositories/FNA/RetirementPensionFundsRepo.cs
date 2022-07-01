@@ -4,6 +4,7 @@ using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace Aluma.API.Repositories
 {
     public interface IRetirementPensionFundsRepo : IRepoBase<RetirementPensionFundsModel>
     {
-        List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId);
-        RetirementPensionFundsDto UpdateRetirementPensionFunds(RetirementPensionFundsDto[] dtoArray);
+        List<RetirementPensionFundsDto> GetRetirementPensionFunds(int fnaId);
+        List<RetirementPensionFundsDto> UpdateRetirementPensionFunds(List<RetirementPensionFundsDto> dtoArray);
 
+        string DeleteRetirementPensionFunds(int Id);
 
+        bool DeleteRetirementPensionFundsItem(int id);
     }
 
     public class RetirementPensionFundsRepo : RepoBase<RetirementPensionFundsModel>, IRetirementPensionFundsRepo
@@ -35,69 +38,95 @@ namespace Aluma.API.Repositories
         }
 
 
-        public List<RetirementPensionFundsDto> GetRetirementPensionFunds(int clientId)
+        public List<RetirementPensionFundsDto> GetRetirementPensionFunds(int fnaId)
         {
-            ICollection<RetirementPensionFundsModel> data = _context.RetirementPensionFunds.Where(c => c.ClientId == clientId).ToList();
-            List<RetirementPensionFundsDto> funds = new List<RetirementPensionFundsDto>();
-
-            foreach (var item in data)
-            {
-                RetirementPensionFundsDto fund = new RetirementPensionFundsDto();
-
-                fund.Id = item.Id;
-                fund.ClientId = item.ClientId;
-                fund.Description = item.Description;
-                fund.Value = item.Value;
-                fund.MonthlyContributions = item.MonthlyContributions;
-                fund.EscPercent = item.EscPercent;
-
-                funds.Add(fund);
-
-            }
+            List<RetirementPensionFundsModel> data = _context.RetirementPensionFunds.Where(c => c.FNAId == fnaId).ToList();
+            var funds = _mapper.Map<List<RetirementPensionFundsDto>>(data);
 
             return funds;
         }
 
-        public RetirementPensionFundsDto UpdateRetirementPensionFunds(RetirementPensionFundsDto[] dtoArray)
+        public List<RetirementPensionFundsDto> UpdateRetirementPensionFunds(List<RetirementPensionFundsDto> dtoArray)
         {
 
-            foreach (var item in dtoArray)
+            foreach (var asset in dtoArray)
             {
-
-                bool existingItem = _context.RetirementPensionFunds.Where(a => a.Id == item.Id).Any();
-
-                if (existingItem)
+                try
                 {
-                    RetirementPensionFundsModel updateItem = _context.RetirementPensionFunds.Where(a => a.Id == item.Id).FirstOrDefault();                    
-                    updateItem.Description = item.Description;
-                    updateItem.Value = item.Value;
-                    updateItem.MonthlyContributions = item.MonthlyContributions;
-                    updateItem.EscPercent = item.EscPercent;
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<RetirementPensionFundsModel>(asset);
 
-                    _context.RetirementPensionFunds.Update(updateItem);
+                        if (_context.RetirementPensionFunds.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Status = "Success";
+                                asset.Message = "Asset Retirement Pension Fund Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.RetirementPensionFunds.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                asset.Id = _mapper.Map<RetirementPensionFundsDto>(pModel).Id;
+                                asset.Status = "Success";
+                                asset.Message = "Asset Retirement Pension Fund Created";
+                            }
+                        }
 
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    RetirementPensionFundsModel newItem = new RetirementPensionFundsModel();
-
-                    newItem.ClientId = item.ClientId;
-                    newItem.Description = item.Description;
-                    newItem.Value = item.Value;
-                    newItem.MonthlyContributions = item.MonthlyContributions;
-                    newItem.EscPercent = item.EscPercent;
-
-                    _context.RetirementPensionFunds.Add(newItem);
-
+                    asset.Status = "Server Error";
+                    asset.Message = ex.Message;
                 }
             }
 
-            _context.SaveChanges();
-            return null;
+            return dtoArray;
 
         }
 
+        public string DeleteRetirementPensionFunds(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
+                    RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == Id).First();
+
+                    _context.RetirementPensionFunds.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Asset Retirement Pension Fund Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+        }
+
+        public bool DeleteRetirementPensionFundsItem(int id)
+        {
+            RetirementPensionFundsModel item = _context.RetirementPensionFunds.Where(a => a.Id == id).First();
+            //item.isDeleted = false;
+            _context.RetirementPensionFunds.Remove(item);
+            _context.SaveChanges();
+
+            return true;
+        }
 
     }
 }

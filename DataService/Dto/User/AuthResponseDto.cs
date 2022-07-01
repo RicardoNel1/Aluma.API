@@ -4,7 +4,7 @@
     {
         public UserDto User { get; set; }
 
-        public int ClientId { get; set; }
+        public ClientDto Client { get; set; }
         public int AdvisorId { get; set; }
         public string Token { get; set; }
         public string TokenExpiry { get; set; }
