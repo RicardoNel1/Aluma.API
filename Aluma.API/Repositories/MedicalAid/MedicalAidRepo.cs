@@ -61,7 +61,7 @@ namespace Aluma.API.Repositories
                         if (_context.SaveChanges() > 0)
                         {
                             dto.Status = "Success";
-                            dto.Message = "Sort-term Insurance Updated";
+                            dto.Message = "Medical Aid Updated";
                         }
                     }
                     else
@@ -71,7 +71,7 @@ namespace Aluma.API.Repositories
                         {
                             dto.Id = _mapper.Map<MedicalAidDTO>(pModel).Id;
                             dto.Status = "Success";
-                            dto.Message = "Sort-term Insurance Created";
+                            dto.Message = "Medical Aid Created";
                         }
                     }
 
