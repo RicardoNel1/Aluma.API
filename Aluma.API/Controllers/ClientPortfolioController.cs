@@ -21,12 +21,12 @@ namespace Aluma.API.Controllers
                 
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetClientPortfolio(int clientId)
+        public async Task<IActionResult> GetClientPortfolio(int clientId)
         {
             ClientPortfolioDto dto = new();
             try
             {
-                dto = _repo.ClientPortfolio.GetClientPortfolio(clientId);
+                dto = await _repo.ClientPortfolio.GetClientPortfolio(clientId);
 
                 dto.Status = "Success";
                 dto.Message = "";
