@@ -52,7 +52,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         }
 
         private static SummaryReportDto SetReportFields(
-            RetirementPlanningDto retirementPlanning, AssetSummaryDto assetSummary, EstateExpensesDto estateExpenses, List<InsuranceDto> insurances, AssumptionsDto assumptions,
+            RetirementPlanningDto retirementPlanning, EconomyVariablesDto economy_variables, AssetSummaryDto assetSummary, EstateExpensesDto estateExpenses, List<InsuranceDto> insurances, AssumptionsDto assumptions,
             RetirementSummaryDto retirementSummaryDto, ProvidingDeathSummaryDto providingDeathSummary, ProvidingDisabilitySummaryDto providingDisabilitySummary,
             ProvidingOnDreadDiseaseDto providingOnDreadDisease, PrimaryResidenceDto primaryResidence)
         {
@@ -91,7 +91,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
                 TotalRetirement = totalRetirement < 0 ? $"({(totalRetirement * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalRetirement.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({(retirementSummaryDto.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : retirementSummaryDto.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
-                EscPercentage = String.IsNullOrEmpty(retirementPlanning.SavingsEscalation.ToString()) ? $"{retirementPlanning.SavingsEscalation.ToString()} %" : "0 %",
+                EscPercentage = economy_variables.InflationRate.ToString() ?? string.Empty,
 
                 ExistingRetirementFund = totalRetirementFunds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 YearsToRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
@@ -124,8 +124,9 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 ProvidingDeathSummaryDto providingDeathSummary = GetProvidingDeathSummary(fnaId);
                 ProvidingDisabilitySummaryDto providingDisabilitySummary = GetProvidingDisabilitySummary(fnaId);
                 ProvidingOnDreadDiseaseDto providingOnDreadDisease = GetProvidingOnDreadDisease(fnaId);
+                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, assetSummary, estateExpenses, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
+                return ReplaceHtmlPlaceholders(SetReportFields(retirementPlanning, economy_variables, assetSummary, estateExpenses, insurances, assumptions, retirementSummaryDto, providingDeathSummary,
                     providingDisabilitySummary, providingOnDreadDisease, primaryResidence));
         }
 

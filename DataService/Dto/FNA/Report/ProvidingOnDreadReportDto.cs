@@ -14,6 +14,7 @@ namespace DataService.Dto
         public string TotalNeeds { get; set; }
         public string DreadCoverAvailable { get; set; }
         public string DescDreadCoverAvailable { get; set; }
+        public string AvailableCapital { get; set; }
         public string TotalAvailableCapital { get; set; }
         public double TotalDreadDisease { get; set; }
         public string DreadCoverAllowed { get; set; }

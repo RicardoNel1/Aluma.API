@@ -67,7 +67,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        private static ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user, 
+        private static ProvidingOnDisabilityReportDto SetReportFields(ClientDto client, UserDto user,
                                                                 AssumptionsDto assumptions,
                                                                 ProvidingOnDisabilityDto disability,
                                                                 ProvidingDisabilitySummaryDto summaryDisability,
@@ -82,7 +82,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             totalLumpSum = totalLumpSum < 0 ? totalLumpSum * -1 : totalLumpSum;
 
 
-            return new ProvidingOnDisabilityReportDto()
+            ProvidingOnDisabilityReportDto providingOnDisabilityReportDto = new()
             {
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
                 RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
@@ -117,24 +117,25 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                         $"Capitalized Income Shortfall, {summaryDisability.TotalIncomeNeed}",
                         $"Lump sum Needs, {disability.IncomeNeeds}",
                         $"Available Lump sum, {summaryDisability.TotalAvailable}",
-                        $"Total Lump sum {totalLumpSumLabel}, {totalLumpSum}", 
+                        $"Total Lump sum {totalLumpSumLabel}, {totalLumpSum}",
                     }
                 }
             };
 
+            return providingOnDisabilityReportDto;
         }
 
         private async Task<ReportServiceResult> GetReportData(int fnaId)
         {
-                ClientDto client = await GetClient(fnaId);
-                UserDto user = await GetUser(client.UserId);
+            ClientDto client = await GetClient(fnaId);
+            UserDto user = await GetUser(client.UserId);
 
-                AssumptionsDto assumptions = GetAssumptions(fnaId);
-                ProvidingOnDisabilityDto disability = GetProvidingOnDisability(fnaId);
-                ProvidingDisabilitySummaryDto summaryDisability = GetProvidingDisabilitySummary(fnaId);
-                EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
+            AssumptionsDto assumptions = GetAssumptions(fnaId);
+            ProvidingOnDisabilityDto disability = GetProvidingOnDisability(fnaId);
+            ProvidingDisabilitySummaryDto summaryDisability = GetProvidingDisabilitySummary(fnaId);
+            EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summaryDisability, economy_variables));
+            return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, disability, summaryDisability, economy_variables));
         }
 
         public async Task<ReportServiceResult> SetDisabilityDetail(int fnaId)
