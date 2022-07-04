@@ -199,7 +199,7 @@ namespace Aluma.API.RepoWrapper
 
         public IClientPortfolioRepo ClientPortfolio
         {
-            get { return _clientPortfolio == null ? new ClientPortfolioRepo(_dbContext, _host, _config, _mapper) : _clientPortfolio; }
+            get { return _clientPortfolio == null ? new ClientPortfolioRepo(_dbContext, _host, _config, _fileStorage, _mapper) : _clientPortfolio; }
         }
 
         //Product
