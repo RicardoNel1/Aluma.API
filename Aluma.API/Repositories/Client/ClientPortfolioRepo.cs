@@ -39,6 +39,7 @@ namespace Aluma.API.Repositories
         {
 
             ClientPortfolioDto dto = new ClientPortfolioDto();
+            dto.Client = GetClient(clientId);
             dto.FNA = GetClientFNA(clientId);
             dto.Investments = GetInvestments(dto.FNA.Id);
             //List<InvestmentsModel> Investments = _context.Investments.Where(a => a.FNAId == dto.FNA.Id).ToList();
@@ -47,8 +48,8 @@ namespace Aluma.API.Repositories
             dto.ProvidingDisability = GetProvidingDisability(dto.FNA.Id);
             dto.ProvidingDeath = GetProvidingDeath(dto.FNA.Id);
             dto.ProvidingDread = GetProvidingDread(dto.FNA.Id);       
-            dto.ShortTermInsurance = GetShortTerm(dto.Client.Id);
-            dto.MedicalAid = GetMedical(dto.Client.Id);
+            dto.ShortTermInsurance = GetShortTerm(clientId);
+            dto.MedicalAid = GetMedical(clientId);
 
             return dto;
 
@@ -59,6 +60,12 @@ namespace Aluma.API.Repositories
         {
             FNARepo _fna = new FNARepo(_context, _host, _config, _mapper, null);
             return _fna.GetClientFNA(clientId);
+        }
+        
+        private ClientDto GetClient(int clientId)
+        {
+            ClientRepo _clientRepo = new ClientRepo(_context, _host, _config, _mapper, null);
+            return _clientRepo.GetClient(new ClientDto(){ Id = clientId });
         }
 
         private List<InvestmentsDto> GetInvestments(int fnaId)
