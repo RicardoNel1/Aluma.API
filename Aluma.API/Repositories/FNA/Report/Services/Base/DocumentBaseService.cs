@@ -11,6 +11,9 @@ using Aluma.API.Helpers;
 using DataService.Model;
 using AutoMapper;
 using DataService.Enum;
+using iText.Html2pdf;
+//using iText.Kernel.Pdf;
+using iText.Layout;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -73,14 +76,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 // instantiate a html to pdf converter object
                 HtmlToPdf converter = new();
-
+                MemoryStream ms = new();
 
                 var text = new PdfTextSection(450, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
                 {
                     HorizontalAlign = PdfTextHorizontalAlign.Center
                 };
-                converter.Footer.Add(text);
 
+
+                converter.Footer.Add(text);
 
                 converter.Options.DisplayFooter = true;
                 converter.Footer.DisplayOnFirstPage = false;
@@ -93,25 +97,21 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 converter.Options.PdfPageOrientation = pdfOrientation;
                 converter.Options.DrawBackground = false;
 
-
-
                 // create a new pdf document converting an url
                 PdfDocument doc = converter.ConvertHtmlString(html);
 
-                MemoryStream ms = new();
 
                 //TODO: doc.Security.UserPassword = client.user.rsaid
 
                 doc.Save(ms);
 
+                //byte[] buffer = ms.ToArray();
 
-                byte[] buffer = ms.ToArray();
+                //base64 = Convert.ToBase64String(buffer);
 
-                string base64 = Convert.ToBase64String(buffer);
+                //buffer = Convert.FromBase64String(base64);
 
-                buffer = Convert.FromBase64String(base64);
-
-                doc.Save(ms);
+                //doc.Save(ms);
 
                 // close pdf document
                 doc.Close();
@@ -148,11 +148,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 string css = _fNAModulesService.GetCSS();
 
-                
+
                 IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
                 result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
                 result += await _summaryService.SetSummaryDetail(dto.FNAId);
-                
+
 
                 if (dto.ProvidingOnDeath)
                 {
@@ -217,6 +217,32 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         private string DencryptFileData(string base64)
         {
             return base64;
+        }
+
+        private void createPdf(string baseUri, string src, string dest)
+        {
+            //iText.Html2pdf.HtmlConverter converter = new();
+
+            //ConverterProperties properties = new ConverterProperties();
+            //properties.SetBaseUri("");
+            //MemoryStream ms = new();
+            //PdfWriter writer = new PdfWriter(ms);
+            //iText.Kernel.Pdf.PdfDocument pdf = new iText.Kernel.Pdf.PdfDocument(writer);
+            //Document doc = HtmlConverter.ConvertToDocument(html, ms, properties);
+
+            //PdfFooter footer = new();                
+            //footer.DisplayOnFirstPage = false;
+            //footer.DisplayOnOddPages = true;
+            //footer.DisplayOnEvenPages = true;
+            //footer.Height = 40;
+
+            //doc.Add(footer);
+
+            //byte[] test = ms.ToArray();
+
+            //string base64 = Convert.ToBase64String(test);
+
+            //document.Close();
         }
     }
 }
