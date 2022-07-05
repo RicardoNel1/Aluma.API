@@ -14,6 +14,9 @@ namespace DataService.Dto
         public ProvidingOnDreadDiseaseDto ProvidingDread { get; set; }
         public List<ShortTermInsuranceDTO> ShortTermInsurance { get; set; }
         public MedicalAidDTO MedicalAid { get; set; }
+        public List<AssetsAttractingCGTDto> AssetsAttractingCGT { get; set; }
+        public List<AssetsExemptFromCGTDto> AssetsExemptFromCGT { get; set; }
+        public List<InsuranceDto> Insurance { get; set; }
 
         public double Salary { get; set; }
         //public double PensionFunds { get; set; }
