@@ -45,17 +45,19 @@ namespace Aluma.API.Repositories
             ClientPortfolioDto dto = new ClientPortfolioDto();
             dto.Client = GetClient(clientId);
             dto.Client.User = await GetUserWithAddress(dto.Client.UserId);
-            dto.FNA = GetClientFNA(clientId);
+            dto.FNA = GetClientFNA(dto.Client.Id);
             dto.Investments = GetInvestments(dto.FNA.Id);
             dto.Retirement = GetRetirement(dto.FNA.Id);
             dto.RetirementPlanning = GetRetirementPlanning(dto.FNA.Id);
             dto.ProvidingDisability = GetProvidingDisability(dto.FNA.Id);
             dto.ProvidingDeath = GetProvidingDeath(dto.FNA.Id);
             dto.ProvidingDread = GetProvidingDread(dto.FNA.Id);
-            dto.ShortTermInsurance = GetShortTerm(clientId);
-            dto.MedicalAid = GetMedical(clientId);
+            dto.ShortTermInsurance = GetShortTerm(dto.Client.Id);
+            dto.MedicalAid = GetMedical(dto.Client.Id);
             dto.Assumptions = GetAssumptions(dto.FNA.Id);
-
+            dto.AssetsAttractingCGT = GetAssetsAttractingCGT(dto.FNA.Id);
+            dto.AssetsExemptFromCGT = GetAssetsExemptFromCGT(dto.FNA.Id);
+            dto.Insurance = GetInsurances(dto.FNA.Id);
 
             return dto;
 
@@ -252,6 +254,60 @@ namespace Aluma.API.Repositories
                     return new();
 
                 return medicalAid;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId)
+        {
+            try
+            {
+                AssetsAttractingCGTRepo _assetAttracting = new AssetsAttractingCGTRepo(_context, _host, _config, _mapper);
+                List<AssetsAttractingCGTDto> attracting = _assetAttracting.GetAssetsAttractingCGT(fnaId);
+
+                if (attracting == null)
+                    return new();
+
+                return attracting;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+        
+        private List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId)
+        {
+            try
+            {
+                AssetsExemptFromCGTRepo _assetExempt = new AssetsExemptFromCGTRepo(_context, _host, _config, _mapper);
+                List<AssetsExemptFromCGTDto> exempt = _assetExempt.GetAssetsExemptFromCGT(fnaId);
+
+                if (exempt == null)
+                    return new();
+
+                return exempt;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private List<InsuranceDto> GetInsurances(int fnaId)
+        {
+            try
+            {
+                InsuranceRepo _insurance = new InsuranceRepo(_context, _host, _config, _mapper);
+                List<InsuranceDto> insurances = _insurance.GetInsurance(fnaId);
+
+                if (insurances == null)
+                    return new();
+
+                return insurances;
             }
             catch (Exception)
             {
