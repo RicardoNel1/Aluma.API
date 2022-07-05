@@ -56,6 +56,7 @@ namespace Aluma.API.Repositories
             dto.ShortTermInsurance = GetShortTerm(clientId);
             dto.MedicalAid = GetMedical(clientId);
 
+
             return dto;
 
         }
