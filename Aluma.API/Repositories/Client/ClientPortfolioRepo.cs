@@ -47,14 +47,14 @@ namespace Aluma.API.Repositories
             dto.Client.User = await GetUserWithAddress(dto.Client.UserId);
             dto.FNA = GetClientFNA(clientId);
             dto.Investments = GetInvestments(dto.FNA.Id);
-            //List<InvestmentsModel> Investments = _context.Investments.Where(a => a.FNAId == dto.FNA.Id).ToList();
-            //dto.InvestmentsTotal = Investments.Sum(a => a.Value);
             dto.Retirement = GetRetirement(dto.FNA.Id);
+            dto.RetirementPlanning = GetRetirementPlanning(dto.FNA.Id);
             dto.ProvidingDisability = GetProvidingDisability(dto.FNA.Id);
             dto.ProvidingDeath = GetProvidingDeath(dto.FNA.Id);
             dto.ProvidingDread = GetProvidingDread(dto.FNA.Id);
             dto.ShortTermInsurance = GetShortTerm(clientId);
             dto.MedicalAid = GetMedical(clientId);
+            dto.Assumptions = GetAssumptions(dto.FNA.Id);
 
             return dto;
 
@@ -150,6 +150,24 @@ namespace Aluma.API.Repositories
             }
         }
 
+        private RetirementPlanningDto GetRetirementPlanning(int fnaId)
+        {
+            try
+            {
+                RetirementPlanningRepo _retirement = new RetirementPlanningRepo(_context, _host, _config, _mapper);
+                RetirementPlanningDto retirement = _retirement.GetRetirementPlanning(fnaId);
+
+                if (retirement == null)
+                    return new();
+
+                return retirement;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
         private ProvidingOnDisabilityDto GetProvidingDisability(int fnaId)
         {
             try
@@ -233,6 +251,24 @@ namespace Aluma.API.Repositories
                     return new();
 
                 return medicalAid;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private AssumptionsDto GetAssumptions(int fnaId)
+        {
+            try
+            {
+                AssumptionsRepo _assumptions = new AssumptionsRepo(_context, _host, _config, _mapper);
+                AssumptionsDto assumptions = _assumptions.GetAssumptions(fnaId);
+
+                if (assumptions == null)
+                    return new();
+
+                return assumptions;
             }
             catch (Exception)
             {
