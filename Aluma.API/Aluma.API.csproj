@@ -35,7 +35,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -51,6 +51,7 @@
     <ProjectReference Include="..\BankValidationService\BankValidationService.csproj" />
     <ProjectReference Include="..\DataService\DataService.csproj" />
     <ProjectReference Include="..\FileStorageService\FileStorageService.csproj" />
+    <ProjectReference Include="..\FintegrateCreditCheckService\FintegrateCreditCheckService.csproj" />
     <ProjectReference Include="..\JwtService\JwtService.csproj" />
     <ProjectReference Include="..\KycService\KycService.csproj" />
     <ProjectReference Include="..\SignatureService\SignatureService.csproj" />

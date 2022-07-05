@@ -5,6 +5,7 @@ using Azure.Storage.Files.Shares;
 using BankValidationService;
 using DataService.Context;
 using FileStorageService;
+using FintegrateCreditCheckService;
 using JwtService;
 using KycService;
 using Microsoft.AspNetCore.Hosting;
@@ -87,8 +88,7 @@ namespace Aluma.API.RepoWrapper
         private IBankValidationServiceRepo _bankValidation;
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
-
-
+        private ICreditCheckService _creditCheck;
 
         private IStringHasher _hasher;
 
@@ -384,6 +384,14 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _fileStorage == null ? new FileStorageRepo(_shareServiceClient) : _fileStorage; }
         }
+
+        public ICreditCheckService CreditCheckService
+        {
+            get { return _creditCheck == null ? new CreditCheckService() : _creditCheck; }
+        }
+
+        
+
 
         public IStringHasher StrHasher
         {
