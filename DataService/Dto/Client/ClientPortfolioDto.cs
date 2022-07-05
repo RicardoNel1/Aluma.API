@@ -19,8 +19,6 @@ namespace DataService.Dto
         public List<AssetsExemptFromCGTDto> AssetsExemptFromCGT { get; set; }
         public List<InsuranceDto> Insurance { get; set; }
         public AssumptionsDto Assumptions { get; set; }
-
-
-
+        public PrimaryResidenceDto PrimaryResidence { get; set; }
     }
 }
