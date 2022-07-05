@@ -30,15 +30,19 @@ namespace FintegrateCreditCheckService
             _settings = root.GetSection("CreditCheckSettings").Get<CreditCheckSettingsDto>();
         }
 
-        public CreditCheckSettingsDto settings { get => _settings; }
+        public CreditCheckSettingsDto Settings { get => _settings; }
 
         public CreditCheckAuthResponse DoCreditCheckServiceAuthentication(CreditCheckAuthRequest requestDetails)
         {
-            var client = new RestClient($"{_settings.BaseUrl}/authentication");
-            client.Timeout = -1;
+            var client = new RestClient($"{_settings.BaseUrl}/authentication")
+            {
+                Timeout = -1
+            };
 
-            var request = new RestRequest(Method.POST);
-            request.RequestFormat = DataFormat.Json;
+            var request = new RestRequest(Method.POST)
+            {
+                RequestFormat = DataFormat.Json
+            };
             request.AddJsonBody(requestDetails);
 
             IRestResponse response = client.Execute(request);
@@ -57,11 +61,15 @@ namespace FintegrateCreditCheckService
 
         public ExperianInitialAssessmentResponse GetExperianInitialAssessment(CreditCheckSearchCriteria searchCriteria)
         {
-            var client = new RestClient($"{_settings.BaseUrl}/experian/initial");
-            client.Timeout = -1;
+            var client = new RestClient($"{_settings.BaseUrl}/experian/initial")
+            {
+                Timeout = -1
+            };
 
-            var request = new RestRequest(Method.POST);
-            request.RequestFormat = DataFormat.Json;
+            var request = new RestRequest(Method.POST)
+            {
+                RequestFormat = DataFormat.Json
+            };
 
             request.AddJsonBody(searchCriteria);
 
@@ -81,16 +89,20 @@ namespace FintegrateCreditCheckService
 
         public PBSAInitialAssessmentResponse GetPBSAInitialAssessment(CreditCheckSearchCriteria searchCriteria)
         {
-            var client = new RestClient($"{_settings.BaseUrl}/pbsa/initial");
-            client.Timeout = -1;
+            var client = new RestClient($"{_settings.BaseUrl}/pbsa/initial")
+            {
+                Timeout = -1
+            };
 
-            PBSAInitialAssessmentRequest requestBody = new PBSAInitialAssessmentRequest();
+            PBSAInitialAssessmentRequest requestBody = new();
             requestBody.ConsumerDetails.IdNumber = searchCriteria.IdNumber;
             requestBody.ConsumerDetails.Reference = searchCriteria.IdNumber;
             requestBody.ConsumerDetails.SearchReason = "Consumer Enquiry";
 
-            var request = new RestRequest(Method.POST);
-            request.RequestFormat = DataFormat.Json;
+            var request = new RestRequest(Method.POST)
+            {
+                RequestFormat = DataFormat.Json
+            };
 
             request.AddJsonBody(requestBody);
 
