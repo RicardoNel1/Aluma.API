@@ -56,6 +56,7 @@ namespace Aluma.API.Repositories
             dto.MedicalAid = GetMedical(clientId);
             dto.Assumptions = GetAssumptions(dto.FNA.Id);
 
+
             return dto;
 
         }
