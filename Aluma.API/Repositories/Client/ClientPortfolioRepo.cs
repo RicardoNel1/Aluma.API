@@ -59,6 +59,7 @@ namespace Aluma.API.Repositories
             dto.AssetsExemptFromCGT = GetAssetsExemptFromCGT(dto.FNA.Id);
             dto.Insurance = GetInsurances(dto.FNA.Id);
             dto.PrimaryResidence = GetPrimaryResidence(dto.FNA.Id);
+            dto.LiquidAssets = GetLiquidAssets(dto.FNA.Id);
 
             return dto;
 
@@ -333,6 +334,7 @@ namespace Aluma.API.Repositories
                 return new();
             }
         }
+
         private PrimaryResidenceDto GetPrimaryResidence(int fnaId)
         {
             try
@@ -344,6 +346,25 @@ namespace Aluma.API.Repositories
                     return new();
 
                 return residence;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+
+        private List<LiquidAssetsDto> GetLiquidAssets(int fnaId)
+        {
+            try
+            {
+                LiquidAssetsRepo _liquid = new LiquidAssetsRepo(_context, _host, _config, _mapper);
+                List<LiquidAssetsDto> liquid = _liquid.GetLiquidAssets(fnaId);
+
+                if (liquid == null)
+                    return new();
+
+                return liquid;
             }
             catch (Exception)
             {
