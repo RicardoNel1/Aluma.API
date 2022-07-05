@@ -15,8 +15,12 @@ namespace DataService.Model
         public string Type { get; set; }
         public string MedicalAidNumber { get; set; }
         public bool MainMember { get; set; } = true;
+        public bool NetworkPlan { get; set; } = true;
+        public bool SavingsPlan { get; set; } = true;
+        public bool GapCover { get; set; } = true;
         public int NumberOfDependants { get; set; }
         public double MonthlyPremium { get; set; }
+        public double MaxAnnualSavings { get; set; }
     }
 
     public class MedicalAidModelBuilder : IEntityTypeConfiguration<MedicalAidModel>
