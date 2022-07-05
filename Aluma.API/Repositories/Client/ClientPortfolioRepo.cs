@@ -58,6 +58,7 @@ namespace Aluma.API.Repositories
             dto.AssetsAttractingCGT = GetAssetsAttractingCGT(dto.FNA.Id);
             dto.AssetsExemptFromCGT = GetAssetsExemptFromCGT(dto.FNA.Id);
             dto.Insurance = GetInsurances(dto.FNA.Id);
+            dto.PrimaryResidence = GetPrimaryResidence(dto.FNA.Id);
 
             return dto;
 
@@ -326,6 +327,23 @@ namespace Aluma.API.Repositories
                     return new();
 
                 return assumptions;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+        private PrimaryResidenceDto GetPrimaryResidence(int fnaId)
+        {
+            try
+            {
+                PrimaryResidenceRepo _residence = new PrimaryResidenceRepo(_context, _host, _config, _mapper);
+                PrimaryResidenceDto residence = _residence.GetPrimaryResidence(fnaId);
+
+                if (residence == null)
+                    return new();
+
+                return residence;
             }
             catch (Exception)
             {
