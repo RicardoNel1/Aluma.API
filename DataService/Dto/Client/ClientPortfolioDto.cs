@@ -9,7 +9,7 @@ namespace DataService.Dto
         public ClientFNADto FNA { get; set; }
         public List<InvestmentsDto> Investments { get; set; }
         public RetirementSummaryDto Retirement { get; set; }
-        public RetirementPlanningDto RetirementPlanning { get; set;}
+        public RetirementPlanningDto RetirementPlanning { get; set; }
         public ProvidingOnDisabilityDto ProvidingDisability { get; set; }
         public ProvidingOnDeathDto ProvidingDeath { get; set; }
         public ProvidingOnDreadDiseaseDto ProvidingDread { get; set; }
@@ -17,6 +17,7 @@ namespace DataService.Dto
         public MedicalAidDTO MedicalAid { get; set; }
         public List<AssetsAttractingCGTDto> AssetsAttractingCGT { get; set; }
         public List<AssetsExemptFromCGTDto> AssetsExemptFromCGT { get; set; }
+        public List<LiquidAssetsDto> LiquidAssets{ get; set; }
         public List<InsuranceDto> Insurance { get; set; }
         public AssumptionsDto Assumptions { get; set; }
         public PrimaryResidenceDto PrimaryResidence { get; set; }
