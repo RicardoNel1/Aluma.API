@@ -55,11 +55,7 @@ namespace Aluma.API.Repositories
             dto.ShortTermInsurance = GetShortTerm(dto.Client.Id);
             dto.MedicalAid = GetMedical(dto.Client.Id);
             dto.Assumptions = GetAssumptions(dto.FNA.Id);
-            dto.AssetsAttractingCGT = GetAssetsAttractingCGT(dto.FNA.Id);
-            dto.AssetsExemptFromCGT = GetAssetsExemptFromCGT(dto.FNA.Id);
             dto.Insurance = GetInsurances(dto.FNA.Id);
-            dto.PrimaryResidence = GetPrimaryResidence(dto.FNA.Id);
-            dto.LiquidAssets = GetLiquidAssets(dto.FNA.Id);
 
             return dto;
 
@@ -173,12 +169,12 @@ namespace Aluma.API.Repositories
             }
         }
 
-        private ProvidingOnDisabilityDto GetProvidingDisability(int fnaId)
+        private ProvidingDisabilitySummaryDto GetProvidingDisability(int fnaId)
         {
             try
             {
-                ProvidingOnDisabilityRepo _disability = new ProvidingOnDisabilityRepo(_context, _host, _config, _mapper);
-                ProvidingOnDisabilityDto providingOnDisability = _disability.GetProvidingOnDisability(fnaId);
+                ProvidingDisabilitySummaryRepo _disability = new ProvidingDisabilitySummaryRepo(_context, _host, _config, _mapper);
+                ProvidingDisabilitySummaryDto providingOnDisability = _disability.GetProvidingDisabilitySummary(fnaId);
 
                 if (providingOnDisability == null)
                     return new();
@@ -191,12 +187,12 @@ namespace Aluma.API.Repositories
             }
         }
 
-        private ProvidingOnDeathDto GetProvidingDeath(int fnaId)
+        private ProvidingDeathSummaryDto GetProvidingDeath(int fnaId)
         {
             try
             {
-                ProvidingOnDeathRepo _death = new ProvidingOnDeathRepo(_context, _host, _config, _mapper);
-                ProvidingOnDeathDto providingOnDeath = _death.GetProvidingOnDeath(fnaId);
+                ProvidingDeathSummaryRepo _death = new ProvidingDeathSummaryRepo(_context, _host, _config, _mapper);
+                ProvidingDeathSummaryDto providingOnDeath = _death.GetProvidingDeathSummary(fnaId);
 
                 if (providingOnDeath == null)
                     return new();
@@ -262,42 +258,7 @@ namespace Aluma.API.Repositories
                 return new();
             }
         }
-
-        private List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId)
-        {
-            try
-            {
-                AssetsAttractingCGTRepo _assetAttracting = new AssetsAttractingCGTRepo(_context, _host, _config, _mapper);
-                List<AssetsAttractingCGTDto> attracting = _assetAttracting.GetAssetsAttractingCGT(fnaId);
-
-                if (attracting == null)
-                    return new();
-
-                return attracting;
-            }
-            catch (Exception)
-            {
-                return new();
-            }
-        }
-        
-        private List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId)
-        {
-            try
-            {
-                AssetsExemptFromCGTRepo _assetExempt = new AssetsExemptFromCGTRepo(_context, _host, _config, _mapper);
-                List<AssetsExemptFromCGTDto> exempt = _assetExempt.GetAssetsExemptFromCGT(fnaId);
-
-                if (exempt == null)
-                    return new();
-
-                return exempt;
-            }
-            catch (Exception)
-            {
-                return new();
-            }
-        }
+               
 
         private List<InsuranceDto> GetInsurances(int fnaId)
         {
@@ -335,41 +296,5 @@ namespace Aluma.API.Repositories
             }
         }
 
-        private PrimaryResidenceDto GetPrimaryResidence(int fnaId)
-        {
-            try
-            {
-                PrimaryResidenceRepo _residence = new PrimaryResidenceRepo(_context, _host, _config, _mapper);
-                PrimaryResidenceDto residence = _residence.GetPrimaryResidence(fnaId);
-
-                if (residence == null)
-                    return new();
-
-                return residence;
-            }
-            catch (Exception)
-            {
-                return new();
-            }
-        }
-
-
-        private List<LiquidAssetsDto> GetLiquidAssets(int fnaId)
-        {
-            try
-            {
-                LiquidAssetsRepo _liquid = new LiquidAssetsRepo(_context, _host, _config, _mapper);
-                List<LiquidAssetsDto> liquid = _liquid.GetLiquidAssets(fnaId);
-
-                if (liquid == null)
-                    return new();
-
-                return liquid;
-            }
-            catch (Exception)
-            {
-                return new();
-            }
-        }
     }
 }
