@@ -1,4 +1,5 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
@@ -41,8 +42,7 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientPortfolioDto> GetClientPortfolio(int clientId)
         {
-
-            ClientPortfolioDto dto = new ClientPortfolioDto();
+            ClientPortfolioDto dto = new();
             dto.Client = GetClient(clientId);
             dto.Client.User = await GetUserWithAddress(dto.Client.UserId);
             dto.FNA = GetClientFNA(dto.Client.Id);
@@ -61,8 +61,10 @@ namespace Aluma.API.Repositories
             dto.PrimaryResidence = GetPrimaryResidence(dto.FNA.Id);
             dto.LiquidAssets = GetLiquidAssets(dto.FNA.Id);
 
+            dto.DocumentList = new List<DocumentListDto>();
+            dto.DocumentList.AddRange(await GetUserDocuments(dto.Client.UserId));
+            dto.DocumentList.AddRange(await GetAppDocuments(dto.Client.UserId));
             return dto;
-
         }
 
         private async Task<UserDto> GetUserWithAddress(int userId)
@@ -353,7 +355,6 @@ namespace Aluma.API.Repositories
             }
         }
 
-
         private List<LiquidAssetsDto> GetLiquidAssets(int fnaId)
         {
             try
@@ -365,6 +366,42 @@ namespace Aluma.API.Repositories
                     return new();
 
                 return liquid;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private async Task<List<DocumentListDto>> GetUserDocuments(int userId)
+        {
+            try
+            {
+                DocumentHelper _doc = new(_context, _config, _filestorage, _host);
+                List<DocumentListDto> docs = await _doc.GetUserDocListAsync(userId);
+
+                if (docs == null)
+                    return new();
+
+                return docs;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private async Task<List<DocumentListDto>> GetAppDocuments(int userId)
+        {
+            try
+            {
+                DocumentHelper _doc = new(_context, _config, _filestorage, _host);
+                List<DocumentListDto> docs = await _doc.GetUserDocListAsync(userId);
+
+                if (docs == null)
+                    return new();
+
+                return docs;
             }
             catch (Exception)
             {
