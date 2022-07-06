@@ -62,8 +62,8 @@ namespace Aluma.API.Repositories
             dto.LiquidAssets = GetLiquidAssets(dto.FNA.Id);
 
             dto.DocumentList = new List<DocumentListDto>();
-            dto.DocumentList.AddRange(await GetUserDocuments(dto.Client.UserId));
-            dto.DocumentList.AddRange(await GetAppDocuments(dto.Client.UserId));
+            dto.DocumentList = AddDocuments(await GetUserDocuments(dto.Client.UserId), dto.DocumentList);
+            dto.DocumentList= AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
             return dto;
         }
 
@@ -282,7 +282,7 @@ namespace Aluma.API.Repositories
                 return new();
             }
         }
-        
+
         private List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId)
         {
             try
@@ -407,6 +407,24 @@ namespace Aluma.API.Repositories
             {
                 return new();
             }
+        }
+
+        private List<DocumentListDto> AddDocuments(List<DocumentListDto> addDocuments, List<DocumentListDto> currentDocuments)
+        {
+            if (currentDocuments == null)
+                currentDocuments = new List<DocumentListDto>();
+
+            if (addDocuments != null && addDocuments.Count > 0)
+            {
+                foreach (DocumentListDto doc in addDocuments)
+                {
+                    if (currentDocuments.FindAll(x => x.DocumentId == doc.DocumentId && x.UserId == doc.UserId && x.DocumentType == doc.DocumentType) == null ||
+                        currentDocuments.FindAll(x => x.DocumentId == doc.DocumentId && x.UserId == doc.UserId && x.DocumentType == doc.DocumentType).Count == 0)
+                        currentDocuments.Add(doc);
+                }
+            }
+
+            return currentDocuments;
         }
     }
 }
