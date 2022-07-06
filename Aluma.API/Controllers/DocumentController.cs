@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
@@ -23,18 +25,18 @@ namespace Aluma.API.Controllers
 
 
         [HttpPost, AllowAnonymous]
-        public IActionResult GetDocument(DocumentListDto dto)
+        public async Task<IActionResult> GetDocument(DocumentListDto dto)
         {
             try
             {
-                if(dto.DocumentType == "UserDocument")
+                if (dto.DocumentType == "UserDocument")
                 {
                     var document = _repo.UserDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.UserId == dto.UserId);
                     if (document.Any())
                     {
                         UserDocumentModel model = document.First();
 
-                        byte[] bytes = _repo.DocumentHelper.GetDocumentData(model.URL, dto.DocumentName);
+                        byte[] bytes = await _repo.DocumentHelper.GetDocumentDataAsync(model.URL, dto.DocumentName);
 
                         UserDocumentDto response = new()
                         {
@@ -47,7 +49,7 @@ namespace Aluma.API.Controllers
                     }
 
                 }
-                else if(dto.DocumentType == "ApplicationDocument")
+                else if (dto.DocumentType == "ApplicationDocument")
                 {
                     var document = _repo.ApplicationDocuments.FindByCondition(a => a.Name == dto.DocumentName && a.ApplicationId == dto.ApplicationId);
 
@@ -68,7 +70,7 @@ namespace Aluma.API.Controllers
 
                 return BadRequest("Document couldn't be downloaded");
 
-                
+
             }
             catch (Exception e)
             {
@@ -76,13 +78,54 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("get_client_Docuemnt"), DisableRequestSizeLimit, AllowAnonymous]
+        public async Task<IActionResult> GetClientDocument(int documentId, int userId, int applicationId, string documentName, string documentType)
+        {
+            try
+            {
+                byte[] pdf = new byte[0];
+
+                if (documentType == "UserDocument")
+                {
+                    var document = _repo.UserDocuments.FindByCondition(a => a.Name == documentName && a.UserId == userId && a.Id == documentId);
+                    if (document.Any())
+                    {
+                        UserDocumentModel model = document.First();
+                        pdf = await _repo.DocumentHelper.GetDocumentDataAsync(model.URL, documentName);
+                    }
+                }
+                else if (documentType == "ApplicationDocument")
+                {
+                    var document = _repo.ApplicationDocuments.FindByCondition(a => a.Name == documentName && a.ApplicationId == applicationId && a.Id == documentId);
+                    if (document.Any())
+                    {
+                        ApplicationDocumentModel model = document.First();
+                        pdf = await _repo.DocumentHelper.GetDocumentDataAsync(model.URL, documentName);
+                    }
+                }
+
+                if (pdf != null && pdf.Length > 0)
+                {
+                    Stream stream = new MemoryStream(pdf);
+                    stream.Position = 0;
+
+                    return File(stream, MediaTypeNames.Application.Octet, documentName);
+                }
+
+                return BadRequest($"Could not download the '{documentName}'");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Could not download the '{documentName}', {ex.Message}, {ex.InnerException?.Message}");
+            }
+        }
 
         [HttpGet("deleteAll"), AllowAnonymous]
         public IActionResult DeleteAll()
         {
             try
             {
-                 _repo.DocumentHelper.DeleteAllDocuments();
+                _repo.DocumentHelper.DeleteAllDocuments();
 
                 return Ok();
             }
@@ -93,9 +136,8 @@ namespace Aluma.API.Controllers
         }
 
 
-
         [HttpGet("application/list"), AllowAnonymous]
-        public async Task<IActionResult> ApplicationDocsList(int applicationId,int userId)
+        public async Task<IActionResult> ApplicationDocsList(int applicationId, int userId)
         {
             try
             {
