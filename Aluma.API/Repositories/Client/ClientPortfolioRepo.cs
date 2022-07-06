@@ -1,4 +1,5 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
@@ -41,8 +42,7 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientPortfolioDto> GetClientPortfolio(int clientId)
         {
-
-            ClientPortfolioDto dto = new ClientPortfolioDto();
+            ClientPortfolioDto dto = new();
             dto.Client = GetClient(clientId);
             dto.Client.User = await GetUserWithAddress(dto.Client.UserId);
             dto.FNA = GetClientFNA(dto.Client.Id);
@@ -57,8 +57,10 @@ namespace Aluma.API.Repositories
             dto.Assumptions = GetAssumptions(dto.FNA.Id);
             dto.Insurance = GetInsurances(dto.FNA.Id);
 
+            dto.DocumentList = new List<DocumentListDto>();
+            dto.DocumentList = AddDocuments(await GetUserDocuments(dto.Client.UserId), dto.DocumentList);
+            dto.DocumentList= AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
             return dto;
-
         }
 
         private async Task<UserDto> GetUserWithAddress(int userId)
@@ -296,5 +298,59 @@ namespace Aluma.API.Repositories
             }
         }
 
+
+        private async Task<List<DocumentListDto>> GetUserDocuments(int userId)
+        {
+            try
+            {
+                DocumentHelper _doc = new(_context, _config, _filestorage, _host);
+                List<DocumentListDto> docs = await _doc.GetUserDocListAsync(userId);
+
+                if (docs == null)
+                    return new();
+
+                return docs;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private async Task<List<DocumentListDto>> GetAppDocuments(int userId)
+        {
+            try
+            {
+                DocumentHelper _doc = new(_context, _config, _filestorage, _host);
+                List<DocumentListDto> docs = await _doc.GetUserDocListAsync(userId);
+
+                if (docs == null)
+                    return new();
+
+                return docs;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        private List<DocumentListDto> AddDocuments(List<DocumentListDto> addDocuments, List<DocumentListDto> currentDocuments)
+        {
+            if (currentDocuments == null)
+                currentDocuments = new List<DocumentListDto>();
+
+            if (addDocuments != null && addDocuments.Count > 0)
+            {
+                foreach (DocumentListDto doc in addDocuments)
+                {
+                    if (currentDocuments.FindAll(x => x.DocumentId == doc.DocumentId && x.UserId == doc.UserId && x.DocumentType == doc.DocumentType) == null ||
+                        currentDocuments.FindAll(x => x.DocumentId == doc.DocumentId && x.UserId == doc.UserId && x.DocumentType == doc.DocumentType).Count == 0)
+                        currentDocuments.Add(doc);
+                }
+            }
+
+            return currentDocuments;
+        }
     }
 }

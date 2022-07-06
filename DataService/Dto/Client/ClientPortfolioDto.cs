@@ -17,5 +17,6 @@ namespace DataService.Dto
         public MedicalAidDTO MedicalAid { get; set; }
         public List<InsuranceDto> Insurance { get; set; }
         public AssumptionsDto Assumptions { get; set; }
+        public List<DocumentListDto> DocumentList { get; set; }
     }
 }
