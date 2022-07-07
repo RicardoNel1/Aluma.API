@@ -50,7 +50,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 pdf = EncryptFileData(pdf);
 
                 byte[] pdfBytes = Convert.FromBase64String(pdf);
-                await _repo.DocumentHelper.SaveFNAReport(pdfBytes, DocumentTypesEnum.FNAReport, userModel);
+                await _repo.DocumentHelper.SaveDocument(pdfBytes, DocumentTypesEnum.FNAReport, userModel);
 
             }
             catch (Exception e)

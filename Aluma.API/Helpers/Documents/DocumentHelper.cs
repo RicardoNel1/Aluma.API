@@ -22,7 +22,7 @@ namespace Aluma.API.Helpers
     public interface IDocumentHelper
     {
         Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
-        Task SaveFNAReport(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user);
+        Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null);
         byte[] GetDocumentData(string url, string name);
         Task<byte[]> GetDocumentDataAsync(string url, string name);
         void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document);
@@ -157,11 +157,10 @@ namespace Aluma.API.Helpers
             return file;
         }
 
-        public async Task SaveFNAReport(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user)
+        public async Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null)
         {
-            await UploadFile(fileBytes, fileType, user, null);
+            await UploadFile(fileBytes, fileType, user, application);
         }
-
 
         public byte[] GetDocumentData(string url, string name)
         {

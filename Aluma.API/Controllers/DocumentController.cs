@@ -1,8 +1,11 @@
 ﻿using Aluma.API.RepoWrapper;
+using Aluma.API.Helpers.Extensions;
 using AutoMapper;
 using DataService.Dto;
+using DataService.Enum;
 using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -245,6 +248,27 @@ namespace Aluma.API.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("user/upload/consent/{clientId}"), DisableRequestSizeLimit, AllowAnonymous]
+        public async Task<IActionResult> UploadDocument(int clientId, IFormFile file)
+        {
+            try
+            {
+                if (file != null && file.Length > 0)
+                {
+
+                    byte[] docData = await file.GetBytes();
+                    await _repo.Client.UploadConsentForm(docData, clientId);
+                    return NoContent();
+                }
+
+                return BadRequest("There is no consent form to upload");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Could not upload selected consent form(s). {ex.Message}");
             }
         }
     }
