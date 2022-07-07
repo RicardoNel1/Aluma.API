@@ -38,6 +38,8 @@ namespace Aluma.API.Repositories
         bool DoesIDExist(ClientDto dto);
 
         ClientDto CheckForFNA(ClientDto client);
+
+        Task UploadConsentForm(byte[] fileData, int clientId);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -92,7 +94,7 @@ namespace Aluma.API.Repositories
             }
 
 
-            return response ;
+            return response;
         }
 
         public List<ClientDto> GetClientsByAdvisor(int advisorId)
@@ -346,7 +348,7 @@ namespace Aluma.API.Repositories
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
             ClientFNAModel fna = _context.clientFNA.SingleOrDefault(r => r.ClientId == client.Id);
 
-            
+
 
             //Risk Profile
             RiskProfileRepo riskRepo = new(_context, _host, _config, _mapper, _fileStorage);
@@ -371,7 +373,7 @@ namespace Aluma.API.Repositories
             }
             _context.SaveChanges();
 
-            
+
         }
 
         public bool DoesIDExist(ClientDto dto)
@@ -380,7 +382,8 @@ namespace Aluma.API.Repositories
             {
                 bool idExists = false;
 
-                if (dto.User.Id != 0) {
+                if (dto.User.Id != 0)
+                {
 
                     idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
                 }
@@ -395,6 +398,28 @@ namespace Aluma.API.Repositories
             {
                 //log error
                 return true;
+            }
+        }
+
+        public async Task UploadConsentForm(byte[] fileData, int clientId)
+        {
+            try
+            {
+                if (fileData != null && fileData.Length > 0)
+                {
+                    ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == clientId);
+                    IDocumentHelper documentHelper = new DocumentHelper(_context, _config, _fileStorage, _host);
+
+                    await documentHelper.SaveDocument(fileData, DataService.Enum.DocumentTypesEnum.ClientConsent, client.User);
+                }
+                else
+                {
+                    throw new Exception("There is no consent form to upload");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }
