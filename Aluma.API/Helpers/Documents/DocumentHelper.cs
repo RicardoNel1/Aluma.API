@@ -85,13 +85,13 @@ namespace Aluma.API.Helpers
         {
             List<DocumentListDto> doc = new();
 
-            ApplicationModel app = _context.Applications.Include(a => a.Client).Where(a => a.Id == applicationId).FirstOrDefault();
+            ApplicationModel app = await _context.Applications.Include(a => a.Client).Where(a => a.Id == applicationId).FirstOrDefaultAsync();
 
             if (app.Client.UserId == userId)
             {
                 foreach (var item in _context.ApplicationDocuments.Where(d => d.ApplicationId == app.Id))
                 {
-                    doc.Add(new DocumentListDto() { ApplicationId = app.Id, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "ApplicationDocument" });
+                    doc.Add(new DocumentListDto() { ApplicationId = app.Id, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "ApplicationDocument", Created = item.Created, Modified = item.Modified });
                 }
             }
 
@@ -102,13 +102,13 @@ namespace Aluma.API.Helpers
         {
             List<DocumentListDto> doc = new();
 
-            UserModel user = _context.Users.Where(a => a.Id == userId).FirstOrDefault();
+            UserModel user = await _context.Users.Where(a => a.Id == userId).FirstOrDefaultAsync();
 
             if (user != null)
             {
                 foreach (var item in _context.UserDocuments.Where(d => d.UserId == user.Id))
                 {
-                    doc.Add(new DocumentListDto() { ApplicationId = 0, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "UserDocument" });
+                    doc.Add(new DocumentListDto() { ApplicationId = 0, UserId = userId, DocumentId = item.Id, DocumentName = item.Name, DocumentType = "UserDocument", Created = item.Created, Modified = item.Modified });
                 }
             }
 
