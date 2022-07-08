@@ -22,7 +22,7 @@ namespace Aluma.API.Helpers
     public interface IDocumentHelper
     {
         Task PopulateAndSaveDocument(DocumentTypesEnum fileType, Dictionary<string, string> formData, UserModel user, ApplicationModel application = null);
-        Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null);
+        Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null, string filename = "");
         byte[] GetDocumentData(string url, string name);
         Task<byte[]> GetDocumentDataAsync(string url, string name);
         void UploadSignedUserFile(byte[] fileBytes, UserDocumentModel document);
@@ -63,6 +63,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.PEF2Quote,       "Aluma Capital - Private Equity - Income - Quote.pdf"},
                     {DocumentTypesEnum.FIQuote,         "Aluma Capital - Fixed Income - Quote.pdf"},
                     {DocumentTypesEnum.FNAReport,       "Aluma Capital - Financial Needs Analysis.pdf"},
+                    {DocumentTypesEnum.PolicyShedule,   "Policy Shedule.pdf"},
                 };
 
         public Dictionary<DocumentTypesEnum, string> DocumentTemplates = new()
@@ -157,9 +158,9 @@ namespace Aluma.API.Helpers
             return file;
         }
 
-        public async Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null)
+        public async Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null, string filename="")
         {
-            await UploadFile(fileBytes, fileType, user, application);
+            await UploadFile(fileBytes, fileType, user, application, filename);
         }
 
         public byte[] GetDocumentData(string url, string name)
@@ -358,7 +359,7 @@ namespace Aluma.API.Helpers
 
         }
 
-        private async Task UploadFile(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application)
+        private async Task UploadFile(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application, string filename = "")
         {
             var storageSettings = _config.GetSection("AzureSettings").Get<AzureSettingsDto>();
 
@@ -368,7 +369,7 @@ namespace Aluma.API.Helpers
             {
                 fileDirectory += $"/{application.Id}";
                 ApplicationDocumentModel adm = new();
-                var documentExist = _context.ApplicationDocuments.Where(d => d.Name == DocumentNames[fileType].ToString() && d.ApplicationId == application.Id);
+                var documentExist = _context.ApplicationDocuments.Where(d => d.Name == $"{filename}{DocumentNames[fileType]}" && d.ApplicationId == application.Id);
 
                 if (documentExist.Any())
                 {
@@ -387,7 +388,7 @@ namespace Aluma.API.Helpers
                     {
                         DocumentType = fileType,
                         FileType = FileTypesEnum.Pdf,
-                        Name = DocumentNames[fileType].ToString(),
+                        Name = $"{filename}{DocumentNames[fileType]}",
                         URL = fileDirectory,
                         ApplicationId = application.Id,
                         Size = fileBytes.Length,
@@ -399,7 +400,7 @@ namespace Aluma.API.Helpers
             else
             {
                 UserDocumentModel udm = new();
-                var documentExist = _context.UserDocuments.Where(d => d.Name == DocumentNames[fileType].ToString() && d.UserId == user.Id);
+                var documentExist = _context.UserDocuments.Where(d => d.Name == $"{filename}{DocumentNames[fileType]}" && d.UserId == user.Id);
 
                 if (documentExist.Any())
                 {
@@ -418,7 +419,7 @@ namespace Aluma.API.Helpers
                     {
                         DocumentType = fileType,
                         FileType = FileTypesEnum.Pdf,
-                        Name = DocumentNames[fileType].ToString(),
+                        Name = $"{filename}{DocumentNames[fileType]}",
                         URL = fileDirectory,
                         UserId = user.Id,
                         Size = fileBytes.Length

@@ -251,24 +251,38 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost("user/upload/consent/{clientId}"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> UploadDocument(int clientId, IFormFile file)
+        [HttpPost("user/upload/{type}/{clientId}"), DisableRequestSizeLimit, AllowAnonymous]
+        public async Task<IActionResult> UploadDocument(int clientId, string type, IFormFile file)
         {
             try
             {
                 if (file != null && file.Length > 0)
                 {
-
                     byte[] docData = await file.GetBytes();
-                    await _repo.Client.UploadConsentForm(docData, clientId);
+
+                    switch (type.ToLower())
+                    {
+                        case "consent":
+                            {
+                                await _repo.Client.UploadConsentForm(docData, clientId);
+                                break;
+                            }
+                        case "policy-schedule":
+                            {
+                                await _repo.Client.UploadOtherDocuments(docData, $"{file.FileName.Replace(".pdf", "")} ", DocumentTypesEnum.PolicyShedule, clientId);
+                                break;
+                            }
+                        default:
+                            throw new Exception("Invanid document type");
+                    }
                     return NoContent();
                 }
 
-                return BadRequest("There is no consent form to upload");
+                return BadRequest("There is no file to upload");
             }
             catch (Exception ex)
             {
-                return BadRequest($"Could not upload selected consent form(s). {ex.Message}");
+                return BadRequest($"Could not upload selected file. {ex.Message}");
             }
         }
     }
