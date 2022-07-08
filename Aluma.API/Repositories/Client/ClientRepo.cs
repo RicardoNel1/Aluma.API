@@ -40,6 +40,7 @@ namespace Aluma.API.Repositories
         ClientDto CheckForFNA(ClientDto client);
 
         Task UploadConsentForm(byte[] fileData, int clientId);
+        Task UploadOtherDocuments(byte[] fileData, string fileName, DataService.Enum.DocumentTypesEnum documentType, int clientId);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -415,6 +416,28 @@ namespace Aluma.API.Repositories
                 else
                 {
                     throw new Exception("There is no consent form to upload");
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        
+        public async Task UploadOtherDocuments(byte[] fileData, string fileName, DataService.Enum.DocumentTypesEnum documentType, int clientId)
+        {
+            try
+            {
+                if (fileData != null && fileData.Length > 0)
+                {
+                    ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == clientId);
+                    IDocumentHelper documentHelper = new DocumentHelper(_context, _config, _fileStorage, _host);
+
+                    await documentHelper.SaveDocument(fileData, documentType, client.User, null, fileName);
+                }
+                else
+                {
+                    throw new Exception("There is no file to upload");
                 }
             }
             catch (Exception)
