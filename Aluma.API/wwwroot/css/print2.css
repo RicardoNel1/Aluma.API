@@ -1,16 +1,4 @@
-@charset "utf-8";
-/* CSS Document */
-
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap");
-
-body {
-    width: 230mm;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0;
-    font-size: 12pt;
-    background: rgb(204, 204, 204);
-}
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap');
 
 img {
     display: block;
@@ -18,7 +6,7 @@ img {
 
 a {
     text-decoration: none;
-    color: #264b93;
+    color: #264B93;
 }
 
 * {
@@ -26,110 +14,86 @@ a {
     box-sizing: border-box;
 }
 
-.center {
-    display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .main-page {
-    width: 210mm;
-    min-height: 297mm;
-    max-height: 297mm;
-    margin: 10mm auto;
-    background: white;
-    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+    page-break-before: always;
+    /* page-break-after: always; */
+    /* page-break-inside: always; */
 }
 
 .sub-page-cover {
-    padding: 1cm;
-    height: 297mm;
+    padding: 0mm;
+    /* height: 1050px; */
+    height: 1000px;
     background-image: url("../images/front-cover.jpg");
-    background-repeat: no-repeat;
     background-position: center;
-    background-size: contain;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .sub-page {
-    padding: 1cm;
-    height: 297mm;
+    padding: 0mm;
+    height: 970px;
     background: white;
     position: relative;
 }
 
 @page {
     size: A4;
-    margin: 0;
-}
-
-@media print {
-    html,
-    body {
-        width: 210mm;
-        height: 297mm;
-    }
-    .main-page {
-        margin: 0;
-        border: initial;
-        border-radius: initial;
-        width: initial;
-        min-height: initial;
-        box-shadow: initial;
-        background: initial;
-        page-break-before: always;
-    }
+    /* @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+    } */
 }
 
 .coverTitle {
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-weight: 300;
-    color: #264b93;
+    color: #264B93;
     font-size: 42px;
     text-align: center;
     margin-top: 550px;
 }
 
 .coverContent {
-    font-family: "Roboto", sans-serif;
-    color: #264b93;
+    font-family: 'Roboto', sans-serif;
+    color: #264B93;
     text-align: center;
     margin-top: 40px;
 }
 
-.coverContent p {
-    font-size: 14px;
-    line-height: 10px;
-    color: #000;
-}
+    .coverContent p {
+        font-size: 14px;
+        line-height: 10px;
+        color: #000;
+    }
 
-.coverContent h3 {
-    font-size: 30px;
-    line-height: 10px;
-    font-weight: 400;
-    margin-bottom: 50px;
-}
+    .coverContent h3 {
+        font-size: 30px;
+        line-height: 10px;
+        font-weight: 400;
+        margin-bottom: 50px;
+    }
 
-.coverContent em {
-    font-weight: 700;
-    color: #264b93;
-}
+    .coverContent em {
+        font-weight: 700;
+        color: #264B93;
+    }
 
 .confidential {
     color: #000;
 }
 
-.confidential strong {
-    color: #264b93;
-}
+    .confidential strong {
+        color: #264B93;
+    }
 
 .blue {
-    color: #264b93;
+    color: #264B93;
 }
 
 .header {
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     width: 100%;
-    color: #264b93;
+    color: #264B93;
     top: 0;
     vertical-align: top;
 }
@@ -144,19 +108,19 @@ a {
     text-align: right;
 }
 
-.headerText h2 {
-    align: top;
-    font-weight: 300;
-    font-size: 32px;
-    margin: 0px;
-}
+    .headerText h2 {
+        align: top;
+        font-weight: 300;
+        font-size: 32px;
+        margin: 0px;
+    }
 
-.headerText p {
-    font-weight: 300;
-    font-size: 14px;
-    margin: 0px;
-    color: #000;
-}
+    .headerText p {
+        font-weight: 300;
+        font-size: 14px;
+        margin: 0px;
+        color: #000;
+    }
 
 .header:after {
     content: "";
@@ -165,8 +129,8 @@ a {
 }
 
 .footer {
-    font-family: "Roboto", sans-serif;
-    color: #264b93;
+    font-family: 'Roboto', sans-serif;
+    color: #264B93;
     bottom: 18px;
     position: absolute;
 }
@@ -178,11 +142,12 @@ a {
     vertical-align: bottom;
     display: block;
 }
-.footerLogo:after {
-    content: "";
-    display: table;
-    clear: both;
-}
+
+    .footerLogo:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 
 .footerText {
     float: left;
@@ -190,11 +155,12 @@ a {
     width: 615px;
     vertical-align: bottom;
 }
-.footerText:after {
-    content: "";
-    display: table;
-    clear: both;
-}
+
+    .footerText:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 
 .reg {
     font-size: 8px;
@@ -223,23 +189,23 @@ a {
 
 .content {
     margin-top: 20px;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 12px;
 }
 
-.content h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0px;
-    color: #264b93;
-}
+    .content h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0px;
+        color: #264B93;
+    }
 
-.content p {
-    margin: 3px;
-}
+    .content p {
+        margin: 3px;
+    }
 
 .border-box {
-    border: 1px solid #264b93;
+    border: 1px solid #264B93;
     padding: 2px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -307,7 +273,6 @@ a {
     width: 33.3%;
     padding: 0 8px;
     margin-top: 15px;
-    flex: 1;
 }
 
 .column-details {
@@ -315,15 +280,15 @@ a {
     margin-bottom: 5px;
 }
 
-.column-details p {
-    float: left;
-    font-size: 12px;
-}
+    .column-details p {
+        float: left;
+        font-size: 12px;
+    }
 
 .column-details-section {
     width: 32%;
     font-weight: 600;
-    color: #264b93;
+    color: #264B93;
     padding: 1px;
     padding-left: 0px;
     vertical-align: middle;
@@ -341,7 +306,7 @@ a {
 .column-address {
     width: 15%;
     font-weight: 600;
-    color: #264b93;
+    color: #264B93;
     padding: 1px;
     padding-left: 0px;
     vertical-align: middle;
@@ -356,40 +321,39 @@ a {
     min-height: 24px;
 }
 
+
 .row-personal {
     margin: 0 -5px;
-    display: flex;
 }
 
-.row-personal:after {
-    content: "";
-    display: table;
-    clear: both;
-}
+    .row-personal:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
 
 .card {
-    border: 1px solid #264b93;
+    border: 1px solid #264B93;
     border-radius: 10px;
     box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);
     padding: 10px;
     background-color: #f1f1f1;
-    height: 100%;
 }
 
-.card h2 {
-    margin: 0px;
-    margin-bottom: 8px;
-    font-size: 18px;
-    color: #264b93;
-}
+    .card h2 {
+        margin: 0px;
+        margin-bottom: 8px;
+        font-size: 18px;
+        color: #264B93;
+    }
 
-.card h3 {
-    margin: 0px;
-    margin-top: 10px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    color: #264b93;
-}
+    .card h3 {
+        margin: 0px;
+        margin-top: 10px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #264B93;
+    }
 
 /* 3 Column */
 .column-3 {
@@ -400,8 +364,7 @@ a {
     width: 60%;
 }
 
-.col-3-2,
-.col-3-3 {
+.col-3-2, .col-3-3 {
     width: 20%;
     text-align: right;
 }
@@ -411,9 +374,7 @@ a {
     float: left;
 }
 
-.col-4-1,
-.col-4-2,
-.col-4-3 {
+.col-4-1, .col-4-2, .col-4-3 {
     width: 12%;
     text-align: right;
     padding-right: 3px;
@@ -428,7 +389,7 @@ a {
 }
 
 .col-4-even-space {
-    width: 10%;
+    width: 10%
 }
 
 .col-4-even-2 {
@@ -447,15 +408,13 @@ a {
     width: 53%;
 }
 
-.col-5-1,
-.col-5-3 {
+.col-5-1, .col-5-3 {
     width: 20%;
     text-align: right;
     padding-right: 3px;
 }
 
-.col-5-2,
-.col-5-4 {
+.col-5-2, .col-5-4 {
     width: 2%;
 }
 
@@ -465,27 +424,23 @@ a {
 }
 
 .col-6-1 {
-    width: 25%;
+    width: 25%
 }
 
-.col-6-4,
-.col-6-7 {
+.col-6-4, .col-6-7 {
     width: 25%;
     padding-left: 10px;
 }
 
-.col-6-2,
-.col-6-5,
-.col-6-8 {
+.col-6-2, .col-6-5, .col-6-8 {
     width: 6%;
     text-align: right;
 }
 
-.col-6-3,
-.col-6-6,
-.col-6-9 {
+.col-6-3, .col-6-6, .col-6-9 {
     width: 2%;
 }
+
 
 /* Clear floats after the columns */
 .row:after {

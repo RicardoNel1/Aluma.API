@@ -1,5 +1,5 @@
 ﻿using DataService.Dto;
-using SelectPdf;
+//using SelectPdf;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,8 +12,11 @@ using DataService.Model;
 using AutoMapper;
 using DataService.Enum;
 using iText.Html2pdf;
-//using iText.Kernel.Pdf;
+using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Kernel.Font;
+using iText.Layout.Font;
+using iText.Html2pdf.Resolver.Font;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -21,8 +24,8 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
     public interface IDocumentBaseService
     {
         string PDFGeneration(string html);
-        Task<string> FNAHtmlGeneration(FNAReportDto dto);
-        Task SavePDF(FNAReportDto dto);
+        Task<string> FNAHtmlGeneration(FNAReportDto dto, string baseUrl);
+        Task SavePDF(FNAReportDto dto, string baseUrl);
     }
 
     public class DocumentBaseService : IDocumentBaseService
@@ -36,7 +39,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             _mapper = mapper;
         }
 
-        public async Task SavePDF(FNAReportDto dto)
+        public async Task SavePDF(FNAReportDto dto, string baseUrl)
         {
             try
             {
@@ -46,7 +49,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 UserModel userModel = _mapper.Map<UserModel>(user);
 
 
-                string pdf = PDFGeneration(await FNAHtmlGeneration(dto));
+                string pdf = PDFGeneration(await FNAHtmlGeneration(dto, baseUrl));
                 pdf = EncryptFileData(pdf);
 
                 byte[] pdfBytes = Convert.FromBase64String(pdf);
@@ -64,48 +67,70 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
         {
             try
             {
-                string pdf_page_size = "A4";
-                var pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
-                    pdf_page_size, true);
+                //string pdf_page_size = "A4";
+                //var pageSize = (PdfPageSize)Enum.Parse(typeof(PdfPageSize),
+                //    pdf_page_size, true);
 
-                string pdf_orientation = "Portrait";
-                var pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), pdf_orientation, true);
+                //string pdf_orientation = "Portrait";
+                //var pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), pdf_orientation, true);
 
 
-                // instantiate a html to pdf converter object
-                var text = new PdfTextSection(450, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
+                //// instantiate a html to pdf converter object
+                //var text = new PdfTextSection(450, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
+                //{
+                //    HorizontalAlign = PdfTextHorizontalAlign.Center
+                //};
+
+
+                //HtmlToPdf converter = new();
+                //converter.Footer.Add(text);
+
+                //converter.Options.DisplayFooter = true;
+                //converter.Footer.DisplayOnFirstPage = false;
+                //converter.Footer.DisplayOnOddPages = true;
+                //converter.Footer.DisplayOnEvenPages = true;
+                //converter.Footer.Height = 40;
+
+                //// set converter options
+                //converter.Options.PdfPageSize = pageSize;
+                //converter.Options.PdfPageOrientation = pdfOrientation;
+                //converter.Options.DrawBackground = false;
+
+                //byte[] file = new byte[0];
+                //using (MemoryStream ms = new())
+                //{
+                //    // create a new pdf document converting a html string
+                //    PdfDocument doc = converter.ConvertHtmlString(html);
+
+                //    //TODO: doc.Security.UserPassword = client.user.rsaid
+
+                //    doc.Save(ms);
+                //    doc.Close();
+
+                //    file = ms.ToArray();
+                //};
+
+                var writerProperties = new WriterProperties();
+                writerProperties.SetFullCompressionMode(true);
+
+                using var workStream = new MemoryStream();
+                using (var pdfWriter = new PdfWriter(workStream, writerProperties))
                 {
-                    HorizontalAlign = PdfTextHorizontalAlign.Center
-                };
+                    ConverterProperties properties = new ConverterProperties();
+                    //properties.SetBaseUri(baseUrl);
+                    properties.SetFontProvider(new DefaultFontProvider(false,false,false));
+                    
 
+                    pdfWriter.Flush();
+                    pdfWriter.SetCloseStream(false);
+                    pdfWriter.ConfigureAwait(true);
+                    using (var document = HtmlConverter.ConvertToDocument(html, pdfWriter, properties))
+                    {
+                        document.SetMargins(0, 0, 0, 0);
+                    }
+                }
 
-                HtmlToPdf converter = new();
-                converter.Footer.Add(text);
-
-                converter.Options.DisplayFooter = true;
-                converter.Footer.DisplayOnFirstPage = false;
-                converter.Footer.DisplayOnOddPages = true;
-                converter.Footer.DisplayOnEvenPages = true;
-                converter.Footer.Height = 40;
-
-                // set converter options
-                converter.Options.PdfPageSize = pageSize;
-                converter.Options.PdfPageOrientation = pdfOrientation;
-                converter.Options.DrawBackground = false;
-
-                byte[] file = new byte[0];
-                using (MemoryStream ms = new())
-                {
-                    // create a new pdf document converting a html string
-                    PdfDocument doc = converter.ConvertHtmlString(html);
-
-                    //TODO: doc.Security.UserPassword = client.user.rsaid
-
-                    doc.Save(ms);
-                    doc.Close();
-
-                    file = ms.ToArray();
-                };
+                byte[] file = workStream.ToArray();
 
                 return Convert.ToBase64String(file);
             }
@@ -115,7 +140,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             }
         }
 
-        public async Task<string> FNAHtmlGeneration(FNAReportDto dto)
+        public async Task<string> FNAHtmlGeneration(FNAReportDto dto, string baseUrl)
         {
             IFNAModulesService _fNAModulesService = new FNAModulesService(_repo);
             IGraphService _graphService = new GraphService();
@@ -127,13 +152,18 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     return null;
 
                 string version = "1.0";
-                string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png");
-                string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg");
-                string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png");
+                // string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png");
+                // string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg");
+                // string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png");
+
+                string logo = $@"{baseUrl}img/aluma-logo-2.png";
+                string frontCover = $@"{baseUrl}img/front-cover.jpg";
+                string spacer = $@"{baseUrl}img/spacer.png";
+
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
-                string css = _fNAModulesService.GetCSS();
+                string css = _fNAModulesService.GetCSS(baseUrl);
 
 
                 IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);

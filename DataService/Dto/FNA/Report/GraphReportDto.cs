@@ -21,7 +21,7 @@ namespace DataService.Dto
         public string XaxisHeader { get; set; }
         public string YaxisHeader { get; set; }
         public int Height { get; set; } = 500;
-        public int Width { get; set; } = 900;
+        public int Width { get; set; } = 710;
         public List<string> Data { get; set; }
     }
 

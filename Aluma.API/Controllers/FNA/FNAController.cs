@@ -71,10 +71,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("get_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport( int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
+        public async Task<IActionResult> GetFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
         {
             try
             {
+
                 FNAReportDto dto = new FNAReportDto()
                 {
                     FNAId = fnaId,
@@ -85,7 +86,9 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = retirementPlanning
                 };
 
-                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
+                var urlBuilder = new UriBuilder($"{Request.Scheme}://{Request.Host.Value}");
+                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()));
+
                 byte[] pdf = Convert.FromBase64String(base64result);
 
                 if (pdf != null && pdf.Length > 0)
@@ -119,7 +122,8 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = petirementPlanning
                 };
 
-                await _documentService.SavePDF(dto);
+                var urlBuilder = new UriBuilder(Request.PathBase);
+                await _documentService.SavePDF(dto, urlBuilder.ToString());
 
                 return NoContent();
             }

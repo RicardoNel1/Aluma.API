@@ -4,8 +4,19 @@
 <head>
     <title>FNA Report</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <style rel="stylesheet" type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap');
+    <style>
+        @charset "utf-8";
+        /* CSS Document */
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap");
+
+        body {
+            width: 230mm;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 12pt;
+            background: rgb(204, 204, 204);
+        }
 
         img {
             display: block;
@@ -13,7 +24,7 @@
 
         a {
             text-decoration: none;
-            color: #264B93;
+            color: #264b93;
         }
 
         * {
@@ -21,42 +32,74 @@
             box-sizing: border-box;
         }
 
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .main-page {
-            page-break-before: always;
+            width: 210mm;
+            min-height: 297mm;
+            max-height: 297mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
         }
 
         .sub-page-cover {
             padding: 1cm;
-            height: 1350px;
-            background-image: url("C:/Users/Admin/OneDrive - Status Holdings/Projects/Aluma/Aluma.API/Aluma.API/bin/Debug/net5.0/wwwroot/img/front-cover.jpg");
-            background-position: center;
+            height: 297mm;
+            background-image: url("https://localhost:5001/img/front-cover.jpg");
             background-repeat: no-repeat;
-            background-size: cover;
+            background-position: center;
+            background-size: contain;
         }
 
         .sub-page {
             padding: 1cm;
-            height: 1330px;
+            height: 297mm;
             background: white;
             position: relative;
         }
 
         @page {
             size: A4;
+            margin: 0;
+        }
+
+        @media print {
+
+            html,
+            body {
+                width: 210mm;
+                height: 297mm;
+            }
+
+            .main-page {
+                margin: 0;
+                border: initial;
+                border-radius: initial;
+                width: initial;
+                min-height: initial;
+                box-shadow: initial;
+                background: initial;
+                page-break-before: always;
+            }
         }
 
         .coverTitle {
-            font-family: 'Roboto', sans-serif;
+            font-family: "Roboto", sans-serif;
             font-weight: 300;
-            color: #264B93;
+            color: #264b93;
             font-size: 42px;
             text-align: center;
             margin-top: 550px;
         }
 
         .coverContent {
-            font-family: 'Roboto', sans-serif;
-            color: #264B93;
+            font-family: "Roboto", sans-serif;
+            color: #264b93;
             text-align: center;
             margin-top: 40px;
         }
@@ -76,7 +119,7 @@
 
         .coverContent em {
             font-weight: 700;
-            color: #264B93;
+            color: #264b93;
         }
 
         .confidential {
@@ -84,17 +127,17 @@
         }
 
         .confidential strong {
-            color: #264B93;
+            color: #264b93;
         }
 
         .blue {
-            color: #264B93;
+            color: #264b93;
         }
 
         .header {
-            font-family: 'Roboto', sans-serif;
+            font-family: "Roboto", sans-serif;
             width: 100%;
-            color: #264B93;
+            color: #264b93;
             top: 0;
             vertical-align: top;
         }
@@ -130,8 +173,8 @@
         }
 
         .footer {
-            font-family: 'Roboto', sans-serif;
-            color: #264B93;
+            font-family: "Roboto", sans-serif;
+            color: #264b93;
             bottom: 18px;
             position: absolute;
         }
@@ -190,7 +233,7 @@
 
         .content {
             margin-top: 20px;
-            font-family: 'Roboto', sans-serif;
+            font-family: "Roboto", sans-serif;
             font-size: 12px;
         }
 
@@ -198,7 +241,7 @@
             font-size: 15px;
             font-weight: 600;
             margin: 0px;
-            color: #264B93;
+            color: #264b93;
         }
 
         .content p {
@@ -206,7 +249,7 @@
         }
 
         .border-box {
-            border: 1px solid #264B93;
+            border: 1px solid #264b93;
             padding: 2px;
             border-radius: 5px;
             margin-bottom: 10px;
@@ -274,6 +317,7 @@
             width: 33.3%;
             padding: 0 8px;
             margin-top: 15px;
+            flex: 1;
         }
 
         .column-details {
@@ -289,7 +333,7 @@
         .column-details-section {
             width: 32%;
             font-weight: 600;
-            color: #264B93;
+            color: #264b93;
             padding: 1px;
             padding-left: 0px;
             vertical-align: middle;
@@ -307,7 +351,7 @@
         .column-address {
             width: 15%;
             font-weight: 600;
-            color: #264B93;
+            color: #264b93;
             padding: 1px;
             padding-left: 0px;
             vertical-align: middle;
@@ -319,10 +363,12 @@
             border-radius: 3px;
             background-color: #ffffff;
             padding: 1px;
+            min-height: 24px;
         }
 
         .row-personal {
             margin: 0 -5px;
+            display: flex;
         }
 
         .row-personal:after {
@@ -332,18 +378,19 @@
         }
 
         .card {
-            border: 1px solid #264B93;
+            border: 1px solid #264b93;
             border-radius: 10px;
             box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2);
             padding: 10px;
             background-color: #f1f1f1;
+            height: 100%;
         }
 
         .card h2 {
             margin: 0px;
             margin-bottom: 8px;
             font-size: 18px;
-            color: #264B93;
+            color: #264b93;
         }
 
         .card h3 {
@@ -351,7 +398,7 @@
             margin-top: 10px;
             margin-bottom: 8px;
             font-size: 14px;
-            color: #264B93;
+            color: #264b93;
         }
 
         /* 3 Column */
@@ -391,7 +438,7 @@
         }
 
         .col-4-even-space {
-            width: 10%
+            width: 10%;
         }
 
         .col-4-even-2 {
@@ -427,7 +474,7 @@
         }
 
         .col-6-1 {
-            width: 25%
+            width: 25%;
         }
 
         .col-6-4,
@@ -459,29 +506,27 @@
 </head>
 
 <body>
-    <div>
+    <div class="main-page">
         <div class="sub-page-cover">
-            <center><img
-                    src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                    width="190" height="188" alt=""></center>
+            <img src="https://localhost:5001/img/aluma-logo-2.png" width="190" height="188" alt="Aluma Logo"
+                class="center">
             <div class="coverTitle"> Financial Needs Analysis </div>
             <div class="coverContent">
                 <p>Prepared for</p>
-                <h3>Mirishikiari Kuarinokitomozika</h3> <span class="confidential"> <em>Strictly Confidential:</em> This
-                    report is based on information provided by the client.<br /> <strong>NB:</strong> This document is
-                    for discussion purposes only </span>
+                <h3>Élodie Rivière</h3> <span class="confidential"> <em>Strictly Confidential:</em> This report is based
+                    on information provided by the client.<br /> <strong>NB:</strong> This document is for discussion
+                    purposes only </span>
             </div>
         </div>
     </div><!-- Start of Personal Details print -->
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
+                <div class="headerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt="">
+                </div>
                 <div class="headerText">
                     <h2>Personal Details</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -495,7 +540,7 @@
                                     <p>Surname</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>Pool</p>
+                                    <p>Rivière</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -503,7 +548,7 @@
                                     <p>First Name</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>Dead</p>
+                                    <p>Élodie</p>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 14px;">
@@ -511,7 +556,7 @@
                                     <p>ID Number</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>9211045800087</p>
+                                    <p>7408042951085</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -519,7 +564,7 @@
                                     <p>Date of birth</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>1992-11-04</p>
+                                    <p>1974-08-04</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -527,7 +572,7 @@
                                     <p>Age (DOB)</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>29</p>
+                                    <p>47</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -535,7 +580,7 @@
                                     <p>Gender</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>Male</p>
+                                    <p>Female</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -543,7 +588,7 @@
                                     <p>Life Expectancy</p>
                                 </div>
                                 <div class="column-details column-details-info">
-                                    <p>81</p>
+                                    <p>90</p>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 14px;">
@@ -707,7 +752,7 @@
                                     <p>Total Assets</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R1 175 000,00</p>
+                                    <p>R1 503 000,00</p>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 14px;">
@@ -715,7 +760,7 @@
                                     <p>Liquid Assets</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R1 000,00</p>
+                                    <p>R1 502 000,00</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -723,15 +768,15 @@
                                     <p>Liabilities</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>(R11 000,00)</p>
+                                    <p>(R62 213,00)</p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="column-2 col-2-item">
-                                    <p>Liquid Shortfall</p>
+                                    <p>Liquid Surplus</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>(R10 000,00)</p>
+                                    <p>R1 439 787,00</p>
                                 </div>
                             </div>
                         </div>
@@ -744,7 +789,7 @@
                                     <p>Surplus</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R0,00</p>
+                                    <p>R4 786,00</p>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 14px;">
@@ -752,7 +797,7 @@
                                     <p>Savings required</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R0,00</p>
+                                    <p>(R16,00)</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -760,7 +805,7 @@
                                     <p>Escalating at</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>0</p>
+                                    <p>6 %</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -768,7 +813,7 @@
                                     <p>Years to retirement</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>39</p>
+                                    <p>18</p>
                                 </div>
                             </div>
                         </div>
@@ -778,10 +823,10 @@
                             <h2>Providing</h2>
                             <div class="row">
                                 <div class="column-2 col-2-item">
-                                    <p>Death Surplus</p>
+                                    <p>Death Shortfall</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R0,00</p>
+                                    <p>(R5 873 990,00)</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -789,7 +834,7 @@
                                     <p>Disability Surplus</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R0,00</p>
+                                    <p>R1 493 000,00</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -797,15 +842,15 @@
                                     <p>Dread Disease Surplus</p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p>R0,00</p>
+                                    <p>R351 000,00</p>
                                 </div>
                             </div>
                             <div class="row" style="margin-top: 14px;">
                                 <div class="column-2 col-2-item">
-                                    <p> </p>
+                                    <p> </p>
                                 </div>
                                 <div class="column-2 col-2-amount">
-                                    <p> </p>
+                                    <p> </p>
                                 </div>
                             </div>
                         </div>
@@ -814,9 +859,8 @@
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
+                    <div class="footerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
                             Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
@@ -824,7 +868,8 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
+                                and Intermediary Services Act (37 of 2002)</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
@@ -838,12 +883,11 @@
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
+                <div class="headerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt="">
+                </div>
                 <div class="headerText">
                     <h2>Providing on Death - Income - Solution</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -855,20 +899,20 @@
                             <p>Total Capital</p>
                         </div>
                         <div class="column-4 col-4-1">
-                            <!-- <p> </p> -->
+                            <!-- <p> </p> -->
                         </div>
                         <div class="column-4 col-4-2">
                             <p>R0,00</p>
                         </div>
-                        <div class="column-4 col-4-2"> </div>
-                        <div class="column-4 col-4-3"> </div>
+                        <div class="column-4 col-4-2">   </div>
+                        <div class="column-4 col-4-3">   </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Total Available Capital and Capitalized Income</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
                             <p><strong>R0,00</strong></p>
                         </div>
@@ -883,40 +927,40 @@
                         <div class="column-4 col-4-1">
                             <p>R0,00</p>
                         </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
-                            <!-- <p> </p> -->
+                            <!-- <p> </p> -->
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p>Surplus - Providing for dependants</p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-1"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-1">   </div>
                         <div class="column-4 col-4-2">
                             <p>R0,00</p>
                         </div>
                         <div class="column-4 col-4-3">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Surplus - Settling Estate</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
-                            <p><strong>R1 000,00</strong></p>
+                            <p><strong>R500,00</strong></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Total Surplus on Death</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
                             <p><strong>R0,00</strong></p>
                         </div>
@@ -929,28 +973,28 @@
                             <p>Client Age</p>
                         </div>
                         <div class="column-6 col-6-2">
-                            <p>26</p>
+                            <p>47</p>
                         </div>
                         <div class="column-6 col-6-3">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-4">
                             <p>Life Expectancy</p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p>81</p>
+                            <p>90</p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-4">
                             <p>Yrs till life expectancy</p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p>55</p>
+                            <p>43</p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                     <div class="row">
@@ -973,36 +1017,35 @@
                             <p>%</p>
                         </div>
                         <div class="column-6 col-6-4">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="border-box">
-                        <center>
-                            <div id="Graph_Income" style="height: 350px; width: 900px; "></div>
-                        </center>
+                        <div class="center">
+                            <div id="Graph_Income" style="height: 250px; width: 710px; "></div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="border-box">
-                        <center>
-                            <div id="Graph_Lumpsum" style="height: 350px; width: 900px; "></div>
-                        </center>
+                        <div class="center">
+                            <div id="Graph_Lumpsum" style="height: 250px; width: 710px; "></div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
+                    <div class="footerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
                             Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
@@ -1010,7 +1053,8 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
+                                and Intermediary Services Act (37 of 2002)</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1019,16 +1063,16 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div><!-- End of Providing on Death - Solution print -->
+    <!-- Start of Providing on Death - Solution print -->
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
+                <div class="headerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt="">
+                </div>
                 <div class="headerText">
                     <h2>Providing on Death - Capitalized - Solution</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1040,20 +1084,20 @@
                             <p>Total Capital</p>
                         </div>
                         <div class="column-4 col-4-1">
-                            <!-- <p> </p> -->
+                            <p> </p>
                         </div>
                         <div class="column-4 col-4-2">
                             <p>R0,00</p>
                         </div>
-                        <div class="column-4 col-4-2"> </div>
-                        <div class="column-4 col-4-3"> </div>
+                        <div class="column-4 col-4-2">   </div>
+                        <div class="column-4 col-4-3">   </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Total Available Capital and Capitalized Income</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
                             <p><strong>R0,00</strong></p>
                         </div>
@@ -1068,40 +1112,40 @@
                         <div class="column-4 col-4-1">
                             <p>R0,00</p>
                         </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
-                            <!-- <p> </p> -->
+                            <p> </p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p>Surplus - Providing for dependants</p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-1"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-1">   </div>
                         <div class="column-4 col-4-2">
                             <p>R0,00</p>
                         </div>
                         <div class="column-4 col-4-3">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Surplus - Settling Estate</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
-                            <p><strong>R1 000,00</strong></p>
+                            <p><strong>R500,00</strong></p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="column-4 col-4">
                             <p><strong>Total Surplus on Death</strong></p>
                         </div>
-                        <div class="column-4 col-4-1"> </div>
-                        <div class="column-4 col-4-2"> </div>
+                        <div class="column-4 col-4-1">   </div>
+                        <div class="column-4 col-4-2">   </div>
                         <div class="column-4 col-4-3">
                             <p><strong>R0,00</strong></p>
                         </div>
@@ -1114,28 +1158,28 @@
                             <p>Client Age</p>
                         </div>
                         <div class="column-6 col-6-2">
-                            <p>26</p>
+                            <p>47</p>
                         </div>
                         <div class="column-6 col-6-3">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-4">
                             <p>Life Expectancy</p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p>81</p>
+                            <p>90</p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-4">
                             <p>Yrs till life expectancy</p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p>55</p>
+                            <p>43</p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                     <div class="row">
@@ -1158,29 +1202,28 @@
                             <p>%</p>
                         </div>
                         <div class="column-6 col-6-4">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-5">
-                            <p> </p>
+                            <p> </p>
                         </div>
                         <div class="column-6 col-6-6">
-                            <p> </p>
+                            <p> </p>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="border-box">
-                        <center>
-                            <div id="Graph_Capitalized" style="height: 350px; width: 900px; "></div>
-                        </center>
+                        <div class="center">
+                            <div id="Graph_Capitalized" style="height: 250px; width: 710px; "></div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
+                    <div class="footerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
                             Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
@@ -1188,7 +1231,8 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
+                                and Intermediary Services Act (37 of 2002)</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1202,12 +1246,11 @@
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
+                <div class="headerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt="">
+                </div>
                 <div class="headerText">
                     <h2>Providing on Disability - Capital Solution</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1222,10 +1265,10 @@
                                         <p>Income needs (pm)</p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p>R0,00</p>
+                                        <p>R50 000,00</p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1233,10 +1276,10 @@
                                         <p>Term (years)</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>0</p>
+                                        <p>10</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1247,7 +1290,7 @@
                                         <p>6 %</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1255,10 +1298,10 @@
                                         <p>Capital Needs</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>R0,00</p>
+                                        <p>R10 000,00</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                             </div>
@@ -1274,7 +1317,7 @@
                                         <p>R0,00</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1285,7 +1328,7 @@
                                         <p>R0,00</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1296,7 +1339,7 @@
                                         <p></p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                             </div>
@@ -1311,10 +1354,10 @@
                                         <p>Age</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>26</p>
+                                        <p>47</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1325,7 +1368,7 @@
                                         <p>65</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1333,10 +1376,10 @@
                                         <p>Life Expactancy</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>81</p>
+                                        <p>90</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1344,10 +1387,10 @@
                                         <p>Years till Retirement</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>39</p>
+                                        <p>18</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1355,10 +1398,10 @@
                                         <p>Economic Assumptions:</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -1388,10 +1431,10 @@
                                         <p>Current net income (pm)</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>R0,00</p>
+                                        <p>R38 106,00</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                             </div>
@@ -1406,10 +1449,10 @@
                                 <p>Total Needs (Capital- and Capitalized Income needs)</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R38 106,00</p>
                             </div>
                         </div>
                         <div class="row">
@@ -1417,10 +1460,10 @@
                                 <p style="padding-left:20px;">Capital needs</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R10 500,00</p>
                             </div>
                         </div>
                         <div class="row">
@@ -1428,10 +1471,10 @@
                                 <p style="padding-left:20px;">Capitalized Income shortfall</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R659 040,00</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
@@ -1439,7 +1482,7 @@
                                 <p>Available Capital</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
                                 <p></p>
@@ -1450,28 +1493,27 @@
                                 <p>Total Capital Surplus</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R1 493 000,00</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--<div class="row" style="margin-bottom:20px;">                    <div class="column-3 col-3-1">                        <p class="blue">Maximum additional Capital disability allowed</p>                    </div>                    <div class="column-3 col-3-2">                        <p class="blue"></p>                    </div>                    <div class="column-3 col-3-3">                        <p> </p>                    </div>                </div>-->
+                <!--<div class="row" style="margin-bottom:20px;">                    <div class="column-3 col-3-1">                        <p class="blue">Maximum additional Capital disability allowed</p>                    </div>                    <div class="column-3 col-3-2">                        <p class="blue"></p>                    </div>                    <div class="column-3 col-3-3">                        <p> </p>                    </div>                </div>-->
                 <div class="row">
                     <div class="border-box">
-                        <center>
-                            <div id="Graph_Capital_Solution" style="height: 500px; width: 900px; "></div>
-                        </center>
+                        <div class="center">
+                            <div id="Graph_Capital_Solution" style="height: 250px; width: 710px; "></div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
+                    <div class="footerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
                             Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
@@ -1479,7 +1521,8 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
+                                and Intermediary Services Act (37 of 2002)</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1493,12 +1536,11 @@
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
+                <div class="headerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt="">
+                </div>
                 <div class="headerText">
                     <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1507,13 +1549,13 @@
                     <div class="border-box">
                         <div class="row">
                             <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
+                                <h3>Available Needs</h3>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p> </p>
+                                <p> </p>
                             </div>
                         </div>
                         <div class="row">
@@ -1521,10 +1563,10 @@
                                 <p style="padding-left:20px;">Capital needs</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R50 000,00</p>
                             </div>
                         </div>
                         <div class="row">
@@ -1532,7 +1574,7 @@
                                 <p style="padding-left:40px;">And / or</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
                                 <p></p>
@@ -1543,10 +1585,10 @@
                                 <p style="padding-left:20px;">Multiple of gross annual salary</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R3 600 000,00</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
@@ -1554,10 +1596,10 @@
                                 <p><strong>Total needs</strong></p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
+                                <p><strong>R3 650 000,00</strong></p>
                             </div>
                         </div>
                     </div>
@@ -1569,21 +1611,32 @@
                                 <h3>Available Capital</h3>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p> </p>
+                                <p> </p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
+                                <p style="padding-left:20px;">Capital Available</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R1 000,00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p style="padding-left:20px;">Other</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p> </p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p>R4 000 000,00</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">
@@ -1591,10 +1644,10 @@
                                 <p><strong>Total Available Capital</strong></p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
+                                <p><strong>R4 001 000,00</strong></p>
                             </div>
                         </div>
                     </div>
@@ -1607,10 +1660,10 @@
                                 </h3>
                             </div>
                             <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
+                                <h3 style="margin-bottom:0px !important;">R351 000,00</h3>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p> </p>
+                                <p> </p>
                             </div>
                         </div>
                     </div>
@@ -1620,10 +1673,10 @@
                         <p class="blue">Maximum Dread Disease cover allowed</p>
                     </div>
                     <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
+                        <p class="blue">R6 000 000,00</p>
                     </div>
                     <div class="column-3 col-3-3">
-                        <p> </p>
+                        <p> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1634,33 +1687,33 @@
                                 <p>Age</p>
                             </div>
                             <div class="column-3 col-4-even-2">
-                                <p>26</p>
+                                <p>47</p>
                             </div>
                             <div class="column-3 col-4-even-space">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-4-even">
                                 <p>Current net income (pm)</p>
                             </div>
                             <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
+                                <p>R38 106,00</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="column-4 col-4-even">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-4-even-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-4-even-space">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-4-even">
                                 <p>Gross monthly income</p>
                             </div>
                             <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
+                                <p>R50 000,00</p>
                             </div>
                         </div>
                     </div>
@@ -1668,9 +1721,8 @@
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
+                    <div class="footerLogo"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
                             Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
@@ -1678,1201 +1730,8 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="footerTitle"> <strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
-                        Providing on Dread Disease - Analysis </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Providing on Dread Disease - Solution print -->
-    <div class="main-page">
-        <div class="sub-page">
-            <div class="header">
-                <div class="headerLogo"> <img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""> </div>
-                <div class="headerText">
-                    <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
-                    <p>Version: 1.0</p>
-                </div>
-            </div>
-            <div class="content">
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Provisions</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Capital needs</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:40px;">And / or</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p></p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;">Multiple of gross annual salary</p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total needs</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3>Available Capital</h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <p style="padding-left:20px;"></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-top:10px;">
-                            <div class="column-3 col-3-1">
-                                <p><strong>Total Available Capital</strong></p>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <div class="row">
-                            <div class="column-3 col-3-1">
-                                <h3 style="margin-bottom:0px !important;color:#000 !important;">Surplus on Dread Disease
-                                </h3>
-                            </div>
-                            <div class="column-3 col-3-2">
-                                <h3 style="margin-bottom:0px !important;">R0,00</h3>
-                            </div>
-                            <div class="column-3 col-3-3">
-                                <p> </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column-3 col-3-1">
-                        <p class="blue">Maximum Dread Disease cover allowed</p>
-                    </div>
-                    <div class="column-3 col-3-2">
-                        <p class="blue">R6 000 000,00</p>
-                    </div>
-                    <div class="column-3 col-3-3">
-                        <p> </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="border-box">
-                        <h3>Assumptions</h3>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p>Age</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>26</p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Current net income (pm)</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="column-4 col-4-even">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even-space">
-                                <p> </p>
-                            </div>
-                            <div class="column-3 col-4-even">
-                                <p>Gross monthly income</p>
-                            </div>
-                            <div class="column-3 col-4-even-2">
-                                <p>R0,00</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="footer">
-                <div class="row">
-                    <div class="footerLogo"> <img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""> </div>
-                    <div class="footerText">
-                        <p> <strong>Aluma Capital (Pty) Ltd</strong><br /> Fintech Campus, Cnr Lynnwood and
-                            Botterklapper, The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br />
-                            <strong>Email:</strong> <a href="mailto:info@aluma.co.za">info@aluma.co.za</a> |
-                            <strong>Web:</strong> <a href="https://aluma.co.za"
-                                target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
-                                Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span> </p>
+                                and Intermediary Services Act (37 of 2002)</span>
+                        </p>
                     </div>
                 </div>
                 <div class="row">
@@ -2886,12 +1745,10 @@
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
-                <div class="headerLogo"><img
-                        src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                        width="100" alt=""></div>
+                <div class="headerLogo"><img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt=""></div>
                 <div class="headerText">
                     <h2>Providing on Retirement - Solution</h2>
-                    <p>FNA Completion Date: 2022/06/27</p>
+                    <p>FNA Completion Date: 2022/07/11</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -2906,16 +1763,16 @@
                                         <p>Income needs (pm)</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p>R30 000,00</p>
+                                        <p>R50 000,00</p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -2923,16 +1780,16 @@
                                         <p style="padding-left:20px;">Term (years)</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p>39</p>
+                                        <p>10</p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -2940,10 +1797,10 @@
                                         <p style="padding-left:20px;">Escalation</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
                                         <p>6</p>
@@ -2957,16 +1814,16 @@
                                         <p>Capital needs</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p>R0,00</p>
+                                        <p>R16 424 441,00</p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -2974,16 +1831,16 @@
                                         <p style="padding-left:10px;">Capital needs</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
                                         <p>R500,00</p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -2991,16 +1848,16 @@
                                         <p style="padding-left:20px;">Outstanding liabilities at Retirement</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
                                         <p>R500,00</p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                             </div>
@@ -3013,16 +1870,16 @@
                                         <p style="padding-left:20px;">Available Capital</p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p>R15 847 184,00 FV</p>
+                                        <p>R4 859,00 FV</p>
                                     </div>
                                     <div class="column-5 col-5-2">
                                         <p>%</p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3033,13 +1890,13 @@
                                         <p>R0,00</p>
                                     </div>
                                     <div class="column-5 col-5-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3047,16 +1904,16 @@
                                         <p><strong>Available Income Capitalized</strong></p>
                                     </div>
                                     <div class="column-5 col-5-1">
-                                        <p><strong>R0,00</strong></p>
+                                        <p><strong>R16 429 227,00</strong></p>
                                     </div>
                                     <div class="column-5 col-5-2">
                                         <p>FV</p>
                                     </div>
                                     <div class="column-5 col-5-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-5 col-5-4">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                             </div>
@@ -3071,10 +1928,10 @@
                                         <p>Age</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>26</p>
+                                        <p>47</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3085,7 +1942,7 @@
                                         <p>65</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3093,10 +1950,10 @@
                                         <p>Years before retirement</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>39</p>
+                                        <p>18</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3104,10 +1961,10 @@
                                         <p>Years after retirement</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>16</p>
+                                        <p>25</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3115,10 +1972,10 @@
                                         <p>Life Expectancy</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>81</p>
+                                        <p>90</p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top:35px;">
@@ -3126,10 +1983,10 @@
                                         <p>Conservative</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                     <div class="column-2 col-2-3">
-                                        <p> </p>
+                                        <p> </p>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -3137,7 +1994,7 @@
                                         <p>Investment Returns</p>
                                     </div>
                                     <div class="column-2 col-2-2">
-                                        <p>0</p>
+                                        <p>7</p>
                                     </div>
                                     <div class="column-2 col-2-3">
                                         <p>%</p>
@@ -3160,15 +2017,15 @@
                 </div>
                 <div class="row">
                     <div class="column-2 col-2">
-                        <p> </p>
+                        <p> </p>
                     </div>
                     <div class="column-2 col-2">
-                        <p> </p>
+                        <p> </p>
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 10px;">
-                    <p class="blue">At a monthly net income withdrawal of R R30 000,00, your Capital will be exhausted
-                        after 44 years.</p>
+                    <p class="blue">At a monthly net income withdrawal of R R50 000,00, your Capital will be exhausted
+                        after 0 years.</p>
                 </div>
                 <div class="row">
                     <h3>Solution</h3>
@@ -3178,10 +2035,10 @@
                                 <p>Total Available Capital and Capitalized Income</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R16 429 227,00</p>
                             </div>
                         </div>
                         <div class="row">
@@ -3189,10 +2046,10 @@
                                 <p>Less - Total Capital needs and Capitalized Income needs</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p>R0,00</p>
+                                <p>R16 424 441,00</p>
                             </div>
                         </div>
                         <div class="row">
@@ -3203,7 +2060,7 @@
                                 <p>R0,00</p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p> </p>
+                                <p> </p>
                             </div>
                         </div>
                         <div class="row">
@@ -3214,7 +2071,7 @@
                                 <p>R500,00</p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p> </p>
+                                <p> </p>
                             </div>
                         </div>
                         <div class="row">
@@ -3222,10 +2079,10 @@
                                 <p><strong>Total Capital Shortfall</strong></p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p> </p>
+                                <p> </p>
                             </div>
                             <div class="column-3 col-3-3">
-                                <p><strong>R0,00</strong></p>
+                                <p><strong>R4 786,00</strong></p>
                             </div>
                         </div>
                         <div class="row">
@@ -3233,34 +2090,33 @@
                                 <p style="padding-left:20px;">Monthly savings required:</p>
                             </div>
                             <div class="column-3 col-3-2">
-                                <p>R0,00</p>
+                                <p>(R16,00)</p>
                             </div>
                             <div class="column-3 col-3-3">
                                 <p>escalating at 0% per annum</p>
                             </div>
                         </div>
-                        <!--<div class="row"><div class="column-4 col-4-even"><p>Monthly savings required:</p></div><div class="column-3 col-4-even-2"><p>R0,00</p></div><div class="column-4 col-4-even-space"><p> </p></div><div class="column-3 col-4-even"><p>escalating at 0% per annum</p></div></div>-->
+                        <!--<div class="row"><div class="column-4 col-4-even"><p>Monthly savings required:</p></div><div class="column-3 col-4-even-2"><p>(R16,00)</p></div><div class="column-4 col-4-even-space"><p> </p></div><div class="column-3 col-4-even"><p>escalating at 0% per annum</p></div></div>-->
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="border-box">
-                    <center>
-                        <div id="Graph_Capital_position_over_planning_term" style="height: 260px; width: 900px; "></div>
-                    </center>
+                    <div class="center">
+                        <div id="Graph_Capital_position_over_planning_term" style="height: 250px; width: 710px; "></div>
+                    </div>
                 </div>
                 <div class="border-box">
-                    <center>
-                        <div id="Graph_Annual_Income_position_over_planning_term" style="height: 260px; width: 900px; ">
+                    <div class="center">
+                        <div id="Graph_Annual_Income_position_over_planning_term" style="height: 250px; width: 710px; ">
                         </div>
-                    </center>
+                    </div>
                 </div>
             </div>
             <div class="footer">
                 <div class="row">
-                    <div class="footerLogo"><img
-                            src="C:\Users\Admin\OneDrive - Status Holdings\Projects\Aluma\Aluma.API\Aluma.API\bin\Debug\et5.0\wwwroot\img\aluma-logo-2.png"
-                            width="60" alt=""></div>
+                    <div class="footerLogo"><img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
                     <div class="footerText">
                         <p><strong>Aluma Capital (Pty) Ltd</strong><br />Fintech Campus, Cnr Lynnwood and Botterklapper,
                             The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br /><strong>Email:</strong> <a
@@ -3279,6 +2135,6 @@
     </div><!-- End of Retirement Planning - Solution print -->
 </body>
 <script
-    type='text/javascript'> google.charts.load("current", { packages: ["corechart"] }); google.charts.setOnLoadCallback(drawGraph_IncomeChart); function drawGraph_IncomeChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Insurance: ', 0], ['Retirement Surplus', 0], ['Available Pre-Tax Income', 0],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Income')); var options = { title: 'Income', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_LumpsumChart); function drawGraph_LumpsumChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Income Needs', 0], ['Capital Needs', 0],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Lumpsum')); var options = { title: 'Lumpsum', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_CapitalizedChart); function drawGraph_CapitalizedChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Total Income Surplus', 0], ['Total lumpsum Surplus', 1000],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capitalized')); var options = { title: 'Capitalized', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_SolutionChart); function drawGraph_Capital_SolutionChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Capitalized Income Shortfall', 0], ['Lump sum Needs', 0], ['Available Lump sum', 0], ['Total Lump sum Surplus', 0],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capital_Solution')); var options = { title: 'Capital Solution', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_position_over_planning_termChart); function drawGraph_Capital_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', 0], ['66', 0], ['67', 0], ['68', 0], ['69', 0], ['70', 0], ['71', 0], ['72', 0], ['73', 0], ['74', 0], ['75', 0], ['76', 0], ['77', 0], ['78', 0], ['79', 0], ['80', 0], ['81', 0],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Capital position over planning term', width: 900, height: 260, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Capital_position_over_planning_term')); chart.draw(view, options); } google.charts.setOnLoadCallback(drawGraph_Annual_Income_position_over_planning_termChart); function drawGraph_Annual_Income_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', 0], ['66', 0], ['67', 0], ['68', 0], ['69', 0], ['70', 0], ['71', 0], ['72', 0], ['73', 0], ['74', 0], ['75', 0], ['76', 0], ['77', 0], ['78', 0], ['79', 0], ['80', 0], ['81', 0],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Annual Income position over planning term', width: 900, height: 260, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Annual_Income_position_over_planning_term')); chart.draw(view, options); } </script>
+    type='text/javascript'> google.charts.load("current", { packages: ["corechart"] }); google.charts.setOnLoadCallback(drawGraph_IncomeChart); function drawGraph_IncomeChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Insurance: Additional', 50000], ['Retirement Surplus', 1000], ['Available Pre-Tax Income', 50000],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Income')); var options = { title: 'Income', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_LumpsumChart); function drawGraph_LumpsumChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Income Needs', 50000], ['Capital Needs', 50],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Lumpsum')); var options = { title: 'Lumpsum', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_CapitalizedChart); function drawGraph_CapitalizedChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Total Income Surplus', 0], ['Total lumpsum Surplus', 500],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capitalized')); var options = { title: 'Capitalized', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_SolutionChart); function drawGraph_Capital_SolutionChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Capitalized Income Shortfall', 659040], ['Lump sum Needs', 50000], ['Available Lump sum', 1503500], ['Total Lump sum Surplus', 1493000],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capital_Solution')); var options = { title: 'Capital Solution', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_position_over_planning_termChart); function drawGraph_Capital_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', -180664065], ['66', -389582949], ['67', -611036961], ['68', -845778213], ['69', -1094603937], ['70', -1358359209], ['71', -1637939793], ['72', -1934295213], ['73', -2248431957], ['74', -2581416909], ['75', -2934380961], ['76', -3308522853], ['77', -3705113253], ['78', -4125499077], ['79', -4571108049], ['80', -5043453561], ['81', -5544139809], ['82', -6074867229], ['83', -6637438293], ['84', -7233763617], ['85', -7865868465], ['86', -8535899601], ['87', -9246132609], ['88', -9998979597], ['89', -10796997405], ['90', -11642896281],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Capital position over planning term', width: 710, height: 250, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Capital_position_over_planning_term')); chart.draw(view, options); } google.charts.setOnLoadCallback(drawGraph_Annual_Income_position_over_planning_termChart); function drawGraph_Annual_Income_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', -180664065], ['66', -389582949], ['67', -611036961], ['68', -845778213], ['69', -1094603937], ['70', -1358359209], ['71', -1637939793], ['72', -1934295213], ['73', -2248431957], ['74', -2581416909], ['75', -2934380961], ['76', -3308522853], ['77', -3705113253], ['78', -4125499077], ['79', -4571108049], ['80', -5043453561], ['81', -5544139809], ['82', -6074867229], ['83', -6637438293], ['84', -7233763617], ['85', -7865868465], ['86', -8535899601], ['87', -9246132609], ['88', -9998979597], ['89', -10796997405], ['90', -11642896281],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Annual Income position over planning term', width: 710, height: 250, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Annual_Income_position_over_planning_term')); chart.draw(view, options); } </script>
 
-</html>"
+</html>
