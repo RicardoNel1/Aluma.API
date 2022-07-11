@@ -39,5 +39,19 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, dto);
             }
         }
+
+        [HttpPut("notes"), AllowAnonymous]
+        public IActionResult UpdateClientNotes([FromBody] List<ClientNotesDto> dtoArray)
+        {
+            try
+            {
+                _repo.ClientPortfolio.CreateClientNote(dtoArray);
+                return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

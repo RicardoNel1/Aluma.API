@@ -18,6 +18,7 @@ namespace Aluma.API.Repositories
     public interface IClientPortfolioRepo : IRepoBase<ClientPortfolioDto>
     {
         Task<ClientPortfolioDto> GetClientPortfolio(int clientId);
+        List<ClientNotesDto> CreateClientNote(List<ClientNotesDto> dtoArray);
 
     }
 
@@ -60,6 +61,8 @@ namespace Aluma.API.Repositories
             dto.DocumentList = new List<DocumentListDto>();
             dto.DocumentList = AddDocuments(await GetUserDocuments(dto.Client.UserId), dto.DocumentList);
             dto.DocumentList= AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
+
+            dto.ClientNotes = GetClientNotes(clientId);
             return dto;
         }
 
@@ -122,12 +125,12 @@ namespace Aluma.API.Repositories
             try
             {
                 InvestmentsRepo _investments = new InvestmentsRepo(_context, _host, _config, _mapper);
-                List<InvestmentsDto> invertments = _investments.GetInvestments(fnaId);
+                List<InvestmentsDto> investments = _investments.GetInvestments(fnaId);
 
-                if (invertments == null)
+                if (investments == null)
                     return new();
 
-                return invertments;
+                return investments;
             }
             catch (Exception)
             {
@@ -351,6 +354,71 @@ namespace Aluma.API.Repositories
             }
 
             return currentDocuments;
+        }
+
+        private List<ClientNotesDto> GetClientNotes(int clientId)
+        {
+            try
+            {
+                ICollection<ClientNotesModel> data = _context.ClientNotes.Where(c => c.ClientId == clientId).ToList();
+                List<ClientNotesDto> notes = new();
+
+                if (notes == null)
+                    return new();
+
+                return notes;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
+
+        public List<ClientNotesDto> CreateClientNote(List<ClientNotesDto> dtoArray)
+        {
+
+            foreach (var note in dtoArray)
+            {
+                try
+                {
+                    //var pModel = _mapper.Map<ClientNotesModel>(note);
+
+                    
+                    using (AlumaDBContext db = new())
+                    {
+                        var pModel = _mapper.Map<ClientNotesModel>(note);
+
+                        if (_context.ClientNotes.Where(a => a.Id == pModel.Id).Any())
+                        {
+                            _context.Entry(pModel).State = EntityState.Modified;
+                            if (_context.SaveChanges() > 0)
+                            {
+                                note.Status = "Success";
+                                note.Message = "Client Notes Updated";
+                            }
+                        }
+                        else
+                        {
+                            _context.ClientNotes.Add(pModel);
+                            if (_context.SaveChanges() > 0)
+                            {
+                                note.Id = _mapper.Map<ClientNotesDto>(pModel).Id;
+                                note.Status = "Success";
+                                note.Message = "Client Note Created";
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    note.Status = "Server Error";
+                    note.Message = ex.Message;
+                }
+            }
+
+            return dtoArray;
+
         }
     }
 }
