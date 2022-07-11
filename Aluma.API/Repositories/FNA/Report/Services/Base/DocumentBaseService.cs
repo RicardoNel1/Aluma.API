@@ -69,21 +69,17 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     pdf_page_size, true);
 
                 string pdf_orientation = "Portrait";
-                var pdfOrientation =
-                    (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation),
-                    pdf_orientation, true);
+                var pdfOrientation = (PdfPageOrientation)Enum.Parse(typeof(PdfPageOrientation), pdf_orientation, true);
 
 
                 // instantiate a html to pdf converter object
-                HtmlToPdf converter = new();
-                MemoryStream ms = new();
-
                 var text = new PdfTextSection(450, 10, "Page: {page_number} of {total_pages}         ", new System.Drawing.Font("Open Sans", 8))
                 {
                     HorizontalAlign = PdfTextHorizontalAlign.Center
                 };
 
 
+                HtmlToPdf converter = new();
                 converter.Footer.Add(text);
 
                 converter.Options.DisplayFooter = true;
@@ -97,28 +93,19 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 converter.Options.PdfPageOrientation = pdfOrientation;
                 converter.Options.DrawBackground = false;
 
-                // create a new pdf document converting an url
-                PdfDocument doc = converter.ConvertHtmlString(html);
+                byte[] file = new byte[0];
+                using (MemoryStream ms = new())
+                {
+                    // create a new pdf document converting a html string
+                    PdfDocument doc = converter.ConvertHtmlString(html);
 
+                    //TODO: doc.Security.UserPassword = client.user.rsaid
 
-                //TODO: doc.Security.UserPassword = client.user.rsaid
+                    doc.Save(ms);
+                    doc.Close();
 
-                doc.Save(ms);
-
-                //byte[] buffer = ms.ToArray();
-
-                //base64 = Convert.ToBase64String(buffer);
-
-                //buffer = Convert.FromBase64String(base64);
-
-                //doc.Save(ms);
-
-                // close pdf document
-                doc.Close();
-
-                byte[] file = ms.ToArray();
-
-                ms.Close();
+                    file = ms.ToArray();
+                };
 
                 return Convert.ToBase64String(file);
             }
