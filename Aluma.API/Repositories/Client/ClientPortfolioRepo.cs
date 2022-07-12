@@ -360,11 +360,8 @@ namespace Aluma.API.Repositories
         {
             try
             {
-                ICollection<ClientNotesModel> data = _context.ClientNotes.Where(c => c.ClientId == clientId).ToList();
-                List<ClientNotesDto> notes = new();
-
-                if (notes == null)
-                    return new();
+                List<ClientNotesModel> data = _context.ClientNotes.Where(c => c.ClientId == clientId).ToList();
+                var notes = _mapper.Map<List<ClientNotesDto>>(data);
 
                 return notes;
             }
