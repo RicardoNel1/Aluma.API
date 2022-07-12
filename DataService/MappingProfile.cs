@@ -82,6 +82,9 @@ namespace DataService
             CreateMap<ConsumerProtectionModel, ConsumerProtectionDto>()
                 .ReverseMap();
 
+            CreateMap<ClientNotesModel, ClientNotesDto>()
+                .ReverseMap();
+
 
             //Product
             CreateMap<ProductModel, ProductDto>()
