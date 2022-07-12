@@ -17,6 +17,9 @@ using iText.Layout;
 using iText.Kernel.Font;
 using iText.Layout.Font;
 using iText.Html2pdf.Resolver.Font;
+using System.Text;
+using iText.Kernel.Geom;
+using iText.IO.Font;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -38,6 +41,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             _repo = repo;
             _mapper = mapper;
         }
+
 
         public async Task SavePDF(FNAReportDto dto, string baseUrl)
         {
@@ -110,27 +114,35 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 //    file = ms.ToArray();
                 //};
 
-                var writerProperties = new WriterProperties();
-                writerProperties.SetFullCompressionMode(true);
 
-                using var workStream = new MemoryStream();
-                using (var pdfWriter = new PdfWriter(workStream, writerProperties))
+
+                byte[] file = new byte[0];
+
+                using (var ms = new MemoryStream())
                 {
-                    ConverterProperties properties = new ConverterProperties();
-                    //properties.SetBaseUri(baseUrl);
-                    properties.SetFontProvider(new DefaultFontProvider(false,false,false));
-                    
+                    var writerProperties = new WriterProperties();
+                    writerProperties.SetFullCompressionMode(true);
 
-                    pdfWriter.Flush();
-                    pdfWriter.SetCloseStream(false);
-                    pdfWriter.ConfigureAwait(true);
-                    using (var document = HtmlConverter.ConvertToDocument(html, pdfWriter, properties))
+                    using (var pdfWriter = new PdfWriter(ms, writerProperties))
                     {
-                        document.SetMargins(0, 0, 0, 0);
-                    }
-                }
+                        pdfWriter.Flush();
+                        pdfWriter.SetCloseStream(false);
+                        pdfWriter.ConfigureAwait(true);                        
 
-                byte[] file = workStream.ToArray();
+                        ConverterProperties properties = new ConverterProperties();
+                        // properties.SetFontProvider(fontProvider);
+
+                        PdfDocument pdfDoc = new PdfDocument(pdfWriter);
+
+                        Document doc = new Document(pdfDoc, PageSize.A4);
+                        doc.SetMargins(0, 0, 0, 0);
+                        var pdf = doc.GetPdfDocument();
+
+                        HtmlConverter.ConvertToPdf(html, pdf, properties);
+                    }
+
+                    file = ms.ToArray();
+                }
 
                 return Convert.ToBase64String(file);
             }

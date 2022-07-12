@@ -4,10 +4,291 @@
 <head>
     <title>FNA Report</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous"> -->
     <style>
         @charset "utf-8";
+
         /* CSS Document */
-        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap");
+        /* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;600;700&display=swap"); */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxFIzIFKw.woff2) format("woff2");
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+        }
+
+        /* cyrillic */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxMIzIFKw.woff2) format("woff2");
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+
+        /* greek-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxEIzIFKw.woff2) format("woff2");
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxLIzIFKw.woff2) format("woff2");
+            unicode-range: U+0370-03FF;
+        }
+
+        /* vietnamese */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxHIzIFKw.woff2) format("woff2");
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxGIzIFKw.woff2) format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 100;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOkCnqEu92Fr1MmgVxIIzI.woff2) format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* cyrillic-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format("woff2");
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+        }
+
+        /* cyrillic */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format("woff2");
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+
+        /* greek-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format("woff2");
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format("woff2");
+            unicode-range: U+0370-03FF;
+        }
+
+        /* vietnamese */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format("woff2");
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* cyrillic-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu72xKOzY.woff2) format("woff2");
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+        }
+
+        /* cyrillic */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu5mxKOzY.woff2) format("woff2");
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+
+        /* greek-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu7mxKOzY.woff2) format("woff2");
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4WxKOzY.woff2) format("woff2");
+            unicode-range: U+0370-03FF;
+        }
+
+        /* vietnamese */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu7WxKOzY.woff2) format("woff2");
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu7GxKOzY.woff2) format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.woff2) format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+
+        /* cyrillic-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfCRc4EsA.woff2) format("woff2");
+            unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+        }
+
+        /* cyrillic */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfABc4EsA.woff2) format("woff2");
+            unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+        }
+
+        /* greek-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfCBc4EsA.woff2) format("woff2");
+            unicode-range: U+1F00-1FFF;
+        }
+
+        /* greek */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBxc4EsA.woff2) format("woff2");
+            unicode-range: U+0370-03FF;
+        }
+
+        /* vietnamese */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfCxc4EsA.woff2) format("woff2");
+            unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+        }
+
+        /* latin-ext */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfChc4EsA.woff2) format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+        }
+
+        /* latin */
+        @font-face {
+            font-family: "Roboto";
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc4.woff2) format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
 
         body {
             width: 230mm;
@@ -42,9 +323,9 @@
             width: 210mm;
             min-height: 297mm;
             max-height: 297mm;
-            margin: 10mm auto;
+            /* margin: 10mm auto; */
             background: white;
-            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+            /* box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5); */
         }
 
         .sub-page-cover {
@@ -507,9 +788,8 @@
 
 <body>
     <div class="main-page">
-        <div class="sub-page-cover">
-            <img src="https://localhost:5001/img/aluma-logo-2.png" width="190" height="188" alt="Aluma Logo"
-                class="center">
+        <div class="sub-page-cover"> <img src="https://localhost:5001/img/aluma-logo-2.png" width="190" height="188"
+                alt="Aluma Logo" class="center">
             <div class="coverTitle"> Financial Needs Analysis </div>
             <div class="coverContent">
                 <p>Prepared for</p>
@@ -518,7 +798,9 @@
                     purposes only </span>
             </div>
         </div>
-    </div><!-- Start of Personal Details print -->
+    </div>
+
+    <!-- Start of Personal Details print -->
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
@@ -526,7 +808,7 @@
                 </div>
                 <div class="headerText">
                     <h2>Personal Details</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -868,8 +1150,7 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span>
-                        </p>
+                                and Intermediary Services Act (37 of 2002)</span> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -878,7 +1159,9 @@
                 </div>
             </div>
         </div>
-    </div><!-- End of Personal Details print -->
+    </div>
+    <!-- End of Personal Details print -->
+
     <!-- Start of Providing on Death - Solution print -->
     <div class="main-page">
         <div class="sub-page">
@@ -887,7 +1170,7 @@
                 </div>
                 <div class="headerText">
                     <h2>Providing on Death - Income - Solution</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1053,8 +1336,7 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span>
-                        </p>
+                                and Intermediary Services Act (37 of 2002)</span> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1063,7 +1345,9 @@
                 </div>
             </div>
         </div>
-    </div><!-- End of Providing on Death - Solution print -->
+    </div>
+    <!-- End of Providing on Death - Solution print -->
+
     <!-- Start of Providing on Death - Solution print -->
     <div class="main-page">
         <div class="sub-page">
@@ -1072,7 +1356,7 @@
                 </div>
                 <div class="headerText">
                     <h2>Providing on Death - Capitalized - Solution</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1231,8 +1515,7 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span>
-                        </p>
+                                and Intermediary Services Act (37 of 2002)</span> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1241,7 +1524,9 @@
                 </div>
             </div>
         </div>
-    </div><!-- End of Providing on Death - Solution print -->
+    </div>
+    <!-- End of Providing on Death - Solution print -->
+
     <!-- Start of Providing on Disability - Capital solution print -->
     <div class="main-page">
         <div class="sub-page">
@@ -1250,7 +1535,7 @@
                 </div>
                 <div class="headerText">
                     <h2>Providing on Disability - Capital Solution</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1521,8 +1806,7 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span>
-                        </p>
+                                and Intermediary Services Act (37 of 2002)</span> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1531,7 +1815,9 @@
                 </div>
             </div>
         </div>
-    </div> <!-- End of Providing on Death - Solution print -->
+    </div>
+    <!-- End of Providing on Death - Solution print -->
+
     <!-- Start of Providing on Dread Disease - Solution print -->
     <div class="main-page">
         <div class="sub-page">
@@ -1540,7 +1826,7 @@
                 </div>
                 <div class="headerText">
                     <h2>Providing on Dread Disease - Analysis</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -1730,8 +2016,7 @@
                             <strong>Web:</strong> <a href="https://aluma.co.za"
                                 target="_blank">www.aluma.co.za</a><br /> <span class="reg">Reg.No. 2015/209991/07 |
                                 Registered Financial Services Provider (FSP 46449) in terms of The Financial Advisory
-                                and Intermediary Services Act (37 of 2002)</span>
-                        </p>
+                                and Intermediary Services Act (37 of 2002)</span> </p>
                     </div>
                 </div>
                 <div class="row">
@@ -1740,15 +2025,17 @@
                 </div>
             </div>
         </div>
-    </div><!-- End of Providing on Dread Disease - Solution print -->
-    <!-- Start of Retirement Planning - Capital solution print -->
+    </div>
+    <!-- End of Providing on Dread Disease - Solution print -->
+
+    <!-- Start of Retirement Planning Page 1 - Capital solution print -->
     <div class="main-page">
         <div class="sub-page">
             <div class="header">
                 <div class="headerLogo"><img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt=""></div>
                 <div class="headerText">
                     <h2>Providing on Retirement - Solution</h2>
-                    <p>FNA Completion Date: 2022/07/11</p>
+                    <p>FNA Completion Date: 2022/07/12</p>
                     <p>Version: 1.0</p>
                 </div>
             </div>
@@ -2106,6 +2393,388 @@
                         <div id="Graph_Capital_position_over_planning_term" style="height: 250px; width: 710px; "></div>
                     </div>
                 </div>
+            </div>
+            <div class="footer">
+                <div class="row">
+                    <div class="footerLogo"><img src="https://localhost:5001/img/aluma-logo-2.png" width="60" alt="">
+                    </div>
+                    <div class="footerText">
+                        <p><strong>Aluma Capital (Pty) Ltd</strong><br />Fintech Campus, Cnr Lynnwood and Botterklapper,
+                            The Willows, Pretoria, 0081 | Tel: +27 (0)12 012 5291<br /><strong>Email:</strong> <a
+                                href="mailto:info@aluma.co.za">info@aluma.co.za</a> | <strong>Web:</strong> <a
+                                href="https://aluma.co.za" target="_blank">www.aluma.co.za</a><br /><span
+                                class="reg">Reg.No. 2015/209991/07 | Registered Financial Services Provider (FSP 46449)
+                                in terms of The Financial Advisory and Intermediary Services Act (37 of 2002)</span></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="footerTitle"><strong>ALUMA CAPITAL (PTY) LTD | FINANCIAL NEEDS ANALYSIS |</strong>
+                        Providing on Retirement - Solution</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Retirement Planning  Page 1 - Solution print -->
+
+    <!-- Start of Retirement Planning Page 2 - Capital solution print -->
+    <div class="main-page">
+        <div class="sub-page">
+            <div class="header">
+                <div class="headerLogo"><img src="https://localhost:5001/img/aluma-logo-2.png" width="100" alt=""></div>
+                <div class="headerText">
+                    <h2>Providing on Retirement - Solution</h2>
+                    <p>FNA Completion Date: 2022/07/12</p>
+                    <p>Version: 1.0</p>
+                </div>
+            </div>
+            <div class="content">
+                <div class="row">
+                    <div class="column-60-left">
+                        <div class="row">
+                            <h3>Objective</h3>
+                            <div class="border-box">
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p>Income needs (pm)</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>R50 000,00</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:20px;">Term (years)</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>10</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:20px;">Escalation</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>6</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p>%</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p>Capital needs</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>R16 424 441,00</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:10px;">Capital needs</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>R500,00</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:20px;">Outstanding liabilities at Retirement</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p>R500,00</p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h3>Available Provisions</h3>
+                            <div class="border-box">
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:20px;">Available Capital</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p>R4 859,00 FV</p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p>%</p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p style="padding-left:20px;">Available Income Capitalized</p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p>R0,00</p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-5 col-5">
+                                        <p><strong>Available Income Capitalized</strong></p>
+                                    </div>
+                                    <div class="column-5 col-5-1">
+                                        <p><strong>R16 429 227,00</strong></p>
+                                    </div>
+                                    <div class="column-5 col-5-2">
+                                        <p>FV</p>
+                                    </div>
+                                    <div class="column-5 col-5-3">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-5 col-5-4">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column-40-right">
+                        <div class="row">
+                            <h3>Assumptions</h3>
+                            <div class="border-box">
+                                <div class="row" style="margin-top:20px;">
+                                    <div class="column-2 col-2-1">
+                                        <p>Age</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>47</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Retirement Age</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>65</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Years before retirement</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>18</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Years after retirement</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>25</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Life Expectancy</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>90</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:35px;">
+                                    <div class="column-2 col-2-1">
+                                        <p>Conservative</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p> </p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p> </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Investment Returns</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>7</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p>%</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="column-2 col-2-1">
+                                        <p>Inflation rate</p>
+                                    </div>
+                                    <div class="column-2 col-2-2">
+                                        <p>6</p>
+                                    </div>
+                                    <div class="column-2 col-2-3">
+                                        <p>%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column-2 col-2">
+                        <p> </p>
+                    </div>
+                    <div class="column-2 col-2">
+                        <p> </p>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <p class="blue">At a monthly net income withdrawal of R R50 000,00, your Capital will be exhausted
+                        after 0 years.</p>
+                </div>
+                <div class="row">
+                    <h3>Solution</h3>
+                    <div class="border-box">
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p>Total Available Capital and Capitalized Income</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p> </p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p>R16 429 227,00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p>Less - Total Capital needs and Capitalized Income needs</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p> </p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p>R16 424 441,00</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p style="padding-left:20px;">Income needs Capitalized</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p>R0,00</p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p> </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p style="padding-left:20px;">Capital needs</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p>R500,00</p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p> </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p><strong>Total Capital Shortfall</strong></p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p> </p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p><strong>R4 786,00</strong></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column-3 col-3-1">
+                                <p style="padding-left:20px;">Monthly savings required:</p>
+                            </div>
+                            <div class="column-3 col-3-2">
+                                <p>(R16,00)</p>
+                            </div>
+                            <div class="column-3 col-3-3">
+                                <p>escalating at 0% per annum</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="border-box">
                     <div class="center">
                         <div id="Graph_Annual_Income_position_over_planning_term" style="height: 250px; width: 710px; ">
@@ -2132,7 +2801,8 @@
                 </div>
             </div>
         </div>
-    </div><!-- End of Retirement Planning - Solution print -->
+    </div>
+    <!-- End of Retirement Planning  Page 2 - Solution print -->
 </body>
 <script
     type='text/javascript'> google.charts.load("current", { packages: ["corechart"] }); google.charts.setOnLoadCallback(drawGraph_IncomeChart); function drawGraph_IncomeChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Insurance: Additional', 50000], ['Retirement Surplus', 1000], ['Available Pre-Tax Income', 50000],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Income')); var options = { title: 'Income', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_LumpsumChart); function drawGraph_LumpsumChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Income Needs', 50000], ['Capital Needs', 50],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Lumpsum')); var options = { title: 'Lumpsum', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_CapitalizedChart); function drawGraph_CapitalizedChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Total Income Surplus', 0], ['Total lumpsum Surplus', 500],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capitalized')); var options = { title: 'Capitalized', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_SolutionChart); function drawGraph_Capital_SolutionChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['Capitalized Income Shortfall', 659040], ['Lump sum Needs', 50000], ['Available Lump sum', 1503500], ['Total Lump sum Surplus', 1493000],]); var chart = new google.visualization.PieChart(document.getElementById('Graph_Capital_Solution')); var options = { title: 'Capital Solution', pieSliceText: 'none', legend: { position: 'labeled', labeledValueText: 'both', } }; chart.draw(data, options); } google.charts.setOnLoadCallback(drawGraph_Capital_position_over_planning_termChart); function drawGraph_Capital_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', -180664065], ['66', -389582949], ['67', -611036961], ['68', -845778213], ['69', -1094603937], ['70', -1358359209], ['71', -1637939793], ['72', -1934295213], ['73', -2248431957], ['74', -2581416909], ['75', -2934380961], ['76', -3308522853], ['77', -3705113253], ['78', -4125499077], ['79', -4571108049], ['80', -5043453561], ['81', -5544139809], ['82', -6074867229], ['83', -6637438293], ['84', -7233763617], ['85', -7865868465], ['86', -8535899601], ['87', -9246132609], ['88', -9998979597], ['89', -10796997405], ['90', -11642896281],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Capital position over planning term', width: 710, height: 250, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Capital_position_over_planning_term')); chart.draw(view, options); } google.charts.setOnLoadCallback(drawGraph_Annual_Income_position_over_planning_termChart); function drawGraph_Annual_Income_position_over_planning_termChart() { var data = new google.visualization.arrayToDataTable([['Capital', 'Amount'], ['65', -180664065], ['66', -389582949], ['67', -611036961], ['68', -845778213], ['69', -1094603937], ['70', -1358359209], ['71', -1637939793], ['72', -1934295213], ['73', -2248431957], ['74', -2581416909], ['75', -2934380961], ['76', -3308522853], ['77', -3705113253], ['78', -4125499077], ['79', -4571108049], ['80', -5043453561], ['81', -5544139809], ['82', -6074867229], ['83', -6637438293], ['84', -7233763617], ['85', -7865868465], ['86', -8535899601], ['87', -9246132609], ['88', -9998979597], ['89', -10796997405], ['90', -11642896281],]); var view = new google.visualization.DataView(data); view.setColumns([0, 1]); var options = { title: 'Annual Income position over planning term', width: 710, height: 250, bar: { groupWidth: "85%" }, legend: { position: "bottom" } }; var chart = new google.visualization.ColumnChart(document.getElementById('Graph_Annual_Income_position_over_planning_term')); chart.draw(view, options); } </script>
