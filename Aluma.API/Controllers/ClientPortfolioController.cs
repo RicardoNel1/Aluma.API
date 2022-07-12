@@ -53,5 +53,25 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpDelete("notes/delete"), AllowAnonymous]
+        public IActionResult DeleteClientNotesItem(int Id)
+        {
+            try
+            {
+                string result = _repo.ClientPortfolio.DeleteClientNote(Id);
+
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

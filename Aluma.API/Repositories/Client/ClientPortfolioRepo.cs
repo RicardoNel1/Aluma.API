@@ -19,6 +19,7 @@ namespace Aluma.API.Repositories
     {
         Task<ClientPortfolioDto> GetClientPortfolio(int clientId);
         List<ClientNotesDto> CreateClientNote(List<ClientNotesDto> dtoArray);
+        string DeleteClientNote(int Id);
 
     }
 
@@ -360,8 +361,14 @@ namespace Aluma.API.Repositories
         {
             try
             {
-                List<ClientNotesModel> data = _context.ClientNotes.Where(c => c.ClientId == clientId).ToList();
+                ICollection<ClientNotesModel> data = _context.ClientNotes.Where(c => c.ClientId == clientId).ToList();
+
                 var notes = _mapper.Map<List<ClientNotesDto>>(data);
+
+                foreach (var note in notes)
+                {
+                    note.dateCaptured = data.Where(n => n.Id == note.Id).First().Created;
+                }
 
                 return notes;
             }
@@ -377,10 +384,7 @@ namespace Aluma.API.Repositories
             foreach (var note in dtoArray)
             {
                 try
-                {
-                    //var pModel = _mapper.Map<ClientNotesModel>(note);
-
-                    
+                {                    
                     using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<ClientNotesModel>(note);
@@ -415,6 +419,34 @@ namespace Aluma.API.Repositories
             }
 
             return dtoArray;
+
+        }
+
+        public string DeleteClientNote(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+
+                    ClientNotesModel note = _context.ClientNotes.Where(a => a.Id == Id).First();
+
+                    _context.ClientNotes.Remove(note);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Client Note Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
 
         }
     }

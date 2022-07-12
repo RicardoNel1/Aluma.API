@@ -9,5 +9,6 @@ namespace DataService.Dto
         public int ClientId { get; set; }
         public string Title { get; set; }
         public string NoteBody { get; set; }
+        public DateTime dateCaptured { get; set; }
     }
 }
