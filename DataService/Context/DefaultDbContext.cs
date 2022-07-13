@@ -144,6 +144,7 @@ namespace DataService.Context
         public DbSet<ClientProductModel> ClientProducts { get; set; }
         public DbSet<EmploymentDetailsModel> EmploymentDetails { get; set; }
         public DbSet<MaritalDetailsModel> MaritalDetails { get; set; }
+        public DbSet<ClientNotesModel> ClientNotes { get; set; }
 
 
         //Product

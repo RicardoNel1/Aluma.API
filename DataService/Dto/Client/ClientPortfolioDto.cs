@@ -18,5 +18,6 @@ namespace DataService.Dto
         public List<InsuranceDto> Insurance { get; set; }
         public AssumptionsDto Assumptions { get; set; }
         public List<DocumentListDto> DocumentList { get; set; }
+        public List<ClientNotesDto> ClientNotes { get; set; }
     }
 }
