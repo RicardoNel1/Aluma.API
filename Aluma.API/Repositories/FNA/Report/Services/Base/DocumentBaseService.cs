@@ -1,4 +1,5 @@
-﻿using DataService.Dto;
+﻿using System.Net.Mime;
+using DataService.Dto;
 //using SelectPdf;
 using System;
 using System.IO;
@@ -20,6 +21,7 @@ using iText.Html2pdf.Resolver.Font;
 using System.Text;
 using iText.Kernel.Geom;
 using iText.IO.Font;
+using System.Drawing;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
@@ -127,7 +129,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     {
                         pdfWriter.Flush();
                         pdfWriter.SetCloseStream(false);
-                        pdfWriter.ConfigureAwait(true);                        
+                        pdfWriter.ConfigureAwait(true);
 
                         ConverterProperties properties = new ConverterProperties();
                         // properties.SetFontProvider(fontProvider);
@@ -164,19 +166,18 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     return null;
 
                 string version = "1.0";
-                // string logo = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png");
-                // string frontCover = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg");
-                // string spacer = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png");
-
-                string logo = $@"{baseUrl}img/aluma-logo-2.png";
-                string frontCover = $@"{baseUrl}img/front-cover.jpg";
-                string spacer = $@"{baseUrl}img/spacer.png";
+                string logo = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png"));
+                string frontCover = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg"));
+                string spacer = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png"));
+                // string logo = $@"{baseUrl}img/aluma-logo-2.png";
+                // string frontCover = $@"{baseUrl}img/front-cover.jpg";
+                // string spacer = $@"{baseUrl}img/spacer.png";
+                // string css = $@"<link rel="stylesheet" type="text/css" href="{baseUrl}css/print.css">";
 
                 string graph = _graphService.InitializeGraphJavaScript();
 
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 string css = _fNAModulesService.GetCSS(baseUrl);
-
 
                 IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
                 result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
@@ -224,6 +225,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
                 result = result.Replace("[css]", css);
+                // result = result.Replace("../css/", $@"{baseUrl}css/");
                 result = result.Replace("[frontCover]", frontCover);
                 result = result.Replace("[version]", version);
                 result = result.Replace("[spacer]", spacer);
@@ -272,6 +274,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             //string base64 = Convert.ToBase64String(test);
 
             //document.Close();
+        }
+
+        private string GetBase64Image(string imgFile)
+        {
+            return $"data:image/{System.IO.Path.GetExtension(imgFile).Replace(".", "")};base64,{Convert.ToBase64String(File.ReadAllBytes(imgFile))}";
         }
     }
 }

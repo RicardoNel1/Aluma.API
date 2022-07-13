@@ -87,23 +87,31 @@ namespace Aluma.API.Controllers
                 };
 
                 var urlBuilder = new UriBuilder($"{Request.Scheme}://{Request.Host.Value}");
-                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()));
+                // var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()));
 
-                byte[] pdf = Convert.FromBase64String(base64result);
+                // byte[] pdf = Convert.FromBase64String(base64result);
 
-                if (pdf != null && pdf.Length > 0)
-                {
-                    Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
-                    stream.Position = 0;
+                // if (pdf != null && pdf.Length > 0)
+                // {
+                //     Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
+                //     stream.Position = 0;
 
-                    return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                //     return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                // }
+
+                string report = await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()); 
+
+                if (report.Length > 0) {
+                    return Ok(report);
                 }
 
-                return BadRequest("Could not download the 'FNA Report.pdf'");
+                // return BadRequest("Could not download the 'FNA Report.pdf'");
+                return BadRequest("Could not generate the data for the FNA Report");
             }
             catch (Exception ex)
             {
-                return BadRequest($"Could not download the 'FNA Report.pdf', {ex.Message}, {ex.InnerException?.Message}");
+                // return BadRequest($"Could not download the 'FNA Report.pdf', {ex.Message}, {ex.InnerException?.Message}");
+                return BadRequest($"Could not generate the data for the FNA Report, {ex.Message}, {ex.InnerException?.Message}");
             }
         }
 
