@@ -169,6 +169,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 string logo = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png"));
                 string frontCover = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg"));
                 string spacer = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png"));
+
                 // string logo = $@"{baseUrl}img/aluma-logo-2.png";
                 // string frontCover = $@"{baseUrl}img/front-cover.jpg";
                 // string spacer = $@"{baseUrl}img/spacer.png";
@@ -225,7 +226,6 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 result = result.Replace("[date]", DateTime.Now.ToString("yyyy/MM/dd"));
                 result = result.Replace("[logo]", logo);
                 result = result.Replace("[css]", css);
-                // result = result.Replace("../css/", $@"{baseUrl}css/");
                 result = result.Replace("[frontCover]", frontCover);
                 result = result.Replace("[version]", version);
                 result = result.Replace("[spacer]", spacer);
