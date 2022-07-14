@@ -18,6 +18,7 @@
         PEF2Quote,
         FIDOA,
         FIQuote,
-        FNAReport
+        FNAReport,
+        PolicyShedule
     }
 }

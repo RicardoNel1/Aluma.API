@@ -9,7 +9,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
     public interface IFNAModulesService
     {
         Task<string> GetCoverPage(int fnaId);
-        string GetCSS();
+        string GetCSS(string baseUrl);
     }
 
     public class FNAModulesService : BaseReportData, IFNAModulesService
@@ -40,13 +40,14 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return result;
         }
 
-        public string GetCSS()
+        public string GetCSS(string baseUrl)
         {
             //"wwwroot/css/print.css"
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\css\print.css");
-            string result = $"<style rel=\"stylesheet\" type=\"text/css\">{File.ReadAllText(path)}</style>";
+            string result = $"<style>{File.ReadAllText(path)}</style>";
 
-            result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/"), @"wwwroot/img/"));
+            // result = result.Replace("../images/", Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/"), @"wwwroot/img/"));
+            result = result.Replace("../images/",  $@"{baseUrl}img/");
             return result;
         }
     }

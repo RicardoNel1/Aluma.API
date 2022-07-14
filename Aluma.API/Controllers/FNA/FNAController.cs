@@ -71,10 +71,11 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("get_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport( int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
+        public async Task<IActionResult> GetFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
         {
             try
             {
+
                 FNAReportDto dto = new FNAReportDto()
                 {
                     FNAId = fnaId,
@@ -85,22 +86,32 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = retirementPlanning
                 };
 
-                var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto));
-                byte[] pdf = Convert.FromBase64String(base64result);
+                var urlBuilder = new UriBuilder($"{Request.Scheme}://{Request.Host.Value}");
+                // var base64result = _documentService.PDFGeneration(await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()));
 
-                if (pdf != null && pdf.Length > 0)
-                {
-                    Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
-                    stream.Position = 0;
+                // byte[] pdf = Convert.FromBase64String(base64result);
 
-                    return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                // if (pdf != null && pdf.Length > 0)
+                // {
+                //     Stream stream = new MemoryStream(Convert.FromBase64String(base64result));
+                //     stream.Position = 0;
+
+                //     return File(stream, MediaTypeNames.Application.Octet, "FNA Report.pdf");
+                // }
+
+                string report = await _documentService.FNAHtmlGeneration(dto, urlBuilder.ToString()); 
+
+                if (report.Length > 0) {
+                    return Ok(report);
                 }
 
-                return BadRequest("Could not download the 'FNA Report.pdf'");
+                // return BadRequest("Could not download the 'FNA Report.pdf'");
+                return BadRequest("Could not generate the data for the FNA Report");
             }
             catch (Exception ex)
             {
-                return BadRequest($"Could not download the 'FNA Report.pdf', {ex.Message}, {ex.InnerException?.Message}");
+                // return BadRequest($"Could not download the 'FNA Report.pdf', {ex.Message}, {ex.InnerException?.Message}");
+                return BadRequest($"Could not generate the data for the FNA Report, {ex.Message}, {ex.InnerException?.Message}");
             }
         }
 
@@ -119,7 +130,8 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = petirementPlanning
                 };
 
-                await _documentService.SavePDF(dto);
+                var urlBuilder = new UriBuilder(Request.PathBase);
+                await _documentService.SavePDF(dto, urlBuilder.ToString());
 
                 return NoContent();
             }

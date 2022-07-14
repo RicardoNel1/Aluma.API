@@ -31,8 +31,6 @@ namespace Aluma.API.Repositories
         Task<UserDocumentDto> GetDocument(UserDocumentDto dto);
 
         Task<UserDocumentDto> UploadDocument(UserDocumentDto dto);
-
-
     }
 
     public class UserDocumentsRepo : RepoBase<UserDocumentModel>, IUserDocumentsRepo

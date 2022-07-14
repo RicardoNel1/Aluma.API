@@ -21,12 +21,12 @@ namespace Aluma.API.Controllers
                 
 
         [HttpGet, AllowAnonymous]
-        public IActionResult GetClientPortfolio(int clientId)
+        public async Task<IActionResult> GetClientPortfolio(int clientId)
         {
             ClientPortfolioDto dto = new();
             try
             {
-                dto = _repo.ClientPortfolio.GetClientPortfolio(clientId);
+                dto = await _repo.ClientPortfolio.GetClientPortfolio(clientId);
 
                 dto.Status = "Success";
                 dto.Message = "";
@@ -37,6 +37,40 @@ namespace Aluma.API.Controllers
                 dto.Status = "Server Error";
                 dto.Message = e.Message;
                 return StatusCode(500, dto);
+            }
+        }
+
+        [HttpPut("notes"), AllowAnonymous]
+        public IActionResult UpdateClientNotes([FromBody] List<ClientNotesDto> dtoArray)
+        {
+            try
+            {
+                _repo.ClientPortfolio.CreateClientNote(dtoArray);
+                return Ok(dtoArray);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete("notes/delete"), AllowAnonymous]
+        public IActionResult DeleteClientNotesItem(int Id)
+        {
+            try
+            {
+                string result = _repo.ClientPortfolio.DeleteClientNote(Id);
+
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
     }

@@ -113,6 +113,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Capital Solution",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
+                    Height = 250,
                     Data = new List<string>() {
                         $"Capitalized Income Shortfall, {summaryDisability.TotalIncomeNeed}",
                         $"Lump sum Needs, {disability.IncomeNeeds}",
