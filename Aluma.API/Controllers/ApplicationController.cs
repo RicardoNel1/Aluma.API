@@ -2,6 +2,7 @@
 using AutoMapper;
 using DataService.Dto;
 using DataService.Enum;
+using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -59,6 +60,21 @@ namespace Aluma.API.Controllers
                     _repo.Applications.SetApplicationAmount(dto);
                 }
                 return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("current"), AllowAnonymous]
+        public IActionResult GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus )
+        {
+            try
+            {              
+                var application = _repo.Applications.GetCurrentApplication(clientId, selectedProduct, applicationStatus);
+
+                return Ok(application);
             }
             catch (Exception e)
             {

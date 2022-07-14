@@ -24,6 +24,8 @@ namespace Aluma.API.Repositories
 
         public List<ApplicationDto> GetApplications();
 
+        public ApplicationDto GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus);
+
         public List<ApplicationDto> GetApplicationsByClient(string clientId);
 
         public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto);
@@ -170,6 +172,17 @@ namespace Aluma.API.Repositories
             response.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == response.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
 
             return response;
+        }
+
+        public ApplicationDto GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus)
+        {
+
+            Enum.TryParse(applicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
+            ProductModel product = _context.Products.Where(a => a.Name == selectedProduct).First();
+            int productId = product.Id;
+
+            ApplicationModel application = _context.Applications.Where(a => a.ClientId == clientId && a.ProductId == productId && a.ApplicationStatus == appStatus).First();
+            return _mapper.Map<ApplicationDto>(application);
         }
 
         public ApplicationDto UpdateApplication(ApplicationDto dto)
