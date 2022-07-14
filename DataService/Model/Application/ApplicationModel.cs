@@ -42,6 +42,7 @@ namespace DataService.Model
         public bool DocumentsSigned { get; set; }
         public string BdaNumber { get; set; }
         public bool PaymentConfirmed { get; set; }
+        public int ApplicationAmount { get; set; }
         
     }
 

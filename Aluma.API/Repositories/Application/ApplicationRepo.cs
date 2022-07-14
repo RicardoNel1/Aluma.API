@@ -30,6 +30,8 @@ namespace Aluma.API.Repositories
 
         public ApplicationDto UpdateApplication(ApplicationDto dto);
 
+        public ApplicationDto SetApplicationAmount(ApplicationDto dto);
+
         public bool DeleteApplication(ApplicationDto dto);
 
         public ApplicationDto SoftDeleteApplication(ApplicationDto dto);
@@ -39,6 +41,8 @@ namespace Aluma.API.Repositories
         bool DoesApplicationExist(ApplicationDto dto);
 
         bool DoesApplicationExist(int clientId);
+
+        bool DoesApplicationExistById(int applicationId);
 
         bool ApplicationInProgress(ApplicationDto dto);
 
@@ -173,6 +177,19 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
+        public ApplicationDto SetApplicationAmount(ApplicationDto dto)
+        {
+            ApplicationModel data = _context.Applications.Where(a => a.Id == dto.Id).First();
+
+            data.ApplicationAmount = dto.ApplicationAmount;
+
+            _context.Applications.Update(data);
+            _context.SaveChanges();
+            return dto;
+        }
+
+
+
         public bool DoesApplicationExist(ApplicationDto dto)
         {
             bool applicationExists = false;
@@ -187,6 +204,15 @@ namespace Aluma.API.Repositories
             bool applicationExists = false;
 
             applicationExists = _context.Applications.Where(a => a.ClientId == clientId && a.ApplicationStatus != 0).Any();
+
+            return applicationExists;
+        }
+
+        public bool DoesApplicationExistById(int applicationId)
+        {
+            bool applicationExists = false;
+
+            applicationExists = _context.Applications.Where(a => a.Id == applicationId && a.ApplicationStatus != 0).Any();
 
             return applicationExists;
         }
