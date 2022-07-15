@@ -24,7 +24,7 @@ namespace Aluma.API.Repositories
 
         public List<ApplicationDto> GetApplications();
 
-        public ApplicationDto GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus);
+        public ApplicationDto GetCurrentApplication(ApplicationDto dto);
 
         public List<ApplicationDto> GetApplicationsByClient(string clientId);
 
@@ -174,14 +174,14 @@ namespace Aluma.API.Repositories
             return response;
         }
 
-        public ApplicationDto GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus)
+        public ApplicationDto GetCurrentApplication(ApplicationDto dto)
         {
 
-            Enum.TryParse(applicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
-            ProductModel product = _context.Products.Where(a => a.Name == selectedProduct).First();
+            Enum.TryParse(dto.ApplicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
+            ProductModel product = _context.Products.Where(a => a.Name == dto.ProductName).First();
             int productId = product.Id;
 
-            ApplicationModel application = _context.Applications.Where(a => a.ClientId == clientId && a.ProductId == productId && a.ApplicationStatus == appStatus).First();
+            ApplicationModel application = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ProductId == productId && a.ApplicationStatus == appStatus).First();
             return _mapper.Map<ApplicationDto>(application);
         }
 
@@ -273,6 +273,8 @@ namespace Aluma.API.Repositories
             dto.ProductName = product.Name;
 
             _ms.SendNewApplicationEmail(client, product.Name);
+
+            //dto.Id = application.Id;
 
             return dto;
 

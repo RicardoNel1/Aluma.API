@@ -31,13 +31,15 @@ namespace Aluma.API.Controllers
                 bool applicationStarted = _repo.Applications.ApplicationInProgress(dto);
                 if (!applicationStarted)
                 {
-                    _repo.Applications.CreateNewApplication(dto);
+                    var result = _repo.Applications.CreateNewApplication(dto);
+                    return Ok(result);
                 }
                 else
                 {
-                    return Ok(dto);
+                    var result = _repo.Applications.GetCurrentApplication(dto);
+                    return Ok(result);
                 }
-                return Ok(dto);
+                
             }
             catch (Exception e)
             {
@@ -67,20 +69,20 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("current"), AllowAnonymous]
-        public IActionResult GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus )
-        {
-            try
-            {              
-                var application = _repo.Applications.GetCurrentApplication(clientId, selectedProduct, applicationStatus);
+        //[HttpGet("current"), AllowAnonymous]
+        //public IActionResult GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus )
+        //{
+        //    try
+        //    {              
+        //        var application = _repo.Applications.GetCurrentApplication(clientId, selectedProduct, applicationStatus);
 
-                return Ok(application);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+        //        return Ok(application);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
 
         [HttpPut("delete"), AllowAnonymous]
         public IActionResult SoftDeleteApplication(ApplicationDto dto)
