@@ -142,7 +142,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     Name = "Income",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 350,
+                    Height = 250,
                     //Width = 450,
                     Data = SetIncomeGraphData(deathDto)
                 },
@@ -152,7 +152,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     Name = "Lumpsum",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 350,
+                    Height = 250,
                     //Width = 450,
                     Data = SetLumpsumGraphhData(deathDto)
                 },
@@ -162,7 +162,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                     Name = "Capitalized",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 350,
+                    Height = 250,
                     Data = SetCapitalizedGraphData(available, settling)
                 }
             };
