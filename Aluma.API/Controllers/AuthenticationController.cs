@@ -41,6 +41,8 @@ namespace Aluma.API.Controllers
 
                 loginExists = _repo.User.DoesUserNameExist(dto);
 
+                //if
+
                 if (!loginExists)
                 {
                     if (dto.SocialId != null && dto.Password == "")
@@ -314,6 +316,44 @@ namespace Aluma.API.Controllers
                 response.Message = "verifyResetPassword";
 
                 return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost("resend-otp"), AllowAnonymous]
+        public IActionResult ResendOTP(LoginDto dto)
+        {
+            AuthResponseDto response = new();
+            bool registrationVerified = false;
+
+            UserDto user = new();
+            var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+            string token = String.Empty;
+
+            try
+            {
+                registrationVerified = _repo.User.IsRegistrationVerified(dto);
+
+                user = _repo.User.GetUser(dto);
+                if (!registrationVerified)
+                {
+                    //Re-send Verification OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                    response.Message = "verifyRegistration";
+                    return StatusCode(401, response);
+                }
+                else
+                {
+                    //Send Two-Factor Auth OTP
+                    _repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                    response.Message = "verifyLogin";
+                    return Ok(response);
+                }
             }
             catch (Exception e)
             {
