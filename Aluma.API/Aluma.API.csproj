@@ -137,6 +137,9 @@
     <Content Update="wwwroot\html\AssociateConsent.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\html\OTP.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\html\graph.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

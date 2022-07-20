@@ -362,5 +362,51 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, response);
             }
         }
+
+
+
+        [HttpPost("email-otp"), AllowAnonymous]
+        public IActionResult EmailOTP(LoginDto dto)
+        {
+            AuthResponseDto response = new();
+            bool registrationVerified = false;
+
+            UserDto user = new();
+            var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
+            string token = String.Empty;
+
+            try
+            {
+                registrationVerified = _repo.User.IsRegistrationVerified(dto);
+
+                user = _repo.User.GetUser(dto);
+                if (!registrationVerified)
+                {
+                    //Re-send Verification OTP
+                    _repo.Otp.SendOTPEmail(user, OtpTypesEnum.Registration);
+                    //_repo.Otp.SendOTP(user, OtpTypesEnum.Registration);
+                    response.Message = "verifyRegistration";
+                    return StatusCode(401, response);
+                }
+                else
+                {
+                    //Send Two-Factor Auth OTP
+                    _repo.Otp.SendOTPEmail(user, OtpTypesEnum.Login);
+                    //_repo.Otp.SendOTP(user, OtpTypesEnum.Login);
+                    response.Message = "verifyLogin";
+                    return Ok(response);
+                }
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+
+        }
+
+
+
     }
 }

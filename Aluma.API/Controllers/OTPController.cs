@@ -1,6 +1,7 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -193,6 +194,8 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, response); ;
             }
         }
+
+
 
 
         //[HttpPost("resend/otp/{email}"), AllowAnonymous]

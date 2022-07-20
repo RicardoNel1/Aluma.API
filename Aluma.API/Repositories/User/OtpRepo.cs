@@ -1,14 +1,17 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Helpers;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
 using DataService.Model;
+using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
 {
@@ -17,6 +20,8 @@ namespace Aluma.API.Repositories
         string VerifyOTP(string otp, int userId, int applicationId = 0);
 
         string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0);
+
+        Task SendOTPEmail(UserDto user, OtpTypesEnum otpType, int applicationId = 0);
     }
 
     public class OtpRepo : RepoBase<OtpModel>, IOtpRepo
@@ -25,6 +30,8 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IFileStorageRepo _fileStorage;
+        MailSender _ms;
 
         public OtpRepo(AlumaDBContext context, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(context)
         {
@@ -32,6 +39,7 @@ namespace Aluma.API.Repositories
             _host = host;
             _config = config;
             _mapper = mapper;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
         public string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0)
@@ -173,5 +181,14 @@ namespace Aluma.API.Repositories
             return result;
 
         }
+
+        public async Task SendOTPEmail(UserDto user, OtpTypesEnum otpType, int applicationId = 0)
+        {
+            //SmsService.SmsRepo smsService = new();
+
+            await _ms.SendTestEmail();
+
+        }
+
     }
 }
