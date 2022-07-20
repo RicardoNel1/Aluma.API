@@ -45,8 +45,8 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                _repo.ClientPortfolio.CreateClientNote(dtoArray);
-                return Ok(dtoArray);
+                var updated = _repo.ClientPortfolio.CreateClientNote(dtoArray);
+                return Ok(updated);
             }
             catch (Exception e)
             {
