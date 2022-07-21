@@ -61,7 +61,7 @@ namespace Aluma.API.Repositories
 
             dto.DocumentList = new List<DocumentListDto>();
             dto.DocumentList = AddDocuments(await GetUserDocuments(dto.Client.UserId), dto.DocumentList);
-            dto.DocumentList= AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
+            dto.DocumentList = AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
 
             dto.ClientNotes = GetClientNotes(clientId);
             return dto;
@@ -264,7 +264,7 @@ namespace Aluma.API.Repositories
                 return new();
             }
         }
-               
+
 
         private List<InsuranceDto> GetInsurances(int fnaId)
         {
@@ -367,7 +367,7 @@ namespace Aluma.API.Repositories
 
                 foreach (var note in notes)
                 {
-                    note.dateCaptured = data.Where(n => n.Id == note.Id).First().Created;
+                    note.DateCaptured = data.Where(n => n.Id == note.Id).First().Created;
                 }
 
                 return notes;
@@ -380,11 +380,11 @@ namespace Aluma.API.Repositories
 
         public List<ClientNotesDto> CreateClientNote(List<ClientNotesDto> dtoArray)
         {
-
+            List<ClientNotesDto> updatedNotes = new List<ClientNotesDto>();
             foreach (var note in dtoArray)
             {
                 try
-                {                    
+                {
                     using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<ClientNotesModel>(note);
@@ -394,8 +394,10 @@ namespace Aluma.API.Repositories
                             _context.Entry(pModel).State = EntityState.Modified;
                             if (_context.SaveChanges() > 0)
                             {
+                                note.DateCaptured = _mapper.Map<ClientNotesDto>(pModel).DateCaptured;
                                 note.Status = "Success";
                                 note.Message = "Client Notes Updated";
+                                updatedNotes.Add(note);
                             }
                         }
                         else
@@ -404,8 +406,10 @@ namespace Aluma.API.Repositories
                             if (_context.SaveChanges() > 0)
                             {
                                 note.Id = _mapper.Map<ClientNotesDto>(pModel).Id;
+                                note.DateCaptured = _mapper.Map<ClientNotesDto>(pModel).DateCaptured;
                                 note.Status = "Success";
                                 note.Message = "Client Note Created";
+                                updatedNotes.Add(note);
                             }
                         }
 
@@ -415,10 +419,11 @@ namespace Aluma.API.Repositories
                 {
                     note.Status = "Server Error";
                     note.Message = ex.Message;
+                    updatedNotes.Add(note);
                 }
             }
 
-            return dtoArray;
+            return updatedNotes;
 
         }
 
