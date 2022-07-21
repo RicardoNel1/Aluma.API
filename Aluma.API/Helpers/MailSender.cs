@@ -468,13 +468,14 @@ namespace Aluma.API.Helpers
         }
 
 
-        public async Task SendTestEmail()
+        public async Task SendOTPEmail(UserDto user, string otp)
         {
 
-            UserMail um = new()
+            OtpMail um = new()
             {
-                Email = "justin@fintegratetech.co.za",//client.User.Email,
-                Name = "Justin",//client.User.FirstName + " " + client.User.LastName,
+                Email = user.Email,//"justin@fintegratetech.co.za",//client.User.Email,
+                Name = user.FirstName,//"Justin",//client.User.FirstName + " " + client.User.LastName,
+                Otp = otp,
                 Subject = "Aluma Capital: OTP",//"Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
                 Template = "OTP"
             };
@@ -504,7 +505,7 @@ namespace Aluma.API.Helpers
 
                 var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
 
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, um.Name);
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, um.Name, um.Otp);
 
                 message.Body = bb.HtmlBody;
 

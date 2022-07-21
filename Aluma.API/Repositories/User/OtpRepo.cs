@@ -184,9 +184,55 @@ namespace Aluma.API.Repositories
 
         public async Task SendOTPEmail(UserDto user, OtpTypesEnum otpType, int applicationId = 0)
         {
-            //SmsService.SmsRepo smsService = new();
+            SmsService.SmsRepo smsService = new();
+            string result = string.Empty;
+            try
+            {
 
-            await _ms.SendTestEmail();
+                var userOtpList = _context.Otp.Where(o => o.UserId == user.Id && o.isExpired == false && o.isValidated == false).ToList();
+
+                if (userOtpList.Count > 5)
+                {
+                    UserModel um = _context.Users.Where(u => u.Id == user.Id).First();
+                    um.isOtpLocked = true;
+
+                    _context.Users.Update(um);
+                    _context.SaveChanges();
+
+                    result = "Too many attempts. Please contact support.";
+                }
+
+                string newOtpNumber = smsService.CreateOtp();                
+
+                OtpModel newOtp = new()
+                {
+                    Otp = newOtpNumber,
+                    OtpType = otpType,
+                    Created = DateTime.Now,
+                    CreatedBy = 00,
+                    isExpired = false,
+                    isValidated = false,
+                    UserId = user.Id
+                };
+
+                if (applicationId > 0)
+                {
+                    newOtp.ApplicationId = applicationId;
+                }
+
+                _context.Otp.Add(newOtp);
+                _context.SaveChanges();
+
+                //bool sent = smsService.SendOtp(user.MobileNumber, otpMessage);
+                await _ms.SendOTPEmail(user, newOtpNumber);
+
+                
+            }
+            catch (Exception ex)
+            {
+                //log error
+                result = "Could not send sms at this time.Please try again later, or contact support.";
+            }
 
         }
 

@@ -149,4 +149,16 @@ namespace DataService.Model
         public Guid UserId { get; set; }
         public string Template { get; set; }
     }
+
+    public class OtpMail
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Otp { get; set; }
+        public string Subject { get; set; }
+        public string Url { get; set; }
+        public string UrlToken { get; set; }
+        public Guid UserId { get; set; }
+        public string Template { get; set; }
+    }
 }
