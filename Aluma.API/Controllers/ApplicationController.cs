@@ -2,6 +2,7 @@
 using AutoMapper;
 using DataService.Dto;
 using DataService.Enum;
+using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -30,11 +31,35 @@ namespace Aluma.API.Controllers
                 bool applicationStarted = _repo.Applications.ApplicationInProgress(dto);
                 if (!applicationStarted)
                 {
-                    _repo.Applications.CreateNewApplication(dto);
+                    var result = _repo.Applications.CreateNewApplication(dto);
+                    return Ok(result);
                 }
                 else
                 {
-                    return Ok(dto);
+                    var result = _repo.Applications.GetCurrentApplication(dto);
+                    return Ok(result);
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("amount"), AllowAnonymous]
+        public IActionResult SetApplicationAmount(ApplicationDto dto)
+        {
+            try
+            {
+                bool applicationExist = _repo.Applications.DoesApplicationExist(dto);
+                if (!applicationExist)
+                {
+                    return BadRequest("Application Does Not Exist");
+                }
+                else
+                {
+                    _repo.Applications.SetApplicationAmount(dto);
                 }
                 return Ok(dto);
             }
@@ -43,6 +68,21 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        //[HttpGet("current"), AllowAnonymous]
+        //public IActionResult GetCurrentApplication(int clientId, string selectedProduct, string applicationStatus )
+        //{
+        //    try
+        //    {              
+        //        var application = _repo.Applications.GetCurrentApplication(clientId, selectedProduct, applicationStatus);
+
+        //        return Ok(application);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
 
         [HttpPut("delete"), AllowAnonymous]
         public IActionResult SoftDeleteApplication(ApplicationDto dto)

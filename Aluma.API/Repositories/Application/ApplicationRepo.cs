@@ -24,11 +24,15 @@ namespace Aluma.API.Repositories
 
         public List<ApplicationDto> GetApplications();
 
+        public ApplicationDto GetCurrentApplication(ApplicationDto dto);
+
         public List<ApplicationDto> GetApplicationsByClient(string clientId);
 
         public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto);
 
         public ApplicationDto UpdateApplication(ApplicationDto dto);
+
+        public ApplicationDto SetApplicationAmount(ApplicationDto dto);
 
         public bool DeleteApplication(ApplicationDto dto);
 
@@ -39,6 +43,8 @@ namespace Aluma.API.Repositories
         bool DoesApplicationExist(ApplicationDto dto);
 
         bool DoesApplicationExist(int clientId);
+
+        bool DoesApplicationExistById(int applicationId);
 
         bool ApplicationInProgress(ApplicationDto dto);
 
@@ -168,10 +174,34 @@ namespace Aluma.API.Repositories
             return response;
         }
 
+        public ApplicationDto GetCurrentApplication(ApplicationDto dto)
+        {
+
+            Enum.TryParse(dto.ApplicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
+            ProductModel product = _context.Products.Where(a => a.Name == dto.ProductName).First();
+            int productId = product.Id;
+
+            ApplicationModel application = _context.Applications.Where(a => a.ClientId == dto.ClientId && a.ProductId == productId && a.ApplicationStatus == appStatus).First();
+            return _mapper.Map<ApplicationDto>(application);
+        }
+
         public ApplicationDto UpdateApplication(ApplicationDto dto)
         {
             throw new NotImplementedException();
         }
+
+        public ApplicationDto SetApplicationAmount(ApplicationDto dto)
+        {
+            ApplicationModel data = _context.Applications.Where(a => a.Id == dto.Id).First();
+
+            data.ApplicationAmount = dto.ApplicationAmount;
+
+            _context.Applications.Update(data);
+            _context.SaveChanges();
+            return dto;
+        }
+
+
 
         public bool DoesApplicationExist(ApplicationDto dto)
         {
@@ -187,6 +217,15 @@ namespace Aluma.API.Repositories
             bool applicationExists = false;
 
             applicationExists = _context.Applications.Where(a => a.ClientId == clientId && a.ApplicationStatus != 0).Any();
+
+            return applicationExists;
+        }
+
+        public bool DoesApplicationExistById(int applicationId)
+        {
+            bool applicationExists = false;
+
+            applicationExists = _context.Applications.Where(a => a.Id == applicationId && a.ApplicationStatus != 0).Any();
 
             return applicationExists;
         }
@@ -234,6 +273,8 @@ namespace Aluma.API.Repositories
             dto.ProductName = product.Name;
 
             _ms.SendNewApplicationEmail(client, product.Name);
+
+            //dto.Id = application.Id;
 
             return dto;
 

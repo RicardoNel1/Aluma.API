@@ -10,6 +10,7 @@ namespace DataService.Dto
         public int Id { get; set; }
         public int ClientId { get; set; }
         public string ApplicationType { get; set; }
+        public int ApplicationAmount { get; set; }
         public string ProductName { get; set; }
         public int ProductId { get; set; }
         public string ApplicationStatus { get; set; }
@@ -17,7 +18,6 @@ namespace DataService.Dto
         public bool showRecordOfAdvice { get; set; }
         public bool DocumentsCreated { get; set; }
         public bool DocumentsSigned { get; set; }
-
         public bool SignatureConsent { get; set; }
         public DateTime SignatureConsentDate { get; set; }
 
