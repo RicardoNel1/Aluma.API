@@ -174,7 +174,7 @@ namespace Aluma.API.Controllers
 
         [HttpGet("list/client"), AllowAnonymous]
         //public IActionResult ListClientApplication([FromQuery] ClientDto dto) 
-        public IActionResult ListClientApplications(string clientId)
+        public IActionResult ListClientApplications(int clientId)
         {
             try
             {
