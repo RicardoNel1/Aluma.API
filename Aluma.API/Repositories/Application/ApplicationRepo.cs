@@ -50,6 +50,7 @@ namespace Aluma.API.Repositories
 
         Task GenerateApplicationDocuments(int applicationId);
         void ConsentToSign(int applicationId);
+        ApplicationDto SubmitShortApplication(ApplicationDto dto);
         bool CheckSignConsent(int applicationId);
         //ApplicationDocumentsModel PopulateTestDocument();
 
@@ -357,6 +358,31 @@ namespace Aluma.API.Repositories
             _context.Applications.Update(application);
             _context.SaveChanges();
         }
+
+        public ApplicationDto SubmitShortApplication(ApplicationDto dto)
+        {
+            dto = UpdateApplication(dto);
+
+            FspMandateRepo fspR = new(_context, _host, _config, _mapper, null);
+            ConsumerProtectionRepo cpR = new(_context, _host, _config, _mapper);
+
+            FSPMandateDto fspDto = fspR.GetFSPMandate(dto.ClientId);
+            ConsumerProtectionDto cpDto = cpR.GetConsumerProtection(dto.ClientId);
+
+            if(fspDto == null)
+            {
+                fspR.CreateFSPMandate(new() { ClientId = dto.ClientId });
+            }
+
+            if (cpDto == null)
+            {
+                cpR.CreateConsumerProtection(new() { ClientId = dto.ClientId });
+            }
+
+
+            return dto;
+        }
+
 
     }
 

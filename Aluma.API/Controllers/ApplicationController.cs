@@ -39,7 +39,22 @@ namespace Aluma.API.Controllers
                     var result = _repo.Applications.GetCurrentApplication(dto);
                     return Ok(result);
                 }
-                
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("submitShortApplication"), AllowAnonymous]
+        public IActionResult SubmitShortApplication(ApplicationDto dto)
+        {
+            try
+            {
+                dto = _repo.Applications.SubmitShortApplication(dto);
+
+                return Ok(dto);
             }
             catch (Exception e)
             {
