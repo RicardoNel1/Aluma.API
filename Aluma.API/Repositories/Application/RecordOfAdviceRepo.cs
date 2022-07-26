@@ -113,6 +113,11 @@ namespace Aluma.API.Repositories
                 discRepo.CreateDisclosure(discDto);
             }
 
+            MailSender ms = new(_context,_config,_fileStorage,_host);
+
+            //send email with app documents,  generated password and link
+            //ms.SendClientWelcomeEmail(client,app); 
+
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
             return dto;

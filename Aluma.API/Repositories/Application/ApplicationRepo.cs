@@ -379,6 +379,7 @@ namespace Aluma.API.Repositories
             //dto = UpdateApplication(dto);
 
             FspMandateRepo fspR = new(_context, _host, _config, _mapper, null);
+            //ClientRepo clientR = new(_context, _host, _config, _mapper, null);
             ConsumerProtectionRepo cpR = new(_context, _host, _config, _mapper);
 
             FSPMandateDto fspDto = fspR.GetFSPMandate(dto.ClientId);
@@ -393,6 +394,12 @@ namespace Aluma.API.Repositories
             {
                 cpR.CreateConsumerProtection(new() { ClientId = dto.ClientId });
             }
+
+            ClientModel client = _mapper.Map<ClientModel>(dto.Client);
+
+            MailSender ms = new(_context, _config, null, _host);
+
+            ms.SendClientNewApplicationEmail(client, dto.ProductName);
 
 
             return dto;
