@@ -118,10 +118,11 @@ namespace Aluma.API.Helpers
                 };
 
                 //message.To.Add(new MailAddress("sales@aluma.co.za"));
-                message.To.Add(new MailAddress("system@aluma.co.za"));
+                message.To.Add(new MailAddress(client.User.Email));
+                //message.To.Add(new MailAddress("system@aluma.co.za"));
 
                 char slash = Path.DirectorySeparatorChar;
-                string templatePath = $"{_host.WebRootPath}{slash}html{slash}NewApplication.html";
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}InvestNowNewApplication.html";
 
                 // Create Body Builder
                 MimeKit.BodyBuilder bb = new();
@@ -343,7 +344,7 @@ namespace Aluma.API.Helpers
                 Email = client.User.Email,
                 Name = client.User.FirstName + " " + client.User.LastName,
                 Subject = "Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
-                Template = "ClientWelcome"
+                Template = "InvestNowClientWelcome"
             };
 
             try
@@ -610,10 +611,10 @@ namespace Aluma.API.Helpers
 
             OtpMail um = new()
             {
-                Email = user.Email,//"justin@fintegratetech.co.za",//client.User.Email,
-                Name = user.FirstName,//"Justin",//client.User.FirstName + " " + client.User.LastName,
+                Email = user.Email,
+                Name = user.FirstName,
                 Otp = otp,
-                Subject = "Aluma Capital: OTP",//"Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
+                Subject = "Aluma Capital: OTP",
                 Template = "OTP"
             };
 
