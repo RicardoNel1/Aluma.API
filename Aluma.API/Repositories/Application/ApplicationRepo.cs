@@ -277,7 +277,7 @@ namespace Aluma.API.Repositories
         {
 
             ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
-            ClientModel client = _context.Clients.SingleOrDefault(c => c.Id == dto.ClientId);
+            ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == dto.ClientId);
 
             Enum.TryParse(dto.ApplicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
             application.ApplicationStatus = appStatus;
@@ -376,10 +376,10 @@ namespace Aluma.API.Repositories
 
         public ApplicationDto SubmitShortApplication(ApplicationDto dto)
         {
-            //dto = UpdateApplication(dto);
+            dto = CreateNewApplication(dto);
 
             FspMandateRepo fspR = new(_context, _host, _config, _mapper, null);
-            //ClientRepo clientR = new(_context, _host, _config, _mapper, null);
+            ClientRepo clientR = new(_context, _host, _config, _mapper, null);
             ConsumerProtectionRepo cpR = new(_context, _host, _config, _mapper);
 
             FSPMandateDto fspDto = fspR.GetFSPMandate(dto.ClientId);
@@ -394,12 +394,12 @@ namespace Aluma.API.Repositories
             {
                 cpR.CreateConsumerProtection(new() { ClientId = dto.ClientId });
             }
-
-            ClientModel client = _mapper.Map<ClientModel>(dto.Client);
+            ClientDto clientDto = clientR.GetClient(new() { Id = dto.ClientId });
+            ClientModel clientModel = _mapper.Map<ClientModel>(clientDto);
 
             MailSender ms = new(_context, _config, null, _host);
 
-            ms.SendClientNewApplicationEmail(client, dto.ProductName);
+            ms.SendClientNewApplicationEmail(clientModel, dto.ProductName);
 
 
             return dto;
