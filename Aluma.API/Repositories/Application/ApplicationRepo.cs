@@ -209,7 +209,7 @@ namespace Aluma.API.Repositories
         public ApplicationDto SetApplicationAmount(ApplicationDto dto)
         {
             ApplicationModel data = _context.Applications.Where(a => a.Id == dto.Id).First();
-
+            
             data.ApplicationAmount = dto.ApplicationAmount;
 
             _context.Applications.Update(data);
@@ -376,6 +376,7 @@ namespace Aluma.API.Repositories
 
         public ApplicationDto SubmitShortApplication(ApplicationDto dto)
         {
+            dto.ApplicationStatus = "InProgress";
             dto = CreateNewApplication(dto);
 
             FspMandateRepo fspR = new(_context, _host, _config, _mapper, null);

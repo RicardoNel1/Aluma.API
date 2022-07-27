@@ -117,11 +117,15 @@ namespace Aluma.API.Repositories
 
             //send email with app documents,  generated password and link
             //ms.SendClientWelcomeEmail(client,app); 
+            if (client.User.Password == null) {
+                ms.SendInvestNowClientWelcomeEmail(client);
+            }
 
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
             return dto;
         }
+
 
         public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
         {
