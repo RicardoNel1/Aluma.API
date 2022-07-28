@@ -134,7 +134,7 @@ namespace Aluma.API.Helpers
                 }
 
                 var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName + " " + client.User.LastName, productName);
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName, productName);
 
                 message.Body = bb.HtmlBody;
 
@@ -257,13 +257,13 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
-        public async Task SendClientWelcomeEmail(ClientModel client)
+        public async Task SendClientWelcomeEmail(UserModel user)
         {
             UserMail um = new()
             {
-                Email = client.User.Email,
-                Name = client.User.FirstName + " " + client.User.LastName,
-                Subject = "Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
+                Email = user.Email,
+                Name = user.FirstName + " " + user.LastName,
+                Subject = "Aluma Capital: Client welcome letter for " + user.FirstName + " " + user.LastName,
                 Template = "ClientWelcome"
             };
 
@@ -276,7 +276,7 @@ namespace Aluma.API.Helpers
                     IsBodyHtml = true
                 };
 
-                message.To.Add(new MailAddress(client.User.Email));
+                message.To.Add(new MailAddress(user.Email));
                 //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
                 message.Bcc.Add(new MailAddress("system@aluma.co.za"));
 
@@ -294,7 +294,7 @@ namespace Aluma.API.Helpers
 
                 var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
 
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName);
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, user.FirstName);
 
                 message.Body = bb.HtmlBody;
 
