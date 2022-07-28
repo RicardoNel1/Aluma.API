@@ -55,7 +55,7 @@ namespace Aluma.API.Controllers
                             LastName = dto.LastName,
                         };
 
-                        user = _repo.User.CreateClientUser(regDto);
+                        user = await _repo.User.CreateClientUser(regDto);
 
                         ClientDto client = new() { UserId = user.Id, AdvisorId = null, ClientType = "Primary" };
                         client = await _repo.Client.CreateClient(client);

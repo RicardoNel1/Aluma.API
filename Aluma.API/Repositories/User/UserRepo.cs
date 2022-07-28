@@ -39,7 +39,7 @@ namespace Aluma.API.Repositories
 
         bool IsUserAdvisor(LoginDto dto);
 
-        public UserDto CreateClientUser(RegistrationDto dto);
+        public Task<UserDto> CreateClientUser(RegistrationDto dto);
         public UserDto CreateAdvisorUser(RegistrationDto dto);
 
         bool DoesAddressExist(AddressDto dto);
@@ -288,7 +288,7 @@ namespace Aluma.API.Repositories
             throw new NotImplementedException();
         }
 
-        public UserDto CreateClientUser(RegistrationDto dto)
+        public async Task<UserDto> CreateClientUser(RegistrationDto dto)
         {
             //create user            
             StringHasherRepo str = new();
@@ -307,6 +307,8 @@ namespace Aluma.API.Repositories
             user.Password = dto.Password != null ? str.CreateHash(dto.Password) : null;
             _context.Users.Add(user);
             _context.SaveChanges();
+
+            await _ms.SendClientWelcomeEmail(user);
 
             return _mapper.Map<UserDto>(user);
         }
