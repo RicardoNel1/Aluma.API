@@ -93,7 +93,7 @@ namespace Aluma.API.Repositories
             _context.Applications.Update(app);
             _context.SaveChanges();
 
-            ClientModel client = _context.Clients.SingleOrDefault(a => a.Id == app.ClientId);
+            ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(a => a.Id == app.ClientId);
             client.AdvisorId = newRoa.AdvisorId;
             _context.Clients.Update(client);
             _context.SaveChanges();
