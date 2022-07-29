@@ -9,6 +9,7 @@ using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using StringHasher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,6 +119,12 @@ namespace Aluma.API.Repositories
             //send email with app documents,  generated password and link
             //ms.SendClientWelcomeEmail(client,app); 
             if (client.User.Password == null) {
+
+                StringHasherRepo str = new();
+                client.User.Password = str.CreateHash("Aluma" + client.User.FirstName.Trim());
+                _context.Users.Update(client.User);
+                _context.SaveChanges();
+
                 ms.SendInvestNowClientWelcomeEmail(client);
             }
 
