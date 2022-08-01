@@ -63,8 +63,12 @@ namespace Aluma.API.Repositories
         public ConsumerProtectionDto GetConsumerProtection(int clientId)
         {
             var consumerProtectionModel = _context.ConsumerProtection.Where(a => a.ClientId == clientId);
-            var result = consumerProtectionModel.Any() ? _mapper.Map<ConsumerProtectionDto>(consumerProtectionModel.First()) : new ConsumerProtectionDto();
-            return result;
+            
+            if (consumerProtectionModel.Any())
+            {
+                return _mapper.Map<ConsumerProtectionDto>(consumerProtectionModel.First());
+            }
+            return null;
 
         }
 
