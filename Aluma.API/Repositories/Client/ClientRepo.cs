@@ -257,7 +257,7 @@ namespace Aluma.API.Repositories
 
             dto = _mapper.Map<ClientDto>(client);
 
-            await _ms.SendClientWelcomeEmail(client);
+            //await _ms.SendClientWelcomeEmail(client);
             return dto;
         }
 

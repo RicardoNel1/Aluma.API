@@ -16,6 +16,7 @@ namespace DataService.Dto
         public string ApplicationStatus { get; set; }
         public bool showRiskMismatch { get; set; }
         public bool showRecordOfAdvice { get; set; }
+        public bool isShortApplication { get; set; }
         public bool DocumentsCreated { get; set; }
         public bool DocumentsSigned { get; set; }
         public bool SignatureConsent { get; set; }

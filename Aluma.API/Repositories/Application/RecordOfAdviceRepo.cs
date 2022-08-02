@@ -9,6 +9,7 @@ using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using StringHasher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,7 +94,7 @@ namespace Aluma.API.Repositories
             _context.Applications.Update(app);
             _context.SaveChanges();
 
-            ClientModel client = _context.Clients.SingleOrDefault(a => a.Id == app.ClientId);
+            ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(a => a.Id == app.ClientId);
             client.AdvisorId = newRoa.AdvisorId;
             _context.Clients.Update(client);
             _context.SaveChanges();
@@ -113,10 +114,25 @@ namespace Aluma.API.Repositories
                 discRepo.CreateDisclosure(discDto);
             }
 
+            MailSender ms = new(_context,_config,_fileStorage,_host);
+
+            //send email with app documents,  generated password and link
+            //ms.SendClientWelcomeEmail(client,app); 
+            if (client.User.Password == null) {
+
+                StringHasherRepo str = new();
+                client.User.Password = str.CreateHash("Aluma" + client.User.FirstName.Trim());
+                _context.Users.Update(client.User);
+                _context.SaveChanges();
+
+                ms.SendInvestNowClientWelcomeEmail(client);
+            }
+
             dto = _mapper.Map<RecordOfAdviceDto>(newRoa);
 
             return dto;
         }
+
 
         public RecordOfAdviceDto UpdateRecordOfAdvice(RecordOfAdviceDto dto)
         {

@@ -48,7 +48,7 @@ namespace Aluma.API.Helpers
             foreach (var item in items)
             {
                 //await _ms.SendAdvisorWelcomeEmail(item);
-                await _ms.SendClientWelcomeEmail(item);
+                await _ms.SendClientWelcomeEmail(item.User);
             }
         }
 

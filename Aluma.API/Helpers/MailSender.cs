@@ -73,7 +73,6 @@ namespace Aluma.API.Helpers
                 //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
 
                 var smtpClient = new SmtpClient
-
                 {
                     Host = "smtp.office365.com",
                     Port = 587,
@@ -106,8 +105,74 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
+        public async void SendClientNewApplicationEmail(ClientModel client, string productName)
+        {
 
+            try
+            {
+                var message = new MailMessage
+                {
+                    From = new MailAddress(mailSettings.Username),
+                    Subject = "New Aluma Application: " + client.User.FirstName + " " + client.User.LastName,
+                    IsBodyHtml = true
+                };
 
+                //message.To.Add(new MailAddress("sales@aluma.co.za"));
+                message.To.Add(new MailAddress(client.User.Email));
+                //message.To.Add(new MailAddress("system@aluma.co.za"));
+
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}InvestNowNewApplication.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, client.User.FirstName, productName);
+
+                message.Body = bb.HtmlBody;
+
+                //message.Body = "A new application has been submitted on the client portal by " + client.User.FirstName + " " + client.User.LastName + ". Contact number: " + client.User.MobileNumber + ".  Email: " + client.User.Email;
+
+                var smtpClient = new SmtpClient
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+
+                };
+                //var smtpClient = new SmtpClient
+                //{
+                //    Host = "mail.administr8it.co.za",
+                //    Port = 25,
+                //    EnableSsl = false,
+                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                //    Timeout = 1000000
+                //};
+                smtpClient.Send(message);
+                message.Dispose();
+                return;
+
+            }
+            catch (System.Exception ex)
+            {
+                return;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
+        }
         public async void SendApplicationDocumentsToBroker(ApplicationModel app, AdvisorModel advisor, ClientModel client)
         {
             UserMail um = new()
@@ -192,17 +257,94 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
+        public async Task SendClientWelcomeEmail(UserModel user)
+        {
+            UserMail um = new()
+            {
+                Email = user.Email,
+                Name = user.FirstName + " " + user.LastName,
+                Subject = "Aluma Capital: Client welcome letter for " + user.FirstName + " " + user.LastName,
+                Template = "ClientWelcome"
+            };
+
+            try
+            {
+                var message = new MailMessage
+                {
+                    From = new MailAddress(mailSettings.Username),
+                    Subject = um.Subject,
+                    IsBodyHtml = true
+                };
+
+                message.To.Add(new MailAddress(user.Email));
+                //message.To.Add(new MailAddress("johan@fintegratetech.co.za"));
+                message.Bcc.Add(new MailAddress("system@aluma.co.za"));
+
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-fixed-income.jpg";
+
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, user.FirstName);
+
+                message.Body = bb.HtmlBody;
+
+                //var smtpClient = new SmtpClient
+                //{
+                //    Host = "mail.administr8it.co.za",
+                //    Port = 25,
+                //    EnableSsl = false,
+                //    Credentials = new NetworkCredential("uloans@administr8it.co.za", "4?E$)hzUNW+v"),
+                //    Timeout = 1000000
+                //};
+
+                var smtpClient = new SmtpClient
+
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+
+                };
 
 
 
-        public async Task SendClientWelcomeEmail(ClientModel client)
+                smtpClient.Send(message);
+
+                message.Dispose();
+                return;
+
+            }
+            catch (System.Exception ex)
+            {
+                return;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
+        }
+        public async Task SendInvestNowClientWelcomeEmail(ClientModel client)
         {
             UserMail um = new()
             {
                 Email = client.User.Email,
                 Name = client.User.FirstName + " " + client.User.LastName,
                 Subject = "Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
-                Template = "ClientWelcome"
+                Template = "InvestNowClientWelcome"
             };
 
             try
@@ -246,7 +388,6 @@ namespace Aluma.API.Helpers
                 //};
 
                 var smtpClient = new SmtpClient
-
                 {
                     Host = "smtp.office365.com",
                     Port = 587,
@@ -355,7 +496,6 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
-
         public async Task SendForgotPasswordMail(UserModel user)
         {
             JwtRepo jwt = new();
@@ -466,17 +606,15 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
-
-
         public async Task SendOTPEmail(UserDto user, string otp)
         {
 
             OtpMail um = new()
             {
-                Email = user.Email,//"justin@fintegratetech.co.za",//client.User.Email,
-                Name = user.FirstName,//"Justin",//client.User.FirstName + " " + client.User.LastName,
+                Email = user.Email,
+                Name = user.FirstName,
                 Otp = otp,
-                Subject = "Aluma Capital: OTP",//"Aluma Capital: Client welcome letter for " + client.User.FirstName + " " + client.User.LastName,
+                Subject = "Aluma Capital: OTP",
                 Template = "OTP"
             };
 

@@ -137,6 +137,12 @@
     <Content Update="wwwroot\html\AssociateConsent.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\html\InvestNowNewApplication.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\html\InvestNowClientWelcome.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\html\OTP.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

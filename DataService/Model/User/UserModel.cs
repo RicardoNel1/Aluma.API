@@ -70,7 +70,7 @@ namespace DataService.Model
             mb.Property(x => x.Id).ValueGeneratedOnAdd();
 
             mb.HasIndex(c => c.RSAIdNumber).IsUnique();
-            //mb.HasIndex(c => c.Email).IsUnique();
+            mb.HasIndex(c => c.Email).IsUnique();
             //mb.HasIndex(c => c.MobileNumber).IsUnique();
             mb.HasOne(c => c.Advisor)
                 .WithOne(c => c.User)

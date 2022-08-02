@@ -26,7 +26,7 @@ namespace Aluma.API.Repositories
 
         public ApplicationDto GetCurrentApplication(ApplicationDto dto);
 
-        public List<ApplicationDto> GetApplicationsByClient(string clientId);
+        public List<ApplicationDto> GetApplicationsByClient(int clientId);
 
         public List<ApplicationDto> GetApplicationsByAdvisor(AdvisorDto dto);
 
@@ -50,6 +50,7 @@ namespace Aluma.API.Repositories
 
         Task GenerateApplicationDocuments(int applicationId);
         void ConsentToSign(int applicationId);
+        ApplicationDto SubmitShortApplication(ApplicationDto dto);
         bool CheckSignConsent(int applicationId);
         //ApplicationDocumentsModel PopulateTestDocument();
 
@@ -136,19 +137,34 @@ namespace Aluma.API.Repositories
             return _mapper.Map<List<ApplicationDto>>(applications);
         }
 
-        public List<ApplicationDto> GetApplicationsByClient(string clientId)
+        public List<ApplicationDto> GetApplicationsByClient(int clientId)
         {
-            List<ApplicationModel> applications = _context.Applications.Where(c => c.ClientId.ToString() == clientId && c.ApplicationStatus != 0).ToList();
+            List<ApplicationModel> applications = _context.Applications.Where(c => c.ClientId == clientId && c.ApplicationStatus != 0).ToList();
 
             //remove when productID is implemented
             List<ApplicationDto> result = _mapper.Map<List<ApplicationDto>>(applications);
             RecordOfAdviceRepo roaRepo = new(_context, _host, _config, _mapper, _fileStorage);
+
+
+            var riskProfile = _context.RiskProfiles.Where(r => r.ClientId == clientId);
+            bool showRiskMismatch = false;
+            bool isShortApplication = false;
+
+            if (riskProfile.Any())
+            {
+                showRiskMismatch = riskProfile.Where(r => r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
+            }
+            else
+            {
+                isShortApplication = true;
+            }
+
             foreach (var app in result)
             {
                 app.ProductName = _context.Products.First(p => p.Id == app.ProductId).Name;
                 app.showRecordOfAdvice = !roaRepo.DoesApplicationHaveRecordOfAdice(app.Id);
-                app.showRiskMismatch = _context.RiskProfiles.Where(r => r.ClientId == app.ClientId && r.AgreeWithOutcome == false && r.AdvisorNotes == null).Any();
-
+                app.showRiskMismatch = showRiskMismatch;
+                app.isShortApplication = isShortApplication;
             }
 
             return result;
@@ -193,7 +209,7 @@ namespace Aluma.API.Repositories
         public ApplicationDto SetApplicationAmount(ApplicationDto dto)
         {
             ApplicationModel data = _context.Applications.Where(a => a.Id == dto.Id).First();
-
+            
             data.ApplicationAmount = dto.ApplicationAmount;
 
             _context.Applications.Update(data);
@@ -261,7 +277,7 @@ namespace Aluma.API.Repositories
         {
 
             ApplicationModel application = _mapper.Map<ApplicationModel>(dto);
-            ClientModel client = _context.Clients.SingleOrDefault(c => c.Id == dto.ClientId);
+            ClientModel client = _context.Clients.Include(c => c.User).SingleOrDefault(c => c.Id == dto.ClientId);
 
             Enum.TryParse(dto.ApplicationStatus, true, out DataService.Enum.ApplicationStatusEnum appStatus);
             application.ApplicationStatus = appStatus;
@@ -296,7 +312,8 @@ namespace Aluma.API.Repositories
         {
             ApplicationModel application = _context.Applications.SingleOrDefault(a => a.Id == applicationId);
             RecordOfAdviceModel roa = _context.RecordOfAdvice.Include(r => r.SelectedProducts).SingleOrDefault(a => a.ApplicationId == applicationId);
-            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
+            //ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).SingleOrDefault(c => c.Id == application.ClientId);
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).SingleOrDefault(c => c.Id == application.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
             RiskProfileModel risk = _context.RiskProfiles.SingleOrDefault(r => r.ClientId == client.Id);
             FSPMandateModel fsp = _context.FspMandates.SingleOrDefault(r => r.ClientId == client.Id);
@@ -357,6 +374,39 @@ namespace Aluma.API.Repositories
             _context.Applications.Update(application);
             _context.SaveChanges();
         }
+
+        public ApplicationDto SubmitShortApplication(ApplicationDto dto)
+        {
+            dto.ApplicationStatus = "InProgress";
+            dto = CreateNewApplication(dto);
+
+            FspMandateRepo fspR = new(_context, _host, _config, _mapper, null);
+            ClientRepo clientR = new(_context, _host, _config, _mapper, null);
+            ConsumerProtectionRepo cpR = new(_context, _host, _config, _mapper);
+
+            FSPMandateDto fspDto = fspR.GetFSPMandate(dto.ClientId);
+            ConsumerProtectionDto cpDto = cpR.GetConsumerProtection(dto.ClientId);
+
+            if(fspDto == null)
+            {
+                fspR.CreateFSPMandate(new() { ClientId = dto.ClientId });
+            }
+
+            if (cpDto == null)
+            {
+                cpR.CreateConsumerProtection(new() { ClientId = dto.ClientId });
+            }
+            ClientDto clientDto = clientR.GetClient(new() { Id = dto.ClientId });
+            ClientModel clientModel = _mapper.Map<ClientModel>(clientDto);
+
+            MailSender ms = new(_context, _config, null, _host);
+
+            ms.SendClientNewApplicationEmail(clientModel, dto.ProductName);
+
+
+            return dto;
+        }
+
 
     }
 
