@@ -250,7 +250,7 @@ namespace Aluma.API.Repositories
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
             dto.ClientType = "Primary";
-            dto.AdvisorId = null;
+            //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
             _context.Clients.Add(client);
             _context.SaveChanges();
