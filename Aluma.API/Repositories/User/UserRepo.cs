@@ -81,7 +81,7 @@ namespace Aluma.API.Repositories
 
         public bool DoesUserExist(UserDto dto)
         {
-            bool exists = _context.Users.Where(c => (c.Email == dto.Email || c.RSAIdNumber == dto.RSAIdNumber || c.MobileNumber == dto.MobileNumber)).Any();
+            bool exists = _context.Users.Where(c => (c.Email == dto.Email || c.RSAIdNumber == dto.RSAIdNumber)).Any();
 
             return exists;
         }
