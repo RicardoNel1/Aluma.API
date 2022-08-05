@@ -86,7 +86,7 @@ namespace Aluma.API.Controllers
                     return StatusCode(401, response);
                 }
 
-                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);     //TODO removed for dev
+                socialLoginVerified = _repo.User.IsSocialLoginVerified(dto);
 
                 if (!socialLoginVerified)
                 {
@@ -98,7 +98,7 @@ namespace Aluma.API.Controllers
                         return StatusCode(401, response);
                     }
 
-                    registrationVerified = true;// _repo.User.IsRegistrationVerified(dto);
+                    registrationVerified = _repo.User.IsRegistrationVerified(dto);
 
                     user = _repo.User.GetUser(dto);
                     if (!registrationVerified)
