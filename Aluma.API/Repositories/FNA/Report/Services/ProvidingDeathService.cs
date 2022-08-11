@@ -42,8 +42,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services
                 ProvidingDeathSummaryDto summaryDeath = GetProvidingDeathSummary(fnaId);
                 AssetSummaryDto assetsSummary = GetAssetSummary(fnaId);
                 EconomyVariablesDto economy_variables = GetEconomyVariablesSummary(fnaId);
+                List<InsuranceDto> insurances = GetInsurance(fnaId);
+                TaxLumpsumDto lumpsum = GetTaxLumpsum(fnaId);
+                EstateExpensesDto estateExpenses = GetEstateExpenses(fnaId);
 
-                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, deathDto, summaryDeath, assetsSummary, economy_variables));
+                return ReplaceHtmlPlaceholders(SetReportFields(client, user, assumptions, deathDto, summaryDeath, assetsSummary, economy_variables, insurances, lumpsum, estateExpenses));
             }
             catch (Exception)
             {
@@ -57,6 +60,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-providing-on-death.html");
             string result = File.ReadAllText(path);
 
+            result = result.Replace("[TotalCapital]", deathReport.TotalCapital);
             result = result.Replace("[AvailableCapital]", deathReport.AvailableCapital);
             result = result.Replace("[descSurplusProviding]", deathReport.descSurplusProviding);
             result = result.Replace("[SurplusProviding]", deathReport.SurplusProviding);
@@ -113,21 +117,48 @@ namespace Aluma.API.Repositories.FNA.Report.Services
 
         private ProvidingOnDeathReportDto SetReportFields(
             ClientDto client, UserDto user, AssumptionsDto assumptions, ProvidingOnDeathDto deathDto,
-            ProvidingDeathSummaryDto summaryDeath, AssetSummaryDto assetSummary, EconomyVariablesDto economy_variables
+            ProvidingDeathSummaryDto summaryDeath, AssetSummaryDto assetSummary, EconomyVariablesDto economy_variables, List<InsuranceDto> insurances, TaxLumpsumDto lumpsumDto, EstateExpensesDto estateExpenses
         )
         {
+            double totalInsuranceToSpouse = 0;
+            if (insurances != null && insurances.Count > 0)
+            {
+
+                foreach (InsuranceDto insurance in insurances)
+                {
+                    var allocate = insurance.AllocateTo;
+                    if (allocate == "ToSpouse")
+                        totalInsuranceToSpouse += insurance.LifeCover;
+                }
+            }
+            double totalInsuranceToEstate = 0;
+            if (insurances != null && insurances.Count > 0)
+            {
+
+                foreach (InsuranceDto insurance in insurances)
+                {
+                    var allocate = insurance.AllocateTo;
+                    if (allocate == "ForLiquidity")
+                        totalInsuranceToEstate += insurance.LifeCover;
+                }
+            }
+
+            double capital = totalInsuranceToSpouse + deathDto.Available_Insurance_Amount + deathDto.RetirementFunds - lumpsumDto.TaxPayable;
             double available = summaryDeath.TotalAvailable;
-            double settling = assetSummary.TotalLiabilities;
-            double totalOnDeath = assetSummary.TotalLiquidAssets - assetSummary.TotalLiabilities; //is this correct? JS
+            double netTotal = summaryDeath.TotalAvailable - summaryDeath.TotalNeeds;
+            double settling = (assetSummary.TotalAssetsToEstate + totalInsuranceToEstate) - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
+            double totalOnDeath = netTotal + settling;
             double capitalSustainableIncome = Math.Round(summaryDeath.TotalAvailable + (summaryDeath.TotalAvailable * economy_variables.InvestmentReturnRate / 100));
+
 
             ProvidingOnDeathReportDto providingOnDeathReportDto = new()
             {
+                TotalCapital = capital < 0 ? $"({(capital * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : capital.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 AvailableCapital = available < 0 ? $"({(available * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : available.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
-                descSurplusProviding = available < 0 ? "Shortfall" : "Surplus",
-                SurplusProviding = available < 0 ? $"({(available * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : available.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                descSurplusProviding = netTotal < 0 ? "Shortfall" : "Surplus",
+                SurplusProviding = netTotal < 0 ? $"({(netTotal * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : netTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descSettlingEstate = settling < 0 ? "Shortfall" : "Surplus",
-                SettlingEstate = settling < 0 ? $"({(settling * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : settling.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+                SettlingEstate = settling < 0 ? $"({(settling).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : settling.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 descTotalOnDeath = totalOnDeath < 0 ? "Shortfall" : "Surplus",
                 TotalOnDeath = totalOnDeath < 0 ? $"({(totalOnDeath * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalOnDeath.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : Convert.ToDateTime(user.DateOfBirth).CalculateAge().ToString(),

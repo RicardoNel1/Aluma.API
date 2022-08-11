@@ -334,5 +334,24 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             }
         }
 
+        public TaxLumpsumDto GetTaxLumpsum(int fnaId)
+        {
+            if (fnaId == 0)
+                return new();
+
+            try
+            {
+                TaxLumpsumDto result = _repo.TaxLumpsum.GetTaxLumpsum(fnaId);
+
+                if (result == null)
+                    return new();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
     }
 }
