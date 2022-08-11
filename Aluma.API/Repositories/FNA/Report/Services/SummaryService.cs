@@ -64,12 +64,24 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     tottalInsurance += insurance.LifeCover;
                 }
             }
-            
+
+            double totalInsuranceToEstate = 0;
+            if (insurances != null && insurances.Count > 0)
+            {
+                
+                foreach (InsuranceDto insurance in insurances)
+                {
+                    var allocate = insurance.AllocateTo;
+                    if (allocate == "ForLiquidity")
+                    totalInsuranceToEstate += insurance.LifeCover; 
+                }
+            }
+
             double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT + 
                 assetSummary.TotalLiquidAssets + assetSummary.TotalInvestmentsExemptCGT + tottalInsurance;      //not adding TotalInvestmentsAttractingCGT yet
 
 
-            double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate;
+            double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate + totalInsuranceToEstate;
             double estateTotalLiabilities = assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses;
             double totalLiquidity = estateTotalLiquidAssets - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
 
@@ -91,7 +103,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 TotalRetirementLabel = totalRetirement < 0 ? "Shortfall" : "Surplus",
                 TotalRetirement = totalRetirement < 0 ? $"({(totalRetirement * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalRetirement.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
                 SavingsRequired = retirementSummaryDto.SavingsRequiredPremium < 0 ? $"({(retirementSummaryDto.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : retirementSummaryDto.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
-                EscPercentage = economy_variables.InflationRate.ToString() ?? string.Empty,
+                EscPercentage = retirementPlanning.SavingsEscalation.ToString() ?? string.Empty, 
 
                 ExistingRetirementFund = totalRetirementFunds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 YearsToRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
