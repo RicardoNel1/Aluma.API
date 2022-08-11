@@ -64,12 +64,24 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     tottalInsurance += insurance.LifeCover;
                 }
             }
-            
+
+            double totalInsuranceToEstate = 0;
+            if (insurances != null && insurances.Count > 0)
+            {
+                
+                foreach (InsuranceDto insurance in insurances)
+                {
+                    var allocate = insurance.AllocateTo;
+                    if (allocate == "ForLiquidity")
+                    totalInsuranceToEstate += insurance.LifeCover; 
+                }
+            }
+
             double estateTotalAssets = primaryResidence.Value + assetSummary.TotalAssetsAttractingCGT + assetSummary.TotalAssetsExcemptCGT + 
                 assetSummary.TotalLiquidAssets + assetSummary.TotalInvestmentsExemptCGT + tottalInsurance;      //not adding TotalInvestmentsAttractingCGT yet
 
 
-            double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate;
+            double estateTotalLiquidAssets = assetSummary.TotalAssetsToEstate + totalInsuranceToEstate;
             double estateTotalLiabilities = assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses;
             double totalLiquidity = estateTotalLiquidAssets - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
 
