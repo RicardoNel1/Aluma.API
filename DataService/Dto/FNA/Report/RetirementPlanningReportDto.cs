@@ -14,6 +14,8 @@ namespace DataService.Dto
         public string EscalationPercent { get; set; }
         public string RetirementAge { get; set; }
         public string TotalNeeds { get; set; }
+        public string TotalCapitalNeeds { get; set; }
+        public string CapitalizedIncomeNeeds { get; set; }
         public string YearsBeforeRetirement { get; set; }
         public string CapitalNeeds { get; set; }
         public string YearsAfterRetirement { get; set; }
