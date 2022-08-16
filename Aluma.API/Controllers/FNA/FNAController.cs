@@ -130,7 +130,8 @@ namespace Aluma.API.Controllers
                     RetirementPlanning = petirementPlanning
                 };
 
-                var urlBuilder = new UriBuilder(Request.PathBase);
+                //var urlBuilder = new UriBuilder(Request.PathBase);
+                var urlBuilder = new UriBuilder($"{Request.Scheme}://{Request.Host.Value}");
                 await _documentService.SavePDF(dto, urlBuilder.ToString());
 
                 return NoContent();
