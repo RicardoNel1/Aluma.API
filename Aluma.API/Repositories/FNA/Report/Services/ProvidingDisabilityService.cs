@@ -43,12 +43,12 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             result = result.Replace("[TotalAvailable]", disability.TotalAvailable);
             result = result.Replace("[InflationRate]", disability.InflationRate);
             result = result.Replace("[LongTermProtectionIncome]", disability.LongTermProtectionIncome);
-            result = result.Replace("[Capital]", disability.Capital);
+            result = result.Replace("[Capital]", disability.TotalAvailable);
             result = result.Replace("[CurrentNetIncome]", disability.CurrentNetIncome);
             result = result.Replace("[TotalNeeds]", disability.TotalNeeds);
             result = result.Replace("[CapitalNeeds]", disability.CapitalNeeds);
             result = result.Replace("[CapitalizedIncomeShortfall]", disability.CapitalizedIncomeShortfall);
-            result = result.Replace("[AvailableCapital]", disability.AvailableCapital);
+            result = result.Replace("[AvailableCapital]", disability.TotalAvailable);
             result = result.Replace("[TotalCapShortfallSurplusDesc]", disability.TotalCapShortfallSurplusDesc);
             result = result.Replace("[TotalCapShortfallSurplus]", disability.TotalCapShortfallSurplus);
             result = result.Replace("[MaxAdditionalCap]", disability.MaxAdditionalCap);
@@ -73,13 +73,16 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                                                                 ProvidingDisabilitySummaryDto summaryDisability,
                                                                 EconomyVariablesDto economy_variables)
         {
-            double capitalShortfall = summaryDisability.TotalAvailable - summaryDisability.TotalNeeds;
-            string capitalShortfallLabel = capitalShortfall < 0 ? "Shortfall" : "Surplus";
+            double totalNeeds = summaryDisability.TotalNeeds + summaryDisability.TotalIncomeNeed;
+            double netCapital = summaryDisability.TotalAvailable - totalNeeds;
+            string capitalShortfallLabel = netCapital < 0 ? "Shortfall" : "Surplus";
 
             double totalLumpSum = summaryDisability.TotalAvailable - summaryDisability.TotalNeeds;
-            string totalLumpSumLabel = totalLumpSum < 0 ? "Shortfall" : "Surplus";
+            string totalLumpSumLabel = totalLumpSum < 0 ? "Shortfall" : "Surplus";            
 
             totalLumpSum = totalLumpSum < 0 ? totalLumpSum * -1 : totalLumpSum;
+
+            double totalCapitalNeeds = disability.CapitalNeeds + disability.LiabilitiesToClear;     
 
 
             ProvidingOnDisabilityReportDto providingOnDisabilityReportDto = new()
@@ -94,15 +97,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 IncomeNeed = disability.IncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 NeedsDisabilityTerm_Years = disability.NeedsTerm_Years.ToString() ?? string.Empty,
                 EscDisabilityPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
-                CapitalDisabilityNeeds = disability.CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                ShortTermProtectionIncome = summaryDisability.TotalExistingShortTermIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                LongTermProtectionIncome = summaryDisability.TotalExistingLongTermIncome.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                CapitalDisabilityNeeds = totalCapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                ShortTermProtectionIncome = disability.ShortTermProtection.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                LongTermProtectionIncome = disability.LongTermProtection.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 TotalAvailable = summaryDisability.TotalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                TotalNeeds = summaryDisability.TotalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                CapitalNeeds = disability.CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                CapitalNeeds = summaryDisability.TotalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalNeeds = totalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 CapitalizedIncomeShortfall = summaryDisability.TotalIncomeNeed.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
                 TotalCapShortfallSurplusDesc = capitalShortfallLabel,
-                TotalCapShortfallSurplus = capitalShortfall < 0 ? $"{(capitalShortfall * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))}" : capitalShortfall.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+                TotalCapShortfallSurplus = netCapital < 0 ? $"{(netCapital * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))}" : netCapital.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
 
                 // Where to get the value from ???
                 MaxAdditionalCap = string.Empty,
