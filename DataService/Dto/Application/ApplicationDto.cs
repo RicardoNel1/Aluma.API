@@ -11,6 +11,7 @@ namespace DataService.Dto
         public int ClientId { get; set; }
         public string ApplicationType { get; set; }
         public int ApplicationAmount { get; set; }
+        public int CapitalProtection { get; set; }
         public string ProductName { get; set; }
         public int ProductId { get; set; }
         public string ApplicationStatus { get; set; }

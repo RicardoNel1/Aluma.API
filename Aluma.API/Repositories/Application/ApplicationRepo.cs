@@ -211,6 +211,7 @@ namespace Aluma.API.Repositories
             ApplicationModel data = _context.Applications.Where(a => a.Id == dto.Id).First();
             
             data.ApplicationAmount = dto.ApplicationAmount;
+            data.CapitalProtection = dto.CapitalProtection;
 
             _context.Applications.Update(data);
             _context.SaveChanges();
