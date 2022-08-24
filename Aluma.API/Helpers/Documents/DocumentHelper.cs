@@ -76,7 +76,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"DisclosureLetter.pdf"},
                     {DocumentTypesEnum.PEFDOA,"DOA.pdf"},
                     {DocumentTypesEnum.PEF2DOA,"DOA2.pdf"},
-                    {DocumentTypesEnum.FIDOA,"DOA.pdf"}, // vanguard.
+                    {DocumentTypesEnum.FIDOA,"DOA3.pdf"}, // vanguard.
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
                     {DocumentTypesEnum.FIQuote,"FIQuote.pdf"}, //vanguard

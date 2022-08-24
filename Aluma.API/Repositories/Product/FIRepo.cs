@@ -49,8 +49,10 @@ namespace Aluma.API.Repositories
             //change when incorporating entities
             d["individual"] = "x";
 
-            //check for pe fund product
-            d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
+            d[$"committedCapital"] = "R " + product.AcceptedLumpSum.ToString("N");
+            d[$"zarCapital"] = "R " + product.AcceptedLumpSum.ToString("N");
+
+            d["capitalProtection" + product.CapitalProtection] = "x";
 
             if (client.User.Address.Count > 0)
             {
@@ -64,7 +66,7 @@ namespace Aluma.API.Repositories
             d["country"] = client.CountryOfResidence;
 
             d["taxpayer_True"] = "x";
-            d["taxNo"] = client.TaxResidency.TaxNumber ?? " ";
+            d["taxNo"] = client.TaxResidency.TaxNumber ?? " "; 
 
             d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
 
@@ -82,7 +84,7 @@ namespace Aluma.API.Repositories
             // signature
             d["onBehalfOf"] = "Self";
             d["signAt_1"] = signCity;
-            d["signDate_1"] = DateTime.Today.ToString("yyyyMMdd");
+            d["signDate_1"] = DateTime.Today.ToString("ddMMyyyy");
 
             d["nameSurname_2"] = "";
             d["signAt_2"] = "";
