@@ -350,7 +350,7 @@ namespace Aluma.API.Repositories
                 {
                     fiRepo.GenerateDOA (client, advisor, product);
                     fiRepo.GenerateQuote (client, advisor, product);
-                    fiRepo.GenerateRecordOfAdvice(client, advisor, roa);//new ROA goes here
+                    fiRepo.GenerateRecordOfAdvice(client, advisor, roa); //new ROA goes here
                 }
                 else
                 {
