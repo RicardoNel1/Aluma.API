@@ -19,6 +19,8 @@ namespace Aluma.API.Repositories
         Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
 
         Task GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+
+        Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
     }
 
 
@@ -156,6 +158,30 @@ namespace Aluma.API.Repositories
             DocumentTypesEnum type = DocumentTypesEnum.FIQuote;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
+
+        public async Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa)
+        {
+            var data = new Dictionary<string, string>();
+            var date = DateTime.Today.ToString("yyyy/MM/dd");
+            var nameSurname = $"{client.User.FirstName} {client.User.LastName}";
+
+            data["representativeCapacity"] = "not applicable";
+            data["clientSignedAt"] = "Pretoria"; 
+            data["date"] = date; 
+            data["nameSurname"] = nameSurname; 
+            data["idNo"] = client.User.RSAIdNumber; 
+            data["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; 
+            data["introduction"] = roa.Introduction; 
+            data["materialInformation"] = roa.MaterialInformation; 
+
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
+
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
+
+            DocumentTypesEnum type = DocumentTypesEnum.FIROA;
+            await dh.PopulateAndSaveDocument(type, data, client.User, app);
+        }
+
 
     }
 }

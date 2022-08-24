@@ -19,6 +19,7 @@
         FIDOA,
         FIQuote,
         FNAReport,
-        PolicyShedule
+        PolicyShedule,
+        FIROA
     }
 }

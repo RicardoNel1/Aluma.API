@@ -330,7 +330,7 @@ namespace Aluma.API.Repositories
             PEFRepo pefRepo = new(_context, _host, _config, _mapper, _fileStorage);
             FIRepo fiRepo = new(_context, _host, _config, _mapper, _fileStorage);
 
-            roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk);
+           
             riskRepo.GenerateRiskProfile(client, advisor, risk);
             fspMandateRepo.GenerateMandate(client, advisor, fsp);
             disclosure.GenerateClientConsent(client, advisor);
@@ -338,15 +338,23 @@ namespace Aluma.API.Repositories
 
             foreach (var product in roa.SelectedProducts)
             {
+
+
                 if (product.ProductId == 5 || product.ProductId == 6)
                 {
                     pefRepo.GenerateDOA(client, advisor, product);
                     pefRepo.GenerateQuote(client, advisor, product);
+                    roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk); //exclude from Vanguard
                 }
                 else if (product.ProductId == 7)
                 {
                     fiRepo.GenerateDOA (client, advisor, product);
                     fiRepo.GenerateQuote (client, advisor, product);
+                    fiRepo.GenerateRecordOfAdvice(client, advisor, roa);//new ROA goes here
+                }
+                else
+                {
+                    roaRepo.GenerateRecordOfAdvice(client, advisor, roa, risk); //exclude from Vanguard
                 }
             }
 
