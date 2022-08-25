@@ -198,7 +198,17 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 680, 30, 120, 1)));
+
+            return signerList;
+        }
+        private List<SignerListItemDto> FIROASigningList(ApplicationModel application, ClientModel client, AdvisorModel advisor)
+        {
+            SignatureRepo _signRepo = new();
+            var signerList = new List<SignerListItemDto>();
+
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 70, 567, 30, 120, 1)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 420, 803, 20, 60, 1)));
 
             return signerList;
         }
@@ -253,7 +263,8 @@ namespace Aluma.API.Helpers
                             DocumentTypesEnum.PEF2DOA,
                             DocumentTypesEnum.PEF2Quote,
                             DocumentTypesEnum.FIDOA,
-                            DocumentTypesEnum.FIQuote
+                            DocumentTypesEnum.FIQuote,
+                            DocumentTypesEnum.FIROA,
                         };
             }
 
@@ -274,6 +285,7 @@ namespace Aluma.API.Helpers
                             DocumentTypesEnum.PEF2Quote => PEF2QuoteSigningList(application, client, advisor),
                             DocumentTypesEnum.FIDOA => FIDOASigningList(application, client, advisor),
                             DocumentTypesEnum.FIQuote => FIQuoteSigningList(application, client, advisor),
+                            DocumentTypesEnum.FIROA => FIROASigningList(application, client, advisor),
                         };
 
 

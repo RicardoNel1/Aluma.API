@@ -19,6 +19,8 @@ namespace Aluma.API.Repositories
         Task GenerateDOA(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
 
         Task GenerateQuote(ClientModel client, AdvisorModel advisor, RecordOfAdviceItemsModel product);
+
+        Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa);
     }
 
 
@@ -47,8 +49,10 @@ namespace Aluma.API.Repositories
             //change when incorporating entities
             d["individual"] = "x";
 
-            //check for pe fund product
-            d[$"committedCapital"] = product.AcceptedLumpSum.ToString();
+            d[$"committedCapital"] = "R " + product.AcceptedLumpSum.ToString("N");
+            d[$"zarCapital"] = "R " + product.AcceptedLumpSum.ToString("N");
+
+            d["capitalProtection" + product.CapitalProtection] = "x";
 
             if (client.User.Address.Count > 0)
             {
@@ -62,7 +66,7 @@ namespace Aluma.API.Repositories
             d["country"] = client.CountryOfResidence;
 
             d["taxpayer_True"] = "x";
-            d["taxNo"] = client.TaxResidency.TaxNumber ?? " ";
+            d["taxNo"] = client.TaxResidency.TaxNumber ?? " "; 
 
             d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
 
@@ -80,7 +84,7 @@ namespace Aluma.API.Repositories
             // signature
             d["onBehalfOf"] = "Self";
             d["signAt_1"] = signCity;
-            d["signDate_1"] = DateTime.Today.ToString("yyyyMMdd");
+            d["signDate_1"] = DateTime.Today.ToString("ddMMyyyy");
 
             d["nameSurname_2"] = "";
             d["signAt_2"] = "";
@@ -109,10 +113,10 @@ namespace Aluma.API.Repositories
             d["contactNumber"] = "0" + client.User.MobileNumber;
             d["emailAddress"] = client.User.Email;
 
-            d["quotationDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
+            d["quoteDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
             d["signedDate"] = DateTime.UtcNow.ToString("ddMMyyyy");
-            d["commencementDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
-            //d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
+            d["date"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
+            d["dateExtended"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
 
 
             d["consultant"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
@@ -121,27 +125,27 @@ namespace Aluma.API.Repositories
             {
                 //Calculations                
                 double i = product.AcceptedLumpSum;
-                double r0 = .1133;
-                double r50 = 0.0977;
-                double r75 = 0.0898;
-                double r100 = .082;
+                //double r0 = .1133;
+                double r50 = .11;//0.0977;
+                double r75 = .105;//0.0898;
+                double r100 = .1;// .082;
 
                 double ab = .025;
                 double dt = .2;
                 double t = 5;
 
-                double monthlyDividendGross0 = i * (r0 / 12);
+                //double monthlyDividendGross0 = i * (r0 / 12);
                 double monthlyDividendGross50 = i * (r50 / 12);
                 double monthlyDividendGross75 = i * (r75 / 12);
                 double monthlyDividendGross100 = i * (r100 / 12);
 
 
-                d[$"initialInvestment"] = "R " + i.ToString("F");
+                d[$"initialInvestment"] = "R " + i.ToString("N");
 
-                d[$"zerocp"] = "R " + monthlyDividendGross0.ToString("F");
-                d[$"fiftycp"] = "R " + monthlyDividendGross50.ToString("F");
-                d[$"seventyfivecp"] = "R " + monthlyDividendGross75.ToString("F");
-                d[$"hundredcp"] = "R " + monthlyDividendGross100.ToString("F");
+                //d[$"zerocp"] = "R " + monthlyDividendGross0.ToString("F");
+                d[$"fiftycp"] = "R " + monthlyDividendGross50.ToString("N");
+                d[$"seventyfivecp"] = "R " + monthlyDividendGross75.ToString("N");
+                d[$"hundredcp"] = "R " + monthlyDividendGross100.ToString("N");
 
             }
             //quoteNumber
@@ -156,6 +160,30 @@ namespace Aluma.API.Repositories
             DocumentTypesEnum type = DocumentTypesEnum.FIQuote;
             await _dh.PopulateAndSaveDocument(type, d, client.User, app);
         }
+
+        public async Task GenerateRecordOfAdvice(ClientModel client, AdvisorModel advisor, RecordOfAdviceModel roa)
+        {
+            var data = new Dictionary<string, string>();
+            var date = DateTime.Today.ToString("yyyy/MM/dd");
+            var nameSurname = $"{client.User.FirstName} {client.User.LastName}";
+
+            data["representativeCapacity"] = "not applicable";
+            data["clientSignedAt"] = "Pretoria"; 
+            data["date"] = date; 
+            data["nameSurname"] = nameSurname; 
+            data["idNo"] = client.User.RSAIdNumber; 
+            data["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}"; 
+            data["introduction"] = roa.Introduction; 
+            data["materialInformation"] = roa.MaterialInformation; 
+
+            DocumentHelper dh = new(_context, _config, _fileStorage, _host);
+
+            ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == roa.ApplicationId);
+
+            DocumentTypesEnum type = DocumentTypesEnum.FIROA;
+            await dh.PopulateAndSaveDocument(type, data, client.User, app);
+        }
+
 
     }
 }
