@@ -36,14 +36,14 @@ namespace DataService.Model
         //public bool FSPMandateComplete { get; set; }
         //public bool ConsumerProtectionComplete { get; set; }
         public bool DocumentsCreated { get; set; }
-
         public bool SignatureConsent { get; set; }
         public DateTime SignatureConsentDate { get; set; }
         public bool DocumentsSigned { get; set; }
         public string BdaNumber { get; set; }
         public bool PaymentConfirmed { get; set; }
         public int ApplicationAmount { get; set; }
-        
+        public int CapitalProtection { get; set; }
+
     }
 
     public class ApplicationModelBuilder : IEntityTypeConfiguration<ApplicationModel>

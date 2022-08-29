@@ -174,7 +174,7 @@ namespace Aluma.API.Repositories
             data["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
             data["distributorName"] = "Dwayne de Waal";
             data["advisorEmail"] = advisor.User.Email;
-            data["advisorMobile"] = "0" + advisor.User.MobileNumber;
+            data["advisorMobile"] = advisor.User.MobileNumber;
 
             if (advisor.User.Address.Count > 1)
             {

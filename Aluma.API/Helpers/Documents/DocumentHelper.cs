@@ -63,6 +63,7 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.PEF2Quote,       "Aluma Capital - Private Equity - Income - Quote.pdf"},
                     {DocumentTypesEnum.FIQuote,         "Aluma Capital - Fixed Income - Quote.pdf"},
                     {DocumentTypesEnum.FNAReport,       "Aluma Capital - Financial Needs Analysis.pdf"},
+                    {DocumentTypesEnum.FIROA,           "Aluma Capital - Fixed Income - Record of Advice.pdf" },
                     {DocumentTypesEnum.PolicyShedule,   "Policy Shedule.pdf"},
                 };
 
@@ -75,12 +76,13 @@ namespace Aluma.API.Helpers
                     {DocumentTypesEnum.DisclosureLetter,"DisclosureLetter.pdf"},
                     {DocumentTypesEnum.PEFDOA,"DOA.pdf"},
                     {DocumentTypesEnum.PEF2DOA,"DOA2.pdf"},
-                    {DocumentTypesEnum.FIDOA,"DOA.pdf"}, // Change when FI DOA arrives.
+                    {DocumentTypesEnum.FIDOA,"DOA3.pdf"}, // vanguard.
                     {DocumentTypesEnum.PEFQuote,"PEFQuote.pdf"},
                     {DocumentTypesEnum.PEF2Quote,"PEF2Quote.pdf"},
-                    {DocumentTypesEnum.FIQuote,"FIQuote.pdf"},
+                    {DocumentTypesEnum.FIQuote,"FIQuote.pdf"}, //vanguard
                     {DocumentTypesEnum.FNAReport,"FNAReport.pdf"},
-                };
+                    {DocumentTypesEnum.FIROA, "ROA2.pdf" }, //vanguard
+        };
 
         public async Task<List<DocumentListDto>> GetApplicationDocListAsync(int applicationId, int userId)
         {

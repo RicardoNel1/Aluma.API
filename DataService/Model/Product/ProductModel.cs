@@ -115,7 +115,7 @@ namespace DataService.Model
                 ProductCategory = ProductCategoriesEnum.Category2,
                 PaymentType = PaymentTypesEnum.Lumpsum,
                 AssociatedRisk = RiskRatingsEnum.ModeratelyAggressive,
-                IsActive = false
+                IsActive = true
             });
 
         }
