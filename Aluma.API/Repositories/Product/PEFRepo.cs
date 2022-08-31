@@ -123,7 +123,8 @@ namespace Aluma.API.Repositories
             d["emailAddress"] = client.User.Email;
 
             d["quotationDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
-            d["signedDate"] = DateTime.UtcNow.ToString("ddMMyyyy");
+            d["signedDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");//DateTime.UtcNow.ToString("ddMMyyyy");
+            d["clientSignedAt"] = "Pretoria";
             d["commencementDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");
             d["expiryDate"] = DateTime.UtcNow.AddYears(5).AddDays(-1).ToString("dd MMMM yyyy");
 
@@ -181,7 +182,7 @@ namespace Aluma.API.Repositories
                 double totalPayoutMaturityNett2 = totalCumulativeDividendNett2 + i;
 
 
-                d[$"initialInvestment"] = "R " + i.ToString("F");
+                d[$"initialInvestment"] = "R " + i.ToString("N");
                 d[$"1dividendYear1Gross"] = "R " + dividendYear1Gross1.ToString("N");
                 d[$"1dividendYear2Gross"] = "R " + dividendYear2Gross1.ToString("N");
                 d[$"1dividendYear3Gross"] = "R " + dividendYear3Gross1.ToString("N");

@@ -57,25 +57,25 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
-            var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+            //var pageList = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 20, 767, 20, 60, p))));
+            //pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 20, 767, 20, 60, p))));
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 113, 205, 30, 120, 11)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 107, 571, 30, 120, 9)));
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 400, 205, 30, 120, 11)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(advisor.User, 395, 571, 30, 120, 9)));
 
             if (client.FspMandate.DiscretionType == "full")
             {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 117, 530, 30, 120, 11)));
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 135, 225, 30, 120, 10)));
             }
             else if (client.FspMandate.DiscretionType == "limited_DE")
             {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 162, 30, 120, 12)));
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 400, 480, 30, 120, 10)));
             }
             else if (client.FspMandate.DiscretionType == "limited_RM")
             {
-                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 370, 296, 30, 120, 12)));
+                signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 400, 637, 30, 120, 10)));
             }
 
             return signerList;
@@ -94,11 +94,11 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
-            var pageList = new List<int> { 1, 2 };
+            var pageList = new List<int> { 1 };
 
-            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 18, 769, 20, 60, p))));
+            pageList.ForEach(p => signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 422, 808, 20, 60, p))));
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 115, 436, 30, 120, 2)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 110, 488, 30, 120, 2)));
 
             return signerList;
 
@@ -164,7 +164,7 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 190, 597, 30, 120, 1)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 110, 718, 30, 120, 1)));
 
             return signerList;
         }
@@ -173,7 +173,7 @@ namespace Aluma.API.Helpers
             SignatureRepo _signRepo = new();
             var signerList = new List<SignerListItemDto>();
 
-            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 175, 587, 30, 120, 1)));
+            signerList.Add(_signRepo.CreateSignerListItem(CreateSignItem(client.User, 110, 566, 30, 120, 1)));
 
             return signerList;
         }
