@@ -8,6 +8,7 @@ using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using StringHasher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace Aluma.API.Repositories
 
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
+        bool IsAccountActive(ClientDto dto);
 
         Task<ClientDto> CreateClient(ClientDto dto);
 
@@ -41,6 +43,7 @@ namespace Aluma.API.Repositories
 
         Task UploadConsentForm(byte[] fileData, int clientId);
         Task UploadOtherDocuments(byte[] fileData, string fileName, DataService.Enum.DocumentTypesEnum documentType, int clientId);
+        Task ActivateClient(ClientDto dto);
     }
 
     public class ClientRepo : RepoBase<ClientModel>, IClientRepo
@@ -247,6 +250,15 @@ namespace Aluma.API.Repositories
             return clientExists;
         }
 
+        public bool IsAccountActive(ClientDto dto)
+        {
+            bool active = false;
+
+            active = dto.User.Password != null;
+
+            return active;
+        }
+
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
             dto.ClientType = "Primary";
@@ -444,6 +456,21 @@ namespace Aluma.API.Repositories
             {
                 throw;
             }
+        }
+
+        public async Task ActivateClient(ClientDto client)
+        {
+            UserModel um = _context.Users.Where(u => u.Id == client.User.Id).FirstOrDefault();
+            ClientModel cm = _context.Clients.Where(c => c.Id == client.Id).FirstOrDefault();
+            MailSender ms = new(_context, _config, _fileStorage, _host);
+            StringHasherRepo str = new();
+
+            um.Password = str.CreateHash("Aluma" + client.User.FirstName.Trim());
+            _context.Users.Update(um);
+            _context.SaveChanges();
+
+            await ms.SendInvestNowClientWelcomeEmail(cm);
+
         }
     }
 }

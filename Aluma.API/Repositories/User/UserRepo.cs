@@ -413,7 +413,7 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
             }
 
-        }
+        }        
 
         public UserDto GetUserByApplicationID(int applicationId)
         {
