@@ -115,6 +115,7 @@ namespace Aluma.API.Repositories
             d["RiskExample_" + riskProfile.RiskExample] = "x";
 
             d["DerivedProfile"] = riskProfile.DerivedProfile;
+            d["clientSignedAt"] = "Pretoria";
 
             var agreeStr = riskProfile.AgreeWithOutcome == true ? "agree_True" : "agree_False";
             if (!riskProfile.AgreeWithOutcome)
