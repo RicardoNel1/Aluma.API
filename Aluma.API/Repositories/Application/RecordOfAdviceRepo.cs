@@ -87,6 +87,7 @@ namespace Aluma.API.Repositories
 
 
             ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == dto.ApplicationId);
+            app.ApplicationStatus = ApplicationStatusEnum.Submitted;  //removing client ROA step. Updates to submitted once advisor does ROA
             app.AdvisorId = newRoa.AdvisorId;
 
             app.ProductId = newRoa.SelectedProducts.First().ProductId;
