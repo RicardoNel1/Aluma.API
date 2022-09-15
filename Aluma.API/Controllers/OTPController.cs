@@ -198,40 +198,14 @@ namespace Aluma.API.Controllers
 
 
 
-        //[HttpPost("resend/otp/{email}"), AllowAnonymous]
-        //public IActionResult ResendOTP(string email)
+        //[HttpPost("test"), AllowAnonymous]
+        //public IActionResult testOTP(string mobileNo)
         //{
         //    try
         //    {
-        //        var checkUser = _repo.User.FindByCondition(c => (c.Email == email));
+        //        _repo.SmsRepo.SendOtp(mobileNo, "test message");
+        //        return Ok();
 
-        //        // check that there are no users with this email
-        //        if (checkUser.Any())
-        //        {
-        //            if (checkUser.FirstOrDefault().MobileVerified)
-        //            {
-        //                return StatusCode(403, "This account is already verified,  please sign in.");
-        //            }
-        //            else
-        //            {
-        //                string sentOTP = _repo.User.CreateOTP(checkUser.FirstOrDefault(), OtpTypesEnum.Registration);
-
-        //                if (sentOTP == "Success")
-        //                {
-        //                    _repo.Save();
-        //                    return StatusCode(201);
-        //                }
-        //                else
-        //                {
-        //                    return StatusCode(403, sentOTP);
-        //                }
-
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return StatusCode(403, "Invalid account credentials.");
-        //        }
         //    }
         //    catch (Exception e)
         //    {
