@@ -93,7 +93,7 @@ namespace Aluma.API.Repositories
 
                 if (!sent)
                 {
-                    result = "Could not send sms at this time.Please try again later, or contact support.";
+                    result = "Could not send sms at this time. Please try again later, or contact support.";
                 }
                 else
                 {
