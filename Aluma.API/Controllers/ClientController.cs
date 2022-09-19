@@ -75,6 +75,29 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut("activate"), AllowAnonymous]
+        public async Task<IActionResult> ActivateClient(ClientDto dto)
+        {
+            try
+            {
+                bool active = _repo.Client.IsAccountActive(dto);
+                if (active)
+                {
+                    return BadRequest("Client Account Active");
+                }
+                else 
+                {
+                    await _repo.Client.ActivateClient(dto);
+                    return Ok(dto);
+                }
+               
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPut("passports"), AllowAnonymous]
         public IActionResult UpdateClientPassports(List<PassportDto> dto)
         {

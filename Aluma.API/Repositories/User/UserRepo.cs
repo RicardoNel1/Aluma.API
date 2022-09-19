@@ -281,7 +281,7 @@ namespace Aluma.API.Repositories
         public bool DoesUserExist(RegistrationDto dto)
         {
 
-            bool exists = _context.Users.Where(c => (c.Email == dto.Email || c.MobileNumber == dto.MobileNumber)).Any();
+            bool exists = _context.Users.Where(c => (c.Email == dto.Email)).Any();
 
             return exists;
 
@@ -413,7 +413,7 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
             }
 
-        }
+        }        
 
         public UserDto GetUserByApplicationID(int applicationId)
         {
