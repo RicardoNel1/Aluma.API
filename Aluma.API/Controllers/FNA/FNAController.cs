@@ -45,6 +45,21 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("list"), AllowAnonymous]
+        public IActionResult GetFNAList(int clientId)
+        {
+            try
+            {
+                var fnas = _repo.FNA.GetClientFNAList(clientId);
+
+                return Ok(fnas);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost, AllowAnonymous]
         public async Task<IActionResult> CreateClientFNA([FromBody] ClientFNADto dto)
         {
