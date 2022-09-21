@@ -65,13 +65,13 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = dto.ClientId });
-                if (fnaExist.hasFNA)
-                {
-                    dto.Status = "Failure";
-                    dto.Message = "FNA Exists";
-                    return BadRequest(dto);
-                }
+                //var fnaExist = _repo.Client.CheckForFNA(new ClientDto() { Id = dto.ClientId });
+                //if (fnaExist.hasFNA)
+                //{
+                //    dto.Status = "Failure";
+                //    dto.Message = "FNA Exists";
+                //    return BadRequest(dto);
+                //}
 
                 dto = await _repo.FNA.CreateFNA(dto);
                 dto.Status = "Success";
