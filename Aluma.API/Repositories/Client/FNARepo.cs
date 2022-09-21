@@ -117,11 +117,18 @@ namespace Aluma.API.Repositories
 
         public List<ClientFNADto> GetClientFNAList(int clientId)
         {
-            List<ClientFNAModel> fna = _context.clientFNA.Where(c => c.ClientId == clientId).ToList();
+            List<ClientFNAModel> fna = _context.clientFNA.Where(c => c.ClientId == clientId).ToList();            
 
-            List<ClientFNADto> result = _mapper.Map<List<ClientFNADto>>(fna);
+            List<ClientFNADto> dto = _mapper.Map<List<ClientFNADto>>(fna);
 
-            return result;
+            foreach (var item in dto)
+            {
+                ClientFNAModel getDate = _context.clientFNA.Where(c => c.Id == item.Id).FirstOrDefault();
+                item.CreatedDate = getDate.Created;
+            }
+
+
+            return dto;
         }
     }
 }
