@@ -6,6 +6,7 @@ using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace Aluma.API.Repositories
         void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna);
         Task<ClientFNADto> CreateFNA(ClientFNADto dto);
         ClientFNADto GetClientFNA(int clientId);
+        public List<ClientFNADto> GetClientFNAList(int clientId);
         Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId);
     }
 
@@ -110,7 +112,23 @@ namespace Aluma.API.Repositories
             {
                 return _mapper.Map<ClientFNADto>(fnaModel.First());
             }
-            return null;
+            else return null;
+        }
+
+        public List<ClientFNADto> GetClientFNAList(int clientId)
+        {
+            List<ClientFNAModel> fna = _context.clientFNA.Where(c => c.ClientId == clientId).ToList();            
+
+            List<ClientFNADto> dto = _mapper.Map<List<ClientFNADto>>(fna);
+
+            foreach (var item in dto)
+            {
+                ClientFNAModel getDate = _context.clientFNA.Where(c => c.Id == item.Id).FirstOrDefault();
+                item.CreatedDate = getDate.Created;
+            }
+
+
+            return dto;
         }
     }
 }
