@@ -77,7 +77,7 @@ namespace Aluma.API
 
                 app.UseHangfireDashboard();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v0.0.18"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aluma.API v0.0.19"));
 
             }
             else
