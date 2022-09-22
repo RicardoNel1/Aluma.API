@@ -8,6 +8,7 @@ namespace DataService.Dto
         public int ClientId { get; set; }
         public int AdvisorId { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string FNAType { get; set; }
 
     }
 }

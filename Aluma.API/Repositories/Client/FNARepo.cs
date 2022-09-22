@@ -6,6 +6,7 @@ using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,6 +42,10 @@ namespace Aluma.API.Repositories
         {
             
                 ClientFNAModel newFna = _mapper.Map<ClientFNAModel>(dto);
+                Enum.TryParse(dto.FNAType, true, out DataService.Enum.FnaTypeEnum parsedType);
+
+                newFna.FNAType = parsedType;
+
                 _context.clientFNA.Add(newFna);
                 _context.SaveChanges();
                 dto = _mapper.Map<ClientFNADto>(newFna);
