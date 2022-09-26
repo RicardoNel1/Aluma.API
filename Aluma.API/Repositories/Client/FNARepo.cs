@@ -109,9 +109,9 @@ namespace Aluma.API.Repositories
             //_context.SaveChanges();
         }
 
-        public ClientFNADto GetClientFNA(int clientId)
+        public ClientFNADto GetClientFNA(int fnaId)
         {
-            var fnaModel = _context.clientFNA.Where(r => r.ClientId == clientId);
+            var fnaModel = _context.clientFNA.Where(r => r.Id == fnaId);
 
             if (fnaModel.Any())
             {

@@ -42,28 +42,29 @@ namespace Aluma.API.Repositories
 
 
 
-        public async Task<ClientPortfolioDto> GetClientPortfolio(int clientId)
+        public async Task<ClientPortfolioDto> GetClientPortfolio(int fnaId)
         {
             ClientPortfolioDto dto = new();
-            dto.Client = GetClient(clientId);
+
+            dto.FNA = GetClientFNA(fnaId);
+            dto.Client = GetClient(dto.FNA.ClientId);
             dto.Client.User = await GetUserWithAddress(dto.Client.UserId);
-            dto.FNA = GetClientFNA(dto.Client.Id);
-            dto.Investments = GetInvestments(dto.FNA.Id);
-            dto.Retirement = GetRetirement(dto.FNA.Id);
-            dto.RetirementPlanning = GetRetirementPlanning(dto.FNA.Id);
-            dto.ProvidingDisability = GetProvidingDisability(dto.FNA.Id);
-            dto.ProvidingDeath = GetProvidingDeath(dto.FNA.Id);
-            dto.ProvidingDread = GetProvidingDread(dto.FNA.Id);
+            dto.Investments = GetInvestments(fnaId);
+            dto.Retirement = GetRetirement(fnaId);
+            dto.RetirementPlanning = GetRetirementPlanning(fnaId);
+            dto.ProvidingDisability = GetProvidingDisability(fnaId);
+            dto.ProvidingDeath = GetProvidingDeath(fnaId);
+            dto.ProvidingDread = GetProvidingDread(fnaId);
             dto.ShortTermInsurance = GetShortTerm(dto.Client.Id);
             dto.MedicalAid = GetMedical(dto.Client.Id);
-            dto.Assumptions = GetAssumptions(dto.FNA.Id);
-            dto.Insurance = GetInsurances(dto.FNA.Id);
+            dto.Assumptions = GetAssumptions(fnaId);
+            dto.Insurance = GetInsurances(fnaId);
 
             dto.DocumentList = new List<DocumentListDto>();
             dto.DocumentList = AddDocuments(await GetUserDocuments(dto.Client.UserId), dto.DocumentList);
             dto.DocumentList = AddDocuments(await GetAppDocuments(dto.Client.UserId), dto.DocumentList);
 
-            dto.ClientNotes = GetClientNotes(clientId);
+            dto.ClientNotes = GetClientNotes(dto.Client.Id);
             return dto;
         }
 
@@ -85,12 +86,12 @@ namespace Aluma.API.Repositories
             }
         }
 
-        private ClientFNADto GetClientFNA(int clientId)
+        private ClientFNADto GetClientFNA(int fnaId)
         {
             try
             {
                 FNARepo _fna = new FNARepo(_context, _host, _config, _mapper, null);
-                ClientFNADto clientFNA = _fna.GetClientFNA(clientId);
+                ClientFNADto clientFNA = _fna.GetClientFNA(fnaId);
 
                 if (clientFNA == null)
                     return new();
