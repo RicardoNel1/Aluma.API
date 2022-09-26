@@ -20,6 +20,7 @@ namespace Aluma.API.Repositories
         Task<ClientPortfolioDto> GetClientPortfolio(int clientId);
         List<ClientNotesDto> CreateClientNote(List<ClientNotesDto> dtoArray);
         string DeleteClientNote(int Id);
+        ClientFNADto SetPrimaryPortfolio(ClientFNADto fna);
 
     }
 
@@ -453,6 +454,19 @@ namespace Aluma.API.Repositories
             {
                 return ex.Message;
             }
+
+        }
+
+        public ClientFNADto SetPrimaryPortfolio(ClientFNADto dto)
+        {
+            ClientModel data = _context.Clients.Where(c => c.Id == dto.ClientId).FirstOrDefault();
+            
+            data.PrimaryFNA = dto.Id;
+
+            _context.Clients.Update(data);
+            _context.SaveChanges();
+            dto = _mapper.Map<ClientFNADto>(data);
+            return dto;
 
         }
     }

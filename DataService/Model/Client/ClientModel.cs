@@ -25,6 +25,8 @@ namespace DataService.Model
         public string Education { get; set; }
         public bool isDeleted { get; set; }
 
+        public int PrimaryFNA { get; set; }
+
         public UserModel User { get; set; }
         public AdvisorModel Advisor { get; set; }
         public KYCDataModel KycData { get; set; }

@@ -73,5 +73,20 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPut("primary"), AllowAnonymous]
+        public IActionResult SetPrimaryPortfolio(ClientFNADto dto)
+        {
+            try
+            {
+                dto = _repo.ClientPortfolio.SetPrimaryPortfolio(dto);
+                return Ok(dto);
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
