@@ -88,5 +88,19 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("primary"), AllowAnonymous]
+        public IActionResult GetPrimaryPortfolio(int clientId)
+        {
+            try
+            {
+                int data = _repo.ClientPortfolio.GetPrimaryPortfolio(clientId);
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
