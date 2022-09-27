@@ -20,7 +20,7 @@ namespace Aluma.API.Repositories
         ClientFNADto GetClientFNA(int clientId);
         public List<ClientFNADto> GetClientFNAList(int clientId);
         Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId);
-        string GetClientFNAType(int fnaId);
+        int GetClientFNAType(int fnaId);
     }
 
     public class FNARepo : RepoBase<ClientFNAModel>, IFNARepo
@@ -68,11 +68,11 @@ namespace Aluma.API.Repositories
 
         }
 
-        public string GetClientFNAType(int fnaId)
+        public int GetClientFNAType(int fnaId)
         {
             ClientFNAModel data = _context.clientFNA.Where(f => f.Id == fnaId).FirstOrDefault();
 
-            string type = Enum.GetName(typeof(DataService.Enum.FnaTypeEnum), data.FNAType);
+            int type = (int)data.FNAType;//Enum.GetName(typeof(DataService.Enum.FnaTypeEnum), data.FNAType);
 
             return type;
         }

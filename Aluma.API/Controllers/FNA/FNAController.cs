@@ -45,12 +45,12 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("fnaId"), AllowAnonymous]
+        [HttpGet("type"), AllowAnonymous]
         public IActionResult GetFNAType(int fnaId)
         {
             try
             {
-                string data = _repo.FNA.GetClientFNAType(fnaId);
+                int data = _repo.FNA.GetClientFNAType(fnaId);
 
                 return Ok(data);
             }
