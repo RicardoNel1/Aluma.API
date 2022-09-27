@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataService.Enum;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,6 +14,8 @@ namespace DataService.Model
         public int ClientId { get; set; }
         public AdvisorModel Advisor { get; set; }
         public int AdvisorId { get; set; }
+        public FnaTypeEnum FNAType { get; set; }
+        public bool PrimaryPortfolio { get; set; }
 
         public AccrualModel Accrual { get; set; }
         public AdministrationCostsModel AdministrationCost { get; set; }
