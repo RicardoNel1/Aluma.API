@@ -45,6 +45,21 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("type"), AllowAnonymous]
+        public IActionResult GetFNAType(int fnaId)
+        {
+            try
+            {
+                int data = _repo.FNA.GetClientFNAType(fnaId);
+
+                return Ok(data);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+        }
+
         [HttpGet("list"), AllowAnonymous]
         public IActionResult GetFNAList(int clientId)
         {
