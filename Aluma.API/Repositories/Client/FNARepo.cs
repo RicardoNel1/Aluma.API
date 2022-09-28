@@ -6,6 +6,7 @@ using DataService.Model;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Aluma.API.Repositories
         ClientFNADto GetClientFNA(int clientId);
         public List<ClientFNADto> GetClientFNAList(int clientId);
         Task<ClientFNADto> GetClientFNAbyFNAId(int fnaId);
+        int GetClientFNAType(int fnaId);
     }
 
     public class FNARepo : RepoBase<ClientFNAModel>, IFNARepo
@@ -41,6 +43,10 @@ namespace Aluma.API.Repositories
         {
             
                 ClientFNAModel newFna = _mapper.Map<ClientFNAModel>(dto);
+                Enum.TryParse(dto.FNAType, true, out DataService.Enum.FnaTypeEnum parsedType);
+
+                newFna.FNAType = parsedType;
+
                 _context.clientFNA.Add(newFna);
                 _context.SaveChanges();
                 dto = _mapper.Map<ClientFNADto>(newFna);
@@ -60,6 +66,15 @@ namespace Aluma.API.Repositories
             }
             return null;
 
+        }
+
+        public int GetClientFNAType(int fnaId)
+        {
+            ClientFNAModel data = _context.clientFNA.Where(f => f.Id == fnaId).FirstOrDefault();
+
+            int type = (int)data.FNAType;//Enum.GetName(typeof(DataService.Enum.FnaTypeEnum), data.FNAType);
+
+            return type;
         }
 
         public void GenerateFNA(ClientModel user, AdvisorModel advisor, ClientFNAModel fna)
@@ -104,9 +119,9 @@ namespace Aluma.API.Repositories
             //_context.SaveChanges();
         }
 
-        public ClientFNADto GetClientFNA(int clientId)
+        public ClientFNADto GetClientFNA(int fnaId)
         {
-            var fnaModel = _context.clientFNA.Where(r => r.ClientId == clientId);
+            var fnaModel = _context.clientFNA.Where(r => r.Id == fnaId);
 
             if (fnaModel.Any())
             {
@@ -130,5 +145,6 @@ namespace Aluma.API.Repositories
 
             return dto;
         }
+
     }
 }
