@@ -214,6 +214,7 @@ namespace Aluma.API.Repositories
                     {
                         bv = item;
                     }
+                    else bv = item;
                 }
             }
             else
@@ -221,8 +222,8 @@ namespace Aluma.API.Repositories
                 bv = client.BankDetails.First();
             }
 
-            UtilityHelper uh = new();
-            d["accountHolder"] = $"{uh.Initials(client.User.FirstName)}";
+            //UtilityHelper uh = new();
+            d["accountHolder"] = client.User.FirstName + " " + client.User.LastName; //$"{uh.Initials(client.User.FirstName)}"; //Fixed Note Mandate issue
             d["bank"] = bv.BankName ?? string.Empty;
             d["branchNo"] = bv.BranchCode ?? string.Empty;
             d["branchName"] = string.Empty;
