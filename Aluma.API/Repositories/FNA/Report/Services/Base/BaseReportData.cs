@@ -353,5 +353,25 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 return new();
             }
         }
+
+        public InvestmentsDto GetInvestments(int fnaId)
+        {
+            if (fnaId == 0)
+                return new();
+
+            try
+            {
+                RetirementPlanningDto result = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
+
+                if (result == null)
+                    return new();
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return new();
+            }
+        }
     }
 }

@@ -218,6 +218,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
+                if (dto.InvestmentPlanning) //@Justin do the things here
+                {
+                    IProvidingRetirementService _investmentService = new InvestmentService(_repo);
+                    ReportServiceResult serviceResult = await _investmentService.SetInvestmentDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
+                }
+
                 result += $"{Environment.NewLine}</body>{Environment.NewLine}";
                 graph += _graphService.CloseGraphJavaScript();
                 result += graph;
