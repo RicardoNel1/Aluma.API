@@ -110,6 +110,9 @@
     <Content Update="wwwroot\html\aluma-fna-report-personal-details.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\html\aluma-fna-report-investments.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\html\aluma-fna-report-providing-on-death.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

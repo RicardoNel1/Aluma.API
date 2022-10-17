@@ -354,14 +354,14 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             }
         }
 
-        public InvestmentsDto GetInvestments(int fnaId)
+        public List<InvestmentsDto> GetInvestments(int fnaId)
         {
             if (fnaId == 0)
                 return new();
 
             try
             {
-                RetirementPlanningDto result = _repo.RetirementPlanning.GetRetirementPlanning(fnaId);
+                List<InvestmentsDto> result = _repo.Investments.GetInvestments(fnaId);
 
                 if (result == null)
                     return new();
