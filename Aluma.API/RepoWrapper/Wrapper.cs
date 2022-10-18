@@ -5,6 +5,7 @@ using Azure.Storage.Files.Shares;
 using BankValidationService;
 using DataService.Context;
 using FileStorageService;
+using FintegrateSharedAstuteService;
 using JwtService;
 using KycService;
 using Microsoft.AspNetCore.Hosting;
@@ -87,6 +88,7 @@ namespace Aluma.API.RepoWrapper
         private IJwtRepo _jwt;
         private IKycFactoryRepo _kyc;
         private IBankValidationServiceRepo _bankValidation;
+        private IFSASRepo _fsas;
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
 
@@ -402,6 +404,11 @@ namespace Aluma.API.RepoWrapper
             get { return _bankValidation == null ? new BankValidationServiceRepo() : _bankValidation; }
         }
 
+        public IFSASRepo FSASRepo
+        {
+            get { return _fsas == null ? new FSASRepo() : _fsas; }
+        }
+        
         public ISignatureRepo SignatureRepo
         {
             get { return _signature == null ? new SignatureRepo() : _signature; }

@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SMSService", "SMSService\SM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorageService", "FileStorageService\FileStorageService.csproj", "{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FintegrateSharedAstuteService", "FintegrateSharedAstuteService\FintegrateSharedAstuteService.csproj", "{AB82E150-4A45-434E-85A3-2F21D4907F48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
