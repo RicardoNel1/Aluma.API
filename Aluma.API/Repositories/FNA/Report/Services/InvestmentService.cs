@@ -47,11 +47,11 @@ namespace Aluma.API.Repositories.FNA.Report.Service
         private InvestmentReportDto SetReportFields(UserDto user, List<InvestmentsDto> investments)
         {
             //List<InvestmentReportDto>
-                        //double totalcapital = summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds;
-                        //int exhaustionPeriod = (int)Math.Round(retirement.CapitalAvailable / (retirement.IncomeNeeds * 12));
-                        //double incomeAvailable = retirement.TotalCapitalAvailable - retirement.CapitalAvailable;
-                        //double totalCapitalNeeds = retirement.CapitalNeeds + retirement.OutstandingLiabilities;
-                        //double capitalizedIncomeNeeds = retirement.TotalCapitalNeeds - retirement.OutstandingLiabilities - retirement.CapitalNeeds;
+            //double totalcapital = summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds;
+            //int exhaustionPeriod = (int)Math.Round(retirement.CapitalAvailable / (retirement.IncomeNeeds * 12));
+            //double incomeAvailable = retirement.TotalCapitalAvailable - retirement.CapitalAvailable;
+            //double totalCapitalNeeds = retirement.CapitalNeeds + retirement.OutstandingLiabilities;
+            //double capitalizedIncomeNeeds = retirement.TotalCapitalNeeds - retirement.OutstandingLiabilities - retirement.CapitalNeeds;
 
             //ReportList = new List<InvestmentReportDto>();
             //foreach (var items in investments)
@@ -65,10 +65,22 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //    //}
 
             //};
+            double available = 5000;//summaryDeath.TotalAvailable;
+            double settling = 2000;//(assetSummary.TotalAssetsToEstate + totalInsuranceToEstate) - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
 
             return new InvestmentReportDto()
             {
                 Investments = investments,
+                InvestmentGraph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Capitalized",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Height = 250,
+                    Data = SetInvestmentPieGraphData(investments)
+                },
+
             };
             //{
             //foreach (var items in investments) {
@@ -77,41 +89,33 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             //return new InvestmentReportDto {
             //    InitialValue = RepDto.InitialValue
-                //InitialValue = investments[0].Value.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //IncomeNeed = retirement.IncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //TermYears = retirement.NeedsTerm_Years.ToString() ?? string.Empty,
-                //Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
-                //EscalationPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
-                //RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
-                //TotalNeeds = summaryRetirement.TotalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //YearsBeforeRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
-                //YearsAfterRetirement = assumptions.YearsAfterRetirement.ToString() ?? string.Empty,
-                //CapitalNeeds = retirement.CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //OutstandingLiabilities = retirement.OutstandingLiabilities.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
-                //AvailableCapital = retirement.CapitalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //TotalAvailable = summaryRetirement.TotalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //IncomeAvailableTotal = incomeAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
-                //InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
-                //InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
-                //ExhaustionPeriod = exhaustionPeriod.ToString() ?? string.Empty,
-                //IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //DescTotalCapital = totalcapital < 0 ? "Shortfall" : "Surplus",
-                //TotalCapitalNeeds = totalCapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //CapitalizedIncomeNeeds = capitalizedIncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //TotalCapital = totalcapital < 0 ? $"({(totalcapital * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalcapital.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
-                //MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium < 0 ? $"({(summaryRetirement.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : summaryRetirement.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
-                //MonthlySavingsEscalating = retirement.SavingsEscalation.ToString() ?? string.Empty,
-                //CapitalGraph = new()
-                //{
-                //    Type = GraphType.Column,
-                //    Name = "Capital position over planning term",
-                //    XaxisHeader = "Capital",
-                //    YaxisHeader = "Amount",
-                //    Height = 250,
-                //    Data = SetCapitalPositionGraph(summaryRetirement.TotalAvailable, summaryRetirement.TotalNeeds, economy_variables.InflationRate, economy_variables.InvestmentReturnRate, assumptions.RetirementAge, assumptions.LifeExpectancy)
-                //},
+            //InitialValue = investments[0].Value.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //IncomeNeed = retirement.IncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //TermYears = retirement.NeedsTerm_Years.ToString() ?? string.Empty,
+            //Age = string.IsNullOrEmpty(user.DateOfBirth) ? string.Empty : (Convert.ToDateTime(user.DateOfBirth)).CalculateAge().ToString(),
+            //EscalationPercent = economy_variables.InflationRate.ToString() ?? string.Empty,
+            //RetirementAge = assumptions.RetirementAge.ToString() ?? string.Empty,
+            //TotalNeeds = summaryRetirement.TotalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //YearsBeforeRetirement = assumptions.YearsTillRetirement.ToString() ?? string.Empty,
+            //YearsAfterRetirement = assumptions.YearsAfterRetirement.ToString() ?? string.Empty,
+            //CapitalNeeds = retirement.CapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //OutstandingLiabilities = retirement.OutstandingLiabilities.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //LifeExpectancy = assumptions.LifeExpectancy.ToString() ?? string.Empty,
+            //AvailableCapital = retirement.CapitalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //TotalAvailable = summaryRetirement.TotalAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //IncomeAvailableTotal = incomeAvailable.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //RiskRating = riskRating == null ? string.Empty : riskRating.ToString(),
+            //InvestmentReturnRate = EnumConvertions.RiskExpectations(assumptions.RetirementInvestmentRisk).ToString() ?? string.Empty,
+            //InflationRate = economy_variables.InflationRate.ToString() ?? string.Empty,
+            //ExhaustionPeriod = exhaustionPeriod.ToString() ?? string.Empty,
+            //IncomeNeedsTotal = retirement.IncomeNeedsTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //DescTotalCapital = totalcapital < 0 ? "Shortfall" : "Surplus",
+            //TotalCapitalNeeds = totalCapitalNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //CapitalizedIncomeNeeds = capitalizedIncomeNeeds.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //TotalCapital = totalcapital < 0 ? $"({(totalcapital * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : totalcapital.ToString("C", CultureInfo.CreateSpecificCulture("en-za")),
+            //MonthlySavingsRequired = summaryRetirement.SavingsRequiredPremium < 0 ? $"({(summaryRetirement.SavingsRequiredPremium * -1).ToString("C", CultureInfo.CreateSpecificCulture("en-za"))})" : summaryRetirement.SavingsRequiredPremium.ToString("C", CultureInfo.CreateSpecificCulture("en-za")) ?? string.Empty,
+            //MonthlySavingsEscalating = retirement.SavingsEscalation.ToString() ?? string.Empty,
+            
                 //AnnualGraph = new()
                 //{
                 //    Type = GraphType.Column,
@@ -131,9 +135,55 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\html\aluma-fna-report-investments.html");
             string result = File.ReadAllText(path);
 
+            //result = result.Replace("[Value0]", "");
+            //result = result.Replace("[Value1]", "");
+            //result = result.Replace("[Value2]", "");
+            //result = result.Replace("[Value3]", "");
+            //result = result.Replace("[Value4]", "");
+            //result = result.Replace("[Value5]", "");
+            //result = result.Replace("[Value6]", "");
+            //result = result.Replace("[Value7]", "");
 
-            result = result.Replace("[Value0]", investment.Investments[0].Value.ToString());
-            result = result.Replace("[Value1]", investment.Investments[1].Value.ToString());
+            //result = result.Replace("[Desc0]", "");
+            //result = result.Replace("[Desc1]", "");
+            //result = result.Replace("[Desc2]", "");
+            //result = result.Replace("[Desc3]", "");
+            //result = result.Replace("[Desc4]", "");
+            //result = result.Replace("[Desc5]", "");
+            //result = result.Replace("[Desc6]", "");
+            //result = result.Replace("[Desc7]", "");
+
+            for (int i = 0; i < investment.Investments.Count; i++)
+            //for (int i = 0; i < 8; i++)
+            {
+                result = result.Replace($"[Desc{i}]", investment.Investments[i].Description.ToString());
+                result = result.Replace($"[Value{i}]", investment.Investments[i].Value.ToString());
+            }
+
+            if(investment.Investments.Count < 9)
+            {
+                for (int i = investment.Investments.Count; i < 9; i++)
+                //for (int i = 0; i < 8; i++)
+                {
+                    result = result.Replace($"[Desc{i}]", "");
+                    result = result.Replace($"[Value{i}]", "");
+                }
+            }
+
+
+
+            //for (int n = 0; n < investment.Investments.Count; n++) {
+            //    result = result.Replace($"[Value{n}]", investment.Investments[n].Value.ToString());
+            //}
+
+
+
+            //result = result.Replace("[Value1]", investment.Investments[1].Value.ToString()) ?? "";
+            //result = result.Replace("[Value2]", investment.Investments[2].Value.ToString());
+            //result = result.Replace("[Value3]", investment.Investments[3].Value.ToString());
+            //result = result.Replace("[Value4]", investment.Investments[4].Value.ToString());
+
+
             //result = result.Replace("[IncomeNeed]", investment.IncomeNeed);
             //result = result.Replace("[TermYears]", investment.TermYears);
             //result = result.Replace("[Age]", investment.Age);
@@ -154,16 +204,16 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //result = result.Replace("[MonthlySavingsEscalating]", investment.MonthlySavingsEscalating);
 
 
-            //if (investment.CapitalGraph != null)
-            //{
-            //    var graph = _graph.SetGraphHtml(investment.CapitalGraph);
-            //    script += graph.Script;
-            //    result = result.Replace("[CapitalGraph]", graph.Html);
-            //}
-            //else
-            //{
-            //    result = result.Replace("[CapitalGraph]", string.Empty);
-            //}
+            if (investment.InvestmentGraph != null)
+            {
+                var graph = _graph.SetGraphHtml(investment.InvestmentGraph);
+                script += graph.Script;
+                result = result.Replace("[InvestmentGraph]", graph.Html);
+            }
+            else
+            {
+                result = result.Replace("[InvestmentGraph]", string.Empty);
+            }
 
 
             //if (investment.AnnualGraph != null)
@@ -185,76 +235,37 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         }
 
-        
 
-        private static List<string> SetCapitalPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
+
+        private static List<string> SetInvestmentPieGraphData(List<InvestmentsDto> investments)
         {
-            List<string> result = new List<string>();
-            List<double> totals = new List<double>();
+            List<double> investmentValues = new List<double>();
+            List<string> investmentList = new List<string>();
 
-            int yearsAftRetirement = lifeExpect - retirementAge;
-            double needValue = totalNeeds;
-            double annualTotal = totalAvailable;
-
-            for (int year = 0; year <= yearsAftRetirement; year++)
+            foreach (var items in investments)
             {
-                if (year != 0)
-                {
-                    needValue = Math.Round(needValue + (needValue * (escalation / 100)));
-                }
+                //investmentValues.Add(items.Value);
+                investmentList.Add( $"{items.Description}, { items.Value}");
+                
+            };
+            //string availableDescription = available < 0 ? "Shortfall" : "Surplus";
+            //string lumpsumDescription = lumpsum < 0 ? "Shortfall" : "Surplus";
+            //string otherString = other < 0 ? "Shortfall" : "Surplus";
 
-                var calcValue = Math.Round(annualTotal - (needValue * 12));
-                annualTotal = calcValue;
+            //available = available < 0 ? available * -1 : available;
+            //lumpsum = lumpsum < 0 ? lumpsum * -1 : lumpsum;
+            return investmentList;
+            //    return new()
+            //{
 
-                totals.Add(annualTotal);
-            }
-
-            for (int i = retirementAge; i <= lifeExpect; i++)
-            {
-                if (totals.Count >= (i - retirementAge))
-                {
-                    result.Add($"{i},{totals[i - retirementAge]}");
-                }
-            }
-
-            return result;
+            //    //$"{investmentDesc[0]}, {investmentValues[0]}",
+            //    //$"Total lumpsum {lumpsumDescription}, {lumpsum}",
+            //    //$"Total blabla {otherString}, {other}",
+            //};
         }
 
-        private static List<string> SetAnnualPositionGraph(double totalAvailable, double totalNeeds, double escalation, double investment, int retirementAge, int lifeExpect)
-        {
-            List<string> result = new List<string>();
-            List<double> totals = new List<double>();
 
-            int yearsAftRetirement = lifeExpect - retirementAge;
-            double needValue = totalNeeds;
-            double annualTotal = totalAvailable;
 
-            for (int year = 0; year <= yearsAftRetirement; year++)
-            {
-                if (year != 0)
-                {
-                    needValue = Math.Round(needValue + (needValue * (escalation / 100)));
-                }
 
-                var calcValue = Math.Round(annualTotal - (needValue * 12));
-                annualTotal = calcValue;
-
-                totals.Add(annualTotal);
-            }
-
-            for (int i = retirementAge; i <= lifeExpect; i++)
-            {
-                if (totals.Count >= (i - retirementAge))
-                {
-                    result.Add($"{i},{totals[i - retirementAge]}");
-                }
-            }
-
-            return result;
-        }
-
-       
-
-        
     }
 }

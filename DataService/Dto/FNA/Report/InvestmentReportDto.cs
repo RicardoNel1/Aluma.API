@@ -23,7 +23,7 @@ namespace DataService.Dto
         //public string MonthlySavingsRequired { get; set; }
         //public string MonthlySavingsEscalating { get; set; }
 
-        //public GraphReportDto CapitalGraph { get; set; }
+        public GraphReportDto InvestmentGraph { get; set; }
         //public GraphReportDto AnnualGraph { get; set; }
     }
 
