@@ -65,13 +65,11 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //    //}
 
             //};
-            double available = 5000;//summaryDeath.TotalAvailable;
-            double settling = 2000;//(assetSummary.TotalAssetsToEstate + totalInsuranceToEstate) - (assetSummary.TotalLiabilities + estateExpenses.TotalEstateExpenses);
-
+            
             return new InvestmentReportDto()
             {
                 Investments = investments,
-                InvestmentGraph = new()
+                InvestmentPieGraph = new()
                 {
                     Type = GraphType.Pie,
                     Name = "Capitalized",
@@ -79,6 +77,15 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     YaxisHeader = "Amount",
                     Height = 250,
                     Data = SetInvestmentPieGraphData(investments)
+                },
+                InvestmentLineGraph = new()
+                {
+                    Type = GraphType.Pie,
+                    Name = "Capitalized",
+                    XaxisHeader = "Capital",
+                    YaxisHeader = "Amount",
+                    Height = 250,
+                    Data = SetInvestmentLineGraphData(investments)
                 },
 
             };
@@ -204,28 +211,28 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //result = result.Replace("[MonthlySavingsEscalating]", investment.MonthlySavingsEscalating);
 
 
-            if (investment.InvestmentGraph != null)
+            if (investment.InvestmentPieGraph != null)
             {
-                var graph = _graph.SetGraphHtml(investment.InvestmentGraph);
+                var graph = _graph.SetGraphHtml(investment.InvestmentPieGraph);
                 script += graph.Script;
-                result = result.Replace("[InvestmentGraph]", graph.Html);
+                result = result.Replace("[InvestmentPieGraph]", graph.Html);
             }
             else
             {
-                result = result.Replace("[InvestmentGraph]", string.Empty);
+                result = result.Replace("[InvestmentPieGraph]", string.Empty);
             }
 
 
-            //if (investment.AnnualGraph != null)
-            //{
-            //    var graph = _graph.SetGraphHtml(investment.AnnualGraph);
-            //    script += graph.Script;
-            //    result = result.Replace("[AnnualGraph]", graph.Html);
-            //}
-            //else
-            //{
-            //    result = result.Replace("[AnnualGraph]", string.Empty);
-            //}
+            if (investment.InvestmentLineGraph != null)
+            {
+                var graph = _graph.SetGraphHtml(investment.InvestmentLineGraph);
+                script += graph.Script;
+                result = result.Replace("[InvestmentLineGraph]", graph.Html);
+            }
+            else
+            {
+                result = result.Replace("[InvestmentLineGraph]", string.Empty);
+            }
 
             return new()
             {
@@ -239,31 +246,27 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static List<string> SetInvestmentPieGraphData(List<InvestmentsDto> investments)
         {
-            List<double> investmentValues = new List<double>();
             List<string> investmentList = new List<string>();
 
             foreach (var items in investments)
             {
-                //investmentValues.Add(items.Value);
                 investmentList.Add( $"{items.Description}, { items.Value}");
                 
             };
-            //string availableDescription = available < 0 ? "Shortfall" : "Surplus";
-            //string lumpsumDescription = lumpsum < 0 ? "Shortfall" : "Surplus";
-            //string otherString = other < 0 ? "Shortfall" : "Surplus";
-
-            //available = available < 0 ? available * -1 : available;
-            //lumpsum = lumpsum < 0 ? lumpsum * -1 : lumpsum;
             return investmentList;
-            //    return new()
-            //{
-
-            //    //$"{investmentDesc[0]}, {investmentValues[0]}",
-            //    //$"Total lumpsum {lumpsumDescription}, {lumpsum}",
-            //    //$"Total blabla {otherString}, {other}",
-            //};
         }
 
+        private static List<string> SetInvestmentLineGraphData(List<InvestmentsDto> investments)
+        {
+            List<string> investmentList = new List<string>();
+
+            foreach (var items in investments)
+            {
+                investmentList.Add($"{items.Description}, { items.Value}");
+
+            };
+            return investmentList;
+        }
 
 
 
