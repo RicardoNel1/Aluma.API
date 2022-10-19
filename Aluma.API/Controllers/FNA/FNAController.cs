@@ -101,7 +101,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("get_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> GetFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true)
+        public async Task<IActionResult> GetFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true, bool investments = true)
         {
             try
             {
@@ -113,7 +113,8 @@ namespace Aluma.API.Controllers
                     ProvidingOnDisability = providingOnDisability,
                     ProvidingOnDreadDisease = providingOnDreadDisease,
                     ProvidingOnDeath = providingOnDeath,
-                    RetirementPlanning = retirementPlanning
+                    RetirementPlanning = retirementPlanning,
+                    Investments = investments
                 };
 
                 var urlBuilder = new UriBuilder($"{Request.Scheme}://{Request.Host.Value}");
@@ -146,7 +147,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("save_fna_report"), DisableRequestSizeLimit, AllowAnonymous]
-        public async Task<IActionResult> SaveFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool petirementPlanning = true)
+        public async Task<IActionResult> SaveFNAReport(int fnaId, bool clientModule = true, bool providingOnDisability = true, bool providingOnDreadDisease = true, bool providingOnDeath = true, bool retirementPlanning = true, bool investments = true)
         {
             try
             {
@@ -157,7 +158,7 @@ namespace Aluma.API.Controllers
                     ProvidingOnDisability = providingOnDisability,
                     ProvidingOnDreadDisease = providingOnDreadDisease,
                     ProvidingOnDeath = providingOnDeath,
-                    RetirementPlanning = petirementPlanning
+                    RetirementPlanning = retirementPlanning
                 };
 
                 //var urlBuilder = new UriBuilder(Request.PathBase);

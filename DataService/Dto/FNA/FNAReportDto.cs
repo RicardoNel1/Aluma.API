@@ -8,5 +8,6 @@
         public bool ProvidingOnDreadDisease { get; set; }
         public bool ProvidingOnDeath { get; set; }
         public bool RetirementPlanning { get; set; }
+        public bool Investments { get; set; }
     }
 }

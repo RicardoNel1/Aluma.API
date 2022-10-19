@@ -112,10 +112,10 @@ namespace Aluma.API.Repositories
                 ApplicationModel app = _context.Applications.SingleOrDefault(a => a.Id == applicationId  );
                 if (app.SignatureConsent)
                 {
-                    if (app.SignatureConsentDate < DateTime.UtcNow.AddDays(-1))
-                    {
-                        return false;
-                    }
+                    //if (app.SignatureConsentDate < DateTime.UtcNow.AddDays(-1))
+                    //{
+                    //    return false;
+                    //}
 
                     return true;
                 }

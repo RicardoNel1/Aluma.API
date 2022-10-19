@@ -373,19 +373,19 @@ namespace Aluma.API.Helpers
                 ApplicationDocumentModel adm = new();
                 var documentExist = _context.ApplicationDocuments.Where(d => d.Name == $"{filename}{DocumentNames[fileType]}" && d.ApplicationId == application.Id);
 
-                if (documentExist.Any())
-                {
-                    adm = documentExist.First();
-                    if (adm.URL != fileDirectory)
-                    {
-                        adm.URL = fileDirectory;
-                        adm.Modified = DateTime.UtcNow;
-                        adm.Size = fileBytes.Length;
-                        _context.ApplicationDocuments.Update(adm);
-                    }
-                }
-                else
-                {
+                //if (documentExist.Any())
+                //{
+                //    adm = documentExist.First();
+                //    if (adm.URL != fileDirectory)
+                //    {
+                //        adm.URL = fileDirectory;
+                //        adm.Modified = DateTime.UtcNow;
+                //        adm.Size = fileBytes.Length;
+                //        _context.ApplicationDocuments.Update(adm);
+                //    }
+                //}
+                //else
+                //{
                     adm = new ApplicationDocumentModel()
                     {
                         DocumentType = fileType,
@@ -396,7 +396,7 @@ namespace Aluma.API.Helpers
                         Size = fileBytes.Length,
                     };
                     _context.ApplicationDocuments.Add(adm);
-                }
+                //}
 
             }
             else

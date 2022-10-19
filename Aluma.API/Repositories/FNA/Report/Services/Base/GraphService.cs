@@ -49,9 +49,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     js += $"{Environment.NewLine} {GetColumnChart(dto)} {Environment.NewLine}";
                     break;
                     js += $"{Environment.NewLine}";
-                case GraphType.Line:
+                case GraphType.Line:                    
+                    js += $"{Environment.NewLine} {GetLineChart(dto)} {Environment.NewLine}";
                     break;
-                    js += $"{Environment.NewLine}";
                 case GraphType.Bar:
                     break;
                 default:
@@ -123,6 +123,39 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             js += "view.setColumns([0,1]);";
             js += $"var options = {{ title: '{dto.Name}', width: {dto.Width}, height: {dto.Height}, bar: {{groupWidth: \"85%\"}}, legend: {{ position: \"bottom\" }} }}; ";
             js += $"var chart = new google.visualization.ColumnChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
+            js += "chart.draw(view, options);";
+
+            return js;
+        }
+
+        private static string GetLineChart(GraphReportDto dto)
+        {
+            string js = $"var data = new google.visualization.arrayToDataTable([";
+            js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";
+
+            if (dto.Data != null && dto.Data.Count > 0)
+            {
+                foreach (string kvp in dto.Data)
+                {
+                    string[] values = kvp.Split(",");
+                    js += $"[";
+                    for (int i = 0; i < values.Length; i++)
+                    {
+                        if (i == 0)
+                            js += $"'{values[i]}'";
+                        else
+                            js += $", {values[i]}";
+
+                    }
+                    js += "],";
+                }
+            }
+
+            js += "]);";
+            js += "var view = new google.visualization.DataView(data);";
+            js += "view.setColumns([0,1]);";
+            js += $"var options = {{ title: '{dto.Name}', width: {dto.Width}, height: {dto.Height}, bar: {{groupWidth: \"85%\"}}, legend: {{ position: \"bottom\" }} }}; ";
+            js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
             js += "chart.draw(view, options);";
 
             return js;
