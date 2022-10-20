@@ -65,10 +65,22 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //    //}
 
             //};
-            
+            double total = 0;
+            foreach (var items in investments)
+            {                
+                total = total + items.Value;                
+            };
+
             return new InvestmentReportDto()
             {
                 Investments = investments,
+
+                //foreach (var items in investments)
+                //{
+
+
+                //},
+                InvesmentTotal = total,
                 
                 InvestmentPieGraph = new()
                 {
@@ -167,6 +179,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //result = result.Replace("[Desc6]", "");
             //result = result.Replace("[Desc7]", "");
 
+            result = result.Replace($"[Total]", investment.InvesmentTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")));
+
             for (int i = 0; i < investment.Investments.Count; i++)
             //for (int i = 0; i < 8; i++)
             {
@@ -183,6 +197,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     result = result.Replace($"[Value{i}]", "");
                 }
             }
+
+
 
 
 
