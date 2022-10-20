@@ -76,7 +76,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Phill",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 250,
+                    Height = 450,
                     Data = SetInvestmentPieGraphData(investments)
                 },
 
@@ -86,7 +86,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     Name = "Joe",
                     XaxisHeader = "Capital",
                     //YaxisHeader = "Amount",
-                    Height = 250,
+                    Height = 450,
                     Data = SetInvestmentLineGraphData(investments)
                 },
 
@@ -171,7 +171,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //for (int i = 0; i < 8; i++)
             {
                 result = result.Replace($"[Desc{i}]", investment.Investments[i].Description.ToString());
-                result = result.Replace($"[Value{i}]", investment.Investments[i].Value.ToString());
+                result = result.Replace($"[Value{i}]", investment.Investments[i].Value.ToString("C", CultureInfo.CreateSpecificCulture("en-za")));
             }
 
             if(investment.Investments.Count < 9)

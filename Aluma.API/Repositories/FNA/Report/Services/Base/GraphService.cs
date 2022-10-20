@@ -89,7 +89,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
             js += "]);";
             js += $"var chart = new google.visualization.PieChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
-            js += $"var options = {{ title: '{dto.Name}',  pieSliceText: 'none', legend: {{ position: 'labeled', labeledValueText: 'both', }} }}; ";
+            js += $"var options = {{ title: '{dto.Name}', height: {dto.Height},  pieSliceText: 'none', legend: {{ position: 'labeled', labeledValueText: 'both', }} }}; ";
             js += "chart.draw(data, options);";
 
             return js;
@@ -178,49 +178,9 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 }
             }
 
-            //if (dto.Data != null && dto.Data.Count > 0)
-            //{
-            //    foreach (string kvp in dto.Data)
-            //    {
-            //        string[] values = kvp.Split(",");
-            //        js += $"[";
-            //        for (int i = 0; i < values.Length; i++)
-            //        {
-            //            if (i == 0)
-            //                js += $"'{values[i]}'";
-            //            else
-            //                js += $", {values[i]}";
-
-            //        }
-            //        js += "],";
-
-            //    }
-            //}
-
-
-            //if (dto.Data != null && dto.Data.Count > 0)
-            //{
-            //    foreach (string kvp in dto.Data)
-            //    {
-            //        string[] values = kvp.Split(",");
-            //        js += $"[";
-            //        for (int i = 0; i < values.Length; i++)
-            //        {
-            //            if (i == 0)
-            //                js += $"'{values[i]}'";
-            //            else
-            //                js += $", {values[i]}";
-
-            //        }
-            //        js += "],";
-
-            //    }
-            //}
-
             js += "]);";
             js += "var view = new google.visualization.DataView(data);";
-            //js += "view.setColumns([0,1,2,3,4,5,6,7,8,9,10,11,12]);";
-            js += $"var options = {{ title: '{dto.Name}', width: {dto.Width}, height: {dto.Height}, bar: {{groupWidth: \"85%\"}}, legend: {{ position: \"bottom\" }} }}; ";
+            js += $"var options = {{ title: '{dto.Name}', width: {dto.Width}, height: {dto.Height}, bar: {{groupWidth: \"95%\"}}, legend: {{ layout: \"verticle\", position: \"right\" }} }}; ";
             js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
             js += "chart.draw(view, options);";
             //var js = "var data = new google.visualization.arrayToDataTable([['Capital', 'Amount', 'Thing'],['fdsf',  77777, 77777],['df',  99999, 55535],]);var view = new google.visualization.DataView(data);view.setColumns([0,1,2]);var options = { title: 'Joe', width: 710, height: 250, bar: {groupWidth: \"85%\"}, legend: { position: \"bottom\" } }; var chart = new google.visualization.LineChart(document.getElementById('Graph_Joe'));chart.draw(view, options);";
