@@ -128,35 +128,83 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return js;
         }
 
-        private static string GetLineChart(GraphReportDto dto)
+        private static string GetLineChart(GraphReportDto dto)  //@Justin  line graph stuff here
         {
             string js = $"var data = new google.visualization.arrayToDataTable([";
-            js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";
+            //js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";
+            js += $"['{dto.XaxisHeader}'";
 
             if (dto.Data != null && dto.Data.Count > 0)
             {
                 foreach (string kvp in dto.Data)
                 {
                     string[] values = kvp.Split(",");
-                    js += $"[";
-                    for (int i = 0; i < values.Length; i++)
-                    {
-                        if (i == 0)
-                            js += $"'{values[i]}'";
-                        else
-                            js += $", {values[i]}";
+                    js += $",";
+                    js += $"'{values[0]}'";
 
-                    }
-                    js += "],";
                 }
+                js += "],";
             }
+
+            if (dto.Data != null && dto.Data.Count > 0)
+            {
+                js += "['1'";
+                foreach (string kvp in dto.Data)
+                {
+                    string[] values = kvp.Split(",");
+                    js += $",";
+                    js += $"{values[1]}";
+
+                }
+                js += "],";
+            }
+
+            //if (dto.Data != null && dto.Data.Count > 0)
+            //{
+            //    foreach (string kvp in dto.Data)
+            //    {
+            //        string[] values = kvp.Split(",");
+            //        js += $"[";
+            //        for (int i = 0; i < values.Length; i++)
+            //        {
+            //            if (i == 0)
+            //                js += $"'{values[i]}'";
+            //            else
+            //                js += $", {values[i]}";
+
+            //        }
+            //        js += "],";
+
+            //    }
+            //}
+
+
+            //if (dto.Data != null && dto.Data.Count > 0)
+            //{
+            //    foreach (string kvp in dto.Data)
+            //    {
+            //        string[] values = kvp.Split(",");
+            //        js += $"[";
+            //        for (int i = 0; i < values.Length; i++)
+            //        {
+            //            if (i == 0)
+            //                js += $"'{values[i]}'";
+            //            else
+            //                js += $", {values[i]}";
+
+            //        }
+            //        js += "],";
+
+            //    }
+            //}
 
             js += "]);";
             js += "var view = new google.visualization.DataView(data);";
-            js += "view.setColumns([0,1]);";
+            //js += "view.setColumns([0,1,2,3,4,5,6,7,8,9,10,11,12]);";
             js += $"var options = {{ title: '{dto.Name}', width: {dto.Width}, height: {dto.Height}, bar: {{groupWidth: \"85%\"}}, legend: {{ position: \"bottom\" }} }}; ";
             js += $"var chart = new google.visualization.LineChart(document.getElementById('Graph_{dto.Name.Replace(" ", "_")}'));";
             js += "chart.draw(view, options);";
+            //var js = "var data = new google.visualization.arrayToDataTable([['Capital', 'Amount', 'Thing'],['fdsf',  77777, 77777],['df',  99999, 55535],]);var view = new google.visualization.DataView(data);view.setColumns([0,1,2]);var options = { title: 'Joe', width: 710, height: 250, bar: {groupWidth: \"85%\"}, legend: { position: \"bottom\" } }; var chart = new google.visualization.LineChart(document.getElementById('Graph_Joe'));chart.draw(view, options);";
 
             return js;
         }

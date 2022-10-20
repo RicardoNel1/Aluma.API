@@ -69,24 +69,31 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             return new InvestmentReportDto()
             {
                 Investments = investments,
+                
                 InvestmentPieGraph = new()
                 {
                     Type = GraphType.Pie,
-                    Name = "Capitalized",
+                    Name = "Phill",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 250,
                     Data = SetInvestmentPieGraphData(investments)
                 },
+
                 InvestmentLineGraph = new()
                 {
-                    Type = GraphType.Pie,
-                    Name = "Capitalized",
+                    Type = GraphType.Line,
+                    Name = "Joe",
                     XaxisHeader = "Capital",
-                    YaxisHeader = "Amount",
+                    //YaxisHeader = "Amount",
                     Height = 250,
                     Data = SetInvestmentLineGraphData(investments)
                 },
+
+
+
+
+
 
             };
             //{
@@ -246,26 +253,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static List<string> SetInvestmentPieGraphData(List<InvestmentsDto> investments)
         {
-            List<string> investmentList = new List<string>();
+            List<string> investmentPieList = new List<string>();
 
             foreach (var items in investments)
             {
-                investmentList.Add( $"{items.Description}, { items.Value}");
+                investmentPieList.Add( $"{items.Description}, { items.Value}");
                 
             };
-            return investmentList;
+            return investmentPieList;
         }
 
         private static List<string> SetInvestmentLineGraphData(List<InvestmentsDto> investments)
         {
-            List<string> investmentList = new List<string>();
+            List<string> investmentLineList = new List<string>();
 
             foreach (var items in investments)
             {
-                investmentList.Add($"{items.Description}, { items.Value}");
+                investmentLineList.Add($"{items.Description}, { items.Value}");
 
             };
-            return investmentList;
+            return investmentLineList;
         }
 
 
