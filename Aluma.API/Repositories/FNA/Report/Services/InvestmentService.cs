@@ -269,7 +269,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             foreach (var items in investments)
             {
-                investmentLineList.Add($"{items.Description}, { items.Value}");
+                investmentLineList.Add($"{items.Description}, { items.Value}, { items.Escalating}");
 
             };
             return investmentLineList;
