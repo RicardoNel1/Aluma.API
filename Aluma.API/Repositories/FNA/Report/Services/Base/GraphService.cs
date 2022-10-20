@@ -146,8 +146,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 js += "],";
             }
 
-            if (dto.Data != null && dto.Data.Count > 0)
-            {
+            if (dto.Data != null && dto.Data.Count > 0) {
                 js += "['1'";
                 foreach (string kvp in dto.Data)
                 {
@@ -157,22 +156,21 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
 
                 }
                 js += "],";
-            }
+                for (int i = 2; i < 6; i++) 
+                { 
+                    js += $"['{i}'";
+                    foreach (string kvp in dto.Data)
+                    {
+                        string[] values = kvp.Split(",");
+                        var valueDouble = Convert.ToDouble(values[1]);
+                        var growthDouble = Convert.ToDouble(values[2]);
+                        var newValue = valueDouble + (valueDouble * growthDouble / 100);
+                        js += $",";
+                        js += $"{newValue.ToString()}";
 
-            if (dto.Data != null && dto.Data.Count > 0)
-            {
-                js += "['2'";
-                foreach (string kvp in dto.Data)
-                {
-                    string[] values = kvp.Split(",");
-                    var valueDouble = Convert.ToDouble(values[1]);
-                    var growthDouble = Convert.ToDouble(values[2]);
-                    var newValue = valueDouble + (valueDouble * growthDouble / 100);
-                    js += $",";
-                    js += $"{newValue.ToString()}";
-
+                    }
+                    js += "],";
                 }
-                js += "],";
             }
 
             //if (dto.Data != null && dto.Data.Count > 0)
