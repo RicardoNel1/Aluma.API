@@ -159,12 +159,17 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 for (int i = 2; i < 6; i++) 
                 { 
                     js += $"['{i}'";
+                    double newValue = 0;
                     foreach (string kvp in dto.Data)
                     {
                         string[] values = kvp.Split(",");
                         var valueDouble = Convert.ToDouble(values[1]);
                         var growthDouble = Convert.ToDouble(values[2]);
-                        var newValue = valueDouble + (valueDouble * growthDouble / 100);
+                        newValue = valueDouble;
+                        for (int n = 2; n <= i; n++)
+                        {
+                            newValue = newValue + (newValue * growthDouble / 100);
+                        }
                         js += $",";
                         js += $"{newValue.ToString()}";
 
