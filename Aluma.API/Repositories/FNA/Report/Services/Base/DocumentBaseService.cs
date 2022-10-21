@@ -165,7 +165,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 if (dto.FNAId == 0)
                     return null;
 
-                string version = "1.0";
+                string version = "1.1";
                 string logo = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\aluma-logo-2.png"));
                 string frontCover = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\front-cover.jpg"));
                 string spacer = GetBase64Image(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"wwwroot\img\spacer.png"));
@@ -180,10 +180,11 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 string result = await _fNAModulesService.GetCoverPage(dto.FNAId);
                 string css = _fNAModulesService.GetCSS(baseUrl);
 
+                if(!dto.Investments) { 
                 IClientPersonalInfoService _clientPersonalInfoService = new ClientPersonalInfoService(_repo);
                 result += await _clientPersonalInfoService.SetPersonalDetail(dto.FNAId);
                 result += await _summaryService.SetSummaryDetail(dto.FNAId);
-
+                }
 
                 if (dto.ProvidingOnDeath)
                 {
@@ -213,6 +214,15 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                 {
                     IProvidingRetirementService _providingRetirementService = new ProvidingRetirementService(_repo);
                     ReportServiceResult serviceResult = await _providingRetirementService.SetRetirementDetail(dto.FNAId);
+
+                    result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
+                    graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
+                }
+
+                if (dto.Investments) //@Justin do the things here
+                {
+                    IInvestmentService _investmentService = new InvestmentService(_repo);
+                    ReportServiceResult serviceResult = await _investmentService.SetInvestmentDetail(dto.FNAId);
 
                     result += serviceResult.Html == null ? string.Empty : serviceResult.Html;
                     graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;

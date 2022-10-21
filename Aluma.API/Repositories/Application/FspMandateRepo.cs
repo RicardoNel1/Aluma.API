@@ -176,7 +176,7 @@ namespace Aluma.API.Repositories
 
             if (client.MaritalDetails.MaritalStatus != "single")
             {
-                d["dateOfMarriage"] = client.MaritalDetails.DateOfMarriage;
+                d["dateOfMarriage"] = client.MaritalDetails.DateOfMarriage ?? "";
                 //d["dateOfMarriage_month"] = clientDetails.DateOfMarriage.ToString().Substring(5, 2);
                 //d["dateOfMarriage_year"] = (clientDetails.DateOfMarriage).ToString().Substring(0, 4);
 
@@ -185,13 +185,12 @@ namespace Aluma.API.Repositories
                 else
                     d["foreignMarriage_N"] = "x";
 
-                d["countryOfMarriage"] = client.MaritalDetails.CountryOfMarriage;
-                d["spouseName"] = client.MaritalDetails.FirstName;
-                d["surname"] = client.MaritalDetails.Surname;
-                d["idNumber"] = client.MaritalDetails.IdNumber;
-                d["maidenName"] = client.MaritalDetails.MaidenName;
+                d["countryOfMarriage"] = client.MaritalDetails.CountryOfMarriage ?? "";
+                d["spouseName"] = client.MaritalDetails.FirstName ?? "";
+                d["idNumber"] = client.MaritalDetails.IdNumber ?? "";
+                d["maidenName"] = client.MaritalDetails.MaidenName ?? "";
                 //d["spouseDateOfBirth"] = clientDetails.SpouseDateOfBirth;
-                d["spouseDateOfBirth"] = client.MaritalDetails.SpouseDateOfBirth;
+                d["spouseDateOfBirth"] = client.MaritalDetails.SpouseDateOfBirth ?? "";
                 //d["spouseDateOfBirth_month"] = clientDetails.SpouseDateOfBirth.ToString().Substring(5, 2);
                 //d["spouseDateOfBirth_year"] = (clientDetails.SpouseDateOfBirth).ToString().Substring(0, 4);
 
@@ -245,6 +244,7 @@ namespace Aluma.API.Repositories
                     d["maximumDividend"] = "x";
                 else if (fsp.InvestmentObjective == "capitalGrowth")
                     d["maximumCapital"] = "x";
+
 
                 d["date_full"] = DateTime.UtcNow.ToString();
 
