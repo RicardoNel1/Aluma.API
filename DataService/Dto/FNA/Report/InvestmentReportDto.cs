@@ -9,6 +9,7 @@ namespace DataService.Dto
     public class InvestmentReportDto
     {
         public List<InvestmentsDto> Investments { get; set; }
+        public double InvesmentTotal { get; set; }
         //public string OutstandingLiabilities { get; set; }
         //public string AvailableCapital { get; set; }
         //public string IncomeAvailableTotal{ get; set; }

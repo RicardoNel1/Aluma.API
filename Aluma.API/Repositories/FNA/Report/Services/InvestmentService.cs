@@ -65,28 +65,47 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //    //}
 
             //};
-            
+            double total = 0;
+            foreach (var items in investments)
+            {                
+                total = total + items.Value;                
+            };
+
             return new InvestmentReportDto()
             {
                 Investments = investments,
+
+                //foreach (var items in investments)
+                //{
+
+
+                //},
+                InvesmentTotal = total,
+                
                 InvestmentPieGraph = new()
                 {
                     Type = GraphType.Pie,
-                    Name = "Capitalized",
+                    Name = "Phill",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
-                    Height = 250,
+                    Height = 450,
                     Data = SetInvestmentPieGraphData(investments)
                 },
+
                 InvestmentLineGraph = new()
                 {
-                    Type = GraphType.Pie,
-                    Name = "Capitalized",
+                    Type = GraphType.Line,
+                    Name = "Joe",
                     XaxisHeader = "Capital",
-                    YaxisHeader = "Amount",
-                    Height = 250,
+                    //YaxisHeader = "Amount",
+                    Height = 450,
                     Data = SetInvestmentLineGraphData(investments)
                 },
+
+
+
+
+
 
             };
             //{
@@ -160,11 +179,13 @@ namespace Aluma.API.Repositories.FNA.Report.Service
             //result = result.Replace("[Desc6]", "");
             //result = result.Replace("[Desc7]", "");
 
+            result = result.Replace($"[Total]", investment.InvesmentTotal.ToString("C", CultureInfo.CreateSpecificCulture("en-za")));
+
             for (int i = 0; i < investment.Investments.Count; i++)
             //for (int i = 0; i < 8; i++)
             {
                 result = result.Replace($"[Desc{i}]", investment.Investments[i].Description.ToString());
-                result = result.Replace($"[Value{i}]", investment.Investments[i].Value.ToString());
+                result = result.Replace($"[Value{i}]", investment.Investments[i].Value.ToString("C", CultureInfo.CreateSpecificCulture("en-za")));
             }
 
             if(investment.Investments.Count < 9)
@@ -176,6 +197,8 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                     result = result.Replace($"[Value{i}]", "");
                 }
             }
+
+
 
 
 
@@ -246,26 +269,26 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
         private static List<string> SetInvestmentPieGraphData(List<InvestmentsDto> investments)
         {
-            List<string> investmentList = new List<string>();
+            List<string> investmentPieList = new List<string>();
 
             foreach (var items in investments)
             {
-                investmentList.Add( $"{items.Description}, { items.Value}");
+                investmentPieList.Add( $"{items.Description}, { items.Value}");
                 
             };
-            return investmentList;
+            return investmentPieList;
         }
 
         private static List<string> SetInvestmentLineGraphData(List<InvestmentsDto> investments)
         {
-            List<string> investmentList = new List<string>();
+            List<string> investmentLineList = new List<string>();
 
             foreach (var items in investments)
             {
-                investmentList.Add($"{items.Description}, { items.Value}");
+                investmentLineList.Add($"{items.Description}, { items.Value}, { items.Escalating}");
 
             };
-            return investmentList;
+            return investmentLineList;
         }
 
 
