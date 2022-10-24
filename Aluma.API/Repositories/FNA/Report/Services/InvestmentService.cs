@@ -85,7 +85,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 InvestmentPieGraph = new()
                 {
                     Type = GraphType.Pie,
-                    Name = "Phill",
+                    Name = "Investment Distribution",
                     XaxisHeader = "Capital",
                     YaxisHeader = "Amount",
                     Height = 450,
@@ -95,7 +95,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
                 InvestmentLineGraph = new()
                 {
                     Type = GraphType.Line,
-                    Name = "Joe",
+                    Name = "Expected Growth",
                     XaxisHeader = "Capital",
                     //YaxisHeader = "Amount",
                     Height = 450,
