@@ -134,7 +134,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("assets_attracting_cgt/"), AllowAnonymous]
+        [HttpDelete("assets_attracting_cgt"), AllowAnonymous]
         public IActionResult DeleteAssetsAttractingCGTItem(int id)
         {
             try
@@ -189,14 +189,19 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("assets_exempt_from_cgt/delete"), AllowAnonymous]
+        [HttpDelete("assets_exempt_from_cgt"), AllowAnonymous]
         public IActionResult DeleteAssetsExemptFromCGTItem(int id)
         {
             try
             {
-                bool deleted = _repo.AssetsExemptFromCGT.DeleteAssetsExemptFromCGTItem(id);
+                string result = _repo.AssetsExemptFromCGT.DeleteAssetsExemptFromCGTItem(id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
@@ -245,9 +250,14 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool deleted = _repo.Investments.DeleteInvestmentsItem(id);
+                string result = _repo.Investments.DeleteInvestmentsItem(id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
@@ -295,9 +305,15 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                bool deleted = _repo.LiquidAssets.DeleteLiquidAssetsItem(id);
+                string result = _repo.LiquidAssets.DeleteLiquidAssetsItem(id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+
             }
             catch (Exception e)
             {
@@ -307,7 +323,7 @@ namespace Aluma.API.Controllers
 
 
         //Insurance      
-        [HttpPut("insurance/update"), AllowAnonymous]
+        [HttpPut("insurance"), AllowAnonymous]
         public IActionResult UpdateInsurance([FromBody] List<InsuranceDto> dtoArray)
         {
             try
@@ -336,7 +352,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("insurance/delete"), AllowAnonymous]
+        [HttpDelete("insurance"), AllowAnonymous]
         public IActionResult DeleteInsuranceItem(int Id)
         {
             try
