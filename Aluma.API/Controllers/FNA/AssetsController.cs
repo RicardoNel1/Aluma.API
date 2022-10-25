@@ -134,14 +134,19 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("assets_attracting_cgt"), AllowAnonymous]
+        [HttpDelete("assets_attracting_cgt/"), AllowAnonymous]
         public IActionResult DeleteAssetsAttractingCGTItem(int id)
         {
             try
-            {
-                bool deleted = _repo.AssetsAttractingCGT.DeleteAssetsAttractingCGTItem(id);
+            {     
+                string result = _repo.AssetsAttractingCGT.DeleteAssetsAttractingCGTItem(id);
 
-                return Ok(deleted);
+                if (result.ToLower().Contains("success"))
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
             }
             catch (Exception e)
             {
@@ -184,7 +189,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpDelete("assets_exempt_from_cgt"), AllowAnonymous]
+        [HttpDelete("assets_exempt_from_cgt/delete"), AllowAnonymous]
         public IActionResult DeleteAssetsExemptFromCGTItem(int id)
         {
             try
