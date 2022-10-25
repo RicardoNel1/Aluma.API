@@ -18,7 +18,7 @@ namespace Aluma.API.Repositories
         List<LiquidAssetsDto> GetLiquidAssets(int fnaId);
         List<LiquidAssetsDto> UpdateLiquidAssets(List<LiquidAssetsDto> dtoArray);
 
-        bool DeleteLiquidAssetsItem(int id);
+        string DeleteLiquidAssetsItem(int id);
 
     }
 
@@ -133,15 +133,36 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteLiquidAssetsItem(int id)
+        public string DeleteLiquidAssetsItem(int id)
         {
-            LiquidAssetsModel item = _context.LiquidAssets.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.LiquidAssets.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+                    LiquidAssetsModel item = _context.LiquidAssets.Where(a => a.Id == id).First();
 
-            return true;
+                    _context.LiquidAssets.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Asset Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
+
+
+
+
 
     }
 }
