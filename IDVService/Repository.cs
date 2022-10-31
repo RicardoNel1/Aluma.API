@@ -19,6 +19,8 @@ namespace IDVService
     }
     public class IDVServiceRepo : IIDVServiceRepo
     {
+        private IDVSettingsDto _settings;
+
         public IDVServiceRepo()
         {
             var config = new ConfigurationBuilder();
@@ -26,8 +28,37 @@ namespace IDVService
             var path = Path.Join(Directory.GetCurrentDirectory(), "appsettings.json");
             config.AddJsonFile(path, false);
             var root = config.Build();
-            //_settings = root.GetSection("PbVerifyBankValidation").Get<SettingsDto>();
+            _settings = root.GetSection("PbVerifyIDV").Get<IDVSettingsDto>();
         }
 
+        public IDVSettingsDto settings { get => _settings; }
+
+        public IDVResponseDto StartBankValidation(BankDetailsDto dto)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-v3");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
+            request.AddHeader("Content-Type", "multipart/form-data");
+            request.AlwaysMultipartFormData = true;
+            request.AddParameter("memberkey", _settings.Memberkey);
+            request.AddParameter("password", _settings.Password);
+            request.AddParameter("bvs_details[accountNumber]", dto.AccountNumber);
+            request.AddParameter("bvs_details[accountType]", dto.AccountType);
+            request.AddParameter("bvs_details[branchCode]", dto.BranchCode);
+            request.AddParameter("bvs_details[idNumber]", dto.IdNumber);
+            request.AddParameter("bvs_details[initial]", dto.Initials);
+            request.AddParameter("bvs_details[lastname]", dto.Surname);
+            request.AddParameter("bvs_details[yourReference]", dto.Reference);
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to start Bank Account Validation");
+
+            IDVResponseDto responseData = JsonConvert.DeserializeObject<IDVResponseDto>(response.Content);
+
+            return responseData;
+        }
     }
 }

@@ -39,6 +39,8 @@ namespace Aluma.API.Repositories
         void UpdateClientPassports(List<PassportDto> dto);
         bool DoesIDExist(ClientDto dto);
 
+        bool IDVerification(ClientDto dto);
+
         ClientDto CheckForFNA(ClientDto client);
 
         Task UploadConsentForm(byte[] fileData, int clientId);
@@ -406,6 +408,31 @@ namespace Aluma.API.Repositories
                 }
 
                 return idExists;
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return true;
+            }
+        }
+
+        public bool IDVerification(ClientDto dto)
+        {
+            try
+            {
+                bool idVerified = false;
+
+                if (dto.User.Id != 0)
+                {
+
+                    idVerified = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                }
+                else
+                {
+                    idVerified = _context.Users.Where(a => a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                }
+
+                return idVerified;
             }
             catch (Exception ex)
             {
