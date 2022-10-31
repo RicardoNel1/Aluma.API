@@ -5,8 +5,7 @@ namespace DataService.Dto
     public class IDVSettingsDto
     {
         public string BaseUrl { get; set; }
-        public string Authorization { get; set; }
-        public string Memberkey { get; set; }
+        public string User { get; set; }
         public string Password { get; set; }
     }
 

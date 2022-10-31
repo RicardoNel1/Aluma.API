@@ -33,28 +33,32 @@ namespace IDVService
 
         public IDVSettingsDto settings { get => _settings; }
 
-        public IDVResponseDto StartBankValidation(BankDetailsDto dto)
+        public IDVResponseDto StartIDVerification(ClientDto dto)
         {
-            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-v3");
+            //var client = new RestClient($"{_settings.BaseUrl}/api/PBSAID/realtime");
+            var client = new RestClient($"{_settings.BaseUrl}");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
-            request.AddHeader("Content-Type", "multipart/form-data");
-            request.AlwaysMultipartFormData = true;
-            request.AddParameter("memberkey", _settings.Memberkey);
-            request.AddParameter("password", _settings.Password);
-            request.AddParameter("bvs_details[accountNumber]", dto.AccountNumber);
-            request.AddParameter("bvs_details[accountType]", dto.AccountType);
-            request.AddParameter("bvs_details[branchCode]", dto.BranchCode);
-            request.AddParameter("bvs_details[idNumber]", dto.IdNumber);
-            request.AddParameter("bvs_details[initial]", dto.Initials);
-            request.AddParameter("bvs_details[lastname]", dto.Surname);
-            request.AddParameter("bvs_details[yourReference]", dto.Reference);
+            request.AddHeader("Authenticate", _settings.User);
+            //request.AddHeader("Accept", "application/json");
+            //request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
+            //request.AddHeader("Content-Type", "multipart/form-data");
+            //request.AlwaysMultipartFormData = true;
+            request.AddParameter("idNumber", dto.User.RSAIdNumber);
+            request.AddParameter("yourReference", dto.User.LastName);
+            //request.AddParameter("memberkey", _settings.Memberkey);
+            //request.AddParameter("password", _settings.Password);
+            //request.AddParameter("bvs_details[accountNumber]", dto.AccountNumber);
+            //request.AddParameter("bvs_details[accountType]", dto.AccountType);
+            //request.AddParameter("bvs_details[branchCode]", dto.BranchCode);
+            //request.AddParameter("bvs_details[idNumber]", dto.IdNumber);
+            //request.AddParameter("bvs_details[initial]", dto.Initials);
+            //request.AddParameter("bvs_details[lastname]", dto.Surname);
+            //request.AddParameter("bvs_details[yourReference]", dto.Reference);
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
-                throw new HttpRequestException("Error while trying to start Bank Account Validation");
+                throw new HttpRequestException("Error while trying to start ID Verification");
 
             IDVResponseDto responseData = JsonConvert.DeserializeObject<IDVResponseDto>(response.Content);
 

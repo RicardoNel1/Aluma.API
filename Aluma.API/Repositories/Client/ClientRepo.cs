@@ -1,10 +1,12 @@
 ﻿using Aluma.API.Helpers;
 using Aluma.API.RepoWrapper;
 using AutoMapper;
+using BankValidationService;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Model;
 using FileStorageService;
+using IDVService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -269,6 +271,11 @@ namespace Aluma.API.Repositories
             _context.Clients.Add(client);
             _context.SaveChanges();
 
+            dto.User.RSAIdNumber = client.User.RSAIdNumber;
+            IDVServiceRepo idv = new();
+            var jobID = string.Empty;
+            var validation = idv.StartIDVerification(dto);
+
             dto = _mapper.Map<ClientDto>(client);
 
             //await _ms.SendClientWelcomeEmail(client);
@@ -350,6 +357,12 @@ namespace Aluma.API.Repositories
 
             _context.Clients.Update(client);
             _context.SaveChanges();
+
+            dto.User.RSAIdNumber = client.User.RSAIdNumber;
+            IDVServiceRepo idv = new();
+            var jobID = string.Empty;
+            var validation = idv.StartIDVerification(dto);
+
             dto = _mapper.Map<ClientDto>(client);
             return dto;
         }
