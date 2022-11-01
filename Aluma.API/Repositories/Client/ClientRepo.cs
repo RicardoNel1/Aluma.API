@@ -362,6 +362,10 @@ namespace Aluma.API.Repositories
             //IDVServiceRepo idv = new();
             //var jobID = string.Empty;
             //var validation = idv.StartIDVerification(dto);
+            IDVServiceRepo _idv = new IDVServiceRepo();
+
+            var token = _idv.StartAuthentication();
+            var status = _idv.StartIDVerification(dto, token);
 
             dto = _mapper.Map<ClientDto>(client);
             return dto;

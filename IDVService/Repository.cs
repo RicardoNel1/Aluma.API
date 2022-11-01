@@ -15,6 +15,8 @@ namespace IDVService
     {
         string StartAuthentication();
 
+        IDVRealTimeResponseDto StartIDVerification(ClientDto dto, string token);
+
         //BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
 
         //VerificationStatusResponse GetBankValidationStatus(string jobId);
@@ -37,7 +39,7 @@ namespace IDVService
 
         public string StartAuthentication()
         {
-            var client = new RestClient($"{_settings.BaseUrl}/api/Authentication");           
+            var client = new RestClient($"{_settings.BaseUrl}/api/Authentication");         
 
 
             client.Timeout = -1;
@@ -53,42 +55,41 @@ namespace IDVService
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
-                throw new HttpRequestException("Error while trying to start ID Verification");
+                throw new HttpRequestException("Error while trying to start PB Authentication");
 
             AuthResponseObject responseData = JsonConvert.DeserializeObject<AuthResponseObject>(response.Content);
 
             return responseData.Token;
         }
 
-        public IDVResponseDto StartIDVerification(ClientDto dto)
+        public IDVRealTimeResponseDto StartIDVerification(ClientDto dto, string token)
         {
-            //var client = new RestClient($"{_settings.BaseUrl}/api/PBSAID/realtime");
-            var client = new RestClient($"{_settings.BaseUrl}");
+            var client = new RestClient($"{_settings.BaseUrl}/api/PBSAIDV/realtime");
+
+
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            //request.AddHeader("Authenticate", _settings.User);
-            //request.AddHeader("Accept", "application/json");
-            //request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
-            //request.AddHeader("Content-Type", "multipart/form-data");
-            //request.AlwaysMultipartFormData = true;
-            request.AddParameter("idNumber", dto.User.RSAIdNumber);
-            request.AddParameter("yourReference", dto.User.LastName);
-            //request.AddParameter("memberkey", _settings.Memberkey);
-            //request.AddParameter("password", _settings.Password);
-            //request.AddParameter("bvs_details[accountNumber]", dto.AccountNumber);
-            //request.AddParameter("bvs_details[accountType]", dto.AccountType);
-            //request.AddParameter("bvs_details[branchCode]", dto.BranchCode);
-            //request.AddParameter("bvs_details[idNumber]", dto.IdNumber);
-            //request.AddParameter("bvs_details[initial]", dto.Initials);
-            //request.AddParameter("bvs_details[lastname]", dto.Surname);
-            //request.AddParameter("bvs_details[yourReference]", dto.Reference);
+            request.AddHeader("Authorization", $"Basic ${token}");
+
+            IDVRequestDto _requestDto = new()
+            {
+                IdNumber = dto.User.RSAIdNumber,
+                YourReference = "ALM" + dto.User.LastName
+
+            };
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(_requestDto), ParameterType.RequestBody);
+
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
                 throw new HttpRequestException("Error while trying to start ID Verification");
 
-            IDVResponseDto responseData = JsonConvert.DeserializeObject<IDVResponseDto>(response.Content);
+            IDVRealTimeResponseDto responseData = JsonConvert.DeserializeObject<IDVRealTimeResponseDto>(response.Content);
 
+
+
+            
             return responseData;
         }
     }
