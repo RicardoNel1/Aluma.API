@@ -13,6 +13,8 @@ namespace IDVService
 
     public interface IIDVServiceRepo
     {
+        string StartAuthentication();
+
         //BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
 
         //VerificationStatusResponse GetBankValidationStatus(string jobId);
@@ -33,13 +35,38 @@ namespace IDVService
 
         public IDVSettingsDto settings { get => _settings; }
 
+        public string StartAuthentication()
+        {
+            var client = new RestClient($"{_settings.BaseUrl}/api/Authentication");           
+
+
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            AuthenticationDto _authDto = new AuthenticationDto() {
+            userName = _settings.UserName,
+            password = _settings.Password,
+            };
+            //request.AddBody(JsonConvert.SerializeObject(_authDto));
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(_authDto), ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to start ID Verification");
+
+            AuthResponseObject responseData = JsonConvert.DeserializeObject<AuthResponseObject>(response.Content);
+
+            return responseData.Token;
+        }
+
         public IDVResponseDto StartIDVerification(ClientDto dto)
         {
             //var client = new RestClient($"{_settings.BaseUrl}/api/PBSAID/realtime");
             var client = new RestClient($"{_settings.BaseUrl}");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Authenticate", _settings.User);
+            //request.AddHeader("Authenticate", _settings.User);
             //request.AddHeader("Accept", "application/json");
             //request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
             //request.AddHeader("Content-Type", "multipart/form-data");

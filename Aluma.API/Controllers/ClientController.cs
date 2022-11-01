@@ -262,5 +262,20 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("test"), AllowAnonymous]
+        public IActionResult TestRepo()
+        {
+            try
+            {
+                var clientList = _repo.IDVRepo.StartAuthentication();
+
+                return Ok(clientList);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

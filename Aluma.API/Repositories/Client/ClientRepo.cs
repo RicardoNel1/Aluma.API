@@ -274,7 +274,7 @@ namespace Aluma.API.Repositories
             dto.User.RSAIdNumber = client.User.RSAIdNumber;
             IDVServiceRepo idv = new();
             var jobID = string.Empty;
-            var validation = idv.StartIDVerification(dto);
+            //var validation = idv.StartIDVerification(dto);
 
             dto = _mapper.Map<ClientDto>(client);
 
@@ -358,10 +358,10 @@ namespace Aluma.API.Repositories
             _context.Clients.Update(client);
             _context.SaveChanges();
 
-            dto.User.RSAIdNumber = client.User.RSAIdNumber;
-            IDVServiceRepo idv = new();
-            var jobID = string.Empty;
-            var validation = idv.StartIDVerification(dto);
+            //dto.User.RSAIdNumber = client.User.RSAIdNumber;
+            //IDVServiceRepo idv = new();
+            //var jobID = string.Empty;
+            //var validation = idv.StartIDVerification(dto);
 
             dto = _mapper.Map<ClientDto>(client);
             return dto;
