@@ -270,11 +270,9 @@ namespace Aluma.API.Repositories
             ClientModel client = _mapper.Map<ClientModel>(dto);
             _context.Clients.Add(client);
             _context.SaveChanges();
-
-            dto.User.RSAIdNumber = client.User.RSAIdNumber;
-            IDVServiceRepo idv = new();
-            var jobID = string.Empty;
-            //var validation = idv.StartIDVerification(dto);
+            IDVServiceRepo _idv = new IDVServiceRepo();
+            var token = _idv.StartAuthentication();
+            var results = _idv.StartIDVerification(dto, token);
 
             dto = _mapper.Map<ClientDto>(client);
 
@@ -285,71 +283,21 @@ namespace Aluma.API.Repositories
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
-            ClientModel client = _mapper.Map<ClientModel>(dto);           //can't map address
-            //ClientModel client = _context.Clients.Where(x => x.Id == dto.Id).FirstOrDefault();
+            ClientModel client = _mapper.Map<ClientModel>(dto); 
+            
+            Boolean verifyID;
+
+            if (user.RSAIdNumber != dto.User.RSAIdNumber)
+            {
+                verifyID = true;
+            }
+            else verifyID = false;
 
             //set user fields to be updated
             user.FirstName = dto.User.FirstName;
             user.LastName = dto.User.LastName;
             user.RSAIdNumber = dto.User.RSAIdNumber;
             user.DateOfBirth = dto.User.DateOfBirth;
-
-            ////set address fields to be updated
-            //if (dto.User.Address != null) { 
-            //foreach (var item in dto.User.Address)
-            //{
-
-            //    bool existingItem = _context.Address.Where(a => a.Id == item.Id).Any();
-
-            //    if (existingItem)
-            //    {
-            //        AddressModel updateItem = _context.Address.Where(a => a.Id == item.Id).FirstOrDefault();
-            //        Enum.TryParse(item.Type, true, out DataService.Enum.AddressTypesEnum parsedType);
-
-            //        updateItem.UnitNumber = item.UnitNumber;
-            //        updateItem.ComplexName = item.ComplexName;
-            //        updateItem.StreetNumber = item.StreetNumber;
-            //        updateItem.StreetName = item.StreetName;
-            //        updateItem.Suburb = item.Suburb;
-            //        updateItem.City = item.City;
-            //        updateItem.PostalCode = item.PostalCode;
-            //        //updateItem.Country = item.Country;
-            //        updateItem.Type = parsedType;
-            //        updateItem.InCareAddress = item.InCareAddress;
-            //        updateItem.InCareName = item.InCareName;
-            //        updateItem.YearsAtAddress = item.YearsAtAddress;
-            //        updateItem.AddressSameAs = item.AddressSameAs;
-
-            //        _context.Address.Update(updateItem);
-
-            //    }
-            //    else
-            //    {
-            //        AddressModel newItem = new AddressModel();
-            //        Enum.TryParse(item.Type, true, out DataService.Enum.AddressTypesEnum parsedType);
-
-            //        newItem.UserId = dto.UserId;
-            //        newItem.UnitNumber = item.UnitNumber;
-            //        newItem.ComplexName = item.ComplexName;
-            //        newItem.StreetNumber = item.StreetNumber;
-            //        newItem.StreetName = item.StreetName;
-            //        newItem.Suburb = item.Suburb;
-            //        newItem.City = item.City;
-            //        newItem.PostalCode = item.PostalCode;
-            //        //newItem.Country = item.Country;
-            //        newItem.Type = parsedType;
-            //        newItem.InCareAddress = item.InCareAddress;
-            //        newItem.InCareName = item.InCareName;
-            //        newItem.YearsAtAddress = item.YearsAtAddress;
-            //        newItem.AddressSameAs = item.AddressSameAs;                    
-
-            //        _context.Address.Add(newItem);
-
-            //    }
-            //}
-            //}
-
-
 
 
             //set client fields to be updated
@@ -358,14 +306,13 @@ namespace Aluma.API.Repositories
             _context.Clients.Update(client);
             _context.SaveChanges();
 
-            //dto.User.RSAIdNumber = client.User.RSAIdNumber;
-            //IDVServiceRepo idv = new();
-            //var jobID = string.Empty;
-            //var validation = idv.StartIDVerification(dto);
-            IDVServiceRepo _idv = new IDVServiceRepo();
-
-            var token = _idv.StartAuthentication();
-            var status = _idv.StartIDVerification(dto, token);
+            if (verifyID) 
+            {
+                IDVServiceRepo _idv = new IDVServiceRepo();
+                var token = _idv.StartAuthentication();
+                var results = _idv.StartIDVerification(dto, token);
+            }
+            
 
             dto = _mapper.Map<ClientDto>(client);
             return dto;

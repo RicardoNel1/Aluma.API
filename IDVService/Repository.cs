@@ -45,10 +45,9 @@ namespace IDVService
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             AuthenticationDto _authDto = new AuthenticationDto() {
-            userName = _settings.UserName,
-            password = _settings.Password,
+            UserName = _settings.UserName,
+            Password = _settings.Password,
             };
-            //request.AddBody(JsonConvert.SerializeObject(_authDto));
 
             request.AddParameter("application/json", JsonConvert.SerializeObject(_authDto), ParameterType.RequestBody);
 
