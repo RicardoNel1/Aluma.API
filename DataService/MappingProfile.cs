@@ -56,6 +56,9 @@ namespace DataService
             CreateMap<BankDetailsModel, BankDetailsDto>()
                 .ReverseMap();
 
+            CreateMap<IDVModel, RealtimeResult>()
+                .ReverseMap();
+
             CreateMap<LeadModel, LeadDto>().ReverseMap(); 
 
             CreateMap<ClientModel, ClientDto>()

@@ -269,10 +269,13 @@ namespace Aluma.API.Repositories
             //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
             _context.Clients.Add(client);
-            _context.SaveChanges();
+            
             IDVServiceRepo _idv = new IDVServiceRepo();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
+            IDVModel idv = _mapper.Map<IDVModel>(results.RealTimeResult);
+            _context.IDV.Add(idv);
+            _context.SaveChanges();
 
             dto = _mapper.Map<ClientDto>(client);
 
@@ -304,15 +307,28 @@ namespace Aluma.API.Repositories
             client.User = user;
 
             _context.Clients.Update(client);
-            _context.SaveChanges();
 
             if (verifyID) 
             {
                 IDVServiceRepo _idv = new IDVServiceRepo();
                 var token = _idv.StartAuthentication();
                 var results = _idv.StartIDVerification(dto, token);
+                if (results.Status == "Success")
+                {
+                    IDVModel idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
+                    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                    var idvId = idv.Id;                    
+
+                    idv.IdNumber = updatedIdv.IdNumber;
+                    //idv.Id = idvId;
+                    //idv.ClientId = client.Id;
+                    //idv.ClientId = client.Id;
+                    _context.IDV.Update(idv);
+                }
             }
-            
+
+            _context.SaveChanges();
+
 
             dto = _mapper.Map<ClientDto>(client);
             return dto;
