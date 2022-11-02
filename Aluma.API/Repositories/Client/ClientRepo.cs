@@ -282,6 +282,10 @@ namespace Aluma.API.Repositories
 
                 if (idv.Surname != "")
                 {
+                    client.CountryOfResidence = idv.CountryofBirth;
+                    client.CountryOfBirth = idv.CountryofBirth;
+                    client.Nationality = idv.Citizenship;
+                    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
                     client.User.isIdVerified = true;
                 }
                 else client.User.isIdVerified = false;
@@ -351,6 +355,10 @@ namespace Aluma.API.Repositories
 
                     if (updatedIdv.Surname != "")
                     {
+                        client.CountryOfResidence = idv.CountryofBirth;
+                        client.CountryOfBirth = idv.CountryofBirth;
+                        client.Nationality = idv.Citizenship;
+                        client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
                         client.User.isIdVerified = true;
                     }
                     else client.User.isIdVerified = false;
