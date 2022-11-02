@@ -268,17 +268,29 @@ namespace Aluma.API.Repositories
             dto.ClientType = "Primary";
             //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);
-            
+            _context.Clients.Add(client);   
+            _context.SaveChanges();
+            dto = _mapper.Map<ClientDto>(client);
+
             IDVServiceRepo _idv = new IDVServiceRepo();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
-            IDVModel idv = _mapper.Map<IDVModel>(results.RealTimeResult);
-            _context.IDV.Add(idv);
-            _context.SaveChanges();
+            if (results.Status == "Success")
+            {
+                IDVModel idv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                idv.ClientId = dto.Id;
 
-            dto = _mapper.Map<ClientDto>(client);
+                if (idv.Surname != "")
+                {
+                    client.User.isIdVerified = true;
+                }
+                else client.User.isIdVerified = false;
 
+                _context.IDV.Add(idv);
+                _context.SaveChanges();
+            }
+
+            
             //await _ms.SendClientWelcomeEmail(client);
             return dto;
         }
@@ -290,7 +302,7 @@ namespace Aluma.API.Repositories
             
             Boolean verifyID;
 
-            if (user.RSAIdNumber != dto.User.RSAIdNumber)
+            if (user.RSAIdNumber != dto.User.RSAIdNumber || user.isIdVerified == false)
             {
                 verifyID = true;
             }
@@ -306,7 +318,7 @@ namespace Aluma.API.Repositories
             //set client fields to be updated
             client.User = user;
 
-            _context.Clients.Update(client);
+            
 
             if (verifyID) 
             {
@@ -317,16 +329,41 @@ namespace Aluma.API.Repositories
                 {
                     IDVModel idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
                     IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                    var idvId = idv.Id;                    
-
+                    var idvId = idv.Id;
+                   
+                    idv.TraceId = updatedIdv.TraceId;
                     idv.IdNumber = updatedIdv.IdNumber;
+                    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
+                    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
+                    idv.IdCardInd = updatedIdv.IdCardInd;
+                    idv.IdBlocked = updatedIdv.IdBlocked;
+                    idv.Surname = updatedIdv.Surname;
+                    idv.Age = updatedIdv.Age;
+                    idv.Gender = updatedIdv.Gender;
+                    idv.Citizenship = updatedIdv.Citizenship;
+                    idv.CountryofBirth = updatedIdv.CountryofBirth;
+                    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
+                    idv.DeceasedDate = updatedIdv.DeceasedDate;
+                    idv.DeathPlace = updatedIdv.DeathPlace;
+                    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
+                    idv.MaritalStatus = updatedIdv.MaritalStatus;
+                    idv.MarriageDate = updatedIdv.MarriageDate;
+
+                    if (updatedIdv.Surname != "")
+                    {
+                        client.User.isIdVerified = true;
+                    }
+                    else client.User.isIdVerified = false;
+
                     //idv.Id = idvId;
                     //idv.ClientId = client.Id;
                     //idv.ClientId = client.Id;
                     _context.IDV.Update(idv);
                 }
+                else client.User.isIdVerified = false;
             }
 
+            _context.Clients.Update(client);
             _context.SaveChanges();
 
 
