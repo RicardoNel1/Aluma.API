@@ -365,12 +365,12 @@ namespace Aluma.API.Repositories
                 //    idv.MaritalStatus = updatedIdv.MaritalStatus;
                 //    idv.MarriageDate = updatedIdv.MarriageDate;
 
-                if (idv.Surname != "")
+                if (idv.Surname != "" && idv.Surname != null)
                 {
                     client.CountryOfResidence = idv.CountryofBirth;
                     client.CountryOfBirth = idv.CountryofBirth;
                     client.Nationality = idv.Citizenship;
-                    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
+                    client.MaritalDetails.DateOfMarriage = idv.MarriageDate.Substring(0,4)+"-"+ idv.MarriageDate.Substring(4, 2)+"-"+ idv.MarriageDate.Substring(6, 2)+ "T22:00:00.000Z";
                     client.User.isIdVerified = true;
                     _context.Clients.Update(client);
                 }
@@ -381,7 +381,7 @@ namespace Aluma.API.Repositories
                 //else client.User.isIdVerified = false;
             }
 
-           
+            _context.Update(client);
             _context.SaveChanges();
 
 
