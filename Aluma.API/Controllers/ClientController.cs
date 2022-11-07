@@ -269,10 +269,10 @@ namespace Aluma.API.Controllers
         //    try
         //    {
         //        var token = _repo.IDVRepo.StartAuthentication();
-        //        var status = _repo.IDVRepo.StartIDVerification(ClientDto dto, token);
+        //        var status = _repo.IDVRepo.StartIDVerification(client, token);
 
 
-        //        return Ok(clientTest);
+        //        return Ok(status);
         //    }
         //    catch (Exception e)
         //    {

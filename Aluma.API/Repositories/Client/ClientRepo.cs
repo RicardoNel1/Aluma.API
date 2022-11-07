@@ -272,29 +272,34 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            IDVServiceRepo _idv = new IDVServiceRepo();
-            var token = _idv.StartAuthentication();
-            var results = _idv.StartIDVerification(dto, token);
-            if (results.Status == "Success")
+            if (client.User.RSAIdNumber != null) 
             {
-                IDVModel idv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                idv.ClientId = dto.Id;
+                IDVModel idv = CreateIDV(dto);
+                //IDVServiceRepo _idv = new IDVServiceRepo();
+                //var token = _idv.StartAuthentication();
+                //var results = _idv.StartIDVerification(dto, token);
+                //if (results.Status == "Success")
+                //{
+                //    IDVModel idv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                //    idv.ClientId = dto.Id;
 
-                if (idv.Surname != "")
+                if (idv != null && idv.Surname != "")
                 {
                     client.CountryOfResidence = idv.CountryofBirth;
                     client.CountryOfBirth = idv.CountryofBirth;
                     client.Nationality = idv.Citizenship;
                     client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
                     client.User.isIdVerified = true;
+
                 }
                 else client.User.isIdVerified = false;
 
-                _context.IDV.Add(idv);
+                //    _context.IDV.Add(idv);
+                //    _context.SaveChanges();
+                //}
                 _context.SaveChanges();
             }
 
-            
             //await _ms.SendClientWelcomeEmail(client);
             return dto;
         }
@@ -306,7 +311,7 @@ namespace Aluma.API.Repositories
             
             Boolean verifyID;
 
-            if (user.RSAIdNumber != dto.User.RSAIdNumber || user.isIdVerified == false)
+            if (user.RSAIdNumber != dto.User.RSAIdNumber)
             {
                 verifyID = true;
             }
@@ -321,63 +326,70 @@ namespace Aluma.API.Repositories
 
             //set client fields to be updated
             client.User = user;
-
-            
+                       
 
             if (verifyID) 
             {
-                IDVServiceRepo _idv = new IDVServiceRepo();
-                var token = _idv.StartAuthentication();
-                var results = _idv.StartIDVerification(dto, token);
-                if (results.Status == "Success")
-                {
-                    IDVModel idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
-                    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                    var idvId = idv.Id;
-                   
-                    idv.TraceId = updatedIdv.TraceId;
-                    idv.IdNumber = updatedIdv.IdNumber;
-                    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
-                    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
-                    idv.IdCardInd = updatedIdv.IdCardInd;
-                    idv.IdBlocked = updatedIdv.IdBlocked;
-                    idv.Surname = updatedIdv.Surname;
-                    idv.Age = updatedIdv.Age;
-                    idv.Gender = updatedIdv.Gender;
-                    idv.Citizenship = updatedIdv.Citizenship;
-                    idv.CountryofBirth = updatedIdv.CountryofBirth;
-                    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
-                    idv.DeceasedDate = updatedIdv.DeceasedDate;
-                    idv.DeathPlace = updatedIdv.DeathPlace;
-                    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
-                    idv.MaritalStatus = updatedIdv.MaritalStatus;
-                    idv.MarriageDate = updatedIdv.MarriageDate;
+                IDVModel idv = UpdateIDV(dto);
+                //IDVServiceRepo _idv = new IDVServiceRepo();
+                //var token = _idv.StartAuthentication();
+                //var results = _idv.StartIDVerification(dto, token);
+                //if (results.Status == "Success")
+                //{
 
-                    if (updatedIdv.Surname != "")
-                    {
-                        client.CountryOfResidence = idv.CountryofBirth;
-                        client.CountryOfBirth = idv.CountryofBirth;
-                        client.Nationality = idv.Citizenship;
-                        client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
-                        client.User.isIdVerified = true;
-                    }
+                //    IDVModel idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
+                //    if (idv == null)
+                //    {
+                //        idv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                //        idv.ClientId = dto.Id;
+                //    }
+
+                //    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                //    var idvId = idv.Id;
+
+                //    idv.TraceId = updatedIdv.TraceId;
+                //    idv.IdNumber = updatedIdv.IdNumber;
+                //    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
+                //    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
+                //    idv.IdCardInd = updatedIdv.IdCardInd;
+                //    idv.IdBlocked = updatedIdv.IdBlocked;
+                //    idv.Surname = updatedIdv.Surname;
+                //    idv.Age = updatedIdv.Age;
+                //    idv.Gender = updatedIdv.Gender;
+                //    idv.Citizenship = updatedIdv.Citizenship;
+                //    idv.CountryofBirth = updatedIdv.CountryofBirth;
+                //    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
+                //    idv.DeceasedDate = updatedIdv.DeceasedDate;
+                //    idv.DeathPlace = updatedIdv.DeathPlace;
+                //    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
+                //    idv.MaritalStatus = updatedIdv.MaritalStatus;
+                //    idv.MarriageDate = updatedIdv.MarriageDate;
+
+                if (idv.Surname != "")
+                {
+                    client.CountryOfResidence = idv.CountryofBirth;
+                    client.CountryOfBirth = idv.CountryofBirth;
+                    client.Nationality = idv.Citizenship;
+                    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
+                    client.User.isIdVerified = true;
+                    _context.Clients.Update(client);
+                }
                     else client.User.isIdVerified = false;
 
-                    //idv.Id = idvId;
-                    //idv.ClientId = client.Id;
-                    //idv.ClientId = client.Id;
-                    _context.IDV.Update(idv);
-                }
-                else client.User.isIdVerified = false;
+                //    _context.IDV.Update(idv);
+                //}
+                //else client.User.isIdVerified = false;
             }
 
-            _context.Clients.Update(client);
+           
             _context.SaveChanges();
 
 
             dto = _mapper.Map<ClientDto>(client);
             return dto;
         }
+
+       
 
         public void GenerateClientDocuments(int clientId)
         {
@@ -523,6 +535,92 @@ namespace Aluma.API.Repositories
 
             await ms.SendInvestNowClientWelcomeEmail(cm);
 
+        }
+
+        public IDVModel CreateIDV(ClientDto dto)
+        {
+            ClientModel client = _mapper.Map<ClientModel>(dto);
+            IDVServiceRepo _idv = new IDVServiceRepo();
+            IDVModel idv = new IDVModel();
+            var token = _idv.StartAuthentication();
+            var results = _idv.StartIDVerification(dto, token);
+            if (results.Status == "Success")
+            {
+                idv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                idv.ClientId = dto.Id;
+
+                //if (idv.Surname != "")
+                //{
+                //    client.CountryOfResidence = idv.CountryofBirth;
+                //    client.CountryOfBirth = idv.CountryofBirth;
+                //    client.Nationality = idv.Citizenship;
+                //    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
+                //    client.User.isIdVerified = true;
+                //}
+                //else client.User.isIdVerified = false;
+
+                _context.IDV.Add(idv);
+
+                _context.SaveChanges();
+            }
+            return idv;
+        }
+        public IDVModel UpdateIDV(ClientDto dto)
+        {
+            ClientModel client = _mapper.Map<ClientModel>(dto);
+            IDVServiceRepo _idv = new IDVServiceRepo();
+            IDVModel idv = new IDVModel();
+            var token = _idv.StartAuthentication();
+            var results = _idv.StartIDVerification(dto, token);
+            if (results.Status == "Success")
+            {
+                idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
+                if (idv == null)
+                {
+                    idv = CreateIDV(dto);
+                }
+                else 
+                {
+                   IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                   var idvId = idv.Id;
+
+                   idv.TraceId = updatedIdv.TraceId;
+                   idv.IdNumber = updatedIdv.IdNumber;
+                   idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
+                   idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
+                   idv.IdCardInd = updatedIdv.IdCardInd;
+                   idv.IdBlocked = updatedIdv.IdBlocked;
+                   idv.Surname = updatedIdv.Surname;
+                   idv.Age = updatedIdv.Age;
+                   idv.Gender = updatedIdv.Gender;
+                   idv.Citizenship = updatedIdv.Citizenship;
+                   idv.CountryofBirth = updatedIdv.CountryofBirth;
+                   idv.DeceasedStatus = updatedIdv.DeceasedStatus;
+                   idv.DeceasedDate = updatedIdv.DeceasedDate;
+                   idv.DeathPlace = updatedIdv.DeathPlace;
+                   idv.CauseOfDeath = updatedIdv.CauseOfDeath;
+                   idv.MaritalStatus = updatedIdv.MaritalStatus;
+                   idv.MarriageDate = updatedIdv.MarriageDate;
+                    
+                    //if (updatedIdv.Surname != "")                   
+                    //{
+                    //    client.CountryOfResidence = idv.CountryofBirth;
+                    //    client.CountryOfBirth = idv.CountryofBirth;
+                    //    client.Nationality = idv.Citizenship;
+                    //    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
+                    //    client.User.isIdVerified = true;
+                    //}
+                    //else 
+                    //    client.User.isIdVerified = false;
+
+                    //_context.Clients.Update(client);
+                    _context.IDV.Update(idv);
+                }
+            }
+            else client.User.isIdVerified = false;
+
+            _context.SaveChanges();
+            return idv;
         }
     }
 }

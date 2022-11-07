@@ -81,8 +81,8 @@ namespace IDVService
 
             IRestResponse response = client.Execute(request);
 
-            if (!response.IsSuccessful)
-                throw new HttpRequestException("Error while trying to start ID Verification");
+            //if (!response.IsSuccessful)
+            //    throw new HttpRequestException("Error while trying to start ID Verification");
 
             IDVRealTimeResponseDto responseData = JsonConvert.DeserializeObject<IDVRealTimeResponseDto>(response.Content);
 
