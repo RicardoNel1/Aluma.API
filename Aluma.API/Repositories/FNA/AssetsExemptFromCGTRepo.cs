@@ -18,7 +18,7 @@ namespace Aluma.API.Repositories
         List<AssetsExemptFromCGTDto> GetAssetsExemptFromCGT(int fnaId);
         List<AssetsExemptFromCGTDto>  UpdateAssetsExemptFromCGT(List<AssetsExemptFromCGTDto>  dtoArray);
 
-        bool DeleteAssetsExemptFromCGTItem(int id);
+        string DeleteAssetsExemptFromCGTItem(int id);
     }
 
 
@@ -92,13 +92,31 @@ namespace Aluma.API.Repositories
             return dtoArray;
         }
 
-        public bool DeleteAssetsExemptFromCGTItem(int id)
+        public string DeleteAssetsExemptFromCGTItem(int id)
         {
-            AssetsExemptFromCGTModel item = _context.AssetsExemptFromCGT.Where(a => a.Id == id).First();
-            _context.AssetsExemptFromCGT.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
 
-            return true;
+                    AssetsExemptFromCGTModel item = _context.AssetsExemptFromCGT.Where(a => a.Id == id).First();
+
+                    _context.AssetsExemptFromCGT.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Asset Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
     }

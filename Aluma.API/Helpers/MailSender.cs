@@ -179,7 +179,7 @@ namespace Aluma.API.Helpers
             {
                 Email = advisor.User.Email,
                 Name = client.User.FirstName + " " + client.User.LastName,
-                Subject = "Aluma Capital: Application Complete " + client.User.FirstName + " " + client.User.LastName,
+                Subject = "Aluma Capital - Application Complete: " + client.User.FirstName + " " + client.User.LastName,
                 Template = "ApplicationComplete"
             };
 
@@ -196,8 +196,9 @@ namespace Aluma.API.Helpers
                 message.To.Add(new MailAddress(advisor.User.Email));
                 //message.Bcc.Add(new MailAddress("johan@fintegratetech.co.za"));
                 message.Bcc.Add(new MailAddress("system@aluma.co.za"));
+                message.Bcc.Add(new MailAddress("carolien@aluma.co.za"));
 
-                List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == client.UserId && !d.IsSigned).ToList();
+                List<UserDocumentModel> userDocs = _context.UserDocuments.Where(d => d.UserId == client.UserId && d.IsSigned).ToList();
 
                 foreach (var doc in userDocs)
                 {

@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories
         List<AssetsAttractingCGTDto> GetAssetsAttractingCGT(int fnaId);
         List<AssetsAttractingCGTDto> UpdateAssetsAttractingCGT(List<AssetsAttractingCGTDto> dtoArray);
 
-        bool DeleteAssetsAttractingCGTItem(int id);
+        string DeleteAssetsAttractingCGTItem(int id);
 
     }
 
@@ -86,14 +86,42 @@ namespace Aluma.API.Repositories
             return dtoArray;
         }
 
-        public bool DeleteAssetsAttractingCGTItem(int id)
-        {
-            AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
-            //item.isDeleted = false;
-            _context.AssetsAttractingCGT.Remove(item);
-            _context.SaveChanges();
+        //public bool DeleteAssetsAttractingCGTItem(int id)
+        //{
+        //    AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == id).First();
+        //    //item.isDeleted = false;
+        //    _context.AssetsAttractingCGT.Remove(item);
+        //    _context.SaveChanges();
 
-            return true;
+        //    return true;
+        //}
+
+        public string DeleteAssetsAttractingCGTItem(int Id)
+        {
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+
+                    AssetsAttractingCGTModel item = _context.AssetsAttractingCGT.Where(a => a.Id == Id).First();
+
+                    _context.AssetsAttractingCGT.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Asset Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
     }

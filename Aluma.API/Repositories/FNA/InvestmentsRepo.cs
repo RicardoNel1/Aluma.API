@@ -17,7 +17,7 @@ namespace Aluma.API.Repositories
         bool DoesInvestmentsExist(InvestmentsDto dto);
         List<InvestmentsDto> GetInvestments(int fnaId);
         List<InvestmentsDto> UpdateInvestments(List<InvestmentsDto> dtoArray);
-        bool DeleteInvestmentsItem(int id);
+        string DeleteInvestmentsItem(int id);
 
     }
 
@@ -97,13 +97,31 @@ namespace Aluma.API.Repositories
 
         }
 
-        public bool DeleteInvestmentsItem(int id)
+        public string DeleteInvestmentsItem(int id)
         {
-            InvestmentsModel item = _context.Investments.Where(a => a.Id == id).First();
-            _context.Investments.Remove(item);
-            _context.SaveChanges();
+            try
+            {
+                using (AlumaDBContext db = new())
+                {
+                    InvestmentsModel item = _context.Investments.Where(a => a.Id == id).First();
 
-            return true;
+                    _context.Investments.Remove(item);
+
+                    if (_context.SaveChanges() > 0)
+                    {
+                        return "Investment Deleted Successfully";
+                    }
+                    else
+                    {
+                        return "Unsuccesful";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
     }

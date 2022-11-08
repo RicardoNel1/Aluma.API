@@ -57,6 +57,7 @@ namespace DataService.Model
         public bool isSocialLogin { get; set; }
         public string SocialId { get; set; }
         public bool isOtpLocked { get; set; }
+        public bool isIdVerified { get; set; }
 
     }
 
