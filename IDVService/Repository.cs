@@ -85,10 +85,7 @@ namespace IDVService
             //    throw new HttpRequestException("Error while trying to start ID Verification");
 
             IDVRealTimeResponseDto responseData = JsonConvert.DeserializeObject<IDVRealTimeResponseDto>(response.Content);
-
-
-
-            
+                                    
             return responseData;
         }
     }

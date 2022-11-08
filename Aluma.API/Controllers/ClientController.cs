@@ -154,7 +154,6 @@ namespace Aluma.API.Controllers
                 }
                 else
                 {
-
                     _repo.Client.UpdateClient(dto);
                     dto.Status = "Success";
                 }
