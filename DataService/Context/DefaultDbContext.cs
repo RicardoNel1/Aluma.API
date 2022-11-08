@@ -133,6 +133,7 @@ namespace DataService.Context
         //Client
         public DbSet<LeadModel> Leads { get; set; }
         public DbSet<BankDetailsModel> BankDetails { get; set; }
+        public DbSet<IDVModel> IDV { get; set; }
         public DbSet<ClientModel> Clients { get; set; }
         public DbSet<KYCDataModel> KycData { get; set; }
         public DbSet<RiskProfileModel> RiskProfiles { get; set; }
