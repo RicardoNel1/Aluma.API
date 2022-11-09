@@ -165,7 +165,12 @@ namespace Aluma.API.Repositories
 
 
             d["businessTel"] = client.EmploymentDetails.WorkNumber ?? String.Empty;
+
+            if (client.User.MobileNumber.StartsWith("0"))
+            { client.User.MobileNumber = client.User.MobileNumber; }
+            else
             d["mobile"] = "0" + client.User.MobileNumber ?? string.Empty;
+
             d["email"] = client.User.Email;
 
 
