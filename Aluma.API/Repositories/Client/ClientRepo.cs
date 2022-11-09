@@ -74,7 +74,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else 
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -111,7 +115,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -163,8 +171,10 @@ namespace Aluma.API.Repositories
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
-            //dto.User.MobileNumber = dto.User.MobileNumber;
+            if (dto.User.MobileNumber.StartsWith("0"))
+            { dto.User.MobileNumber = dto.User.MobileNumber; }
+            else
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -191,7 +201,12 @@ namespace Aluma.API.Repositories
         {
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
-            response.User.MobileNumber = "0" + response.User.MobileNumber;
+
+            if (response.User.MobileNumber.StartsWith("0"))
+            { response.User.MobileNumber = response.User.MobileNumber; }
+            else
+                response.User.MobileNumber = "0" + response.User.MobileNumber;
+
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
             response = CheckForDisclosures(response);
