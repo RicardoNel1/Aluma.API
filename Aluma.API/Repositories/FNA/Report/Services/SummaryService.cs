@@ -1,8 +1,6 @@
-﻿using Aluma.API.Helpers.Extensions;
-using Aluma.API.Repositories.FNA.Report.Services.Base;
+﻿using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
-using DataService.Enum;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

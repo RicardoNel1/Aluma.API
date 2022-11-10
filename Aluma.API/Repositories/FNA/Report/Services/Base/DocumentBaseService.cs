@@ -1,27 +1,18 @@
-﻿using System.Net.Mime;
-using DataService.Dto;
+﻿using DataService.Dto;
 //using SelectPdf;
 using System;
 using System.IO;
-using System.Linq;
 using Aluma.API.Repositories.FNA.Report.Service;
 using Aluma.API.RepoWrapper;
 using System.Threading.Tasks;
 using System.Web;
-using Aluma.API.Helpers;
 using DataService.Model;
 using AutoMapper;
 using DataService.Enum;
 using iText.Html2pdf;
 using iText.Kernel.Pdf;
 using iText.Layout;
-using iText.Kernel.Font;
-using iText.Layout.Font;
-using iText.Html2pdf.Resolver.Font;
-using System.Text;
 using iText.Kernel.Geom;
-using iText.IO.Font;
-using System.Drawing;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 

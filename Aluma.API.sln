@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SMSService", "SMSService\SM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorageService", "FileStorageService\FileStorageService.csproj", "{22F8EFD5-49B1-49D6-978E-A3F216A6E5F2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FintegrateSharedAstuteService", "FintegrateSharedAstuteService\FintegrateSharedAstuteService.csproj", "{AB82E150-4A45-434E-85A3-2F21D4907F48}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IDVService", "IDVService\IDVService.csproj", "{D852DEF2-864A-4586-AB1C-3311B60B364F}"
 EndProject
 Global
@@ -69,6 +71,10 @@ Global
 		{D852DEF2-864A-4586-AB1C-3311B60B364F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D852DEF2-864A-4586-AB1C-3311B60B364F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D852DEF2-864A-4586-AB1C-3311B60B364F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB82E150-4A45-434E-85A3-2F21D4907F48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
