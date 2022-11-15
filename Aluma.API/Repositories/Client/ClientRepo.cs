@@ -4,7 +4,9 @@ using AutoMapper;
 using BankValidationService;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Dto.Client;
 using DataService.Model;
+using DataService.Model.Client;
 using FileStorageService;
 using IDVService;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,8 @@ namespace Aluma.API.Repositories
         public List<ClientDto> GetClientsByAdvisor(int advisorId);
 
         public bool DeleteClient(ClientDto dto);
+        public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dto);
+        public List<FinancialProviderDto> GetFinancialProviders();
 
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
@@ -625,6 +629,35 @@ namespace Aluma.API.Repositories
 
             _context.SaveChanges();
             return idv;
+        }
+
+        public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dtoArray)
+        {
+            //ClientConsentModel form = _mapper.Map<ClientConsentModel>(dtoArray);
+
+            //_context.ClientConsentModels.Add(form);
+            //_context.SaveChanges();
+
+            //dtoArray = _mapper.Map<ClientConsentDto>(form);
+
+            //return dtoArray;
+
+            foreach (ClientConsentDto consent in dtoArray)
+            {
+                var pModel = _mapper.Map<ClientConsentModel>(consent);
+                _context.ClientConsentModels.Add(pModel);
+            }
+            _context.SaveChanges();
+
+            return dtoArray;
+        }
+
+        public List<FinancialProviderDto> GetFinancialProviders()
+        {
+            List<FinancialProviderModel> financialProvider = _context.FinancialProviders.ToList();
+            List<FinancialProviderDto> dto = _mapper.Map<List<FinancialProviderDto>>(financialProvider);
+
+            return dto;
         }
     }
 }
