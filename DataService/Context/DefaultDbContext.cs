@@ -1,4 +1,5 @@
 ﻿using DataService.Model;
+using DataService.Model.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
@@ -144,6 +145,8 @@ namespace DataService.Context
         public DbSet<ClientFNAModel> clientFNA { get; set; }
         public DbSet<ClientProductModel> ClientProducts { get; set; }
         public DbSet<EmploymentDetailsModel> EmploymentDetails { get; set; }
+        public DbSet<ClientConsentModel> ClientConsentModels { get; set; }
+        public DbSet<FinancialProviderModel> FinancialProviders { get; set; }
         public DbSet<MaritalDetailsModel> MaritalDetails { get; set; }
         public DbSet<ClientNotesModel> ClientNotes { get; set; }
 
