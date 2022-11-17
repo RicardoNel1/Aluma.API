@@ -160,15 +160,15 @@ namespace Aluma.API.Repositories
                                 result = "Expired";
                             }
                         }
-                        else
-                        {
-                            otpModel.isExpired = true;
-                            otpModel.Modified = DateTime.UtcNow;
-                            otpModel.ModifiedBy = 00;
+                        //else
+                        //{
+                        //    otpModel.isExpired = true;
+                        //    otpModel.Modified = DateTime.UtcNow;
+                        //    otpModel.ModifiedBy = 00;
 
-                            _context.Otp.Update(otpModel);
-                            _context.SaveChanges();
-                        }
+                        //    _context.Otp.Update(otpModel);
+                        //    _context.SaveChanges();
+                        //}
                     }
                 }
             }

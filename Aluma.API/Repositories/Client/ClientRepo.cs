@@ -32,6 +32,7 @@ namespace Aluma.API.Repositories
         public bool DeleteClient(ClientDto dto);
         public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dto);
         public List<FinancialProviderDto> GetFinancialProviders();
+        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId);
 
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
@@ -78,7 +79,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else 
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -115,7 +120,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -167,8 +176,10 @@ namespace Aluma.API.Repositories
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
-            //dto.User.MobileNumber = dto.User.MobileNumber;
+            if (dto.User.MobileNumber.StartsWith("0"))
+            { dto.User.MobileNumber = dto.User.MobileNumber; }
+            else
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -195,7 +206,12 @@ namespace Aluma.API.Repositories
         {
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
-            response.User.MobileNumber = "0" + response.User.MobileNumber;
+
+            if (response.User.MobileNumber.StartsWith("0"))
+            { response.User.MobileNumber = response.User.MobileNumber; }
+            else
+                response.User.MobileNumber = "0" + response.User.MobileNumber;
+
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
             response = CheckForDisclosures(response);
@@ -641,9 +657,12 @@ namespace Aluma.API.Repositories
             //dtoArray = _mapper.Map<ClientConsentDto>(form);
 
             //return dtoArray;
+            
 
             foreach (ClientConsentDto consent in dtoArray)
             {
+                //if (consent.ConsentVersion > 0) consent.ConsentVersion += 1; else consent.ConsentVersion = 1;
+
                 var pModel = _mapper.Map<ClientConsentModel>(consent);
                 _context.ClientConsentModels.Add(pModel);
             }
@@ -656,6 +675,16 @@ namespace Aluma.API.Repositories
         {
             List<FinancialProviderModel> financialProvider = _context.FinancialProviders.ToList();
             List<FinancialProviderDto> dto = _mapper.Map<List<FinancialProviderDto>>(financialProvider);
+
+            return dto;
+        }
+
+        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId)
+        {
+            //This function will always get the latest version of the consented providers
+            List<ClientConsentModel> clientConsentedList = _context.ClientConsentModels.Where(u => u.ClientId == ClientId).ToList();
+            clientConsentedList = clientConsentedList.Where(u => u.ConsentVersion == clientConsentedList.Last().ConsentVersion).ToList();
+            List<ClientConsentDto> dto = _mapper.Map<List<ClientConsentDto>>(clientConsentedList);
 
             return dto;
         }

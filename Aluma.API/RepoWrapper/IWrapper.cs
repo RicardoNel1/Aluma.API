@@ -2,6 +2,7 @@
 using Aluma.API.Repositories;
 using BankValidationService;
 using FileStorageService;
+using FintegrateSharedAstuteService;
 using IDVService;
 using JwtService;
 using KycService;
@@ -89,6 +90,7 @@ namespace Aluma.API.RepoWrapper
         IJwtRepo JwtRepo { get; }
         IKycFactoryRepo KycRepo { get; }
         IBankValidationServiceRepo BankValidationRepo { get; }
+        IFSASRepo FSASRepo { get; }
         IIDVServiceRepo IDVRepo { get; }
         ISignatureRepo SignatureRepo { get; }
         IFileStorageRepo FileStorageRepo { get; }

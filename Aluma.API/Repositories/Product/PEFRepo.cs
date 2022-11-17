@@ -77,7 +77,11 @@ namespace Aluma.API.Repositories
 
             d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
 
-            d["mobile"] = "0" + client.User.MobileNumber;
+            if (client.User.MobileNumber.StartsWith("0"))
+            { d["mobile"] = client.User.MobileNumber; }
+            else
+                d["mobile"] = "0" + client.User.MobileNumber;
+
             d["email"] = client.User.Email;
 
             BankDetailsModel bv = client.BankDetails.First();
@@ -119,7 +123,12 @@ namespace Aluma.API.Repositories
 
             d["nameSurname"] = $"{client.User.FirstName} {client.User.LastName}";
             d["identityNumber"] = client.User.RSAIdNumber;
-            d["contactNumber"] = "0" + client.User.MobileNumber;
+
+            if (client.User.MobileNumber.StartsWith("0"))
+            { d["contactNumber"] = client.User.MobileNumber; }
+            else
+                d["contactNumber"] = "0" + client.User.MobileNumber;
+
             d["emailAddress"] = client.User.Email;
 
             d["quotationDate"] = DateTime.UtcNow.ToString("dd MMMM yyyy");

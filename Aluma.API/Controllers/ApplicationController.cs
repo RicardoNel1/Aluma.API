@@ -2,7 +2,6 @@
 using AutoMapper;
 using DataService.Dto;
 using DataService.Enum;
-using DataService.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

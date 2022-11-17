@@ -1,7 +1,6 @@
 ﻿using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -33,8 +32,6 @@ namespace Aluma.API.Controllers
                 response.Message = "Invalid OTP";
                 return StatusCode(401, response);
             }
-
-            //Todo: lots of duplicated code, fix in next sprint. -
 
             RoleEnum role = user.Role;
             var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
