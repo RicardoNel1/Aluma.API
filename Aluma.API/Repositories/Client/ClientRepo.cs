@@ -32,6 +32,7 @@ namespace Aluma.API.Repositories
         public bool DeleteClient(ClientDto dto);
         public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dto);
         public List<FinancialProviderDto> GetFinancialProviders();
+        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId);
 
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
@@ -656,9 +657,12 @@ namespace Aluma.API.Repositories
             //dtoArray = _mapper.Map<ClientConsentDto>(form);
 
             //return dtoArray;
+            
 
             foreach (ClientConsentDto consent in dtoArray)
             {
+                //if (consent.ConsentVersion > 0) consent.ConsentVersion += 1; else consent.ConsentVersion = 1;
+
                 var pModel = _mapper.Map<ClientConsentModel>(consent);
                 _context.ClientConsentModels.Add(pModel);
             }
@@ -671,6 +675,16 @@ namespace Aluma.API.Repositories
         {
             List<FinancialProviderModel> financialProvider = _context.FinancialProviders.ToList();
             List<FinancialProviderDto> dto = _mapper.Map<List<FinancialProviderDto>>(financialProvider);
+
+            return dto;
+        }
+
+        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId)
+        {
+            //This function will always get the latest version of the consented providers
+            List<ClientConsentModel> clientConsentedList = _context.ClientConsentModels.Where(u => u.ClientId == ClientId).ToList();
+            clientConsentedList = clientConsentedList.Where(u => u.ConsentVersion == clientConsentedList.Last().ConsentVersion).ToList();
+            List<ClientConsentDto> dto = _mapper.Map<List<ClientConsentDto>>(clientConsentedList);
 
             return dto;
         }

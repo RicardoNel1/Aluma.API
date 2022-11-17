@@ -50,5 +50,21 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, dto);
             }
         }
+
+        [HttpGet("client-consented-providers")]
+        public IActionResult GetClientConsentedProviders(int ClientId)
+        {
+            List<ClientConsentDto> dto = new();
+            try
+            {
+                dto = _repo.Client.GetClientConsentedProviders(ClientId);
+
+                return Ok(dto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, dto);
+            }
+        }
     }
 }
