@@ -14,7 +14,8 @@ namespace DataService.Model.Client
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int FinancialProviderId { get; set; }
+        public int ConsentVersion { get; set; }
         [NotMapped]
-        public bool isSelected { get; set; }
+        public bool isSelected { get; set; } = true;
     }
 }
