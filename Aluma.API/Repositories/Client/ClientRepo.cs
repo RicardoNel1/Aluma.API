@@ -74,7 +74,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (ClientDto dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -111,7 +115,11 @@ namespace Aluma.API.Repositories
             List<ClientDto> response = _mapper.Map<List<ClientDto>>(clients);
             foreach (var dto in response)
             {
-                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+                if (dto.User.MobileNumber.StartsWith("0"))
+                { dto.User.MobileNumber = dto.User.MobileNumber; }
+                else
+                    dto.User.MobileNumber = "0" + dto.User.MobileNumber;
+
                 if (dto.AdvisorId != null)
                 {
                     var advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.AdvisorId).First();
@@ -163,8 +171,10 @@ namespace Aluma.API.Repositories
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.Id == dto.Id).First();
             dto = _mapper.Map<ClientDto>(client);
 
-            dto.User.MobileNumber = "0" + dto.User.MobileNumber;
-            //dto.User.MobileNumber = dto.User.MobileNumber;
+            if (dto.User.MobileNumber.StartsWith("0"))
+            { dto.User.MobileNumber = dto.User.MobileNumber; }
+            else
+                dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
             if (dto.AdvisorId != null)
             {
@@ -191,7 +201,12 @@ namespace Aluma.API.Repositories
         {
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(c => c.Address).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).Where(c => c.UserId == userId).First();
             ClientDto response = _mapper.Map<ClientDto>(client);
-            response.User.MobileNumber = "0" + response.User.MobileNumber;
+
+            if (response.User.MobileNumber.StartsWith("0"))
+            { response.User.MobileNumber = response.User.MobileNumber; }
+            else
+                response.User.MobileNumber = "0" + response.User.MobileNumber;
+
             response.ApplicationCount = _context.Applications.Where(a => a.ClientId == response.Id).Count();
 
             response = CheckForDisclosures(response);
@@ -268,11 +283,11 @@ namespace Aluma.API.Repositories
             dto.ClientType = "Primary";
             //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);   
+            _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            if (client.User.RSAIdNumber != null) 
+            if (client.User.RSAIdNumber != null)
             {
                 IDVModel idv = CreateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -307,8 +322,8 @@ namespace Aluma.API.Repositories
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
-            ClientModel client = _mapper.Map<ClientModel>(dto); 
-            
+            ClientModel client = _mapper.Map<ClientModel>(dto);
+
             Boolean verifyID;
 
             if (user.RSAIdNumber != dto.User.RSAIdNumber)
@@ -326,9 +341,9 @@ namespace Aluma.API.Repositories
 
             //set client fields to be updated
             client.User = user;
-                       
 
-            if (verifyID) 
+
+            if (verifyID)
             {
                 IDVModel idv = UpdateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -377,7 +392,7 @@ namespace Aluma.API.Repositories
                     client.User.isIdVerified = true;
                     _context.Clients.Update(client);
                 }
-                    else client.User.isIdVerified = false;
+                else client.User.isIdVerified = false;
 
                 //    _context.IDV.Update(idv);
                 //}
@@ -392,7 +407,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-       
+
 
         public void GenerateClientDocuments(int clientId)
         {
@@ -502,7 +517,7 @@ namespace Aluma.API.Repositories
                 throw;
             }
         }
-        
+
         public async Task UploadOtherDocuments(byte[] fileData, string fileName, DataService.Enum.DocumentTypesEnum documentType, int clientId)
         {
             try
@@ -547,7 +562,7 @@ namespace Aluma.API.Repositories
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
-            if (results.Status == "Success")
+            if (results != null && results.Status == "Success")
             {
                 idv = _mapper.Map<IDVModel>(results.RealTimeResult);
                 idv.ClientId = dto.Id;
@@ -575,36 +590,36 @@ namespace Aluma.API.Repositories
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
-            if (results.Status == "Success")
+            if (results != null && results.Status == "Success")
             {
                 idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
                 if (idv == null)
                 {
                     idv = CreateIDV(dto);
                 }
-                else 
+                else
                 {
-                   IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                   var idvId = idv.Id;
+                    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                    var idvId = idv.Id;
 
-                   idv.TraceId = updatedIdv.TraceId;
-                   idv.IdNumber = updatedIdv.IdNumber;
-                   idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
-                   idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
-                   idv.IdCardInd = updatedIdv.IdCardInd;
-                   idv.IdBlocked = updatedIdv.IdBlocked;
-                   idv.Surname = updatedIdv.Surname;
-                   idv.Age = updatedIdv.Age;
-                   idv.Gender = updatedIdv.Gender;
-                   idv.Citizenship = updatedIdv.Citizenship;
-                   idv.CountryofBirth = updatedIdv.CountryofBirth;
-                   idv.DeceasedStatus = updatedIdv.DeceasedStatus;
-                   idv.DeceasedDate = updatedIdv.DeceasedDate;
-                   idv.DeathPlace = updatedIdv.DeathPlace;
-                   idv.CauseOfDeath = updatedIdv.CauseOfDeath;
-                   idv.MaritalStatus = updatedIdv.MaritalStatus;
-                   idv.MarriageDate = updatedIdv.MarriageDate;
-                    
+                    idv.TraceId = updatedIdv.TraceId;
+                    idv.IdNumber = updatedIdv.IdNumber;
+                    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
+                    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
+                    idv.IdCardInd = updatedIdv.IdCardInd;
+                    idv.IdBlocked = updatedIdv.IdBlocked;
+                    idv.Surname = updatedIdv.Surname;
+                    idv.Age = updatedIdv.Age;
+                    idv.Gender = updatedIdv.Gender;
+                    idv.Citizenship = updatedIdv.Citizenship;
+                    idv.CountryofBirth = updatedIdv.CountryofBirth;
+                    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
+                    idv.DeceasedDate = updatedIdv.DeceasedDate;
+                    idv.DeathPlace = updatedIdv.DeathPlace;
+                    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
+                    idv.MaritalStatus = updatedIdv.MaritalStatus;
+                    idv.MarriageDate = updatedIdv.MarriageDate;
+
                     //if (updatedIdv.Surname != "")                   
                     //{
                     //    client.CountryOfResidence = idv.CountryofBirth;
