@@ -4,14 +4,16 @@ using DataService.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataService.Migrations
 {
     [DbContext(typeof(AlumaDBContext))]
-    partial class AlumaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221111101946_ConsentForm")]
+    partial class ConsentForm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,10 +162,10 @@ namespace DataService.Migrations
                             City = "Pretoria",
                             ComplexName = "FinTech Campus",
                             Country = "South Africa",
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 807, DateTimeKind.Local).AddTicks(1057),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 789, DateTimeKind.Local).AddTicks(8646),
                             CreatedBy = 0,
                             InCareAddress = false,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 807, DateTimeKind.Local).AddTicks(1074),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 789, DateTimeKind.Local).AddTicks(8669),
                             ModifiedBy = 0,
                             PostalCode = "0081",
                             StreetName = "Cnr Illanga and Botterklapper",
@@ -179,10 +181,10 @@ namespace DataService.Migrations
                             City = "Johannesburg",
                             ComplexName = "Postnet Suite 33",
                             Country = "South Africa",
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 807, DateTimeKind.Local).AddTicks(3890),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 790, DateTimeKind.Local).AddTicks(1652),
                             CreatedBy = 0,
                             InCareAddress = false,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 807, DateTimeKind.Local).AddTicks(3894),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 790, DateTimeKind.Local).AddTicks(1657),
                             ModifiedBy = 0,
                             PostalCode = "2157",
                             StreetName = "Private Bag X 26",
@@ -459,10 +461,10 @@ namespace DataService.Migrations
                             AdviceShares = true,
                             AdviceStructuredDeposits = true,
                             AdviceWarrants = true,
-                            AppointmentDate = new DateTime(2021, 11, 16, 9, 45, 31, 771, DateTimeKind.Local).AddTicks(4828),
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 770, DateTimeKind.Local).AddTicks(4588),
+                            AppointmentDate = new DateTime(2021, 11, 11, 12, 19, 45, 754, DateTimeKind.Local).AddTicks(8030),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 753, DateTimeKind.Local).AddTicks(8530),
                             CreatedBy = 0,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 771, DateTimeKind.Local).AddTicks(3975),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 754, DateTimeKind.Local).AddTicks(7190),
                             ModifiedBy = 0,
                             SupervisedBonds = true,
                             SupervisedDebentures = true,
@@ -964,9 +966,6 @@ namespace DataService.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ClientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ConsentVersion")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
@@ -2327,12 +2326,12 @@ namespace DataService.Migrations
                         {
                             Id = 1,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 778, DateTimeKind.Local).AddTicks(8349),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(133),
                             CreatedBy = 0,
                             Description = "The Minimum Return Multi-Asset Global Note (the “Note”) is a five year 100% ZAR capital protected investment linked to the CITI Flexible Multi Asset V15% Index (the “Index”). The investment objective of Note is to provide no minimum ZAR return, with the maximum possible full uncapped participation in the Index, with a 100% ZAR capital protected investment, thus also providing full USD / ZAR return exposure. It is Aluma’s view that this investment could be suitable for investors who require exposure to a low risk USD Multi-Asset Balanced Portfolio and 100% ZAR capital protection.",
                             Institute = "Standard Bank",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 778, DateTimeKind.Local).AddTicks(8365),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(145),
                             ModifiedBy = 0,
                             Name = "Structured Note",
                             PaymentType = 0,
@@ -2343,12 +2342,12 @@ namespace DataService.Migrations
                         {
                             Id = 2,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1170),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2336),
                             CreatedBy = 0,
                             Description = "Our Local Share Portfolio is an investment product for discretionary money, which allows you to access to all Local Shares listed on the JSE as well as EFTs.It is subject to CGT, income tax on interest, dividends tax, and Real Estate Investment Trust (REIT) tax. Income tax is due whether interest is earned by your investment. A CGT event will occur when you do a withdrawal or a switch from an investment portfolio. A 20% withholdings tax on local dividends applies. We will deduct any dividend and REIT tax which you may owe from an income distribution before it’s invested into your investment account. Contributions, withdrawals and drawing a regular withdrawal\r\n                                are allowable at any point in time without incurring penalties.You may change,\r\n                                stop and resume your ad hoc or regular contributions at any time without incurring any penalties.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1177),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2341),
                             ModifiedBy = 0,
                             Name = "Local Share Portfolio",
                             PaymentType = 0,
@@ -2359,12 +2358,12 @@ namespace DataService.Migrations
                         {
                             Id = 3,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1182),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2347),
                             CreatedBy = 0,
                             Description = "Our International Share Portfolio is an investment product for discretionary money, which allows you to access to all International Shares listed on International Stock exchanges as well as ETFs. It is subject to CGT, income tax on interest, dividends tax, and Real Estate Investment Trust (REIT) tax. Income tax is due whenever interest is earned by your investment. A CGT event will occur when you do a withdrawal or a switch from an investment portfolio. A 20% withholdings tax on local dividends applies. We will deduct any dividend and REIT tax which you may owe from an income distribution before it’s invested into your investment account Contributions, withdrawals and drawing a regular withdrawal are allowable at any point in time without incurring penalties. You may change, stop and resume your ad hoc or regular contributions at any time without incurring any penalties.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1183),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2348),
                             ModifiedBy = 0,
                             Name = "International Share Portfolio",
                             PaymentType = 1,
@@ -2375,12 +2374,12 @@ namespace DataService.Migrations
                         {
                             Id = 4,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1186),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2351),
                             CreatedBy = 0,
                             Description = "Trade the JSE and International Equities, CFDs, Indices, ETFs, Forex & Commodities from a single trading account at very competitive rates. Aluma clients receive cost- effective trading via a Multi Asset Direct Market Access (DMA) class-leading trading platform. Clients have the option to manage their own trading account and execute their own trades, or to have their account managed on a discretionary basis.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1187),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2352),
                             ModifiedBy = 0,
                             Name = "Self Managed Account",
                             PaymentType = 1,
@@ -2391,12 +2390,12 @@ namespace DataService.Migrations
                         {
                             Id = 5,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1190),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2354),
                             CreatedBy = 0,
                             Description = "Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.\r\n                                The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate\r\n                                general partner of the Partnership, to reject any application in whole or in part.",
                             Institute = "Aluma Capital",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1191),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2355),
                             ModifiedBy = 0,
                             Name = "Private Equity Fund - Growth",
                             PaymentType = 0,
@@ -2407,12 +2406,12 @@ namespace DataService.Migrations
                         {
                             Id = 6,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1196),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2360),
                             CreatedBy = 0,
                             Description = "Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.\r\n                                The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate\r\n                                general partner of the Partnership, to reject any application in whole or in part.",
                             Institute = "Aluma Capital",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1197),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2361),
                             ModifiedBy = 0,
                             Name = "Private Equity Fund - Income",
                             PaymentType = 0,
@@ -2423,12 +2422,12 @@ namespace DataService.Migrations
                         {
                             Id = 7,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1200),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2364),
                             CreatedBy = 0,
                             Description = " ",
                             Institute = "Vanguard",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 779, DateTimeKind.Local).AddTicks(1201),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 762, DateTimeKind.Local).AddTicks(2365),
                             ModifiedBy = 0,
                             Name = "Fixed Income",
                             PaymentType = 0,
@@ -3411,15 +3410,15 @@ namespace DataService.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2022, 11, 16, 9, 45, 31, 794, DateTimeKind.Local).AddTicks(5273),
+                            Created = new DateTime(2022, 11, 11, 12, 19, 45, 776, DateTimeKind.Local).AddTicks(8963),
                             CreatedBy = 0,
                             Email = "dev@aluma.co.za",
                             FirstName = "Dev",
                             LastName = "Tester",
                             MobileNumber = "0843334444",
-                            Modified = new DateTime(2022, 11, 16, 9, 45, 31, 794, DateTimeKind.Local).AddTicks(5293),
+                            Modified = new DateTime(2022, 11, 11, 12, 19, 45, 776, DateTimeKind.Local).AddTicks(8981),
                             ModifiedBy = 0,
-                            Password = "9944.BMaqFVPPai6iYezrHG1cLQ==.8UJolLvtj8gHpRjNMZwHBBa9qrgrVnVidM3YeuQM3uI=",
+                            Password = "9960.ar3FaNn47YCNCHWQJJT89Q==.c51UbBGWyMnySiRIDwAYiS1hTBujf2bM8tqeT7Jzf3E=",
                             RSAIdNumber = "9012245555088",
                             RegistrationVerifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = 0,
