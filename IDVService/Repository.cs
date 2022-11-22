@@ -68,7 +68,7 @@ namespace IDVService
 
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Authorization", $"Basic ${token}");
+            request.AddHeader("Authorization", $"Basic {token}");
 
             IDVRequestDto _requestDto = new()
             {
