@@ -651,31 +651,13 @@ namespace Aluma.API.Repositories
 
         public async Task<ClientConsentDto> SaveConsentForm(ClientConsentDto dto)
         {
-            //clientModel = _context.Clients.Include(i => i.Advisor).Where(c => c.UserId == dtoArray.First().ClientId).First();
-            
             ClientConsentModel clientConsentModel = _mapper.Map<ClientConsentModel>(dto);
             _context.ClientConsentModels.Add(clientConsentModel);
             _context.SaveChanges();
 
-            //int ClientConsentId = clientConsentModel.Id;
-
-            //foreach (ClientConsentProviderDto consent in dto)
-            //{
-            //    //if (consent.ConsentVersion > 0) consent.ConsentVersion += 1; else consent.ConsentVersion = 1;
-
-            //    consent.ClientConsentId = ClientConsentId;
-
-            //    var pModel = _mapper.Map<ClientConsentProvidersModel>(consent);
-            //    _context.ClientConsentProviders.Add(pModel);
-            //}
-            //_context.SaveChanges();
-
             ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).SingleOrDefault(c => c.Id == dto.ClientId);
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
 
-            //client.ClientConsents = (IList<ClientConsentModel>) GetClientConsentedProviders(client.Id);
-
-            //Call the disclosure repo 
             DisclosureRepo _disclosureRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
             await _disclosureRepo.GenerateClientConsent(client, advisor);
 
@@ -692,12 +674,8 @@ namespace Aluma.API.Repositories
 
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
-            //This function will always get the latest version of the consented providers
             ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
 
-            //clientConsentedList = _context.Client
-
-            //clientConsentedList = clientConsentedList.Where(u => u.ConsentVersion == clientConsentedList.Last().ConsentVersion).ToList();
             List<ClientConsentProviderDto> dto = _mapper.Map<List<ClientConsentProviderDto>>(clientConsentedList.ConsentedProviders);
 
             return dto;
