@@ -13,10 +13,5 @@ namespace DataService.Dto.Client
         public int Id { get; set; }
         public int ClientId { get; set; }
         public List<ClientConsentProviderDto> ConsentedProviders { get; set; }
-
-        //public int FinancialProviderId { get; set; }
-        //public int ConsentVersion { get; set; }
-        //public bool IsSelected { get; set; } = true;
-        //public DateTime Created { get; set; }
     }
 }
