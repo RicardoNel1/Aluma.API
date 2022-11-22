@@ -613,6 +613,7 @@ namespace Aluma.API.Repositories
                    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
                    idv.IdCardInd = updatedIdv.IdCardInd;
                    idv.IdBlocked = updatedIdv.IdBlocked;
+                   idv.FirstName = updatedIdv.FirstName;
                    idv.Surname = updatedIdv.Surname;
                    idv.Age = updatedIdv.Age;
                    idv.Gender = updatedIdv.Gender;
