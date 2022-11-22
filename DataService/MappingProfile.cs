@@ -58,6 +58,10 @@ namespace DataService
             CreateMap<ClientConsentModel, ClientConsentDto>()
                 .ReverseMap();
 
+            //update
+            CreateMap<ClientConsentProvidersModel, ClientConsentProviderDto>()
+               .ReverseMap();
+
             CreateMap<FinancialProviderModel, FinancialProviderDto>()
                 .ReverseMap();
 

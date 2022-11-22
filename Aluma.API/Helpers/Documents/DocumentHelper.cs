@@ -160,7 +160,7 @@ namespace Aluma.API.Helpers
             return file;
         }
 
-        public async Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null, string filename="")
+        public async Task SaveDocument(byte[] fileBytes, DocumentTypesEnum fileType, UserModel user, ApplicationModel application = null, string filename = "")
         {
             await UploadFile(fileBytes, fileType, user, application, filename);
         }
@@ -373,31 +373,16 @@ namespace Aluma.API.Helpers
                 ApplicationDocumentModel adm = new();
                 var documentExist = _context.ApplicationDocuments.Where(d => d.Name == $"{filename}{DocumentNames[fileType]}" && d.ApplicationId == application.Id);
 
-                //if (documentExist.Any())
-                //{
-                //    adm = documentExist.First();
-                //    if (adm.URL != fileDirectory)
-                //    {
-                //        adm.URL = fileDirectory;
-                //        adm.Modified = DateTime.UtcNow;
-                //        adm.Size = fileBytes.Length;
-                //        _context.ApplicationDocuments.Update(adm);
-                //    }
-                //}
-                //else
-                //{
-                    adm = new ApplicationDocumentModel()
-                    {
-                        DocumentType = fileType,
-                        FileType = FileTypesEnum.Pdf,
-                        Name = $"{filename}{DocumentNames[fileType]}",
-                        URL = fileDirectory,
-                        ApplicationId = application.Id,
-                        Size = fileBytes.Length,
-                    };
-                    _context.ApplicationDocuments.Add(adm);
-                //}
-
+                adm = new ApplicationDocumentModel()
+                {
+                    DocumentType = fileType,
+                    FileType = FileTypesEnum.Pdf,
+                    Name = $"{filename}{DocumentNames[fileType]}",
+                    URL = fileDirectory,
+                    ApplicationId = application.Id,
+                    Size = fileBytes.Length,
+                };
+                _context.ApplicationDocuments.Add(adm);
             }
             else
             {

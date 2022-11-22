@@ -1,4 +1,5 @@
 ﻿using DataService.Model;
+using DataService.Model.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,6 @@ namespace DataService.Dto.Client
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public int FinancialProviderId { get; set; }
-        public int ConsentVersion { get; set; }
-        public bool IsSelected { get; set; } = true;
-        public DateTime Created { get; set; }
+        public List<ClientConsentProviderDto> ConsentedProviders { get; set; }
     }
 }

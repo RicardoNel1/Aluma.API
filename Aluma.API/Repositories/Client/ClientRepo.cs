@@ -15,8 +15,10 @@ using Microsoft.Extensions.Configuration;
 using StringHasher;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Aluma.API.Repositories
 {
@@ -30,9 +32,9 @@ namespace Aluma.API.Repositories
         public List<ClientDto> GetClientsByAdvisor(int advisorId);
 
         public bool DeleteClient(ClientDto dto);
-        public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dto);
+        Task<ClientConsentDto> SaveConsentForm(ClientConsentDto dto);
         public List<FinancialProviderDto> GetFinancialProviders();
-        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId);
+        public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId);
 
         bool DoesClientExist(RegistrationDto dto);
         bool DoesClientExist(ClientDto dto);
@@ -81,7 +83,7 @@ namespace Aluma.API.Repositories
             {
                 if (dto.User.MobileNumber.StartsWith("0"))
                 { dto.User.MobileNumber = dto.User.MobileNumber; }
-                else 
+                else
                     dto.User.MobileNumber = "0" + dto.User.MobileNumber;
 
                 if (dto.AdvisorId != null)
@@ -288,11 +290,11 @@ namespace Aluma.API.Repositories
             dto.ClientType = "Primary";
             //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);   
+            _context.Clients.Add(client);
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            if (client.User.RSAIdNumber != null) 
+            if (client.User.RSAIdNumber != null)
             {
                 IDVModel idv = CreateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -327,8 +329,8 @@ namespace Aluma.API.Repositories
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
-            ClientModel client = _mapper.Map<ClientModel>(dto); 
-            
+            ClientModel client = _mapper.Map<ClientModel>(dto);
+
             Boolean verifyID;
 
             if (user.RSAIdNumber != dto.User.RSAIdNumber)
@@ -346,9 +348,9 @@ namespace Aluma.API.Repositories
 
             //set client fields to be updated
             client.User = user;
-                       
 
-            if (verifyID) 
+
+            if (verifyID)
             {
                 IDVModel idv = UpdateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -397,7 +399,7 @@ namespace Aluma.API.Repositories
                     client.User.isIdVerified = true;
                     _context.Clients.Update(client);
                 }
-                    else client.User.isIdVerified = false;
+                else client.User.isIdVerified = false;
 
                 //    _context.IDV.Update(idv);
                 //}
@@ -412,7 +414,7 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-       
+
 
         public void GenerateClientDocuments(int clientId)
         {
@@ -522,7 +524,7 @@ namespace Aluma.API.Repositories
                 throw;
             }
         }
-        
+
         public async Task UploadOtherDocuments(byte[] fileData, string fileName, DataService.Enum.DocumentTypesEnum documentType, int clientId)
         {
             try
@@ -602,10 +604,10 @@ namespace Aluma.API.Repositories
                 {
                     idv = CreateIDV(dto);
                 }
-                else 
+                else
                 {
-                   IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                   var idvId = idv.Id;
+                    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
+                    var idvId = idv.Id;
 
                    idv.TraceId = updatedIdv.TraceId;
                    idv.IdNumber = updatedIdv.IdNumber;
@@ -648,28 +650,19 @@ namespace Aluma.API.Repositories
             return idv;
         }
 
-        public List<ClientConsentDto> SaveConsentForm(List<ClientConsentDto> dtoArray)
+        public async Task<ClientConsentDto> SaveConsentForm(ClientConsentDto dto)
         {
-            //ClientConsentModel form = _mapper.Map<ClientConsentModel>(dtoArray);
-
-            //_context.ClientConsentModels.Add(form);
-            //_context.SaveChanges();
-
-            //dtoArray = _mapper.Map<ClientConsentDto>(form);
-
-            //return dtoArray;
-            
-
-            foreach (ClientConsentDto consent in dtoArray)
-            {
-                //if (consent.ConsentVersion > 0) consent.ConsentVersion += 1; else consent.ConsentVersion = 1;
-
-                var pModel = _mapper.Map<ClientConsentModel>(consent);
-                _context.ClientConsentModels.Add(pModel);
-            }
+            ClientConsentModel clientConsentModel = _mapper.Map<ClientConsentModel>(dto);
+            _context.ClientConsentModels.Add(clientConsentModel);
             _context.SaveChanges();
 
-            return dtoArray;
+            ClientModel client = _context.Clients.Include(c => c.User).ThenInclude(u => u.Address).Include(c => c.TaxResidency).Include(c => c.BankDetails).Include(c => c.EmploymentDetails).Include(c => c.MaritalDetails).SingleOrDefault(c => c.Id == dto.ClientId);
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).ThenInclude(u => u.Address).SingleOrDefault(ad => ad.Id == client.AdvisorId);
+
+            DisclosureRepo _disclosureRepo = new DisclosureRepo(_context, _host, _config, _mapper, _fileStorage, null);
+            await _disclosureRepo.GenerateClientConsent(client, advisor);
+
+            return dto;
         }
 
         public List<FinancialProviderDto> GetFinancialProviders()
@@ -680,12 +673,11 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public List<ClientConsentDto> GetClientConsentedProviders(int ClientId)
+        public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
-            //This function will always get the latest version of the consented providers
-            List<ClientConsentModel> clientConsentedList = _context.ClientConsentModels.Where(u => u.ClientId == ClientId).ToList();
-            clientConsentedList = clientConsentedList.Where(u => u.ConsentVersion == clientConsentedList.Last().ConsentVersion).ToList();
-            List<ClientConsentDto> dto = _mapper.Map<List<ClientConsentDto>>(clientConsentedList);
+            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
+
+            List<ClientConsentProviderDto> dto = _mapper.Map<List<ClientConsentProviderDto>>(clientConsentedList.ConsentedProviders);
 
             return dto;
         }
