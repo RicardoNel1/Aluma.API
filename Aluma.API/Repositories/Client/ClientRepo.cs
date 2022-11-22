@@ -569,7 +569,7 @@ namespace Aluma.API.Repositories
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
-            if (results.Status == "Success")
+            if (results != null && results.Status == "Success")
             {
                 idv = _mapper.Map<IDVModel>(results.RealTimeResult);
                 idv.ClientId = dto.Id;
@@ -597,7 +597,7 @@ namespace Aluma.API.Repositories
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
             var results = _idv.StartIDVerification(dto, token);
-            if (results.Status == "Success")
+            if (results != null && results.Status == "Success")
             {
                 idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
                 if (idv == null)
