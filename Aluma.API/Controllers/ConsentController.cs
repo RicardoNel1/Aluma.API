@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
 {
@@ -22,12 +23,12 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public IActionResult SaveConsentForm([FromBody] List<ClientConsentDto> dtoArray)
+        public async Task<IActionResult> SaveConsentFormAsync([FromBody] ClientConsentDto dto)
         {
             try
             {
-                _repo.Client.SaveConsentForm(dtoArray);
-                return Ok(dtoArray);
+                await _repo.Client.SaveConsentForm(dto);
+                return Ok(dto);
             }
             catch (Exception e)
             {
@@ -54,7 +55,7 @@ namespace Aluma.API.Controllers
         [HttpGet("client-consented-providers")]
         public IActionResult GetClientConsentedProviders(int ClientId)
         {
-            List<ClientConsentDto> dto = new();
+            List<ClientConsentProviderDto> dto = new();
             try
             {
                 dto = _repo.Client.GetClientConsentedProviders(ClientId);

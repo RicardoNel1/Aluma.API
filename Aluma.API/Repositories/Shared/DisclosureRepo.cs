@@ -3,8 +3,10 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Dto.Client;
 using DataService.Enum;
 using DataService.Model;
+using DataService.Model.Client;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -330,6 +332,10 @@ namespace Aluma.API.Repositories
 
         public async Task GenerateClientConsent(ClientModel client, AdvisorModel advisor)
         {
+            ClientRepo clientRepo = new ClientRepo(_context, _host, _config, _mapper, _fileStorage);
+
+            List<ClientConsentProviderDto> clientConsentProviders = clientRepo.GetClientConsentedProviders(client.Id);
+
             Dictionary<string, string> d = new();
 
             d["fullName"] = $"{client.User.FirstName} {client.User.LastName}";
@@ -338,8 +344,18 @@ namespace Aluma.API.Repositories
 
             d["advisorName"] = $"{advisor.User.FirstName} {advisor.User.LastName}";
 
-            d["listedAbove"] = "x";
+            List<FinancialProviderModel> financialProviders = _context.FinancialProviders.ToList();
+            foreach (var consent in clientConsentProviders)
+            {
+                var financialProviderPdfName = financialProviders.SingleOrDefault(i => i.Id == consent.FinancialProviderId).Name.Replace(" ", String.Empty).ToString().ToLower();
+                //financialProviderPdfName = financialProviderPdfName.Substring(0, 1).ToLower() + financialProviderPdfName.Substring(1);
+                d[financialProviderPdfName] = "x";
+            }
 
+            if (clientConsentProviders.Count == financialProviders.Count)
+            {
+                d["listedAbove"] = "x";
+            }
 
             d["signAt"] = client.User.Address.First().City;
 
@@ -347,15 +363,15 @@ namespace Aluma.API.Repositories
             d["signedOnMonth"] = DateTime.UtcNow.Month.ToString();
             d["signedOnYear"] = DateTime.UtcNow.Year.ToString().Substring(2, 2);
 
-            d["clientContact"] = "Self";
+            d["clientContact"] = client.User.MobileNumber;
 
             if (client.isSmoker)
                 d["smokerTrue"] = "x";
             else
                 d["smokerFalse"] = "x";
 
-            if (client.Lead.LeadType == LeadTypesEnum.Direct)
-                d["leadType"] = "x";
+            //if (client.Lead.LeadType == LeadTypesEnum.Direct)
+            //    d["leadType"] = "x";
 
             if (client.Education != null)
             {
