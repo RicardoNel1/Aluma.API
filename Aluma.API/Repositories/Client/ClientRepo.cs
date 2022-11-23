@@ -41,7 +41,7 @@ namespace Aluma.API.Repositories
         bool IsAccountActive(ClientDto dto);
 
         Task<ClientDto> CreateClient(ClientDto dto);
-
+       
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
@@ -294,7 +294,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            if (client.User.RSAIdNumber != null)
+            if (client.User.RSAIdNumber != null && !client.User.isIdVerified)
             {
                 IDVModel idv = CreateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -564,7 +564,7 @@ namespace Aluma.API.Repositories
 
         public IDVModel CreateIDV(ClientDto dto)
         {
-            ClientModel client = _mapper.Map<ClientModel>(dto);
+            //ClientModel client = _mapper.Map<ClientModel>(dto);
             IDVServiceRepo _idv = new IDVServiceRepo();
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
