@@ -41,7 +41,7 @@ namespace Aluma.API.Repositories
         bool IsAccountActive(ClientDto dto);
 
         Task<ClientDto> CreateClient(ClientDto dto);
-
+       
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
@@ -294,7 +294,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            if (client.User.RSAIdNumber != null)
+            if (client.User.RSAIdNumber != null && !client.User.isIdVerified)
             {
                 IDVModel idv = CreateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -325,6 +325,8 @@ namespace Aluma.API.Repositories
             //await _ms.SendClientWelcomeEmail(client);
             return dto;
         }
+
+       
 
         public ClientDto UpdateClient(ClientDto dto)
         {
@@ -564,7 +566,7 @@ namespace Aluma.API.Repositories
 
         public IDVModel CreateIDV(ClientDto dto)
         {
-            ClientModel client = _mapper.Map<ClientModel>(dto);
+            //ClientModel client = _mapper.Map<ClientModel>(dto);
             IDVServiceRepo _idv = new IDVServiceRepo();
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
@@ -589,6 +591,30 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
             }
             return idv;
+        }
+
+        public RealtimeResult CreateIDV(RealtimeResult dto, int clientId)
+        {
+            //ClientModel client = _mapper.Map<ClientModel>(dto);
+            IDVModel idv;// = new IDVModel();            
+            idv = _mapper.Map<IDVModel>(dto);
+            idv.ClientId = clientId;
+
+                //if (idv.Surname != "")
+                //{
+                //    client.CountryOfResidence = idv.CountryofBirth;
+                //    client.CountryOfBirth = idv.CountryofBirth;
+                //    client.Nationality = idv.Citizenship;
+                //    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
+                //    client.User.isIdVerified = true;
+                //}
+                //else client.User.isIdVerified = false;
+
+            _context.IDV.Add(idv);
+
+            _context.SaveChanges();
+            
+            return dto;
         }
         public IDVModel UpdateIDV(ClientDto dto)
         {

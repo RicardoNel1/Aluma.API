@@ -262,6 +262,24 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("getClientIDVDetails"), AllowAnonymous]
+        public IActionResult GetIDV(string rsaIdNumber)
+        {
+            try
+            {
+                var token = _repo.IDVRepo.StartAuthentication();
+                IDVRealTimeResponseDto idv = _repo.IDVRepo.StartIDVerification(rsaIdNumber, token);
+
+                return Ok(idv.RealTimeResult);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+               
+
+
         //[HttpGet("test"), AllowAnonymous]
         //public IActionResult TestRepo()
         //{

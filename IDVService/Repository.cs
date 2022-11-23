@@ -17,6 +17,8 @@ namespace IDVService
 
         IDVRealTimeResponseDto StartIDVerification(ClientDto dto, string token);
 
+        IDVRealTimeResponseDto StartIDVerification(string rsaIdNumber, string token);
+
         //BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
 
         //VerificationStatusResponse GetBankValidationStatus(string jobId);
@@ -86,6 +88,34 @@ namespace IDVService
 
             IDVRealTimeResponseDto responseData = JsonConvert.DeserializeObject<IDVRealTimeResponseDto>(response.Content);
                                     
+            return responseData;
+        }
+
+        public IDVRealTimeResponseDto StartIDVerification(string rsaIdNumber, string token)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}/api/PBSAIDV/realtime");
+
+
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Authorization", $"Basic {token}");
+
+            IDVRequestDto _requestDto = new()
+            {
+                IdNumber = rsaIdNumber,
+                YourReference = "ALM"
+
+            };
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(_requestDto), ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+
+            //if (!response.IsSuccessful)
+            //    throw new HttpRequestException("Error while trying to start ID Verification");
+
+            IDVRealTimeResponseDto responseData = JsonConvert.DeserializeObject<IDVRealTimeResponseDto>(response.Content);
+
             return responseData;
         }
     }
