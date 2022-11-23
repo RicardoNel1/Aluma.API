@@ -326,8 +326,6 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-       
-
         public ClientDto UpdateClient(ClientDto dto)
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
@@ -591,30 +589,6 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
             }
             return idv;
-        }
-
-        public RealtimeResult CreateIDV(RealtimeResult dto, int clientId)
-        {
-            //ClientModel client = _mapper.Map<ClientModel>(dto);
-            IDVModel idv;// = new IDVModel();            
-            idv = _mapper.Map<IDVModel>(dto);
-            idv.ClientId = clientId;
-
-                //if (idv.Surname != "")
-                //{
-                //    client.CountryOfResidence = idv.CountryofBirth;
-                //    client.CountryOfBirth = idv.CountryofBirth;
-                //    client.Nationality = idv.Citizenship;
-                //    client.MaritalDetails.DateOfMarriage = idv.MarriageDate;
-                //    client.User.isIdVerified = true;
-                //}
-                //else client.User.isIdVerified = false;
-
-            _context.IDV.Add(idv);
-
-            _context.SaveChanges();
-            
-            return dto;
         }
         public IDVModel UpdateIDV(ClientDto dto)
         {
