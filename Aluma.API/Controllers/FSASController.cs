@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Controllers
@@ -22,29 +23,13 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> SubmitInvestments(AdvisorDto dto)
+        public async Task<IActionResult> SubmitCCP(ClientDto dto)
         {
             try
             {
-                AuthResponseDto response = new();
-                bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
-                if (advisorExists)
-                {
-                    return BadRequest("Advisor Exists");
-                }
-                else
-                {
-                    bool checkID = _repo.User.ValidateID(dto.User.RSAIdNumber);
-                    // check if valid id number has been entered
-                    if (checkID == false)
-                    {
-                        response.Message = "InvalidID";
-                        return StatusCode(403, response);
-                    }
-
-                    var advisor = await _repo.Advisor.CreateAdvisor(dto);
-                    return Ok(advisor);
-                }
+                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto);
+                return Ok(ccp);
+                
             }
             catch (Exception e)
             {

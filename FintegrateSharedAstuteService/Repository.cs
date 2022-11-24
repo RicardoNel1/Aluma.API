@@ -1,24 +1,30 @@
-﻿using DataService.Dto;
+﻿using DataService.Context;
+using DataService.Dto;
+using DataService.Model.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 
 namespace FintegrateSharedAstuteService
 {
     public interface IFSASRepo
     {
-        SubmitCCPResponseDto SubmitClientCCPRequest(SubmitCCPRequestDto request);
+        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto);
 
         ClientCCPResponseDto GetClientCCP(int clientId);
     }
     public class FSASRepo : IFSASRepo
     {
         public readonly FSASConfigDto _settings;
+        private readonly AlumaDBContext _context;
 
-        public FSASRepo()
+        public FSASRepo(AlumaDBContext databaseContext)
         {
             var config = new ConfigurationBuilder();
             // Get current directory will return the root dir of Base app as that is the running application
@@ -26,6 +32,7 @@ namespace FintegrateSharedAstuteService
             config.AddJsonFile(path, false);
             var root = config.Build();
             _settings = root.GetSection("FSAS").Get<FSASConfigDto>();
+            _context = databaseContext;
         }
 
         public ClientCCPResponseDto GetClientCCP(int clientId)
@@ -48,8 +55,28 @@ namespace FintegrateSharedAstuteService
             return responseData;
         }
 
-        public SubmitCCPResponseDto SubmitClientCCPRequest(SubmitCCPRequestDto requestDto)
+        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto) //****
         {
+            SubmitCCPRequestDto requestDto = new();
+
+
+            requestDto.Client.FirstName = dto.User.FirstName;
+            requestDto.Client.LastName = dto.User.LastName;
+            requestDto.Client.IdNumber = dto.User.RSAIdNumber;
+            requestDto.Client.Email = dto.User.Email;
+            requestDto.Client.IdType = "RSAId";
+            requestDto.Client.MobileNumber = dto.User.MobileNumber;
+            requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
+
+            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == dto.Id).OrderByDescending(c => c.Created).First();
+            //var ConsentedProviders = _context.FinancialProviders.Include(a => a.Name).Where(u => u. == clientConsentedList.ConsentedProviders.ToList)
+
+
+
+
+
+
+
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/submitCCP");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
