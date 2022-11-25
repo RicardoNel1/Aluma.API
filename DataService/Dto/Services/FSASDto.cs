@@ -79,6 +79,13 @@ namespace DataService.Dto
 
     }
 
+    public class GetCCPRequestDto
+    {
+        public int ClientId { get; set; }
+        public AdvisorCredentials AstuteCredentials { get; set; }
+
+    }
+
     public class AdvisorCredentials
     {
         public string UserName { get; set; }

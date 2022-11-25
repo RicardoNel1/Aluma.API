@@ -48,7 +48,7 @@ namespace Aluma.API.Controllers
 
             try
             {
-                var ccp = _repo.FSASRepo.GetClientCCP(clientId);
+                var ccp = _repo.FSASRepo.GetClientCCP(clientId, advisorUserId);
 
                 return Ok(ccp);
             }

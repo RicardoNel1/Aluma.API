@@ -21,7 +21,7 @@ namespace FintegrateSharedAstuteService
     {
         SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, ClaimsDto advisorCredentials);
 
-        ClientCCPResponseDto GetClientCCP(int clientId);
+        ClientCCPResponseDto GetClientCCP(int clientId, ClaimsDto advisorCredentials);
     }
     public class FSASRepo : IFSASRepo
     {
@@ -38,18 +38,26 @@ namespace FintegrateSharedAstuteService
             var root = config.Build();
             _settings = root.GetSection("FSAS").Get<FSASConfigDto>();
             _context = databaseContext;
+            _mapper = mapper;
         }
 
-        public ClientCCPResponseDto GetClientCCP(int clientId)
+        public ClientCCPResponseDto GetClientCCP(int clientId, ClaimsDto advisorCredentials)
         {
+            AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
+
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/retrieveCCP");
             client.Timeout = -1;
-            var request = new RestRequest(Method.GET);
+            var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
             request.AddHeader("Content-Type", "multipart/form-data");
             request.AlwaysMultipartFormData = true;
             //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
-            request.AddParameter("systemRef", clientId.ToString());
+            GetCCPRequestDto requestDto = new();
+            requestDto.ClientId = clientId;
+            requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
+            request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
+
+            //AddParameter("systemRef", clientId.ToString());
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
