@@ -41,7 +41,7 @@ namespace Aluma.API.Repositories
         bool IsAccountActive(ClientDto dto);
 
         Task<ClientDto> CreateClient(ClientDto dto);
-
+       
         ClientDto UpdateClient(ClientDto dto);
 
         void GenerateClientDocuments(int clientId);
@@ -294,7 +294,7 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
             dto = _mapper.Map<ClientDto>(client);
 
-            if (client.User.RSAIdNumber != null)
+            if (client.User.RSAIdNumber != null && !client.User.isIdVerified)
             {
                 IDVModel idv = CreateIDV(dto);
                 //IDVServiceRepo _idv = new IDVServiceRepo();
@@ -564,7 +564,7 @@ namespace Aluma.API.Repositories
 
         public IDVModel CreateIDV(ClientDto dto)
         {
-            ClientModel client = _mapper.Map<ClientModel>(dto);
+            //ClientModel client = _mapper.Map<ClientModel>(dto);
             IDVServiceRepo _idv = new IDVServiceRepo();
             IDVModel idv = new IDVModel();
             var token = _idv.StartAuthentication();
@@ -609,24 +609,25 @@ namespace Aluma.API.Repositories
                     IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
                     var idvId = idv.Id;
 
-                    idv.TraceId = updatedIdv.TraceId;
-                    idv.IdNumber = updatedIdv.IdNumber;
-                    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
-                    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
-                    idv.IdCardInd = updatedIdv.IdCardInd;
-                    idv.IdBlocked = updatedIdv.IdBlocked;
-                    idv.Surname = updatedIdv.Surname;
-                    idv.Age = updatedIdv.Age;
-                    idv.Gender = updatedIdv.Gender;
-                    idv.Citizenship = updatedIdv.Citizenship;
-                    idv.CountryofBirth = updatedIdv.CountryofBirth;
-                    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
-                    idv.DeceasedDate = updatedIdv.DeceasedDate;
-                    idv.DeathPlace = updatedIdv.DeathPlace;
-                    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
-                    idv.MaritalStatus = updatedIdv.MaritalStatus;
-                    idv.MarriageDate = updatedIdv.MarriageDate;
-
+                   idv.TraceId = updatedIdv.TraceId;
+                   idv.IdNumber = updatedIdv.IdNumber;
+                   idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
+                   idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
+                   idv.IdCardInd = updatedIdv.IdCardInd;
+                   idv.IdBlocked = updatedIdv.IdBlocked;
+                   idv.FirstName = updatedIdv.FirstName;
+                   idv.Surname = updatedIdv.Surname;
+                   idv.Age = updatedIdv.Age;
+                   idv.Gender = updatedIdv.Gender;
+                   idv.Citizenship = updatedIdv.Citizenship;
+                   idv.CountryofBirth = updatedIdv.CountryofBirth;
+                   idv.DeceasedStatus = updatedIdv.DeceasedStatus;
+                   idv.DeceasedDate = updatedIdv.DeceasedDate;
+                   idv.DeathPlace = updatedIdv.DeathPlace;
+                   idv.CauseOfDeath = updatedIdv.CauseOfDeath;
+                   idv.MaritalStatus = updatedIdv.MaritalStatus;
+                   idv.MarriageDate = updatedIdv.MarriageDate;
+                    
                     //if (updatedIdv.Surname != "")                   
                     //{
                     //    client.CountryOfResidence = idv.CountryofBirth;

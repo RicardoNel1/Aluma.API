@@ -54,11 +54,13 @@ namespace DataService
             //Client
             CreateMap<EmploymentDetailsModel, EmploymentDetailsDto>()
                 .ReverseMap(); 
+
             CreateMap<MaritalDetailsModel, MaritalDetailsDto>()
                  .ReverseMap();
 
             CreateMap<ClientConsentModel, ClientConsentDto>()
                 .ReverseMap();
+
 
             CreateMap<ClientConsentProvidersModel, ClientConsentProviderDto>()
                .ReverseMap();
