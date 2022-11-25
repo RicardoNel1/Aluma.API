@@ -13,10 +13,10 @@ namespace DataService.Dto
 
     public class SubmitCCPResponseDto
     {
-        public string BaseUrl { get; set; }
-        public string Authorization { get; set; }
-        public string Memberkey { get; set; }
-        public string Password { get; set; }
+        public string SystemReference { get; set; }
+        public DateTime TimeRequested { get; set; }
+        public Guid AstuteReference { get; set; }
+        public string AstuteResponseStatus { get; set; }
     }
 
     public class ClientCCPResponseDto

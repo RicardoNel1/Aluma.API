@@ -408,7 +408,7 @@ namespace Aluma.API.RepoWrapper
 
         public IFSASRepo FSASRepo
         {
-            get { return _fsas == null ? new FSASRepo() : _fsas; }
+            get { return _fsas == null ? new FSASRepo(_dbContext) : _fsas; }
         }
         
         public IIDVServiceRepo IDVRepo
