@@ -213,17 +213,14 @@ namespace Aluma.API.Repositories
             try
             {
                 StringHasherRepo str = new();
-                UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
+                //UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
 
                 //Create Advisor
                 AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
-                advisorAstute.Advisor = _context.Advisors.Where(a => a.UserId == dto.AdvisorId).First();
+                advisorAstute.Advisor = _context.Advisors.Where(a => a.Id == dto.AdvisorId).First();
                 advisorAstute.Password = str.CreateHash("Aluma" + dto.Password);
-                _context.AdvisorsAstute.Add(advisorAstute);
+                _context.AdvisorsAstute.Update(advisorAstute);
                 _context.SaveChanges();
-
-                //Done
-                await _ms.SendAdvisorWelcomeEmail(advisorAstute.Advisor);
 
                 return _mapper.Map<AdvisorAstuteDto>(advisorAstute);
             }
