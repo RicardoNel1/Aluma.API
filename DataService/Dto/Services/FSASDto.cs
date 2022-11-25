@@ -74,7 +74,15 @@ namespace DataService.Dto
     public class SubmitCCPRequestDto
     {
         public RequestClientDetails Client { get; set; }
+        public AdvisorCredentials AstuteCredentials{ get; set; }
         public string OurReference { get; set; }
+
+    }
+
+    public class AdvisorCredentials
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
 
     }
 

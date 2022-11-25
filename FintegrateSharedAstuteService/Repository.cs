@@ -1,5 +1,8 @@
-﻿using DataService.Context;
+﻿using AutoMapper;
+using DataService.Context;
 using DataService.Dto;
+using DataService.Dto.Advisor;
+using DataService.Model.Advisor;
 using DataService.Model.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +27,9 @@ namespace FintegrateSharedAstuteService
     {
         public readonly FSASConfigDto _settings;
         private readonly AlumaDBContext _context;
+        private readonly IMapper _mapper;
 
-        public FSASRepo(AlumaDBContext databaseContext)
+        public FSASRepo(AlumaDBContext databaseContext, IMapper mapper)
         {
             var config = new ConfigurationBuilder();
             // Get current directory will return the root dir of Base app as that is the running application
@@ -58,6 +62,8 @@ namespace FintegrateSharedAstuteService
 
         public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto) //****
         {
+
+            AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
             SubmitCCPRequestDto requestDto = new();
 
 
@@ -69,6 +75,7 @@ namespace FintegrateSharedAstuteService
             requestDto.Client.MobileNumber = dto.User.MobileNumber;
             requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
             requestDto.OurReference = dto.Id.ToString();
+            requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             //List<ClientConsentProvidersModel> clientConsentedList = _context.ClientConsentModels.Where(c => c.ClientId == dto.Id).ToList();
             List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.Id).ToList();
 
