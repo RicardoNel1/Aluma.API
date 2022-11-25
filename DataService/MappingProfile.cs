@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DataService.Dto;
+using DataService.Dto.Advisor;
 using DataService.Dto.Client;
 using DataService.Model;
+using DataService.Model.Advisor;
 using DataService.Model.Client;
 
 namespace DataService
@@ -59,15 +61,15 @@ namespace DataService
             CreateMap<ClientConsentModel, ClientConsentDto>()
                 .ReverseMap();
 
-            CreateMap<IDVModel, ClientIDVDto>()
-                .ReverseMap();
-
-            //update
             CreateMap<ClientConsentProvidersModel, ClientConsentProviderDto>()
                .ReverseMap();
 
             CreateMap<FinancialProviderModel, FinancialProviderDto>()
                 .ReverseMap();
+
+            CreateMap<AdvisorAstuteModel, AdvisorAstuteDto>()
+               .ReverseMap();
+
 
             CreateMap<BankDetailsModel, BankDetailsDto>()
                 .ReverseMap();
