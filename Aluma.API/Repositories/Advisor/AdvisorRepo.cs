@@ -3,8 +3,10 @@ using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Context;
 using DataService.Dto;
+using DataService.Dto.Advisor;
 using DataService.Enum;
 using DataService.Model;
+using DataService.Model.Advisor;
 using FileStorageService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +22,18 @@ namespace Aluma.API.Repositories
     public interface IAdvisorRepo : IRepoBase<AdvisorModel>
     {
         public bool DoesAdvisorExist(UserDto dto);
-
+        public bool DoesAdvisorAstuteExist(UserDto dto);
         public AdvisorDto GetAdvisor(AdvisorDto dto);
+        public AdvisorAstuteDto GetAdvisorAstute(AdvisorAstuteDto dto);
         public AdvisorDto GetAdvisorByUserId(int userId);
 
         public Task<AdvisorDto> CreateAdvisor(AdvisorDto dto);
+        public Task<AdvisorAstuteDto> CreateAdvisorAstute(AdvisorAstuteDto dto);
 
         public bool DeleteAdvisor(AdvisorDto dto);
 
         public AdvisorDto UpdateAdvisor(AdvisorDto dto);
+        public AdvisorAstuteDto UpdateAdvisorAstute(AdvisorAstuteDto dto);
         public List<AdvisorDto> GetAllAdvisors();
     }
 
@@ -64,10 +69,32 @@ namespace Aluma.API.Repositories
             return advisorExists;
         }
 
+        public bool DoesAdvisorAstuteExist(UserDto dto)
+        {
+            bool advisorExists = false;
+            UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
+            bool userExists = ur.DoesUserExist(dto);
+
+            if (userExists)
+            {
+                UserDto user = ur.GetUser(dto);
+                advisorExists = _context.AdvisorsAstute.Where(a => a.AdvisorId == user.Id).Any();
+            }
+
+            return advisorExists;
+        }
+
         public AdvisorDto GetAdvisor(AdvisorDto dto)
         {
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
             dto = _mapper.Map<AdvisorDto>(advisor);
+            return dto;
+        }
+
+        public AdvisorAstuteDto GetAdvisorAstute(AdvisorAstuteDto dto)
+        {
+            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Id == dto.AdvisorId).FirstOrDefault();
+            dto = _mapper.Map<AdvisorAstuteDto>(advisor);
             return dto;
         }
 
@@ -178,6 +205,47 @@ namespace Aluma.API.Repositories
             _context.SaveChanges();
 
             dto = _mapper.Map<AdvisorDto>(advisor);
+            return dto;
+        }
+
+        public async Task<AdvisorAstuteDto> CreateAdvisorAstute(AdvisorAstuteDto dto)
+        {
+            try
+            {
+                StringHasherRepo str = new();
+                UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
+
+                //Create Advisor
+                AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
+                advisorAstute.Advisor = _context.Advisors.Where(a => a.UserId == dto.AdvisorId).First();
+                advisorAstute.Password = str.CreateHash("Aluma" + dto.Password);
+                _context.AdvisorsAstute.Add(advisorAstute);
+                _context.SaveChanges();
+
+                //Done
+                await _ms.SendAdvisorWelcomeEmail(advisorAstute.Advisor);
+
+                return _mapper.Map<AdvisorAstuteDto>(advisorAstute);
+            }
+            catch (Exception ex)
+            {
+                //log error
+                return null;
+            }
+        }
+
+        public AdvisorAstuteDto UpdateAdvisorAstute(AdvisorAstuteDto dto)
+        {
+            UserModel user = _context.Users.Where(x => x.Id == dto.Id).FirstOrDefault();
+            AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
+
+            advisorAstute.UserName = dto.UserName.Trim();
+            advisorAstute.Password = dto.Password;
+
+            _context.AdvisorsAstute.Update(advisorAstute);
+            _context.SaveChanges();
+
+            dto = _mapper.Map<AdvisorAstuteDto>(advisorAstute);
             return dto;
         }
 

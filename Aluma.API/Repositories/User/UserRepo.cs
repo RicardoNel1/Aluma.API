@@ -14,6 +14,10 @@ using Aluma.API.Helpers;
 using FileStorageService;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Security.Policy;
 
 namespace Aluma.API.Repositories
 {
@@ -146,8 +150,8 @@ namespace Aluma.API.Repositories
         {
             //if (DoesUserExist(dto))
             //{
-                var user = _context.Users.Where(u => (u.Id == dto.Id)).FirstOrDefault();
-                return _mapper.Map<UserDto>(user);
+            var user = _context.Users.Where(u => (u.Id == dto.Id)).FirstOrDefault();
+            return _mapper.Map<UserDto>(user);
             //}
 
             //return null;
@@ -413,7 +417,7 @@ namespace Aluma.API.Repositories
                 _context.SaveChanges();
             }
 
-        }        
+        }
 
         public UserDto GetUserByApplicationID(int applicationId)
         {
