@@ -68,18 +68,13 @@ namespace FintegrateSharedAstuteService
             requestDto.Client.IdType = "RSAId";
             requestDto.Client.MobileNumber = dto.User.MobileNumber;
             requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
-
+            requestDto.OurReference = dto.Id.ToString();
             //List<ClientConsentProvidersModel> clientConsentedList = _context.ClientConsentModels.Where(c => c.ClientId == dto.Id).ToList();
             List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.Id).ToList();
 
             List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Name).ToList(); //change name to code
             requestDto.Client.ConsentedProviders = consentedProvidersList.ToArray();
             //var list = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Join(_context.FinancialProviders, f => f.ConsentedProviders == )
-
-
-
-
-
 
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/submitCCP");
             client.Timeout = -1;

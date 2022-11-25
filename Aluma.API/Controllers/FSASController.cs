@@ -22,9 +22,12 @@ namespace Aluma.API.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost, AllowAnonymous]
+        [HttpPost]
         public async Task<IActionResult> SubmitCCP(ClientDto dto)
         {
+
+           var advisorUserId =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
             try
             {
                 var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto);
@@ -37,31 +40,12 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPut, AllowAnonymous]
-        public IActionResult UpdateAdvisor(AdvisorDto dto)
-        {
-            try
-            {
-                bool advisorExists = _repo.Advisor.DoesAdvisorExist(dto.User);
-                if (!advisorExists)
-                {
-                    return BadRequest("Advisor Does Not Exist");
-                }
-                else
-                {
-                    var advisor = _repo.Advisor.UpdateAdvisor(dto);
-                    return Ok(advisor);
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet]
         public IActionResult GetFSASInformation(int clientId)
         {
+            var advisorUserId = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
             try
             {
                 var ccp = _repo.FSASRepo.GetClientCCP(clientId);
@@ -73,55 +57,5 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("claim"), AllowAnonymous]
-        public IActionResult getClaim()
-        {
-            try
-            {
-                var claims = _repo.JwtRepo.IsTokenValid(Request.Headers[HeaderNames.Authorization].ToString());//.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-                return Ok(claims);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet("list")]
-        public IActionResult GetAllAdvisors()
-        {
-            try
-            {
-                var advisor = _repo.Advisor.GetAllAdvisors();
-
-                return Ok(advisor);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpDelete]
-        public IActionResult DeleteAdvisor(AdvisorDto dto)
-        {
-            try
-            {
-                bool isDeleted = _repo.Advisor.DeleteAdvisor(dto);
-                if (!isDeleted)
-                {
-                    return BadRequest("Advisor Not Deleted");
-                }
-                return Ok("Advisor Deleted");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-
     }
 }
