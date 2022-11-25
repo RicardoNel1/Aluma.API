@@ -26,11 +26,11 @@ namespace Aluma.API.Controllers
         public async Task<IActionResult> SubmitCCP(ClientDto dto)
         {
 
-           var advisorUserId =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+           var advisorCredentials =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
             try
             {
-                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto);
+                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials);
                 return Ok(ccp);
                 
             }

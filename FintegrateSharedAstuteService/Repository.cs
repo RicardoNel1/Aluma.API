@@ -16,7 +16,7 @@ namespace FintegrateSharedAstuteService
 {
     public interface IFSASRepo
     {
-        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto);
+        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, ClaimsDto advisorCredentials);
 
         ClientCCPResponseDto GetClientCCP(int clientId);
     }
@@ -56,7 +56,7 @@ namespace FintegrateSharedAstuteService
             return responseData;
         }
 
-        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto) //****
+        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, ClaimsDto advisorCredentials) //****
         {
             SubmitCCPRequestDto requestDto = new();
 
