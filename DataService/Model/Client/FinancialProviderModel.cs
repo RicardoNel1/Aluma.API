@@ -13,7 +13,6 @@ namespace DataService.Model.Client
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        [NotMapped]
-        public bool IsSelected { get; set; } = false;
+        public string Code { get; set; }
     }
 }
