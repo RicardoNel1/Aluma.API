@@ -1,4 +1,5 @@
 ﻿using DataService.Model;
+using DataService.Model.Advisor;
 using DataService.Model.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -59,6 +60,7 @@ namespace DataService.Context
         {
             //Advisor
             mb.ApplyConfiguration(new AdvisorModelBuilder());
+            mb.ApplyConfiguration(new AdvisorAstuteModelBuilder());
 
             //Application
             mb.ApplyConfiguration(new ApplicationModelBuilder());
@@ -116,6 +118,7 @@ namespace DataService.Context
 
         //Advisor
         public DbSet<AdvisorModel> Advisors { get; set; }
+        public DbSet<AdvisorAstuteModel> AdvisorsAstute { get; set; }
 
         //Application
         public DbSet<ApplicationDocumentModel> ApplicationDocuments { get; set; }
