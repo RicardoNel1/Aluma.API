@@ -2,6 +2,8 @@
 using DataService.Context;
 using DataService.Dto;
 using DataService.Dto.Advisor;
+using DataService.Enum;
+using DataService.Model;
 using DataService.Model.Advisor;
 using DataService.Model.Client;
 using Microsoft.EntityFrameworkCore;
@@ -72,8 +74,16 @@ namespace FintegrateSharedAstuteService
         {
 
             AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
-            SubmitCCPRequestDto requestDto = new();
+            //SubmitCCPRequestDto requestDto = new SubmitCCPRequestDto();
 
+
+            SubmitCCPRequestDto requestDto = new()
+            {
+                Client = new RequestClientDetails(),
+                AstuteCredentials = new AdvisorCredentials(),
+                OurReference = ""
+
+            };
 
             requestDto.Client.FirstName = dto.User.FirstName;
             requestDto.Client.LastName = dto.User.LastName;
