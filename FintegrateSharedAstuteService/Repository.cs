@@ -51,8 +51,8 @@ namespace FintegrateSharedAstuteService
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "multipart/form-data");
-            request.AlwaysMultipartFormData = true;
+            //request.AddHeader("Content-Type", "multipart/form-data");
+            //request.AlwaysMultipartFormData = true;
             //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             GetCCPRequestDto requestDto = new();
             requestDto.SystemRef = clientId.ToString();
