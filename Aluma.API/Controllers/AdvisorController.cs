@@ -214,7 +214,6 @@ namespace Aluma.API.Controllers
         {
             try
             {
-
                 var advisor = _repo.Advisor.GetAstuteAdvisorCredential(advisorId);
 
                 return Ok(advisor);
@@ -225,11 +224,7 @@ namespace Aluma.API.Controllers
             }
         }
 
-        private string credentialdecrypt(string credentialhash)
-        {
-            //to complete full decryption
-            return credentialhash;
-        }
+
 
 
     }

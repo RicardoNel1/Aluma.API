@@ -7,13 +7,43 @@ namespace Aluma.API.Helpers
 {
     public class CredentialCrypt
     {
+        private static string _cryptoKey;
+        private static string _cryptoIV;
+
+        public CredentialCrypt()
+        {
+            _cryptoKey = "Yq3t6w9y$B&E)H@M";
+            _cryptoIV = "PdSgVkYp3s6v9y$B";
+        }
+
         public static string EncryptToHash(string data)
         {
-            byte[] key = new byte[16];
-            byte[] iv = new byte[16];
+            byte[] key = Encoding.UTF8.GetBytes(_cryptoKey);
+            byte[] iv = Encoding.UTF8.GetBytes(_cryptoIV);
 
-            return Convert.ToBase64String(
+            var encryptedHash = Convert.ToBase64String(
               Encrypt(Encoding.UTF8.GetBytes(data), key, iv));
+
+            Array.Clear(key, 0, key.Length);
+            Array.Clear(iv, 0, iv.Length);
+
+            return encryptedHash;
+
+        }
+
+        public static string DecryptFromHash(string data)
+        {
+            byte[] key = Encoding.UTF8.GetBytes(_cryptoKey);
+            byte[] iv = Encoding.UTF8.GetBytes(_cryptoIV);
+
+            string decryptedHash = Convert.ToBase64String(
+              Decrypt(Encoding.UTF8.GetBytes(data), key, iv));
+
+
+            Array.Clear(key, 0, key.Length);
+            Array.Clear(iv, 0, iv.Length);
+
+            return decryptedHash;
         }
 
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
@@ -28,18 +58,6 @@ namespace Aluma.API.Helpers
             using (Aes algorithm = Aes.Create())
             using (ICryptoTransform decryptor = algorithm.CreateDecryptor(key, iv))
                 return Crypt(data, decryptor);
-        }
-
-        public static string Encrypt(string data, byte[] key, byte[] iv)
-        {
-            return Convert.ToBase64String(
-              Encrypt(Encoding.UTF8.GetBytes(data), key, iv));
-        }
-
-        public static string Decrypt(string data, byte[] key, byte[] iv)
-        {
-            return Encoding.UTF8.GetString(
-              Decrypt(Convert.FromBase64String(data), key, iv));
         }
 
         static byte[] Crypt(byte[] data, ICryptoTransform cryptor)
