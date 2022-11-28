@@ -16,7 +16,7 @@ namespace Aluma.API.Helpers
             _cryptoIV = "PdSgVkYp3s6v9y$B";
         }
 
-        public static string EncryptToHash(string data)
+        public string EncryptToHash(string data)
         {
             byte[] key = Encoding.UTF8.GetBytes(_cryptoKey);
             byte[] iv = Encoding.UTF8.GetBytes(_cryptoIV);
@@ -31,14 +31,13 @@ namespace Aluma.API.Helpers
 
         }
 
-        public static string DecryptFromHash(string data)
+        public string DecryptFromHash(string data)
         {
             byte[] key = Encoding.UTF8.GetBytes(_cryptoKey);
             byte[] iv = Encoding.UTF8.GetBytes(_cryptoIV);
 
-            string decryptedHash = Convert.ToBase64String(
-              Decrypt(Encoding.UTF8.GetBytes(data), key, iv));
-
+            string decryptedHash = Encoding.UTF8.GetString(
+      Decrypt(Convert.FromBase64String(data), key, iv));
 
             Array.Clear(key, 0, key.Length);
             Array.Clear(iv, 0, iv.Length);
