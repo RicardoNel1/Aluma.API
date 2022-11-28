@@ -176,19 +176,8 @@ namespace Aluma.API.Controllers
         {
             try
             {
-                AuthResponseDto response = new();
-                UserDto AstuteUserDto = new UserDto { Id = dto.AdvisorId };
-                AstuteUserDto = _repo.User.GetUser(AstuteUserDto);
-                bool advisorExists = _repo.Advisor.DoesAdvisorAstuteExist(AstuteUserDto);
-                if (advisorExists)
-                {
-                    return BadRequest("Advisor Exists");
-                }
-                else
-                {
-                    var advisor = await _repo.Advisor.CreateAdvisorAstute(dto);
-                    return Ok(advisor);
-                }
+                var advisor = await _repo.Advisor.CreateAdvisorAstute(dto);
+                return Ok(advisor);
             }
             catch (Exception e)
             {

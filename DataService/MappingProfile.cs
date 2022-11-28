@@ -14,9 +14,9 @@ namespace DataService
         {
             //Advisor
             CreateMap<AdvisorModel, AdvisorDto>()
-              .ReverseMap();
-
-            CreateMap<AdvisorCredentials, AdvisorAstuteModel>()
+              .ReverseMap();
+
+            CreateMap<AdvisorCredentials, AdvisorAstuteModel>()
             .ReverseMap();
 
             // Applications
