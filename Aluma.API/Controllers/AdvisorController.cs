@@ -216,6 +216,15 @@ namespace Aluma.API.Controllers
             {
                 var advisor = _repo.Advisor.GetAstuteAdvisorCredential(advisorId);
 
+                if (advisor == null)
+                {
+                    return Ok(new AdvisorAstuteDto());
+                }
+                else
+                {
+                    return Ok(advisor);
+                }
+
                 return Ok(advisor);
             }
             catch (Exception e)
