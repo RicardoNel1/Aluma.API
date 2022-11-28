@@ -75,13 +75,13 @@ namespace DataService.Dto
     {
         public RequestClientDetails Client { get; set; }
         public AdvisorCredentials AstuteCredentials{ get; set; }
-        public string OurReference { get; set; }
+        public string YourReference { get; set; }
 
     }
 
     public class GetCCPRequestDto
     {
-        public int ClientId { get; set; }
+        public string SystemRef { get; set; }
         public AdvisorCredentials AstuteCredentials { get; set; }
 
     }
