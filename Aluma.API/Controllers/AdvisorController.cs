@@ -224,8 +224,6 @@ namespace Aluma.API.Controllers
                 {
                     return Ok(advisor);
                 }
-
-                return Ok(advisor);
             }
             catch (Exception e)
             {
