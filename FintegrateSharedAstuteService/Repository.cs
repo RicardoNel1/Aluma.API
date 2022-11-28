@@ -55,7 +55,7 @@ namespace FintegrateSharedAstuteService
             request.AlwaysMultipartFormData = true;
             //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             GetCCPRequestDto requestDto = new();
-            requestDto.ClientId = clientId;
+            requestDto.SystemRef = clientId.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
 
@@ -77,7 +77,7 @@ namespace FintegrateSharedAstuteService
             {
                 Client = new RequestClientDetails(),
                 AstuteCredentials = new AdvisorCredentials(),
-                OurReference = ""
+                YourReference = ""
 
             };
 
@@ -88,19 +88,21 @@ namespace FintegrateSharedAstuteService
             requestDto.Client.IdType = "RSAId";
             requestDto.Client.MobileNumber = dto.User.MobileNumber;
             requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
-            requestDto.OurReference = dto.Id.ToString();
+            requestDto.YourReference = dto.Id.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
+            //List<ClientConsentProvidersModel> clientConsentedList = _context.ClientConsentModels.Where(c => c.ClientId == dto.Id).ToList();
             List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.Id).ToList();
 
             List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Name).ToList(); //change name to code
             requestDto.Client.ConsentedProviders = consentedProvidersList.ToArray();
+            //var list = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Join(_context.FinancialProviders, f => f.ConsentedProviders == )
 
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/submitCCP");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            request.AddHeader("Content-Type", "multipart/form-data");
-            request.AlwaysMultipartFormData = true;
+           
+            //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
