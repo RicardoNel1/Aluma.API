@@ -14,7 +14,10 @@ namespace DataService
         {
             //Advisor
             CreateMap<AdvisorModel, AdvisorDto>()
-              .ReverseMap();
+              .ReverseMap();
+
+            CreateMap<AdvisorCredentials, AdvisorAstuteModel>()
+            .ReverseMap();
 
             // Applications
 
@@ -60,7 +63,6 @@ namespace DataService
 
             CreateMap<ClientConsentModel, ClientConsentDto>()
                 .ReverseMap();
-
 
             CreateMap<ClientConsentProvidersModel, ClientConsentProviderDto>()
                .ReverseMap();
