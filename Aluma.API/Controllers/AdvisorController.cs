@@ -209,6 +209,23 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("astute-cred"), AllowAnonymous]
+        public IActionResult GetAstuteAdvisorCredential(int advisorId)
+        {
+            try
+            {
+                var advisor = _repo.Advisor.GetAstuteAdvisorCredential(advisorId);
+
+                return Ok(advisor);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+
 
     }
 }

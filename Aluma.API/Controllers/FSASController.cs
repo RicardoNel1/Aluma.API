@@ -1,6 +1,8 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Repositories;
+using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Dto;
+using DataService.Dto.Advisor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
@@ -26,10 +28,13 @@ namespace Aluma.API.Controllers
         public async Task<IActionResult> SubmitCCP(ClientDto dto)
         {
 
-           var advisorCredentials =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+           var claimsDto =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
             try
             {
+
+                AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
+
                 var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials);
                 return Ok(ccp);
                 
@@ -44,11 +49,13 @@ namespace Aluma.API.Controllers
         [HttpGet]
         public IActionResult GetFSASInformation(int clientId)
         {
-            var advisorUserId = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+            var claimsDto = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
             try
             {
-                var ccp = _repo.FSASRepo.GetClientCCP(clientId, advisorUserId);
+                AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
+
+                var ccp = _repo.FSASRepo.GetClientCCP(clientId, advisorCredentials);
 
                 return Ok(ccp);
             }

@@ -14,7 +14,11 @@ using Microsoft.Extensions.Configuration;
 using StringHasher;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Aluma.API.Repositories
@@ -26,6 +30,8 @@ namespace Aluma.API.Repositories
         public AdvisorDto GetAdvisor(AdvisorDto dto);
         public AdvisorAstuteDto GetAdvisorAstute(AdvisorAstuteDto dto);
         public AdvisorDto GetAdvisorByUserId(int userId);
+        public AdvisorAstuteDto GetAstuteAdvisorCredential(int advisorId);
+        public AdvisorAstuteDto GetAstuteAdvisorCredentialByUserId(int userId);
 
         public Task<AdvisorDto> CreateAdvisor(AdvisorDto dto);
         public Task<AdvisorAstuteDto> CreateAdvisorAstute(AdvisorAstuteDto dto);
@@ -111,7 +117,7 @@ namespace Aluma.API.Repositories
             {
                 StringHasherRepo str = new();
                 UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
-                
+
 
                 //Create Advisor
                 AdvisorModel advisor = _mapper.Map<AdvisorModel>(dto);
@@ -168,7 +174,7 @@ namespace Aluma.API.Repositories
             }
         }
 
-        
+
 
         public bool DeleteAdvisor(AdvisorDto dto)
         {
@@ -213,12 +219,13 @@ namespace Aluma.API.Repositories
             try
             {
                 StringHasherRepo str = new();
-                //UserRepo ur = new(_context, _host, _config, _fileStorage, _mapper);
+                CredentialCrypt credentialCrypt = new CredentialCrypt();
 
                 //Create Advisor
                 AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
                 advisorAstute.Advisor = _context.Advisors.Where(a => a.Id == dto.AdvisorId).First();
-                advisorAstute.Password = str.CreateHash("Aluma" + dto.Password);
+
+                advisorAstute.Password = credentialCrypt.EncryptToHash(dto.Password);
                 _context.AdvisorsAstute.Update(advisorAstute);
                 _context.SaveChanges();
 
@@ -235,9 +242,10 @@ namespace Aluma.API.Repositories
         {
             UserModel user = _context.Users.Where(x => x.Id == dto.Id).FirstOrDefault();
             AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
+            CredentialCrypt credentialCrypt = new CredentialCrypt();
 
             advisorAstute.UserName = dto.UserName.Trim();
-            advisorAstute.Password = dto.Password;
+            advisorAstute.Password = credentialCrypt.EncryptToHash(dto.Password);
 
             _context.AdvisorsAstute.Update(advisorAstute);
             _context.SaveChanges();
@@ -251,6 +259,26 @@ namespace Aluma.API.Repositories
             List<AdvisorModel> advisors = _context.Advisors.Include(c => c.User).Where(c => c.isActive == true).ToList();
             List<AdvisorDto> response = _mapper.Map<List<AdvisorDto>>(advisors);
             return response;
+        }
+
+        public AdvisorAstuteDto GetAstuteAdvisorCredential(int advisorId)
+        {
+            CredentialCrypt credentialCrypt = new CredentialCrypt();
+
+            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Id == advisorId).FirstOrDefault();
+            advisor.Password = credentialCrypt.DecryptFromHash(advisor.Password);
+
+            return _mapper.Map<AdvisorAstuteDto>(advisor);
+        }
+
+        public AdvisorAstuteDto GetAstuteAdvisorCredentialByUserId(int userId)
+        {
+            CredentialCrypt credentialCrypt = new CredentialCrypt();
+
+            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Advisor.UserId == userId).FirstOrDefault();
+            advisor.Password = credentialCrypt.DecryptFromHash(advisor.Password);
+
+            return _mapper.Map<AdvisorAstuteDto>(advisor);
         }
     }
 }

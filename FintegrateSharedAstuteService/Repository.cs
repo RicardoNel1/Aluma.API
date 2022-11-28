@@ -21,9 +21,9 @@ namespace FintegrateSharedAstuteService
 {
     public interface IFSASRepo
     {
-        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, ClaimsDto advisorCredentials);
+        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto advisorCredentials);
 
-        ClientCCPResponseDto GetClientCCP(int clientId, ClaimsDto advisorCredentials);
+        public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials);
     }
     public class FSASRepo : IFSASRepo
     {
@@ -43,19 +43,19 @@ namespace FintegrateSharedAstuteService
             _mapper = mapper;
         }
 
-        public ClientCCPResponseDto GetClientCCP(int clientId, ClaimsDto advisorCredentials)
+        public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials)
         {
-            AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
+            //AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
 
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/retrieveCCP");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            //request.AddHeader("Content-Type", "multipart/form-data");
-            //request.AlwaysMultipartFormData = true;
+            request.AddHeader("Content-Type", "multipart/form-data");
+            request.AlwaysMultipartFormData = true;
             //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             GetCCPRequestDto requestDto = new();
-            requestDto.SystemRef = clientId.ToString();
+            requestDto.ClientId = clientId;
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
 
@@ -70,12 +70,8 @@ namespace FintegrateSharedAstuteService
             return responseData;
         }
 
-        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, ClaimsDto advisorCredentials) //****
+        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto astuteCredentials)
         {
-
-            AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
-            //SubmitCCPRequestDto requestDto = new SubmitCCPRequestDto();
-
 
             SubmitCCPRequestDto requestDto = new()
             {
@@ -91,20 +87,13 @@ namespace FintegrateSharedAstuteService
             requestDto.Client.Email = dto.User.Email;
             requestDto.Client.IdType = "RSAId";
             requestDto.Client.MobileNumber = dto.User.MobileNumber;
-            requestDto.Client.DateOfBirth = DateTime.Parse(dto.User.DateOfBirth);//DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
-            requestDto.YourReference = dto.Id.ToString();
+            requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
+            requestDto.OurReference = dto.Id.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             //List<ClientConsentProvidersModel> clientConsentedList = _context.ClientConsentModels.Where(c => c.ClientId == dto.Id).ToList();
             List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.Id).ToList();
 
-            List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Code).ToList();
-            for (var i = 0; i < consentedProvidersList.Count; i++)      //UAT
-            {
-                consentedProvidersList[i] = consentedProvidersList[i] + "L";
-            }
-
-
-
+            List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Name).ToList(); //change name to code
             requestDto.Client.ConsentedProviders = consentedProvidersList.ToArray();
             //var list = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Join(_context.FinancialProviders, f => f.ConsentedProviders == )
 
@@ -112,8 +101,8 @@ namespace FintegrateSharedAstuteService
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            //request.AddHeader("Content-Type", "multipart/form-data");
-            //request.AlwaysMultipartFormData = true;
+            request.AddHeader("Content-Type", "multipart/form-data");
+            request.AlwaysMultipartFormData = true;
             //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
