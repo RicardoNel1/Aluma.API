@@ -154,7 +154,7 @@ namespace Aluma.API.Controllers
 
 
                 UserDto user = new();
-                
+
                 var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
                 string token = String.Empty;
 
@@ -303,7 +303,7 @@ namespace Aluma.API.Controllers
         [HttpPost("reset-advisor-password"), AllowAnonymous]
         public IActionResult ResetPassword(LoginDto dto)
         {
-                AuthResponseDto response = new();
+            AuthResponseDto response = new();
 
             try
             {
@@ -363,7 +363,51 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPost("consent-otp"), AllowAnonymous]
+        public IActionResult SendConsentOtp(LoginDto dto)
+        {
+            AuthResponseDto response = new();
 
+            UserDto user = new();
+
+            try
+            {
+                user = _repo.User.GetUser(dto);
+                _repo.Otp.SendOTP(user, OtpTypesEnum.Consent);
+                response.Message = "verifyConsent";
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost("email-consent-otp"), AllowAnonymous]
+        public IActionResult EmailConsentOTP(LoginDto dto)
+        {
+            AuthResponseDto response = new();
+            UserDto user = new();
+
+            try
+            {
+                user = _repo.User.GetUser(dto);
+
+                //Send Two-Factor Auth OTP
+                _repo.Otp.SendOTPEmail(user, OtpTypesEnum.Consent);
+                response.Message = "verifyConsent";
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
 
         [HttpPost("email-otp"), AllowAnonymous]
         public IActionResult EmailOTP(LoginDto dto)

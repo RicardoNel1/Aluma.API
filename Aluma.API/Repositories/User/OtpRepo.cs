@@ -68,6 +68,7 @@ namespace Aluma.API.Repositories
                 string otpMessage = otpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + newOtpNumber
                     : otpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + newOtpNumber
                     : otpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + newOtpNumber
+                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + newOtpNumber
                     : "Aluma Capital: Herewith your OTP for resetting your password - " + newOtpNumber;
 
                 OtpModel newOtp = new()
@@ -121,7 +122,7 @@ namespace Aluma.API.Repositories
                 {
                     if (applicationId > 0)
                     {
-                        if(hasOtp.Where(o => o.OtpType == OtpTypesEnum.SignDocument).Any() == false)
+                        if (hasOtp.Where(o => o.OtpType == OtpTypesEnum.SignDocument).Any() == false)
                         {
                             result = "No Otp for signing.";
                             return result;
@@ -202,7 +203,7 @@ namespace Aluma.API.Repositories
                     result = "Too many attempts. Please contact support.";
                 }
 
-                string newOtpNumber = smsService.CreateOtp();                
+                string newOtpNumber = smsService.CreateOtp();
 
                 OtpModel newOtp = new()
                 {
@@ -226,7 +227,7 @@ namespace Aluma.API.Repositories
                 //bool sent = smsService.SendOtp(user.MobileNumber, otpMessage);
                 await _ms.SendOTPEmail(user, newOtpNumber);
 
-                
+
             }
             catch (Exception ex)
             {

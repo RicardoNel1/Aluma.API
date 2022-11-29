@@ -75,6 +75,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new FSPModelBuilder());
             mb.ApplyConfiguration(new TaxResidencyModelBuilder());
             mb.ApplyConfiguration(new ConsumerProtectionModelBuilder());
+            mb.ApplyConfiguration(new FinancialProviderModelBuilder());
 
             //User
             mb.ApplyConfiguration(new UserModelBuilder());

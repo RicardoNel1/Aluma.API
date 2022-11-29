@@ -192,22 +192,36 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPost("verify/consent")]
+        public IActionResult VerifyConsentOtp(LoginDto dto)
+        {
+            UserDto user = _repo.User.GetUser(dto);
+            AuthResponseDto response = new();
+            string isOtpVerified = _repo.Otp.VerifyOTP(dto.Otp, user.Id);
 
+            if (isOtpVerified != "Validated")
+            {
+                response.Message = "Invalid OTP";
+                return StatusCode(401, response);
+            }
 
+            RoleEnum role = user.Role;
+            if (role == RoleEnum.Client)
+            {
+                ClientDto client = _repo.Client.GetClientByUserId(user.Id);
+                response.Client = client;
+            }
+            else if (role == RoleEnum.Advisor || role == RoleEnum.Admin)
+            {
+                AdvisorDto advisor = _repo.Advisor.GetAdvisorByUserId(user.Id);
+                response.AdvisorId = advisor.Id;
+                user.HasSignature = user.Signature != null && user.Signature.Length > 0;
+            }
 
-        //[HttpPost("test"), AllowAnonymous]
-        //public IActionResult testOTP(string mobileNo)
-        //{
-        //    try
-        //    {
-        //        _repo.SmsRepo.SendOtp(mobileNo, "test message");
-        //        return Ok();
+            response.Message = "OtpVerified";
+            response.User = user;
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
+            return Ok(response);
+        }
     }
 }
