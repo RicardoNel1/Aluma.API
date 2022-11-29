@@ -93,6 +93,16 @@ namespace Aluma.API.Repositories
         public AdvisorDto GetAdvisor(AdvisorDto dto)
         {
             AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
+
+            if (advisor == null)
+            {
+                return new AdvisorDto();
+            }
+            else
+            {
+                dto = _mapper.Map<AdvisorDto>(advisor);
+            }
+
             dto = _mapper.Map<AdvisorDto>(advisor);
             return dto;
         }
