@@ -100,7 +100,16 @@ namespace Aluma.API.Repositories
         public AdvisorAstuteDto GetAdvisorAstute(AdvisorAstuteDto dto)
         {
             AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Id == dto.AdvisorId).FirstOrDefault();
-            dto = _mapper.Map<AdvisorAstuteDto>(advisor);
+
+            if (advisor == null)
+            {
+                return new AdvisorAstuteDto();
+            }
+            else
+            {
+                dto = _mapper.Map<AdvisorAstuteDto>(advisor);
+            }
+
             return dto;
         }
 
