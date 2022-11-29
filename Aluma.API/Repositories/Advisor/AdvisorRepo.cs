@@ -92,7 +92,7 @@ namespace Aluma.API.Repositories
 
         public AdvisorDto GetAdvisor(AdvisorDto dto)
         {
-            AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).First();
+            AdvisorModel advisor = _context.Advisors.Include(a => a.User).Where(a => a.Id == dto.Id).FirstOrDefault();
 
             if (advisor == null)
             {
@@ -109,7 +109,7 @@ namespace Aluma.API.Repositories
 
         public AdvisorAstuteDto GetAdvisorAstute(AdvisorAstuteDto dto)
         {
-            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Id == dto.AdvisorId).FirstOrDefault();
+            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.AdvisorId == dto.AdvisorId).FirstOrDefault();
 
             if (advisor == null)
             {
@@ -125,7 +125,7 @@ namespace Aluma.API.Repositories
 
         public AdvisorDto GetAdvisorByUserId(int userId)
         {
-            AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).First();
+            AdvisorModel advisor = _context.Advisors.Where(a => a.UserId == userId).FirstOrDefault();
             return _mapper.Map<AdvisorDto>(advisor);
         }
 
@@ -242,7 +242,7 @@ namespace Aluma.API.Repositories
 
                 //Create Advisor
                 AdvisorAstuteModel advisorAstute = _mapper.Map<AdvisorAstuteModel>(dto);
-                advisorAstute.Advisor = _context.Advisors.Where(a => a.Id == dto.AdvisorId).First();
+                advisorAstute.Advisor = _context.Advisors.Where(a => a.Id == dto.AdvisorId).FirstOrDefault();
 
                 advisorAstute.Password = credentialCrypt.EncryptToHash(dto.Password);
                 _context.AdvisorsAstute.Update(advisorAstute);
@@ -284,7 +284,7 @@ namespace Aluma.API.Repositories
         {
             CredentialCrypt credentialCrypt = new CredentialCrypt();
 
-            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Id == advisorId).FirstOrDefault();
+            AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.AdvisorId == advisorId).FirstOrDefault();
             if (advisor == null)
             {
                 return new AdvisorAstuteDto();
