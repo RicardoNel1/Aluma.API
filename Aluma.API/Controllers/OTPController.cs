@@ -206,8 +206,6 @@ namespace Aluma.API.Controllers
             }
 
             RoleEnum role = user.Role;
-            var jwtSettings = _config.GetSection("JwtSettings").Get<JwtSettingsDto>();
-            string token = _repo.JwtRepo.CreateJwtToken(user.Id, role, jwtSettings.LifeSpan);
             if (role == RoleEnum.Client)
             {
                 ClientDto client = _repo.Client.GetClientByUserId(user.Id);
@@ -221,8 +219,6 @@ namespace Aluma.API.Controllers
             }
 
             response.Message = "OtpVerified";
-            response.Token = token;
-            response.TokenExpiry = DateTime.Now.AddMinutes(jwtSettings.LifeSpan).ToString();
             response.User = user;
 
             return Ok(response);
