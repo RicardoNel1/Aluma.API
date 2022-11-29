@@ -91,9 +91,9 @@ namespace FintegrateSharedAstuteService
             requestDto.YourReference = dto.Id.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             //List<ClientConsentProvidersModel> clientConsentedList = _context.ClientConsentModels.Where(c => c.ClientId == dto.Id).ToList();
-            List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.Id).ToList();
+            List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.FinancialProviderId).ToList();
 
-            List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Name).ToList(); //change name to code
+            List<string> consentedProvidersList = _context.FinancialProviders.Where(f => providerList.Contains(f.Id)).Select(f => f.Code).ToList(); //change name to code
             requestDto.Client.ConsentedProviders = consentedProvidersList.ToArray();
             //var list = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Join(_context.FinancialProviders, f => f.ConsentedProviders == )
 
