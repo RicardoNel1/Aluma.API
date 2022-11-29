@@ -87,7 +87,7 @@ namespace FintegrateSharedAstuteService
             requestDto.Client.Email = dto.User.Email;
             requestDto.Client.IdType = "RSAId";
             requestDto.Client.MobileNumber = dto.User.MobileNumber;
-            requestDto.Client.DateOfBirth = DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
+            requestDto.Client.DateOfBirth = DateTime.Parse(dto.User.DateOfBirth);//DateTime.ParseExact(dto.User.DateOfBirth, "yyyy-mm-dd", CultureInfo.InvariantCulture);
             requestDto.YourReference = dto.Id.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             List<int> providerList = _context.ClientConsentModels.Include(c => c.ConsentedProviders).Where(c => c.ClientId == dto.Id).OrderByDescending(c => c.Id).First().ConsentedProviders.Select(c => c.FinancialProviderId).ToList();
