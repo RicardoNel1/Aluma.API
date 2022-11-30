@@ -10,7 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using static iText.Svg.SvgConstants;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Aluma.API.Controllers
@@ -223,7 +227,40 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPost("ping-authenticate"), AllowAnonymous]
+        public async Task<IActionResult> AstutePingAuthAsync(AuthRequestObject authRequestObject)
+        {
+            try
+            {
+                //var advisor = _repo.Advisor.GetAstuteAdvisorCredential(authRequestObject);
+                using StringContent jsonContent = new(
+        JsonSerializer.Serialize(authRequestObject),
+        Encoding.UTF8,
+        "application/json");
 
+                var url = "https://localhost:44386/api/authentication/ping-authenticate";
+
+                using var client = new HttpClient();
+
+                using HttpResponseMessage response = await client.PostAsync(
+       url,
+       jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok("Success");
+                }
+                else
+                {
+                    return Ok("Invalid Credentials");
+                }
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
 
 
     }
