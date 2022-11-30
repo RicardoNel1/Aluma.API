@@ -243,7 +243,7 @@ namespace Aluma.API.Controllers
                 using var client = new HttpClient();
 
                 using HttpResponseMessage response = await client.PostAsync(
-       AstuteServiceURL + "authentication/ping-authenticate",
+       AstuteServiceURL + "api/authentication/ping-authenticate",
        jsonContent);
 
                 if (response.IsSuccessStatusCode)
