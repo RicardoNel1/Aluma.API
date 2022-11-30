@@ -230,7 +230,7 @@ namespace Aluma.API.Controllers
         [HttpPost("ping-authenticate"), AllowAnonymous]
         public async Task<IActionResult> AstutePingAuthAsync(AuthRequestObject authRequestObject)
         {
-            string AstuteServiceURL = _config.GetSection("SystemSettings").Get<SystemSettingsDto>().AstuteServiceURL;
+            string AstuteServiceURL = _config.GetSection("FSAS").Get<FSASConfigDto>().BaseUrl;
 
             try
             {
