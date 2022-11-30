@@ -27,17 +27,14 @@ namespace Aluma.API.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitCCP(ClientDto dto)
         {
-
            var claimsDto =  _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
             try
             {
-
                 AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
 
                 var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials);
-                return Ok(ccp);
-                
+                return Ok(ccp);                
             }
             catch (Exception e)
             {
