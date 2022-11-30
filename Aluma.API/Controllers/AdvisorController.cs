@@ -230,6 +230,8 @@ namespace Aluma.API.Controllers
         [HttpPost("ping-authenticate"), AllowAnonymous]
         public async Task<IActionResult> AstutePingAuthAsync(AuthRequestObject authRequestObject)
         {
+            string AstuteServiceURL = _config.GetSection("SystemSettings").Get<SystemSettingsDto>().AstuteServiceURL;
+
             try
             {
                 //var advisor = _repo.Advisor.GetAstuteAdvisorCredential(authRequestObject);
@@ -238,12 +240,10 @@ namespace Aluma.API.Controllers
         Encoding.UTF8,
         "application/json");
 
-                var url = "https://localhost:44386/api/authentication/ping-authenticate";
-
                 using var client = new HttpClient();
 
                 using HttpResponseMessage response = await client.PostAsync(
-       url,
+       AstuteServiceURL + "authentication/ping-authenticate",
        jsonContent);
 
                 if (response.IsSuccessStatusCode)
