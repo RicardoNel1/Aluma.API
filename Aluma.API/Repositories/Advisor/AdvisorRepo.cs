@@ -303,7 +303,14 @@ namespace Aluma.API.Repositories
             CredentialCrypt credentialCrypt = new CredentialCrypt();
 
             AdvisorAstuteModel advisor = _context.AdvisorsAstute.Include(a => a.Advisor.User).Where(a => a.Advisor.UserId == userId).FirstOrDefault();
-            advisor.Password = credentialCrypt.DecryptFromHash(advisor.Password);
+            if (advisor == null)
+            {
+                return new AdvisorAstuteDto();
+            }
+            else
+            {
+                advisor.Password = credentialCrypt.DecryptFromHash(advisor.Password);
+            }
 
             return _mapper.Map<AdvisorAstuteDto>(advisor);
         }
