@@ -46,6 +46,7 @@ namespace DataService.Dto
     public class PolicyDto
     {
         public string PolicyNumber { get; set; }
+        public double Premium { get; set; }
         public double TotalPremium { get; set; }
         public DateTime PolicyStartDate { get; set; }
         public DateTime PolicyEndDate { get; set; }
