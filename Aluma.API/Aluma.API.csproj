@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BankValidationService\BankValidationService.csproj" />
+    <ProjectReference Include="..\ClientVerificationService\ClientVerificationService.csproj" />
     <ProjectReference Include="..\DataService\DataService.csproj" />
     <ProjectReference Include="..\FileStorageService\FileStorageService.csproj" />
     <ProjectReference Include="..\FintegrateSharedAstuteService\FintegrateSharedAstuteService.csproj" />

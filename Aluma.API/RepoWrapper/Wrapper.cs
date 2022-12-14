@@ -3,6 +3,7 @@ using Aluma.API.Repositories;
 using AutoMapper;
 using Azure.Storage.Files.Shares;
 using BankValidationService;
+using ClientVerificationService;
 using DataService.Context;
 using FileStorageService;
 using FintegrateSharedAstuteService;
@@ -90,6 +91,7 @@ namespace Aluma.API.RepoWrapper
         private IKycFactoryRepo _kyc;
         private IBankValidationServiceRepo _bankValidation;
         private IFSASRepo _fsas;
+        private IClientVerificationServiceRepo _clientVerification;
         private IIDVServiceRepo _idv;
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
@@ -410,7 +412,12 @@ namespace Aluma.API.RepoWrapper
         {
             get { return _fsas == null ? new FSASRepo(_dbContext, _mapper) : _fsas; }
         }
-        
+
+        public IClientVerificationServiceRepo ClientVerificationServiceRepo
+        {
+            get { return _clientVerification == null ? new ClientVerificationServiceRepo(_dbContext, _mapper) : _clientVerification; }
+        }
+
         public IIDVServiceRepo IDVRepo
         {
             get { return _idv == null ? new IDVServiceRepo() : _idv; }
