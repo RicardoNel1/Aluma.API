@@ -5,20 +5,20 @@ using RestSharp;
 using System.IO;
 using System.Net.Http;
 
-namespace BankValidationService
+namespace Aluma.API.Repositories
 {
-    public interface IBankValidationServiceRepo
+    public interface IAVSRepo
     {
         BankValidationResponseDto StartBankValidation(BankDetailsDto dto);
 
         VerificationStatusResponse GetBankValidationStatus(string jobId);
     }
 
-    public class BankValidationServiceRepo : IBankValidationServiceRepo
+    public class AVSRepo : IAVSRepo
     {
         public readonly SettingsDto _settings;
 
-        public BankValidationServiceRepo()
+        public AVSRepo()
         {
             var config = new ConfigurationBuilder();
             // Get current directory will return the root dir of Base app as that is the running application
@@ -32,10 +32,12 @@ namespace BankValidationService
 
         public BankValidationResponseDto StartBankValidation(BankDetailsDto dto)
         {
+            string tokenResponse = Authenticate(_settings.Memberkey, _settings.Password);
+
             var client = new RestClient($"{_settings.BaseUrl}/api/AVS");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
+            request.AddHeader("Authorization", $"Basic ${tokenResponse}");
             request.AddHeader("Accept", "application/json");
             request.AddParameter("application/json", JsonConvert.SerializeObject(dto), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
@@ -50,12 +52,13 @@ namespace BankValidationService
 
         public VerificationStatusResponse GetBankValidationStatus(string jobId)
         {
+            string tokenResponse = Authenticate(_settings.Memberkey, _settings.Password);
+
             var client = new RestClient($"{_settings.BaseUrl}/api/AVS");
             client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
+            var request = new RestRequest(Method.GET);
             request.AddHeader("Accept", "application/json");
-            request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
-            request.AddHeader("Content-Type", "multipart/form-data");
+            request.AddHeader("Authorization", $"Basic {tokenResponse}");
             request.AlwaysMultipartFormData = true;
             request.AddParameter("memberkey", _settings.Memberkey.ToString());
             request.AddParameter("password", _settings.Password.ToString());
@@ -66,6 +69,35 @@ namespace BankValidationService
                 throw new HttpRequestException("Error while trying to start Bank Account Validation Status");
 
             return JsonConvert.DeserializeObject<VerificationStatusResponse>(response.Content);
+        }
+
+        public string Authenticate(string _Username, string _Password)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}/api/Authentication");
+
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            AuthenticationDto _authDto = new AuthenticationDto()
+            {
+                UserName = _Username,
+                Password = _Password,
+            };
+
+            request.AddParameter("application/json", JsonConvert.SerializeObject(_authDto), ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new HttpRequestException("Error while trying to start Client Verification Authentication");
+                return "Error";
+            }
+
+
+            AuthResponseObject responseData = JsonConvert.DeserializeObject<AuthResponseObject>(response.Content);
+
+            return responseData.Token;
+
         }
     }
 }
