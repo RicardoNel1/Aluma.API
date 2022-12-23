@@ -62,7 +62,7 @@ namespace ClientVerificationService
         {
             string tokenResponse = Authenticate(_settings.Memberkey, _settings.Password);
 
-            var client = new RestClient($"{_settings.BaseUrl}api/PBSAAMLScreening/result");
+            var client = new RestClient($"{_settings.BaseUrl}/api/PBSAAMLScreening/result");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
