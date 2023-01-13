@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Aluma.API.Repositories
 {
@@ -20,6 +21,9 @@ namespace Aluma.API.Repositories
         string VerifyOTP(string otp, int userId, int applicationId = 0);
 
         string SendOTP(UserDto user, OtpTypesEnum otpType, int applicationId = 0);
+
+        string ResendOTP(UserDto user);
+        string GetOtpTypeMessage(UserDto user);
 
         Task SendOTPEmail(UserDto user, OtpTypesEnum otpType, int applicationId = 0);
     }
@@ -107,6 +111,77 @@ namespace Aluma.API.Repositories
                 result = "Could not send sms at this time.Please try again later, or contact support.";
             }
             return result;
+        }
+
+        public string ResendOTP(UserDto user)
+        {
+            SmsService.SmsRepo smsService = new();
+            string result = string.Empty;
+            try
+            {
+                var userOtp = _context.Otp.Where(o => o.UserId == user.Id && o.isExpired == false && o.isValidated == false).OrderByDescending(d => d.Created).First();
+
+                string otpMessage = userOtp.OtpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + userOtp.Otp
+                     : userOtp.OtpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + userOtp.Otp
+                     : userOtp.OtpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + userOtp.Otp
+                     : userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + userOtp.Otp
+                     : "Aluma Capital: Herewith your OTP for resetting your password - " + userOtp.Otp;
+
+                OtpModel newOtp = new()
+                {
+                    Otp = userOtp.Otp,
+                    OtpType = userOtp.OtpType,
+                    Created = DateTime.Now,
+                    CreatedBy = 00,
+                    isExpired = false,
+                    isValidated = false,
+                    UserId = user.Id
+                };
+
+                bool sent = smsService.SendOtp(user.MobileNumber, otpMessage);
+
+                if (!sent)
+                {
+                    result = "Could not send sms at this time. Please try again later, or contact support.";
+                }
+                else
+                {
+                    result = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+                //log error
+                result = "Could not send sms at this time.Please try again later, or contact support.";
+            }
+            return result;
+        }
+
+        public string GetOtpTypeMessage(UserDto user)
+        {
+            var message = "";
+            var userOtp = _context.Otp.Where(o => o.UserId == user.Id && o.isExpired == false && o.isValidated == false).OrderByDescending(d => d.Created).First();
+            if(userOtp.OtpType == OtpTypesEnum.Registration)
+            {
+                message = "verifyRegistration";
+            }
+            if (userOtp.OtpType == OtpTypesEnum.Login)
+            {
+                message = "verifyLogin";
+            }
+            if (userOtp.OtpType == OtpTypesEnum.ResetPassword)
+            {
+                message = "verifyResetPassword";
+            }
+            if (userOtp.OtpType == OtpTypesEnum.SignDocument)
+            {
+                message = "verifySignature";
+            }
+            if (userOtp.OtpType == OtpTypesEnum.Consent)
+            {
+                message = "verifyConsent";
+            }
+            return message;
         }
 
         public string VerifyOTP(string userOtp, int userId, int applicationId = 0)
