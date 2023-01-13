@@ -417,7 +417,6 @@ namespace Aluma.API.Helpers
                 NLog.LogManager.Shutdown();
             }
         }
-
         public async Task SendAdvisorWelcomeEmail(AdvisorModel advisor)
         {
             UserMail um = new()
@@ -494,6 +493,75 @@ namespace Aluma.API.Helpers
             finally
             {
                 // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                NLog.LogManager.Shutdown();
+            }
+        }
+
+        public async Task SendWeeklyFNAReport()
+        {
+            UserMail um = new()
+            {
+                Email = "justin@fintegratetech.co.za",
+                Name = "Test",
+                Subject = "Test",
+                Template = "FNAWeeklyReport"
+            };
+
+            try
+            {
+                var message = new MailMessage
+                {
+                    From = new MailAddress(mailSettings.Username),
+                    Subject = um.Subject,
+                    IsBodyHtml = true,
+
+                };
+
+                message.To.Add(new MailAddress("justin@fintegratetech.co.za"));
+                //message.Bcc.Add(new MailAddress("system@aluma.co.za"));
+
+                char slash = Path.DirectorySeparatorChar;
+                string templatePath = $"{_host.WebRootPath}{slash}html{slash}{um.Template}.html";
+
+                // Create Body Builder
+                MimeKit.BodyBuilder bb = new();
+
+                // Create streamreader to read content of the the given template
+                using (StreamReader sr = File.OpenText(templatePath))
+                {
+                    bb.HtmlBody = sr.ReadToEnd();
+                }
+
+                var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-private-equity.jpg";
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, "TestName");
+
+                message.Body = bb.HtmlBody;
+
+
+                var smtpClient = new SmtpClient
+
+                {
+                    Host = "smtp.office365.com",
+                    Port = 587,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential(mailSettings.Username, mailSettings.Password),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    EnableSsl = true,
+
+                };
+
+                smtpClient.Send(message);
+
+                message.Dispose();
+                return;
+
+            }
+            catch (System.Exception ex)
+            {
+                return;
+            }
+            finally
+            {
                 NLog.LogManager.Shutdown();
             }
         }
