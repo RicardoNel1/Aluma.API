@@ -325,8 +325,8 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpPost("resend-otp"), AllowAnonymous]
-        public IActionResult ResendOTP(LoginDto dto)
+        [HttpPost("send-otp"), AllowAnonymous]
+        public IActionResult SendOTP(LoginDto dto)
         {
             AuthResponseDto response = new();
             bool registrationVerified = false;
@@ -354,6 +354,28 @@ namespace Aluma.API.Controllers
                     response.Message = "verifyLogin";
                     return Ok(response);
                 }
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost("resend-otp"), AllowAnonymous]
+        public IActionResult ResendOTP(LoginDto dto)
+        {
+            AuthResponseDto response = new();
+            UserDto user = new();
+
+            try
+            {
+                user = _repo.User.GetUser(dto);
+                //Send Two-Factor Auth OTP
+                _repo.Otp.ResendOTP(user);
+                response.Message = _repo.Otp.GetOtpTypeMessage(user);
+                return Ok(response);
             }
             catch (Exception e)
             {
