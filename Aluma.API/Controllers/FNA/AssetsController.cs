@@ -1,4 +1,6 @@
-﻿using Aluma.API.RepoWrapper;
+﻿using Aluma.API.Repositories;
+using Aluma.API.Repositories.FNA;
+using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -365,6 +367,21 @@ namespace Aluma.API.Controllers
                 }
 
                 return BadRequest(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("fnaweekly"), AllowAnonymous]
+        public IActionResult FNAWeeklyReport()
+        {
+            try
+            {
+                List<CompletedFNADto> dtoList = _repo.CompletedFNA.GetCompletedFNA();
+
+                return Ok(dtoList);
             }
             catch (Exception e)
             {

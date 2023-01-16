@@ -75,6 +75,7 @@ namespace Aluma.API.RepoWrapper
         private IProvidingDisabilitySummaryRepo _providingDisabilitySummary;
         private IRetirementSummaryRepo _retirementSummary;
         private IEconomyVariablesSummaryRepo _economyVariablesSummary;
+        private ICompletedFNARepo _completedFNA;
 
 
         private IFIRepo _fi;
@@ -334,6 +335,11 @@ namespace Aluma.API.RepoWrapper
         public IEconomyVariablesSummaryRepo EconomyVariablesSummary
         {
             get { return _economyVariablesSummary == null ? new EconomyVariablesSummaryRepo(_dbContext, _host, _config, _mapper) : _economyVariablesSummary; }
+        }
+
+        public ICompletedFNARepo CompletedFNA
+        {
+            get { return _completedFNA == null ? new CompletedFNARepo(_dbContext, _host, _config, _mapper) : _completedFNA; }
         }
 
         // Short-term Insurance
