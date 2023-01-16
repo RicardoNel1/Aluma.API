@@ -11,12 +11,13 @@ using Microsoft.Extensions.Configuration;
 using Aluma.API.Helpers;
 using System.Threading.Tasks;
 using FileStorageService;
+using iText.Layout.Element;
 
 namespace Aluma.API.Repositories
 {
     public interface ICompletedFNARepo : IRepoBase<CompletedFNADto>
     {
-        public Task<List<CompletedFNADto>> GetCompletedFNA();
+        public Task<List<CompletedFNACountDto>> GetCompletedFNA();
         //EconomyVariablesDto UpdateEconomyVariablesSummary(EconomyVariablesDto dto);
     }
     public class CompletedFNARepo : RepoBase<CompletedFNADto>, ICompletedFNARepo
@@ -38,7 +39,7 @@ namespace Aluma.API.Repositories
             _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
-        public async Task<List<CompletedFNADto>> GetCompletedFNA()
+        public async Task<List<CompletedFNACountDto>> GetCompletedFNA()
         {
             var query = (from f in _context.clientFNA
                          join c in _context.Clients on f.ClientId equals c.Id
@@ -46,17 +47,52 @@ namespace Aluma.API.Repositories
                          join a in _context.Advisors on f.AdvisorId equals a.Id
                          join b in _context.Users on a.UserId equals b.Id
                          where b.FirstName != "System"
+                         && f.Created.Month == DateTime.Now.Month
+                         //group f by b.FirstName + " " + b.LastName into g
                          orderby f.Created descending
                          select new CompletedFNADto
                          {
                              Client = u.FirstName + " " + u.LastName,
-                             Advisor = b.FirstName + " " + b.LastName,
-                             Created = f.Created
+                             Advisor = b.FirstName + " " + b.LastName
+                             //Created = f.Created
                          }).ToList();
 
-            await _ms.SendWeeklyFNAReport(query);
+   
+            var distinctAdvisor = new List<string>();
+            var fnaCount = new List<int>();
 
-            return query;
+            //CompletedFNACountDto fnaCountDto = new CompletedFNACountDto
+            //{
+            //    Advisor = "",
+            //    FNAsCompleted = 0,
+            //};
+
+            List<CompletedFNACountDto> fNAsCompleted = new List<CompletedFNACountDto>();
+
+            foreach (string advisor in query.Select(x => x.Advisor).Distinct())
+            {
+                distinctAdvisor.Add(advisor);
+            }                      
+
+            foreach (var advisor in distinctAdvisor)
+            {
+                var count = query.Where(x => x != null && x.Advisor == advisor).Count();
+
+                //distinctAdvisor               
+
+                CompletedFNACountDto fnaCountDto = new CompletedFNACountDto {
+                    Advisor = advisor,
+                    FNAsCompleted = count
+                };
+
+                fNAsCompleted.Add(fnaCountDto);
+
+
+            }
+
+            await _ms.SendWeeklyFNAReport(fNAsCompleted);
+
+            return fNAsCompleted;
         }
 
     }

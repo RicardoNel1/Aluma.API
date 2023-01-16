@@ -500,7 +500,7 @@ namespace Aluma.API.Helpers
             }
         }
 
-        public async Task SendWeeklyFNAReport(List<CompletedFNADto> dataList)
+        public async Task SendWeeklyFNAReport(List<CompletedFNACountDto> dataList)
         {
             UserMail um = new()
             {
@@ -537,13 +537,15 @@ namespace Aluma.API.Helpers
 
                 var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-private-equity.jpg";
 
-                List<string> clientList = dataList.Select(x => x.Client).ToList();
+                List<string> advisorList = dataList.Select(x => x.Advisor).ToList();
+                List<int> fnaCount = dataList.Select(x => x.FNAsCompleted).ToList();
 
                 var listItems = "";
 
-                for (var i = 0; i < clientList.Count; i++)
+                for (var i = 0; i < advisorList.Count; i++)
                 {
-                    listItems += "<li>" + clientList[i] + "</li>";
+
+                    listItems += "<li>" + advisorList[i] + fnaCount[i] + "</li>";
                 }
 
 
