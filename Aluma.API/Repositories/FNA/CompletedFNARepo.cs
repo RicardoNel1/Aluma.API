@@ -8,12 +8,15 @@ using DataService.Dto;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Aluma.API.Helpers;
+using System.Threading.Tasks;
+using FileStorageService;
 
 namespace Aluma.API.Repositories
 {
     public interface ICompletedFNARepo : IRepoBase<CompletedFNADto>
     {
-        List<CompletedFNADto> GetCompletedFNA();
+        public Task<List<CompletedFNADto>> GetCompletedFNA();
         //EconomyVariablesDto UpdateEconomyVariablesSummary(EconomyVariablesDto dto);
     }
     public class CompletedFNARepo : RepoBase<CompletedFNADto>, ICompletedFNARepo
@@ -22,6 +25,8 @@ namespace Aluma.API.Repositories
         private readonly IWebHostEnvironment _host;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly IFileStorageRepo _fileStorage;
+        MailSender _ms;
 
 
         public CompletedFNARepo(AlumaDBContext databaseContext, IWebHostEnvironment host, IConfiguration config, IMapper mapper) : base(databaseContext)
@@ -30,9 +35,10 @@ namespace Aluma.API.Repositories
             _host = host;
             _config = config;
             _mapper = mapper;
+            _ms = new MailSender(_context, _config, _fileStorage, _host);
         }
 
-        public List<CompletedFNADto> GetCompletedFNA()
+        public async Task<List<CompletedFNADto>> GetCompletedFNA()
         {
             var query = (from f in _context.clientFNA
                          join c in _context.Clients on f.ClientId equals c.Id
@@ -47,6 +53,9 @@ namespace Aluma.API.Repositories
                              Advisor = b.FirstName + " " + b.LastName,
                              Created = f.Created
                          }).ToList();
+
+            await _ms.SendWeeklyFNAReport(query);
+
             return query;
         }
 

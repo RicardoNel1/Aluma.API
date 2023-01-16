@@ -373,21 +373,7 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet("fnaweekly"), AllowAnonymous]
-        public IActionResult FNAWeeklyReport()
-        {
-            try
-            {
-                List<CompletedFNADto> dtoList = _repo.CompletedFNA.GetCompletedFNA();
-
-                return Ok(dtoList);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+              
 
     }
 }
