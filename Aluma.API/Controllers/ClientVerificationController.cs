@@ -13,7 +13,7 @@ using DataService.Dto.ClientVerification;
 
 namespace Aluma.API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Roles = "Advisor,Admin")]
+    [ApiController, Route("api/[controller]")]
     public class ClientVerificationController : ControllerBase
     {
         private readonly IWrapper _repo;
@@ -23,6 +23,21 @@ namespace Aluma.API.Controllers
         {
             _repo = repo;
             _mapper = mapper;
+        }
+
+        [HttpPost("submit-facetec"), AllowAnonymous]
+        public async Task<IActionResult> SubmitFacetecScreening(FacetecScreeningRequestDto request)
+        {
+            try
+            {
+                FacetecScreeningResponsesDto details = _repo.ClientVerificationServiceRepo.SubmitFacetecScreening(request);
+
+                return Ok(details);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpPost("submit"), AllowAnonymous]
