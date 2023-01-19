@@ -191,21 +191,12 @@ namespace Aluma.API.Controllers
 
         [HttpPut("astute"), AllowAnonymous]
         public IActionResult UpdateAstuteAdvisor(AdvisorAstuteDto dto)
-        {
-            UserDto AstuteUserDto = new UserDto { Id = dto.AdvisorId };
-            AstuteUserDto = _repo.User.GetUser(AstuteUserDto);
+        {            
             try
             {
-                bool advisorAstuteExists = _repo.Advisor.DoesAdvisorExist(AstuteUserDto);
-                if (!advisorAstuteExists)
-                {
-                    return BadRequest("Astute Advisor Does Not Exist");
-                }
-                else
-                {
-                    var advisorAstute = _repo.Advisor.UpdateAdvisorAstute(dto);
-                    return Ok(advisorAstute);
-                }
+                var advisorAstute = _repo.Advisor.UpdateAdvisorAstute(dto);
+                return Ok(advisorAstute);
+                
             }
             catch (Exception e)
             {
