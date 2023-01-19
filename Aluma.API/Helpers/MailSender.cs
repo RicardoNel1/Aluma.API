@@ -1,4 +1,5 @@
 ﻿
+using Aluma.API.Repositories;
 using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
@@ -8,6 +9,8 @@ using JwtService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
+using Org.BouncyCastle.Utilities.Net;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -497,7 +500,7 @@ namespace Aluma.API.Helpers
             }
         }
 
-        public async Task SendWeeklyFNAReport()
+        public async Task SendWeeklyFNAReport(List<CompletedFNACountDto> dataList)
         {
             UserMail um = new()
             {
@@ -533,7 +536,22 @@ namespace Aluma.API.Helpers
                 }
 
                 var imgSrc = $"{systemSettings.ApiUrl}{slash}img{slash}email-banner-private-equity.jpg";
-                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, "TestName");
+
+                List<string> advisorList = dataList.Select(x => x.Advisor).ToList();
+                List<int> fnaCount = dataList.Select(x => x.FNAsCompleted).ToList();
+
+                var listItems = "";
+
+                for (var i = 0; i < advisorList.Count; i++)
+                {
+
+                    listItems += "<li>" + advisorList[i] + fnaCount[i] + "</li>";
+                }
+
+
+
+                bb.HtmlBody = string.Format(bb.HtmlBody, imgSrc, "TestName", listItems);
+
 
                 message.Body = bb.HtmlBody;
 

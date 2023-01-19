@@ -78,6 +78,8 @@ namespace Aluma.API.RepoWrapper
         IRetirementSummaryRepo RetirementSummary{ get; }
         IEconomyVariablesSummaryRepo EconomyVariablesSummary { get; }
 
+        ICompletedFNARepo CompletedFNA { get; }
+
         //Shared
         IDisclosureRepo Disclosures { get; }
 
