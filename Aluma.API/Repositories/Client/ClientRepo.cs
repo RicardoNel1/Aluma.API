@@ -328,7 +328,7 @@ namespace Aluma.API.Repositories
 
         public ClientDto UpdateClient(ClientDto dto)
         {
-            UserModel user = _context.Users.Where(x => x.Id == dto.UserId).FirstOrDefault();
+            UserModel user = _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).FirstOrDefault();
             ClientModel client = _mapper.Map<ClientModel>(dto);
 
             Boolean verifyID;
@@ -346,8 +346,6 @@ namespace Aluma.API.Repositories
             user.DateOfBirth = dto.User.DateOfBirth;
 
 
-            //set client fields to be updated
-            client.User = user;
 
 
             if (verifyID)
