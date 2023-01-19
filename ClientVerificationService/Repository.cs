@@ -2,6 +2,8 @@
 using DataService.Context;
 using DataService.Dto;
 using DataService.Dto.ClientVerification;
+using DataService.Model;
+using DataService.Model.Client;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
@@ -16,6 +18,8 @@ namespace ClientVerificationService
         AMLScreeningSubmitResponseDto SubmitAMLScreening(AMLScreeningSubmitRequestDto request);
 
         AMLScreeningResultResponseDto ResultAMLScreening(AMLScreeningResultRequestDto request);
+
+        FacetecScreeningResponsesDto SubmitFacetecScreening(FacetecScreeningRequestDto dto);
     }
     public class ClientVerificationServiceRepo : IClientVerificationServiceRepo
     {
@@ -33,6 +37,29 @@ namespace ClientVerificationService
             _settings = root.GetSection("ClientVerificationService").Get<ClientVerificationServiceDto>();
             _context = databaseContext;
             _mapper = mapper;
+        }
+
+        public FacetecScreeningResponsesDto SubmitFacetecScreening(FacetecScreeningRequestDto requestDto)
+        {
+            string tokenResponse = Authenticate(_settings.Memberkey, _settings.Password);
+
+            var client = new RestClient($"{_settings.BaseUrl}api/FacetecScreening/submit");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            //request.AddHeader("Content-Type", "multipart/form-data");
+            //request.AlwaysMultipartFormData = true;
+            request.AddHeader("Authorization", $"Basic {tokenResponse}");
+            request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to submit AML screening");
+
+            FacetecScreeningResponsesDto responseData = JsonConvert.DeserializeObject<FacetecScreeningResponsesDto>(response.Content);
+
+            return responseData;
         }
 
         public AMLScreeningSubmitResponseDto SubmitAMLScreening(AMLScreeningSubmitRequestDto requestDto)
