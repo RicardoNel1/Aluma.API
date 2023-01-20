@@ -16,6 +16,7 @@ namespace DataService.Model.Client
         public ClientModel Client { get; set; }
         public int Id { get; set; }
         public int ClientId { get; set; }
+        public bool OtpVerified { get; set; }
 
         public List<ClientConsentProvidersModel> ConsentedProviders { get; set; }
 

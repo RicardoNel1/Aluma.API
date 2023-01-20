@@ -36,6 +36,20 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpPut, AllowAnonymous]
+        public async Task<IActionResult> VerifyConsentAsync([FromBody] int clientId)
+        {
+            try
+            {
+                await _repo.Client.VerifyConsent(clientId);
+                return Ok(clientId);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("financial-providers")]
         public IActionResult GetFinancialProviders()
         {
