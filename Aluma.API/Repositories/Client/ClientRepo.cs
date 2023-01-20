@@ -671,6 +671,14 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
+        //public List<FinancialProviderDto> GetFinancialProvidersById(ClientConsentProviderDto dto)
+        //{
+        //    List<FinancialProviderModel> financialProvider = _context.FinancialProviders.Where(x => x.Id == dto.FinancialProviderId).ToList();
+        //    List<FinancialProviderDto> data = _mapper.Map<List<FinancialProviderDto>>(financialProvider);
+
+        //    return data;
+        //}
+
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
             ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
