@@ -33,6 +33,8 @@ namespace Aluma.API.Repositories
 
         public bool DeleteClient(ClientDto dto);
         Task<ClientConsentDto> SaveConsentForm(ClientConsentDto dto);
+
+        Task<ClientConsentDto> VerifyConsent(int clientId);
         public List<FinancialProviderDto> GetFinancialProviders();
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId);
 
@@ -351,57 +353,14 @@ namespace Aluma.API.Repositories
             if (verifyID)
             {
                 IDVModel idv = UpdateIDV(dto);
-                //IDVServiceRepo _idv = new IDVServiceRepo();
-                //var token = _idv.StartAuthentication();
-                //var results = _idv.StartIDVerification(dto, token);
-                //if (results.Status == "Success")
-                //{
-
-                //    IDVModel idv = _context.IDV.Where(x => x.ClientId == client.Id).FirstOrDefault();
-                //    if (idv == null)
-                //    {
-                //        idv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                //        idv.ClientId = dto.Id;
-                //    }
-
-                //    IDVModel updatedIdv = _mapper.Map<IDVModel>(results.RealTimeResult);
-                //    var idvId = idv.Id;
-
-                //    idv.TraceId = updatedIdv.TraceId;
-                //    idv.IdNumber = updatedIdv.IdNumber;
-                //    idv.IdNoMatchStatus = updatedIdv.IdNoMatchStatus;
-                //    idv.IdBookIssuedDate = updatedIdv.IdBookIssuedDate;
-                //    idv.IdCardInd = updatedIdv.IdCardInd;
-                //    idv.IdBlocked = updatedIdv.IdBlocked;
-                //    idv.Surname = updatedIdv.Surname;
-                //    idv.Age = updatedIdv.Age;
-                //    idv.Gender = updatedIdv.Gender;
-                //    idv.Citizenship = updatedIdv.Citizenship;
-                //    idv.CountryofBirth = updatedIdv.CountryofBirth;
-                //    idv.DeceasedStatus = updatedIdv.DeceasedStatus;
-                //    idv.DeceasedDate = updatedIdv.DeceasedDate;
-                //    idv.DeathPlace = updatedIdv.DeathPlace;
-                //    idv.CauseOfDeath = updatedIdv.CauseOfDeath;
-                //    idv.MaritalStatus = updatedIdv.MaritalStatus;
-                //    idv.MarriageDate = updatedIdv.MarriageDate;
 
                 if (idv.Surname != "" && idv.Surname != null)
                 {
-                    //client.CountryOfResidence = idv.CountryofBirth;
-                    //client.CountryOfBirth = idv.CountryofBirth;
-                    //client.Nationality = idv.Citizenship;
-                    //if (idv.MarriageDate != "" && idv.MarriageDate != null)           //inconsistent date format from PB
-                    //{ 
-                    //    client.MaritalDetails.DateOfMarriage = idv.MarriageDate.Substring(0,4)+"-"+ idv.MarriageDate.Substring(4, 2)+"-"+ idv.MarriageDate.Substring(6, 2)+ "T22:00:00.000Z";
-                    //}
                     client.User.isIdVerified = true;
                     _context.Clients.Update(client);
                 }
                 else client.User.isIdVerified = false;
 
-                //    _context.IDV.Update(idv);
-                //}
-                //else client.User.isIdVerified = false;
             }
 
             _context.Update(client);
@@ -433,9 +392,6 @@ namespace Aluma.API.Repositories
             FspMandateRepo fspRepo = new(_context, _host, _config, _mapper, _fileStorage);
             fspRepo.GenerateMandate(client, advisor, fsp);
 
-            //FNA
-            //FNARepo fnaRepo = new FNARepo(_context, _host, _config, _mapper, _fileStorage);
-            //fnaRepo.GenerateFNA(client, advisor, fna);
 
         }
 
@@ -663,6 +619,18 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
+        public async Task<ClientConsentDto> VerifyConsent(int clientId)
+        {
+            ClientConsentModel cc = _context.ClientConsentModels.Where(u => u.ClientId == clientId).FirstOrDefault();
+            cc.OtpVerified = true;
+            _context.ClientConsentModels.Update(cc);
+            _context.SaveChanges();
+
+            ClientConsentDto dto = _mapper.Map<ClientConsentDto>(cc);
+
+            return dto;
+        }
+
         public List<FinancialProviderDto> GetFinancialProviders()
         {
             List<FinancialProviderModel> financialProvider = _context.FinancialProviders.ToList();
@@ -681,7 +649,7 @@ namespace Aluma.API.Repositories
 
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
-            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
+            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).Where(o => o.OtpVerified).OrderByDescending(c => c.Created).First();
 
             List<ClientConsentProviderDto> dto = _mapper.Map<List<ClientConsentProviderDto>>(clientConsentedList.ConsentedProviders);
 

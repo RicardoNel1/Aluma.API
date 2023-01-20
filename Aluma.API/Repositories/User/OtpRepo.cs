@@ -78,7 +78,7 @@ namespace Aluma.API.Repositories
                 string otpMessage = otpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + newOtpNumber
                     : otpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + newOtpNumber
                     : otpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + newOtpNumber
-                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + newOtpNumber
+                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + newOtpNumber + " to obtain your personal information from the following institutions: " 
                     : "Aluma Capital: Herewith your OTP for resetting your password - " + newOtpNumber;
 
 
@@ -96,7 +96,9 @@ namespace Aluma.API.Repositories
 
                         foreach (FinancialProviderModel provider in financialProviderList)
                         {
-                            otpMessage += ", " + provider.Name;
+                            otpMessage += " " + provider.Name + ", ";
+                             
+
                         }
                     }
 
