@@ -124,6 +124,13 @@ namespace Aluma.API.Controllers
                 UserDto user = new();
                 bool clientExist = _repo.Client.DoesClientExist(dto);
                 bool idExists = _repo.Client.DoesIDExist(dto);
+                bool mobileNumberExists = _repo.Client.DoesMobileNumberExist(dto);
+                if (mobileNumberExists)
+                {
+                    dto.Status = "Failure";
+                    dto.Message = "Invalid-MobileNumber";
+                    return StatusCode(405, dto);
+                }
                 if (idExists)
                 {
                     dto.Status = "Failure";
