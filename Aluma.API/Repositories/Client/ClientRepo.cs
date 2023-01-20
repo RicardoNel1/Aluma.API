@@ -292,6 +292,8 @@ namespace Aluma.API.Repositories
         {
             dto.ClientType = "Primary";
             ClientModel client = _mapper.Map<ClientModel>(dto);
+            _context.Clients.Add(client);
+            _context.SaveChanges();
 
             dto = _mapper.Map<ClientDto>(client);
 
@@ -320,14 +322,15 @@ namespace Aluma.API.Repositories
                 //    _context.IDV.Add(idv);
                 //    _context.SaveChanges();
                 //}
-                _context.Clients.Add(client);
+                //_context.Clients.Add(client);
                 _context.SaveChanges();
             }
             else
             {
-                _context.Clients.Add(client);
-                _context.SaveChanges();
                 client.User.RSAIdNumber = client.Id.ToString();
+                _context.Clients.Update(client);
+                _context.SaveChanges();
+                
             }
 
             //await _ms.SendClientWelcomeEmail(client);
