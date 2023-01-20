@@ -465,8 +465,7 @@ namespace Aluma.API.Repositories
 
                 if (dto.User.Id != 0)
                 {
-
-                    idExists = _context.Users.Where(a => a.Id == dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                    idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
                 }
                 else
                 {
@@ -488,7 +487,15 @@ namespace Aluma.API.Repositories
             {
                 bool mobileNumberExists = false;
 
-                mobileNumberExists = _context.Users.Where(a => a.MobileNumber == dto.User.MobileNumber).Any();
+                if (dto.User.Id != 0)
+                {
+                    mobileNumberExists = _context.Users.Where(a => a.Id != dto.User.Id && a.MobileNumber == dto.User.MobileNumber).Any();
+
+                }
+                else
+                {
+                    mobileNumberExists = _context.Users.Where(a => a.MobileNumber == dto.User.MobileNumber).Any();
+                }
 
                 return mobileNumberExists;
             }
