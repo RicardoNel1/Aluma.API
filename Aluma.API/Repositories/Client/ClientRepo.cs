@@ -426,10 +426,6 @@ namespace Aluma.API.Repositories
                 {
                     idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
                 }
-                else
-                {
-                    idExists = _context.Users.Where(a => a.RSAIdNumber == dto.User.RSAIdNumber).Any();
-                }
 
                 return idExists;
             }
