@@ -124,7 +124,7 @@ namespace Aluma.API.Controllers
                 UserDto user = new();
                 bool clientExist = _repo.Client.DoesClientExist(dto);
                 bool idExists = _repo.Client.DoesIDExist(dto);
-                if (idExists)
+                if (!idExists)
                 {
                     dto.Status = "Failure";
                     dto.Message = "Invalid-RSAID";

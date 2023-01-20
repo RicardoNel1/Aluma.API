@@ -288,10 +288,8 @@ namespace Aluma.API.Repositories
         public async Task<ClientDto> CreateClient(ClientDto dto)
         {
             dto.ClientType = "Primary";
-            //dto.AdvisorId = null;
             ClientModel client = _mapper.Map<ClientModel>(dto);
-            _context.Clients.Add(client);
-            _context.SaveChanges();
+            
             dto = _mapper.Map<ClientDto>(client);
 
             if (client.User.RSAIdNumber != null && !client.User.isIdVerified)
@@ -319,7 +317,14 @@ namespace Aluma.API.Repositories
                 //    _context.IDV.Add(idv);
                 //    _context.SaveChanges();
                 //}
+                _context.Clients.Add(client);
                 _context.SaveChanges();
+            }
+            else
+            {
+                _context.Clients.Add(client);
+                _context.SaveChanges();
+                client.User.RSAIdNumber = client.Id.ToString();
             }
 
             //await _ms.SendClientWelcomeEmail(client);
@@ -460,7 +465,7 @@ namespace Aluma.API.Repositories
                 if (dto.User.Id != 0)
                 {
 
-                    idExists = _context.Users.Where(a => a.Id != dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
+                    idExists = _context.Users.Where(a => a.Id == dto.User.Id && a.RSAIdNumber == dto.User.RSAIdNumber).Any();
                 }
                 else
                 {
