@@ -3,6 +3,7 @@ using Aluma.API.Repositories;
 using Aluma.API.Repositories.FNA;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,6 +24,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpGet("fnaweekly"), AllowAnonymous]
+        [AutomaticRetry(Attempts = 30, DelaysInSeconds = new int[] { 60 })]
         public async Task<IActionResult> FNAWeeklyReportAsync()
         {
             try
@@ -30,16 +32,17 @@ namespace Aluma.API.Controllers
                 var dtoList = await _repo.CompletedFNA.GetCompletedFNA();
                                
                 return Ok(dtoList);
-
-
-                //List<CompletedFNADto> dtoList = _repo.CompletedFNA.GetCompletedFNA();
-
-               // return Ok(dtoList);
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
+
+        //public IActionResult ScheduleFNAWeeklyReport()
+        //{
+        //    RecurringJob.AddOrUpdate<CompletedFNAController>(x => x.FNAWeeklyReportAsync(), Cron.Daily(13, 51));
+        //    return Ok();
+        //}
     }
 }
