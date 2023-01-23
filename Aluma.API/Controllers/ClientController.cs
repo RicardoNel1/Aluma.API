@@ -124,6 +124,13 @@ namespace Aluma.API.Controllers
                 UserDto user = new();
                 bool clientExist = _repo.Client.DoesClientExist(dto);
                 bool idExists = _repo.Client.DoesIDExist(dto);
+                bool mobileNumberExists = _repo.Client.DoesMobileNumberExist(dto);
+                if (mobileNumberExists)
+                {
+                    dto.Status = "Failure";
+                    dto.Message = "Invalid-MobileNumber";
+                    return StatusCode(405, dto);
+                }
                 if (idExists)
                 {
                     dto.Status = "Failure";
@@ -261,6 +268,24 @@ namespace Aluma.API.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet("getClientIDVDetails"), AllowAnonymous]
+        public IActionResult GetIDV(string rsaIdNumber)
+        {
+            try
+            {
+                var token = _repo.IDVRepo.StartAuthentication();
+                IDVRealTimeResponseDto idv = _repo.IDVRepo.StartIDVerification(rsaIdNumber, token);
+
+                return Ok(idv.RealTimeResult);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+               
+
 
         //[HttpGet("test"), AllowAnonymous]
         //public IActionResult TestRepo()

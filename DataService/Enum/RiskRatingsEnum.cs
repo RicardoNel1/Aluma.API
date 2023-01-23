@@ -1,6 +1,4 @@
-﻿using static AutoMapper.Internal.ExpressionFactory;
-
-namespace DataService.Enum
+﻿namespace DataService.Enum
 {
     public enum RiskRatingsEnum
     {

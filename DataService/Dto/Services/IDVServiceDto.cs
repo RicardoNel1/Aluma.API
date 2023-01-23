@@ -56,7 +56,7 @@ namespace DataService.Dto
         public string IdCardDate { get; set; }
         [JsonProperty("idBlocked")]
         public string IdBlocked { get; set; }
-        [JsonProperty("firstNames")]
+        [JsonProperty("firstName")]
         public string FirstName { get; set; }
         [JsonProperty("surName")]
         public string Surname { get; set; }

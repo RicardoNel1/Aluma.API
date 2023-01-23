@@ -1,4 +1,6 @@
 ﻿using DataService.Model;
+using DataService.Model.Advisor;
+using DataService.Model.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
@@ -58,6 +60,7 @@ namespace DataService.Context
         {
             //Advisor
             mb.ApplyConfiguration(new AdvisorModelBuilder());
+            mb.ApplyConfiguration(new AdvisorAstuteModelBuilder());
 
             //Application
             mb.ApplyConfiguration(new ApplicationModelBuilder());
@@ -72,6 +75,7 @@ namespace DataService.Context
             mb.ApplyConfiguration(new FSPModelBuilder());
             mb.ApplyConfiguration(new TaxResidencyModelBuilder());
             mb.ApplyConfiguration(new ConsumerProtectionModelBuilder());
+            mb.ApplyConfiguration(new FinancialProviderModelBuilder());
 
             //User
             mb.ApplyConfiguration(new UserModelBuilder());
@@ -115,6 +119,7 @@ namespace DataService.Context
 
         //Advisor
         public DbSet<AdvisorModel> Advisors { get; set; }
+        public DbSet<AdvisorAstuteModel> AdvisorsAstute { get; set; }
 
         //Application
         public DbSet<ApplicationDocumentModel> ApplicationDocuments { get; set; }
@@ -144,6 +149,8 @@ namespace DataService.Context
         public DbSet<ClientFNAModel> clientFNA { get; set; }
         public DbSet<ClientProductModel> ClientProducts { get; set; }
         public DbSet<EmploymentDetailsModel> EmploymentDetails { get; set; }
+        public DbSet<ClientConsentModel> ClientConsentModels { get; set; }
+        public DbSet<FinancialProviderModel> FinancialProviders { get; set; }
         public DbSet<MaritalDetailsModel> MaritalDetails { get; set; }
         public DbSet<ClientNotesModel> ClientNotes { get; set; }
 

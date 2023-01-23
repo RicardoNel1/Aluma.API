@@ -6,6 +6,7 @@
         public int FNAId { get; set; }
         public string Description { get; set; }
         public string Owner { get; set; }
+        public string Beneficiary { get; set; }
         public double LifeCover { get; set; }
         public double Disability { get; set; }
         public double DreadDisease { get; set; }

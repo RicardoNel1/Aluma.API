@@ -6,5 +6,6 @@
         Registration,
         SignDocument,
         Login,
+        Consent
     }
 }

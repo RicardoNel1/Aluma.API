@@ -3,8 +3,10 @@ using Aluma.API.Repositories;
 using AutoMapper;
 using Azure.Storage.Files.Shares;
 using BankValidationService;
+using ClientVerificationService;
 using DataService.Context;
 using FileStorageService;
+using FintegrateSharedAstuteService;
 using IDVService;
 using JwtService;
 using KycService;
@@ -73,6 +75,7 @@ namespace Aluma.API.RepoWrapper
         private IProvidingDisabilitySummaryRepo _providingDisabilitySummary;
         private IRetirementSummaryRepo _retirementSummary;
         private IEconomyVariablesSummaryRepo _economyVariablesSummary;
+        private ICompletedFNARepo _completedFNA;
 
 
         private IFIRepo _fi;
@@ -88,6 +91,8 @@ namespace Aluma.API.RepoWrapper
         private IJwtRepo _jwt;
         private IKycFactoryRepo _kyc;
         private IBankValidationServiceRepo _bankValidation;
+        private IFSASRepo _fsas;
+        private IClientVerificationServiceRepo _clientVerification;
         private IIDVServiceRepo _idv;
         private readonly ISignatureRepo _signature;
         private IFileStorageRepo _fileStorage;
@@ -332,6 +337,11 @@ namespace Aluma.API.RepoWrapper
             get { return _economyVariablesSummary == null ? new EconomyVariablesSummaryRepo(_dbContext, _host, _config, _mapper) : _economyVariablesSummary; }
         }
 
+        public ICompletedFNARepo CompletedFNA
+        {
+            get { return _completedFNA == null ? new CompletedFNARepo(_dbContext, _host, _config, _mapper) : _completedFNA; }
+        }
+
         // Short-term Insurance
         public IShortTermInsuranceRepo ShortTermInsurance
         {
@@ -402,6 +412,16 @@ namespace Aluma.API.RepoWrapper
         public IBankValidationServiceRepo BankValidationRepo
         {
             get { return _bankValidation == null ? new BankValidationServiceRepo() : _bankValidation; }
+        }
+
+        public IFSASRepo FSASRepo
+        {
+            get { return _fsas == null ? new FSASRepo(_dbContext, _mapper) : _fsas; }
+        }
+
+        public IClientVerificationServiceRepo ClientVerificationServiceRepo
+        {
+            get { return _clientVerification == null ? new ClientVerificationServiceRepo(_dbContext, _mapper) : _clientVerification; }
         }
 
         public IIDVServiceRepo IDVRepo

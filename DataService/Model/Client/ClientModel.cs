@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataService.Dto.Client;
+using DataService.Model.Client;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -40,6 +42,7 @@ namespace DataService.Model
         public ICollection<ClientFNAModel> FNAs { get; set; }
         public ICollection<ApplicationModel> Applications { get; set; }
         public ICollection<BankDetailsModel> BankDetails { get; set; }
+        public ICollection<ClientConsentModel> ClientConsents { get; set; }
         public ICollection<PassportModel> Passports { get; set; }
     }
 
@@ -69,6 +72,11 @@ namespace DataService.Model
             .WithOne(c => c.Client)
             .HasForeignKey<EmploymentDetailsModel>(c => c.ClientId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasOne(c => c.TaxResidency)
+                .WithOne(c => c.Client)
+                .HasForeignKey<TaxResidencyModel>(c => c.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasOne(c => c.TaxResidency)
                 .WithOne(c => c.Client)
@@ -108,6 +116,12 @@ namespace DataService.Model
                   .OnDelete(DeleteBehavior.Cascade);
 
             mb.HasMany(c => c.BankDetails)
+                  .WithOne(c => c.Client)
+                  .HasForeignKey(c => c.ClientId)
+                  .IsRequired()
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            mb.HasMany(c => c.ClientConsents)
                   .WithOne(c => c.Client)
                   .HasForeignKey(c => c.ClientId)
                   .IsRequired()

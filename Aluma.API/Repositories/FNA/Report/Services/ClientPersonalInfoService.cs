@@ -1,19 +1,12 @@
 ﻿using Aluma.API.Helpers.Extensions;
 using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
-using AutoMapper;
-using DataService.Context;
 using DataService.Dto;
 using DataService.Enum;
-using DataService.Model;
-using Microsoft.AspNetCore.Hosting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aluma.API.Repositories.FNA.Report.Service
 {

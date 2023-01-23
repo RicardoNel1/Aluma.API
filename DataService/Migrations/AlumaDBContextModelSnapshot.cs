@@ -160,10 +160,10 @@ namespace DataService.Migrations
                             City = "Pretoria",
                             ComplexName = "FinTech Campus",
                             Country = "South Africa",
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 779, DateTimeKind.Local).AddTicks(9373),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 665, DateTimeKind.Local).AddTicks(9280),
                             CreatedBy = 0,
                             InCareAddress = false,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 779, DateTimeKind.Local).AddTicks(9387),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 665, DateTimeKind.Local).AddTicks(9310),
                             ModifiedBy = 0,
                             PostalCode = "0081",
                             StreetName = "Cnr Illanga and Botterklapper",
@@ -179,10 +179,10 @@ namespace DataService.Migrations
                             City = "Johannesburg",
                             ComplexName = "Postnet Suite 33",
                             Country = "South Africa",
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 780, DateTimeKind.Local).AddTicks(2130),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 666, DateTimeKind.Local).AddTicks(3214),
                             CreatedBy = 0,
                             InCareAddress = false,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 780, DateTimeKind.Local).AddTicks(2135),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 666, DateTimeKind.Local).AddTicks(3220),
                             ModifiedBy = 0,
                             PostalCode = "2157",
                             StreetName = "Private Bag X 26",
@@ -239,6 +239,42 @@ namespace DataService.Migrations
                         .IsUnique();
 
                     b.ToTable("fna_administration_costs");
+                });
+
+            modelBuilder.Entity("DataService.Model.Advisor.AdvisorAstuteModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AdvisorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdvisorId")
+                        .IsUnique();
+
+                    b.ToTable("advisor_astute");
                 });
 
             modelBuilder.Entity("DataService.Model.AdvisorModel", b =>
@@ -459,10 +495,10 @@ namespace DataService.Migrations
                             AdviceShares = true,
                             AdviceStructuredDeposits = true,
                             AdviceWarrants = true,
-                            AppointmentDate = new DateTime(2021, 11, 2, 15, 18, 13, 745, DateTimeKind.Local).AddTicks(1357),
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 744, DateTimeKind.Local).AddTicks(2774),
+                            AppointmentDate = new DateTime(2022, 1, 21, 9, 50, 38, 619, DateTimeKind.Local).AddTicks(7110),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 618, DateTimeKind.Local).AddTicks(9050),
                             CreatedBy = 0,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 745, DateTimeKind.Local).AddTicks(38),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 619, DateTimeKind.Local).AddTicks(6341),
                             ModifiedBy = 0,
                             SupervisedBonds = true,
                             SupervisedDebentures = true,
@@ -954,6 +990,322 @@ namespace DataService.Migrations
                         .IsUnique();
 
                     b.ToTable("fna_capital_gains_tax");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.ClientConsentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("OtpVerified")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("client_consent");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.ClientConsentProvidersModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClientConsentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinancialProviderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientConsentId");
+
+                    b.ToTable("client_consent_provider");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.FinancialProviderModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("financial_providers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "ABSA",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(7666),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(7684),
+                            ModifiedBy = 0,
+                            Name = "ABSA Life"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "AG",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(8984),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(8989),
+                            ModifiedBy = 0,
+                            Name = "Allan Gray"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "ALT",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(8995),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(8996),
+                            ModifiedBy = 0,
+                            Name = "Altrisk"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Code = "CHT",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9007),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9008),
+                            ModifiedBy = 0,
+                            Name = "Liberty Active"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Code = "DSI",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9011),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9012),
+                            ModifiedBy = 0,
+                            Name = "Discovery Invest"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Code = "DSL",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9018),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9019),
+                            ModifiedBy = 0,
+                            Name = "Discovery Life"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Code = "LIB",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9023),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9024),
+                            ModifiedBy = 0,
+                            Name = "Liberty Life"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Code = "MOM",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9027),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9028),
+                            ModifiedBy = 0,
+                            Name = "Momentum"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Code = "MOMW",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9031),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9032),
+                            ModifiedBy = 0,
+                            Name = "Momentum Wealth"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Code = "NGL",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9036),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9037),
+                            ModifiedBy = 0,
+                            Name = "Nedgroup Life"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Code = "OMGP",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9040),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9041),
+                            ModifiedBy = 0,
+                            Name = "Galaxy Portfolio Services"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Code = "OMU",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9044),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9045),
+                            ModifiedBy = 0,
+                            Name = "Old Mutual"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Code = "OUT",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9048),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9049),
+                            ModifiedBy = 0,
+                            Name = "Old Mutual Unit Trusts"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Code = "PPS",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9051),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9052),
+                            ModifiedBy = 0,
+                            Name = "PPS"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Code = "SET",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9055),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9056),
+                            ModifiedBy = 0,
+                            Name = "Sanlam Collective Investments"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Code = "SLM",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9059),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9060),
+                            ModifiedBy = 0,
+                            Name = "Sanlam"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Code = "SLMNA",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9063),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9064),
+                            ModifiedBy = 0,
+                            Name = "Sanlam Namibia"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Code = "STLB",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9068),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9069),
+                            ModifiedBy = 0,
+                            Name = "Stanlib"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Code = "FMI",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9072),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9073),
+                            ModifiedBy = 0,
+                            Name = "FMI"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Code = "MOME",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9076),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9077),
+                            ModifiedBy = 0,
+                            Name = "Momentum Employee Benefit"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Code = "SLME",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9080),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9081),
+                            ModifiedBy = 0,
+                            Name = "Sanlam Employee Benefit"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Code = "AMAS",
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9084),
+                            CreatedBy = 0,
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 644, DateTimeKind.Local).AddTicks(9085),
+                            ModifiedBy = 0,
+                            Name = "Astute Medical Aid Service"
+                        });
                 });
 
             modelBuilder.Entity("DataService.Model.ClientFNAModel", b =>
@@ -1615,6 +1967,9 @@ namespace DataService.Migrations
                     b.Property<int>("AllocateTo")
                         .HasColumnType("int");
 
+                    b.Property<string>("Beneficiary")
+                        .HasColumnType("varchar(100)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -2267,12 +2622,12 @@ namespace DataService.Migrations
                         {
                             Id = 1,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(5548),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 627, DateTimeKind.Local).AddTicks(8865),
                             CreatedBy = 0,
                             Description = "The Minimum Return Multi-Asset Global Note (the “Note”) is a five year 100% ZAR capital protected investment linked to the CITI Flexible Multi Asset V15% Index (the “Index”). The investment objective of Note is to provide no minimum ZAR return, with the maximum possible full uncapped participation in the Index, with a 100% ZAR capital protected investment, thus also providing full USD / ZAR return exposure. It is Aluma’s view that this investment could be suitable for investors who require exposure to a low risk USD Multi-Asset Balanced Portfolio and 100% ZAR capital protection.",
                             Institute = "Standard Bank",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(5565),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 627, DateTimeKind.Local).AddTicks(8882),
                             ModifiedBy = 0,
                             Name = "Structured Note",
                             PaymentType = 0,
@@ -2283,12 +2638,12 @@ namespace DataService.Migrations
                         {
                             Id = 2,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7781),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2431),
                             CreatedBy = 0,
                             Description = "Our Local Share Portfolio is an investment product for discretionary money, which allows you to access to all Local Shares listed on the JSE as well as EFTs.It is subject to CGT, income tax on interest, dividends tax, and Real Estate Investment Trust (REIT) tax. Income tax is due whether interest is earned by your investment. A CGT event will occur when you do a withdrawal or a switch from an investment portfolio. A 20% withholdings tax on local dividends applies. We will deduct any dividend and REIT tax which you may owe from an income distribution before it’s invested into your investment account. Contributions, withdrawals and drawing a regular withdrawal\r\n                                are allowable at any point in time without incurring penalties.You may change,\r\n                                stop and resume your ad hoc or regular contributions at any time without incurring any penalties.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7786),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2438),
                             ModifiedBy = 0,
                             Name = "Local Share Portfolio",
                             PaymentType = 0,
@@ -2299,12 +2654,12 @@ namespace DataService.Migrations
                         {
                             Id = 3,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7792),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2445),
                             CreatedBy = 0,
                             Description = "Our International Share Portfolio is an investment product for discretionary money, which allows you to access to all International Shares listed on International Stock exchanges as well as ETFs. It is subject to CGT, income tax on interest, dividends tax, and Real Estate Investment Trust (REIT) tax. Income tax is due whenever interest is earned by your investment. A CGT event will occur when you do a withdrawal or a switch from an investment portfolio. A 20% withholdings tax on local dividends applies. We will deduct any dividend and REIT tax which you may owe from an income distribution before it’s invested into your investment account Contributions, withdrawals and drawing a regular withdrawal are allowable at any point in time without incurring penalties. You may change, stop and resume your ad hoc or regular contributions at any time without incurring any penalties.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7793),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2447),
                             ModifiedBy = 0,
                             Name = "International Share Portfolio",
                             PaymentType = 1,
@@ -2315,12 +2670,12 @@ namespace DataService.Migrations
                         {
                             Id = 4,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7796),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2450),
                             CreatedBy = 0,
                             Description = "Trade the JSE and International Equities, CFDs, Indices, ETFs, Forex & Commodities from a single trading account at very competitive rates. Aluma clients receive cost- effective trading via a Multi Asset Direct Market Access (DMA) class-leading trading platform. Clients have the option to manage their own trading account and execute their own trades, or to have their account managed on a discretionary basis.",
                             Institute = "Standard Bank",
                             IsActive = false,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7797),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2451),
                             ModifiedBy = 0,
                             Name = "Self Managed Account",
                             PaymentType = 1,
@@ -2331,12 +2686,12 @@ namespace DataService.Migrations
                         {
                             Id = 5,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7800),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2455),
                             CreatedBy = 0,
                             Description = "Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.\r\n                                The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate\r\n                                general partner of the Partnership, to reject any application in whole or in part.",
                             Institute = "Aluma Capital",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7800),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2456),
                             ModifiedBy = 0,
                             Name = "Private Equity Fund - Growth",
                             PaymentType = 0,
@@ -2347,12 +2702,12 @@ namespace DataService.Migrations
                         {
                             Id = 6,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7806),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2462),
                             CreatedBy = 0,
                             Description = "Limited partner interests (the 'Interests') in The Aluma Capital Private Equity Fund I Partnership (the 'Partnership') are being offered to qualified investors.\r\n                                The Interests are offered subject to the right of Aluma Capital General Partner(Proprietary) Limited(the 'General Partner'), in its capacity as the ultimate\r\n                                general partner of the Partnership, to reject any application in whole or in part.",
                             Institute = "Aluma Capital",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7806),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2464),
                             ModifiedBy = 0,
                             Name = "Private Equity Fund - Income",
                             PaymentType = 0,
@@ -2363,12 +2718,12 @@ namespace DataService.Migrations
                         {
                             Id = 7,
                             AssociatedRisk = 3,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7809),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2467),
                             CreatedBy = 0,
                             Description = " ",
                             Institute = "Vanguard",
                             IsActive = true,
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 752, DateTimeKind.Local).AddTicks(7810),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 628, DateTimeKind.Local).AddTicks(2469),
                             ModifiedBy = 0,
                             Name = "Fixed Income",
                             PaymentType = 0,
@@ -3351,15 +3706,15 @@ namespace DataService.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTime(2022, 11, 2, 15, 18, 13, 767, DateTimeKind.Local).AddTicks(6654),
+                            Created = new DateTime(2023, 1, 21, 9, 50, 38, 649, DateTimeKind.Local).AddTicks(1535),
                             CreatedBy = 0,
                             Email = "dev@aluma.co.za",
                             FirstName = "Dev",
                             LastName = "Tester",
                             MobileNumber = "0843334444",
-                            Modified = new DateTime(2022, 11, 2, 15, 18, 13, 767, DateTimeKind.Local).AddTicks(6669),
+                            Modified = new DateTime(2023, 1, 21, 9, 50, 38, 649, DateTimeKind.Local).AddTicks(1548),
                             ModifiedBy = 0,
-                            Password = "9807.E8GnpqvwDWYM77dydfX3sQ==.2MgaudgUFIAsLruR6gOY1Kxwds0PeG9pHANTUJrZDNo=",
+                            Password = "9660.hBukLlkY+3zhBd37w4jtjg==.vBayhSvVWxNaxNnFIuEt15TQ3+ozhvU2TYRptYmMWHA=",
                             RSAIdNumber = "9012245555088",
                             RegistrationVerifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Role = 0,
@@ -3401,6 +3756,17 @@ namespace DataService.Migrations
                         .IsRequired();
 
                     b.Navigation("FNA");
+                });
+
+            modelBuilder.Entity("DataService.Model.Advisor.AdvisorAstuteModel", b =>
+                {
+                    b.HasOne("DataService.Model.AdvisorModel", "Advisor")
+                        .WithOne("AdvisorAstute")
+                        .HasForeignKey("DataService.Model.Advisor.AdvisorAstuteModel", "AdvisorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advisor");
                 });
 
             modelBuilder.Entity("DataService.Model.AdvisorModel", b =>
@@ -3507,6 +3873,28 @@ namespace DataService.Migrations
                         .IsRequired();
 
                     b.Navigation("FNA");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.ClientConsentModel", b =>
+                {
+                    b.HasOne("DataService.Model.ClientModel", "Client")
+                        .WithMany("ClientConsents")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.ClientConsentProvidersModel", b =>
+                {
+                    b.HasOne("DataService.Model.Client.ClientConsentModel", "ClientConsent")
+                        .WithMany("ConsentedProviders")
+                        .HasForeignKey("ClientConsentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClientConsent");
                 });
 
             modelBuilder.Entity("DataService.Model.ClientFNAModel", b =>
@@ -4003,6 +4391,8 @@ namespace DataService.Migrations
 
             modelBuilder.Entity("DataService.Model.AdvisorModel", b =>
                 {
+                    b.Navigation("AdvisorAstute");
+
                     b.Navigation("Applications");
 
                     b.Navigation("Clients");
@@ -4017,6 +4407,11 @@ namespace DataService.Migrations
                     b.Navigation("PurposeAndFunding");
 
                     b.Navigation("RecordOfAdvice");
+                });
+
+            modelBuilder.Entity("DataService.Model.Client.ClientConsentModel", b =>
+                {
+                    b.Navigation("ConsentedProviders");
                 });
 
             modelBuilder.Entity("DataService.Model.ClientFNAModel", b =>
@@ -4077,6 +4472,8 @@ namespace DataService.Migrations
                     b.Navigation("Applications");
 
                     b.Navigation("BankDetails");
+
+                    b.Navigation("ClientConsents");
 
                     b.Navigation("EmploymentDetails");
 

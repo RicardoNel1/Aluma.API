@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataService.Model.Advisor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
@@ -143,6 +144,9 @@ namespace DataService.Model
         public bool isExternalBroker { get; set; }
         public bool isSupervised { get; set; }
         public bool isActive { get; set; }
+
+        //Astute
+        public AdvisorAstuteModel AdvisorAstute { get; set; }
 
         public UserModel User { get; set; }
         public ICollection<ApplicationModel> Applications { get; set; }

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base
 {

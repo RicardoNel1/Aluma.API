@@ -49,6 +49,7 @@ namespace Aluma.API.Repositories
                     FNAId = item.FNAId,
                     Description = item.Description,
                     Owner = item.Owner,
+                    Beneficiary = item.Beneficiary,
                     LifeCover = item.LifeCover,
                     Disability = item.Disability,
                     DreadDisease = item.DreadDisease,

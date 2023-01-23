@@ -1,7 +1,5 @@
 ﻿using DataService.Dto;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Aluma.API.Repositories.FNA.Report.Services.Base

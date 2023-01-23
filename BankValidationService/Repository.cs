@@ -25,29 +25,19 @@ namespace BankValidationService
             var path = Path.Join(Directory.GetCurrentDirectory(), "appsettings.json");
             config.AddJsonFile(path, false);
             var root = config.Build();
-            _settings = root.GetSection("PbVerifyBankValidation").Get<SettingsDto>();
+            _settings = root.GetSection("ClientVerificationService").Get<SettingsDto>();
         }
 
         public SettingsDto settings { get => _settings; }
 
         public BankValidationResponseDto StartBankValidation(BankDetailsDto dto)
         {
-            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-v3");
+            var client = new RestClient($"{_settings.BaseUrl}/api/AVS");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Accept", "application/json");
             request.AddHeader("Authorization", $"Basic ${_settings.Authorization}");
-            request.AddHeader("Content-Type", "multipart/form-data");
-            request.AlwaysMultipartFormData = true;
-            request.AddParameter("memberkey", _settings.Memberkey);
-            request.AddParameter("password", _settings.Password);
-            request.AddParameter("bvs_details[accountNumber]", dto.AccountNumber);
-            request.AddParameter("bvs_details[accountType]", dto.AccountType);
-            request.AddParameter("bvs_details[branchCode]", dto.BranchCode);
-            request.AddParameter("bvs_details[idNumber]", dto.IdNumber);
-            request.AddParameter("bvs_details[initial]", dto.Initials);
-            request.AddParameter("bvs_details[lastname]", dto.Surname);
-            request.AddParameter("bvs_details[yourReference]", dto.Reference);
+            request.AddHeader("Accept", "application/json");
+            request.AddParameter("application/json", JsonConvert.SerializeObject(dto), ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
@@ -60,7 +50,7 @@ namespace BankValidationService
 
         public VerificationStatusResponse GetBankValidationStatus(string jobId)
         {
-            var client = new RestClient($"{_settings.BaseUrl}pbverify-bank-account-verification-job-status-v3");
+            var client = new RestClient($"{_settings.BaseUrl}/api/AVS");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");

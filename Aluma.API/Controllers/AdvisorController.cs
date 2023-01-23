@@ -1,11 +1,21 @@
 ﻿using Aluma.API.RepoWrapper;
 using AutoMapper;
 using DataService.Dto;
+using DataService.Dto.Advisor;
+using DataService.Dto.Client;
+using DataService.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Net.Http.Headers;
 using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using static iText.Svg.SvgConstants;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Aluma.API.Controllers
 {
@@ -14,11 +24,13 @@ namespace Aluma.API.Controllers
     {
         private readonly IWrapper _repo;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
-        public AdvisorController(IWrapper repo, IMapper mapper)
+        public AdvisorController(IWrapper repo, IMapper mapper, IConfiguration config)
         {
             _repo = repo;
             _mapper = mapper;
+            _config = config;
         }
 
         [HttpPost, AllowAnonymous]
@@ -91,6 +103,28 @@ namespace Aluma.API.Controllers
             }
         }
 
+        [HttpGet("astute"), AllowAnonymous]
+        public IActionResult GetAdvisorAstute(int advisorId)
+        {
+            try
+            {
+                var advisor = _repo.Advisor.GetAdvisorAstute(new AdvisorAstuteDto() { AdvisorId = advisorId });
+
+                if (advisor == null)
+                {
+                    return Ok(new AdvisorAstuteDto());
+                }
+                else
+                {
+                    return Ok(advisor);
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("claim"), AllowAnonymous]
         public IActionResult getClaim()
         {
@@ -98,7 +132,7 @@ namespace Aluma.API.Controllers
             {
                 var claims = _repo.JwtRepo.IsTokenValid(Request.Headers[HeaderNames.Authorization].ToString());//.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
 
-                
+
 
                 return Ok(claims);
             }
@@ -134,6 +168,84 @@ namespace Aluma.API.Controllers
                     return BadRequest("Advisor Not Deleted");
                 }
                 return Ok("Advisor Deleted");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("astute"), AllowAnonymous]
+        public async Task<IActionResult> CreateAdvisorAstute(AdvisorAstuteDto dto)
+        {
+            try
+            {
+                var advisor = await _repo.Advisor.CreateAdvisorAstute(dto);
+                return Ok(advisor);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut("astute"), AllowAnonymous]
+        public IActionResult UpdateAstuteAdvisor(AdvisorAstuteDto dto)
+        {            
+            try
+            {
+                var advisorAstute = _repo.Advisor.UpdateAdvisorAstute(dto);
+                return Ok(advisorAstute);
+                
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("astute-cred"), AllowAnonymous]
+        public IActionResult GetAstuteAdvisorCredential(int advisorId)
+        {
+            try
+            {
+                var advisor = _repo.Advisor.GetAstuteAdvisorCredential(advisorId);
+                return Ok(advisor);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost("ping-authenticate"), AllowAnonymous]
+        public async Task<IActionResult> AstutePingAuthAsync(AuthRequestObject authRequestObject)
+        {
+            string AstuteServiceURL = _config.GetSection("FSAS").Get<FSASConfigDto>().BaseUrl;
+
+            try
+            {
+                //var advisor = _repo.Advisor.GetAstuteAdvisorCredential(authRequestObject);
+                using StringContent jsonContent = new(
+        JsonSerializer.Serialize(authRequestObject),
+        Encoding.UTF8,
+        "application/json");
+
+                using var client = new HttpClient();
+
+                using HttpResponseMessage response = await client.PostAsync(
+       AstuteServiceURL + "api/authentication/ping-authenticate",
+       jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok("Success");
+                }
+                else
+                {
+                    return Ok("Invalid Credentials");
+                }
+
             }
             catch (Exception e)
             {

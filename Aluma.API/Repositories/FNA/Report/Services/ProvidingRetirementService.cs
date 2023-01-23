@@ -3,8 +3,6 @@ using Aluma.API.Repositories.FNA.Report.Services.Base;
 using Aluma.API.RepoWrapper;
 using DataService.Dto;
 using DataService.Enum;
-using DataService.Migrations;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
