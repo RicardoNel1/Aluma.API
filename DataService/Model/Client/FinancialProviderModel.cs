@@ -26,7 +26,7 @@ namespace DataService.Model.Client
             mb.HasData(new FinancialProviderModel()
             {
                 Id = 1,
-                Name = "Absa Life",
+                Name = "ABSA Life",
                 Code = "ABSA",
             });
             mb.HasData(new FinancialProviderModel()

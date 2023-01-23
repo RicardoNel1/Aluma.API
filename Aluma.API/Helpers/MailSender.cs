@@ -505,8 +505,8 @@ namespace Aluma.API.Helpers
             UserMail um = new()
             {
                 Email = "justin@fintegratetech.co.za",
-                Name = "Test",
-                Subject = "Test",
+                Name = "Completed FNAs",
+                Subject = "Completed FNAs",
                 Template = "FNAWeeklyReport"
             };
 
@@ -545,7 +545,7 @@ namespace Aluma.API.Helpers
                 for (var i = 0; i < advisorList.Count; i++)
                 {
 
-                    listItems += "<li>" + advisorList[i] + fnaCount[i] + "</li>";
+                    listItems += "<li>" + advisorList[i] + ": "+ fnaCount[i] + "</li>";
                 }
 
 
