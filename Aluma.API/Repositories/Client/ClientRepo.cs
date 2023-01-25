@@ -676,9 +676,10 @@ namespace Aluma.API.Repositories
         //    return data;
         //}
 
+        
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
-            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).Where(o => o.OtpVerified).OrderByDescending(c => c.Created).First();
+            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
 
             List<ClientConsentProviderDto> dto = _mapper.Map<List<ClientConsentProviderDto>>(clientConsentedList.ConsentedProviders);
 
