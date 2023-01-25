@@ -62,9 +62,27 @@ namespace Aluma.API.Repositories
                     using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<InvestmentsModel>(investment);
+                        InvestmentsModel originalModel = _context.Investments.AsNoTracking().Where(a => a.Id == pModel.Id).FirstOrDefault();
 
                         if (_context.Investments.Where(a => a.Id == pModel.Id).Any())
                         {
+                            // Compare the properties of the DTO and model to check for changes
+
+                            if (
+                                originalModel.Value != pModel.Value ||
+                                originalModel.Escalating != pModel.Escalating ||
+                                originalModel.Contribution != pModel.Contribution ||
+                                originalModel.Description != pModel.Description
+
+                                )
+                            {
+                                investment.Modified = DateTime.Now;
+                                pModel.Modified = DateTime.Now; // Update the ModifiedDate property to the current date and time
+                            }
+                            else pModel.Modified = originalModel.Modified;
+
+
+
                             _context.Entry(pModel).State = EntityState.Modified;
                             if (_context.SaveChanges() > 0)
                             {
