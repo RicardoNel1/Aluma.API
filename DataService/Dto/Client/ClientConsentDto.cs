@@ -12,7 +12,7 @@ namespace DataService.Dto.Client
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public bool OtpVerified { get; set; }
+        //public bool OtpVerified { get; set; }
         public List<ClientConsentProviderDto> ConsentedProviders { get; set; }
     }
 }
