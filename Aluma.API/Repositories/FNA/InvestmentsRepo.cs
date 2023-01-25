@@ -66,6 +66,8 @@ namespace Aluma.API.Repositories
 
                         if (_context.Investments.Where(a => a.Id == pModel.Id).Any())
                         {
+                            pModel.Created = originalModel.Created; //this keeps getting updated for some reason
+
                             // Compare the properties of the DTO and model to check for changes
 
                             if (
