@@ -26,6 +26,7 @@ namespace DataService.Model
         public double OffshoreProperty { get; set; }
         public double PrivateEquity { get; set; }
         public double Cash { get; set; }
+        public DataSourceEnum DataSource { get; set; }
 
     }
 

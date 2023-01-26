@@ -78,30 +78,31 @@ namespace Aluma.API.Repositories
                 string otpMessage = otpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + newOtpNumber
                     : otpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + newOtpNumber
                     : otpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + newOtpNumber
-                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + newOtpNumber + " to obtain your personal information from the following institutions: " 
+                    //: otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + newOtpNumber + " to obtain your personal information from the following institutions: " 
+                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + newOtpNumber
                     : "Aluma Capital: Herewith your OTP for resetting your password - " + newOtpNumber;
 
 
-                if (otpType == OtpTypesEnum.Consent)
-                {
-                    var list = new List<string>();
-                    var client = _context.Clients.Where(u => u.UserId == user.Id).First();
-                    ClientConsentModel consentedProviders = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == client.Id).OrderByDescending(c => c.Created).First();
+                //if (otpType == OtpTypesEnum.Consent)
+                //{
+                //    var list = new List<string>();
+                //    var client = _context.Clients.Where(u => u.UserId == user.Id).First();
+                //    ClientConsentModel consentedProviders = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == client.Id).OrderByDescending(c => c.Created).First();
 
-                    List<ClientConsentProviderDto> consentedProviderListDto = _mapper.Map<List<ClientConsentProviderDto>>(consentedProviders.ConsentedProviders);
+                //    List<ClientConsentProviderDto> consentedProviderListDto = _mapper.Map<List<ClientConsentProviderDto>>(consentedProviders.ConsentedProviders);
 
-                    foreach (ClientConsentProviderDto item in consentedProviderListDto)
-                    {
-                       List<FinancialProviderModel> financialProviderList = _context.FinancialProviders.Where(x => x.Id == item.FinancialProviderId).ToList();
+                //    foreach (ClientConsentProviderDto item in consentedProviderListDto)
+                //    {
+                //       List<FinancialProviderModel> financialProviderList = _context.FinancialProviders.Where(x => x.Id == item.FinancialProviderId).ToList();
 
-                        foreach (FinancialProviderModel provider in financialProviderList)
-                        {
-                            otpMessage += " " + provider.Name + ", ";                             
+                //        foreach (FinancialProviderModel provider in financialProviderList)
+                //        {
+                //            otpMessage += " " + provider.Name + ", ";                             
 
-                        }
-                    }
+                //        }
+                //    }
                     
-                }
+                //}
 
 
                 OtpModel newOtp = new()
@@ -153,29 +154,30 @@ namespace Aluma.API.Repositories
                 string otpMessage = userOtp.OtpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + userOtp.Otp
                      : userOtp.OtpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + userOtp.Otp
                      : userOtp.OtpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + userOtp.Otp
-                     : userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + userOtp.Otp + " to obtain your personal information from the following institutions: "
+                     //: userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + userOtp.Otp + " to obtain your personal information from the following institutions: "
+                     : userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + userOtp.Otp
                      : "Aluma Capital: Herewith your OTP for resetting your password - " + userOtp.Otp;
 
-                if (userOtp.OtpType == OtpTypesEnum.Consent)
-                {
-                    var list = new List<string>();
-                    var client = _context.Clients.Where(u => u.UserId == user.Id).First();
-                    ClientConsentModel consentedProviders = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == client.Id).OrderByDescending(c => c.Created).First();
+                //if (userOtp.OtpType == OtpTypesEnum.Consent)
+                //{
+                //    var list = new List<string>();
+                //    var client = _context.Clients.Where(u => u.UserId == user.Id).First();
+                //    ClientConsentModel consentedProviders = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == client.Id).OrderByDescending(c => c.Created).First();
 
-                    List<ClientConsentProviderDto> consentedProviderListDto = _mapper.Map<List<ClientConsentProviderDto>>(consentedProviders.ConsentedProviders);
+                //    List<ClientConsentProviderDto> consentedProviderListDto = _mapper.Map<List<ClientConsentProviderDto>>(consentedProviders.ConsentedProviders);
 
-                    foreach (ClientConsentProviderDto item in consentedProviderListDto)
-                    {
-                        List<FinancialProviderModel> financialProviderList = _context.FinancialProviders.Where(x => x.Id == item.FinancialProviderId).ToList();
+                //    foreach (ClientConsentProviderDto item in consentedProviderListDto)
+                //    {
+                //        List<FinancialProviderModel> financialProviderList = _context.FinancialProviders.Where(x => x.Id == item.FinancialProviderId).ToList();
 
-                        foreach (FinancialProviderModel provider in financialProviderList)
-                        {
-                            otpMessage += " " + provider.Name + ", ";
+                //        foreach (FinancialProviderModel provider in financialProviderList)
+                //        {
+                //            otpMessage += " " + provider.Name + ", ";
 
-                        }
-                    }
+                //        }
+                //    }
 
-                }
+                //}
 
                 OtpModel newOtp = new()
                 {

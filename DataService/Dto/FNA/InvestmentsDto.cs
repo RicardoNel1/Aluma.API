@@ -1,4 +1,6 @@
-﻿namespace DataService.Dto
+﻿using System;
+
+namespace DataService.Dto
 {
 
     public class InvestmentsDto: ApiResponseDto
@@ -20,6 +22,8 @@
         public double OffshoreProperty { get; set; }
         public double PrivateEquity { get; set; }
         public double Cash { get; set; }
+        public string DataSource { get; set; }
+        public DateTime Modified { get; set; }
     }
 
 }

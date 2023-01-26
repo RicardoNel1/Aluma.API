@@ -34,7 +34,7 @@ namespace Aluma.API.Repositories
         public bool DeleteClient(ClientDto dto);
         Task<ClientConsentDto> SaveConsentForm(ClientConsentDto dto);
 
-        Task<ClientConsentDto> VerifyConsent(int clientId);
+        //Task<ClientConsentDto> VerifyConsent(int clientId);
         public List<FinancialProviderDto> GetFinancialProviders();
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId);
 
@@ -648,17 +648,17 @@ namespace Aluma.API.Repositories
             return dto;
         }
 
-        public async Task<ClientConsentDto> VerifyConsent(int clientId)
-        {
-            ClientConsentModel cc = _context.ClientConsentModels.Where(u => u.ClientId == clientId).FirstOrDefault();
-            cc.OtpVerified = true;
-            _context.ClientConsentModels.Update(cc);
-            _context.SaveChanges();
+        //public async Task<ClientConsentDto> VerifyConsent(int clientId)
+        //{
+        //    ClientConsentModel cc = _context.ClientConsentModels.Where(u => u.ClientId == clientId).FirstOrDefault();
+        //    cc.OtpVerified = true;
+        //    _context.ClientConsentModels.Update(cc);
+        //    _context.SaveChanges();
 
-            ClientConsentDto dto = _mapper.Map<ClientConsentDto>(cc);
+        //    ClientConsentDto dto = _mapper.Map<ClientConsentDto>(cc);
 
-            return dto;
-        }
+        //    return dto;
+        //}
 
         public List<FinancialProviderDto> GetFinancialProviders()
         {
@@ -676,9 +676,10 @@ namespace Aluma.API.Repositories
         //    return data;
         //}
 
+        
         public List<ClientConsentProviderDto> GetClientConsentedProviders(int ClientId)
         {
-            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).Where(o => o.OtpVerified).OrderByDescending(c => c.Created).First();
+            ClientConsentModel clientConsentedList = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == ClientId).OrderByDescending(c => c.Created).First();
 
             List<ClientConsentProviderDto> dto = _mapper.Map<List<ClientConsentProviderDto>>(clientConsentedList.ConsentedProviders);
 

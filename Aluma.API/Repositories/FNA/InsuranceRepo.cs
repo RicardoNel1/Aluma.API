@@ -38,31 +38,35 @@ namespace Aluma.API.Repositories
 
         public List<InsuranceDto> GetInsurance(int fnaId)
         {
-            ICollection<InsuranceModel> data = _context.Insurance.Where(c => c.FNAId == fnaId).ToList();
-            List<InsuranceDto> insurance = new();
-
-            foreach (var item in data)
-            {
-                InsuranceDto insured = new()
-                {
-                    Id = item.Id,
-                    FNAId = item.FNAId,
-                    Description = item.Description,
-                    Owner = item.Owner,
-                    Beneficiary = item.Beneficiary,
-                    LifeCover = item.LifeCover,
-                    Disability = item.Disability,
-                    DreadDisease = item.DreadDisease,
-                    AbsoluteIpPm = item.AbsoluteIpPm,
-                    ExtendedIpPm = item.ExtendedIpPm,
-                    AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo)
-                };
-
-                insurance.Add(insured);
-
-            }
+            List<InsuranceModel> data = _context.Insurance.Where(c => c.FNAId == fnaId).ToList();
+            var insurance = _mapper.Map<List<InsuranceDto>>(data);
 
             return insurance;
+            //ICollection<InsuranceModel> data = _context.Insurance.Where(c => c.FNAId == fnaId).ToList();
+            //List<InsuranceDto> insurance = new();
+
+            //foreach (var item in data)
+            //{
+            //    InsuranceDto insured = new()
+            //    {
+            //        Id = item.Id,
+            //        FNAId = item.FNAId,
+            //        Description = item.Description,
+            //        Owner = item.Owner,
+            //        Beneficiary = item.Beneficiary,
+            //        LifeCover = item.LifeCover,
+            //        Disability = item.Disability,
+            //        DreadDisease = item.DreadDisease,
+            //        AbsoluteIpPm = item.AbsoluteIpPm,
+            //        ExtendedIpPm = item.ExtendedIpPm,
+            //        AllocateTo = Enum.GetName(typeof(DataService.Enum.EstateAllocationEnum), item.AllocateTo)
+            //    };
+
+            //    insurance.Add(insured);
+
+            //}
+
+            //return insurance;
         }
 
         public List<InsuranceDto> UpdateInsurance(List<InsuranceDto> dtoArray)
@@ -75,9 +79,39 @@ namespace Aluma.API.Repositories
                     using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<InsuranceModel>(asset);
+                        InsuranceModel originalModel = _context.Insurance.AsNoTracking().Where(a => a.Id == pModel.Id).FirstOrDefault();
 
                         if (_context.Insurance.Where(a => a.Id == pModel.Id).Any())
                         {
+                            pModel.Created = originalModel.Created; //this keeps getting updated for some reason
+
+                            // Compare the properties of the DTO and model to check for changes
+                            if (                               
+                                originalModel.Description != pModel.Description ||
+                                originalModel.Owner != pModel.Owner ||
+                                originalModel.Beneficiary != pModel.Beneficiary ||
+                                originalModel.LifeCover != pModel.LifeCover ||
+                                originalModel.Disability != pModel.Disability ||
+                                originalModel.DreadDisease != pModel.DreadDisease ||
+                                originalModel.AbsoluteIpPm != pModel.AbsoluteIpPm ||
+                                originalModel.ExtendedIpPm != pModel.ExtendedIpPm
+
+                                )
+                            {
+
+                                asset.Modified = DateTime.Now;
+                                pModel.Modified = DateTime.Now;
+
+                                if (pModel.DataSource != DataService.Enum.DataSourceEnum.Manual)
+                                {
+                                    asset.DataSource = "Manual";
+                                    pModel.DataSource = DataService.Enum.DataSourceEnum.Manual;
+                                }
+
+                            }
+                            else pModel.Modified = originalModel.Modified;
+
+
                             _context.Entry(pModel).State = EntityState.Modified;
                             if (_context.SaveChanges() > 0)
                             {

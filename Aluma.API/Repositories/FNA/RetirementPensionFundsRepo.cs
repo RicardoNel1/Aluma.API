@@ -56,9 +56,34 @@ namespace Aluma.API.Repositories
                     using (AlumaDBContext db = new())
                     {
                         var pModel = _mapper.Map<RetirementPensionFundsModel>(asset);
+                        RetirementPensionFundsModel originalModel = _context.RetirementPensionFunds.AsNoTracking().Where(a => a.Id == pModel.Id).FirstOrDefault();
 
                         if (_context.RetirementPensionFunds.Where(a => a.Id == pModel.Id).Any())
                         {
+                            pModel.Created = originalModel.Created; //this keeps getting updated for some reason
+
+                            // Compare the properties of the DTO and model to check for changes
+                            if (
+                                originalModel.Description != pModel.Description ||
+                                originalModel.Value != pModel.Value ||
+                                originalModel.MonthlyContributions != pModel.MonthlyContributions ||
+                                originalModel.EscPercent != pModel.EscPercent
+
+                                )
+                            {
+
+                                asset.Modified = DateTime.Now;
+                                pModel.Modified = DateTime.Now;
+
+                                if (pModel.DataSource != DataService.Enum.DataSourceEnum.Manual)
+                                {
+                                    asset.DataSource = "Manual";
+                                    pModel.DataSource = DataService.Enum.DataSourceEnum.Manual;
+                                }
+
+                            }
+                            else pModel.Modified = originalModel.Modified;
+
                             _context.Entry(pModel).State = EntityState.Modified;
                             if (_context.SaveChanges() > 0)
                             {

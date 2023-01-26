@@ -1,4 +1,6 @@
-﻿namespace DataService.Dto
+﻿using System;
+
+namespace DataService.Dto
 {
 
     public class RetirementPensionFundsDto: ApiResponseDto
@@ -10,6 +12,8 @@
         public double MonthlyContributions { get; set; }
         public double EscPercent { get; set; }
         public double Growth { get; set; }
+        public string DataSource { get; set; }
+        public DateTime Modified { get; set; }
     }
 
 }
