@@ -1,4 +1,6 @@
-﻿namespace DataService.Dto
+﻿using System;
+
+namespace DataService.Dto
 {
     public class InsuranceDto: ApiResponseDto
     {
@@ -13,5 +15,7 @@
         public double AbsoluteIpPm { get; set; }
         public double ExtendedIpPm { get; set; }
         public string AllocateTo { get; set; }
+        public string DataSource { get; set; }
+        public DateTime Modified { get; set; }
     }
 }

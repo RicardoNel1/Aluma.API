@@ -69,7 +69,6 @@ namespace Aluma.API.Repositories
                             pModel.Created = originalModel.Created; //this keeps getting updated for some reason
 
                             // Compare the properties of the DTO and model to check for changes
-
                             if (
                                 originalModel.Value != pModel.Value ||
                                 originalModel.Escalating != pModel.Escalating ||
@@ -81,7 +80,7 @@ namespace Aluma.API.Repositories
                             {
 
                                 investment.Modified = DateTime.Now;
-                                pModel.Modified = DateTime.Now; // Update the ModifiedDate property to the current date and time
+                                pModel.Modified = DateTime.Now; 
 
                                 if (pModel.DataSource != DataService.Enum.DataSourceEnum.Manual)
                                 {
