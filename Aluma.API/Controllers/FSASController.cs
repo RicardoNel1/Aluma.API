@@ -33,8 +33,26 @@ namespace Aluma.API.Controllers
             {
                 AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
 
-                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials);
+                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials, false);
                 return Ok(ccp);                
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> SubmitCCPRefresh(ClientDto dto)
+        {
+            var claimsDto = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+            try
+            {
+                AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
+
+                var ccp = _repo.FSASRepo.SubmitClientCCPRequest(dto, advisorCredentials, true);
+                return Ok(ccp);
             }
             catch (Exception e)
             {

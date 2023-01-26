@@ -78,6 +78,8 @@ namespace DataService.Dto
         public AdvisorCredentials AstuteCredentials{ get; set; }
         public string YourReference { get; set; }
 
+        public bool Refresh { get; set; }
+
     }
 
     public class GetCCPRequestDto
