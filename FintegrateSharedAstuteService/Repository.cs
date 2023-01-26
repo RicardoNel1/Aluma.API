@@ -21,7 +21,7 @@ namespace FintegrateSharedAstuteService
 {
     public interface IFSASRepo
     {
-        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto advisorCredentials);
+        SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto advisorCredentials, bool refresh);
 
         public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials);
     }
@@ -70,14 +70,15 @@ namespace FintegrateSharedAstuteService
             return responseData;
         }
 
-        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto astuteCredentials)
+        public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto astuteCredentials, bool refresh)
         {
 
             SubmitCCPRequestDto requestDto = new()
             {
                 Client = new RequestClientDetails(),
                 AstuteCredentials = new AdvisorCredentials(),
-                YourReference = ""
+                YourReference = "",
+                Refresh = refresh,
 
             };
 
@@ -101,7 +102,13 @@ namespace FintegrateSharedAstuteService
             }
 
             requestDto.Client.ConsentedProviders = consentedProvidersList.ToArray();
+
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/submitCCP");
+            if (refresh) {
+                client = new RestClient($"{_settings.BaseUrl}api/CCP/refreshCCP");
+            }
+            
+            
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
