@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataService.Enum;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,6 +17,7 @@ namespace DataService.Model
         public double MonthlyContributions { get; set; }
         public double EscPercent { get; set; }
         public double Growth { get; set; }
+        public DataSourceEnum DataSource { get; set; }
 
     }
 

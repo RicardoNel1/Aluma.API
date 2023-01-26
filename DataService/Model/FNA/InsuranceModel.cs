@@ -21,6 +21,8 @@ namespace DataService.Model
         public double AbsoluteIpPm { get; set; }
         public double ExtendedIpPm { get; set; }
         public EstateAllocationEnum AllocateTo { get; set; }
+
+        public DataSourceEnum DataSource { get; set; }
     }
 
     public class InsuranceModelBuilder : IEntityTypeConfiguration<InsuranceModel>

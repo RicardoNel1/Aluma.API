@@ -74,12 +74,21 @@ namespace Aluma.API.Repositories
                                 originalModel.Value != pModel.Value ||
                                 originalModel.Escalating != pModel.Escalating ||
                                 originalModel.Contribution != pModel.Contribution ||
-                                originalModel.Description != pModel.Description
+                                originalModel.Description != pModel.Description ||
+                                originalModel.InvestmentType != pModel.InvestmentType
 
                                 )
                             {
+
                                 investment.Modified = DateTime.Now;
                                 pModel.Modified = DateTime.Now; // Update the ModifiedDate property to the current date and time
+
+                                if (pModel.DataSource != DataService.Enum.DataSourceEnum.Manual)
+                                {
+                                    investment.DataSource = "Manual";
+                                    pModel.DataSource = DataService.Enum.DataSourceEnum.Manual;
+                                }
+
                             }
                             else pModel.Modified = originalModel.Modified;
 
