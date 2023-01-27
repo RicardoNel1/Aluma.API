@@ -72,14 +72,19 @@ namespace Aluma.API.Repositories
 
                     return result;
                 }
-                            
 
+                string adv = "Aluma";
+                string client = user.FirstName + " " + user.LastName;
                 string newOtpNumber = smsService.CreateOtp();
                 string otpMessage = otpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + newOtpNumber
                     : otpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + newOtpNumber
                     : otpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + newOtpNumber
                     //: otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + newOtpNumber + " to obtain your personal information from the following institutions: " 
-                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + newOtpNumber
+                    //: otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + newOtpNumber
+                    : otpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP " + newOtpNumber + " to approve consent for " + adv + " to obtain your portfolio details from Astute. " +
+                      "By providing the OTP to "+ adv + ", you, " + client + ", give consent to collect your personal information through Astute or any other Financial Services Provider relating to: long-term insurance; collective investment schemes; pension funds; any other financial product or service which may be relevant to you."
+                      + "Astute may retain your ID no, Cell no and email address to prevent fraudulent or unauthorised access to your information. This consent will remain effective for 12 months unless cancelled by you in writing directly with the broker. You indemnify Astute (including all its directors, partners, officers, employees, representatives and agents) and the Financial Product Provider providing information and keep them harmless against any claim."
+                      + "PROTECTION OF PERSONAL INFORMATION ACT (POPIA) NOTICE We may use your information or obtain information about you provided by you on a voluntary basis for the following purposes: Underwriting of financial or medical products; Assessment and processing of claims; Credit searches and/or verification of personal information; Claims checks (ASISA Life and Claims Register); Tracing persons entitled to benefits, including beneficiaries; Fraud prevention and detection; Market research and statistical analysis by using anonymised personal data; Audit and record-keeping purposes as required by applicable retention schedules of legal or regulatory requirements, after which such records will be de-identified; Compliance with legal and regulatory requirements; Verifying your identity; Protecting yours and our legitimate interests; Any purposes related to the above; Sharing information with service providers we engage to process such information on our behalf or who render services to us. These service providers may be abroad, but we will not share your information with them unless we are satisfied that they have adequate security measures in place to protect your personal information. We will not send your information to a country that does not have information protection legislation similar to that of the RSA, unless we have a binding agreement with the service provider which ensures that it effectively adheres to the principles for processing of information in accordance with the Protection of Personal Information Act No 4 of 2013."
                     : "Aluma Capital: Herewith your OTP for resetting your password - " + newOtpNumber;
 
 
@@ -149,35 +154,20 @@ namespace Aluma.API.Repositories
             string result = string.Empty;
             try
             {
+                string adv = "Aluma";
+                string client = user.FirstName + " " + user.LastName;
                 var userOtp = _context.Otp.Where(o => o.UserId == user.Id && o.isExpired == false && o.isValidated == false).OrderByDescending(d => d.Created).First();
 
                 string otpMessage = userOtp.OtpType == OtpTypesEnum.Login ? "Aluma Capital: Herewith your OTP for signing in - " + userOtp.Otp
                      : userOtp.OtpType == OtpTypesEnum.Registration ? "Aluma Capital: Herewith your OTP for registration - " + userOtp.Otp
                      : userOtp.OtpType == OtpTypesEnum.SignDocument ? "Aluma Capital: Herewith your OTP for authorization of signing the application documents - " + userOtp.Otp
                      //: userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP - " + userOtp.Otp + " to obtain your personal information from the following institutions: "
-                     : userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP to obtain your personal information from agreed upon institutions - " + userOtp.Otp
-                     : "Aluma Capital: Herewith your OTP for resetting your password - " + userOtp.Otp;
-
-                //if (userOtp.OtpType == OtpTypesEnum.Consent)
-                //{
-                //    var list = new List<string>();
-                //    var client = _context.Clients.Where(u => u.UserId == user.Id).First();
-                //    ClientConsentModel consentedProviders = _context.ClientConsentModels.Include(a => a.ConsentedProviders).Where(u => u.ClientId == client.Id).OrderByDescending(c => c.Created).First();
-
-                //    List<ClientConsentProviderDto> consentedProviderListDto = _mapper.Map<List<ClientConsentProviderDto>>(consentedProviders.ConsentedProviders);
-
-                //    foreach (ClientConsentProviderDto item in consentedProviderListDto)
-                //    {
-                //        List<FinancialProviderModel> financialProviderList = _context.FinancialProviders.Where(x => x.Id == item.FinancialProviderId).ToList();
-
-                //        foreach (FinancialProviderModel provider in financialProviderList)
-                //        {
-                //            otpMessage += " " + provider.Name + ", ";
-
-                //        }
-                //    }
-
-                //}
+                     : userOtp.OtpType == OtpTypesEnum.Consent ? "Aluma Capital: Herewith your OTP " + userOtp.Otp + " to approve consent for " + adv + " to obtain your portfolio details from Astute. " +
+                      "By providing the OTP to " + adv + ", you, " + client + ", give consent to collect your personal information through Astute or any other Financial Services Provider relating to: long-term insurance; collective investment schemes; pension funds; any other financial product or service which may be relevant to you."
+                      + "Astute may retain your ID no, Cell no and email address to prevent fraudulent or unauthorised access to your information. This consent will remain effective for 12 months unless cancelled by you in writing directly with the broker. You indemnify Astute (including all its directors, partners, officers, employees, representatives and agents) and the Financial Product Provider providing information and keep them harmless against any claim."
+                      + "PROTECTION OF PERSONAL INFORMATION ACT (POPIA) NOTICE We may use your information or obtain information about you provided by you on a voluntary basis for the following purposes: Underwriting of financial or medical products; Assessment and processing of claims; Credit searches and/or verification of personal information; Claims checks (ASISA Life and Claims Register); Tracing persons entitled to benefits, including beneficiaries; Fraud prevention and detection; Market research and statistical analysis by using anonymised personal data; Audit and record-keeping purposes as required by applicable retention schedules of legal or regulatory requirements, after which such records will be de-identified; Compliance with legal and regulatory requirements; Verifying your identity; Protecting yours and our legitimate interests; Any purposes related to the above; Sharing information with service providers we engage to process such information on our behalf or who render services to us. These service providers may be abroad, but we will not share your information with them unless we are satisfied that they have adequate security measures in place to protect your personal information. We will not send your information to a country that does not have information protection legislation similar to that of the RSA, unless we have a binding agreement with the service provider which ensures that it effectively adheres to the principles for processing of information in accordance with the Protection of Personal Information Act No 4 of 2013."
+                    : "Aluma Capital: Herewith your OTP for resetting your password - " + userOtp.Otp;
+                                
 
                 OtpModel newOtp = new()
                 {
