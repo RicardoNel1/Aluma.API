@@ -286,22 +286,5 @@ namespace Aluma.API.Controllers
         }
                
 
-
-        //[HttpGet("test"), AllowAnonymous]
-        //public IActionResult TestRepo()
-        //{
-        //    try
-        //    {
-        //        var token = _repo.IDVRepo.StartAuthentication();
-        //        var status = _repo.IDVRepo.StartIDVerification(client, token);
-
-
-        //        return Ok(status);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
     }
 }

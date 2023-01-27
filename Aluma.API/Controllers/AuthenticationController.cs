@@ -386,7 +386,7 @@ namespace Aluma.API.Controllers
         }
 
         [HttpPost("consent-otp"), AllowAnonymous]
-        public IActionResult SendConsentOtp(LoginDto dto)
+        public IActionResult SendConsentOtp(LoginDto dto, [FromQuery] int advisorId)
         {
             AuthResponseDto response = new();
 
@@ -395,9 +395,31 @@ namespace Aluma.API.Controllers
             try
             {
                 user = _repo.User.GetUser(dto);
-                _repo.Otp.SendOTP(user, OtpTypesEnum.Consent);
+                _repo.Otp.SendConsentOTP(user, OtpTypesEnum.Consent, advisorId);
                 response.Message = "verifyConsent";
 
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                response.Status = "Failure";
+                response.Message = "InternalError";
+                return StatusCode(500, response);
+            }
+        }
+
+        [HttpPost("resend-consent-otp"), AllowAnonymous]
+        public IActionResult ResendConsentOTP(LoginDto dto, [FromQuery] int advisorId)
+        {
+            AuthResponseDto response = new();
+            UserDto user = new();
+
+            try
+            {
+                user = _repo.User.GetUser(dto);
+                //Send Two-Factor Auth OTP
+                _repo.Otp.ResendConsentOTP(user, advisorId);
+                response.Message = _repo.Otp.GetOtpTypeMessage(user);
                 return Ok(response);
             }
             catch (Exception e)
