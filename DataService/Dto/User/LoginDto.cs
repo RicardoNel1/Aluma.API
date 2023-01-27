@@ -11,4 +11,5 @@
         public string Otp { get; set; }
         public string SocialId { get; set; }
     }
+
 }
