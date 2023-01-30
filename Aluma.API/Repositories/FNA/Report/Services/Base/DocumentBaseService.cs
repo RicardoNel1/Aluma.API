@@ -210,7 +210,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
                     graph += serviceResult.Script == null ? string.Empty : serviceResult.Script;
                 }
 
-                if (dto.Investments) //@Justin do the things here
+                if (dto.Investments) 
                 {
                     IInvestmentService _investmentService = new InvestmentService(_repo);
                     ReportServiceResult serviceResult = await _investmentService.SetInvestmentDetail(dto.FNAId);

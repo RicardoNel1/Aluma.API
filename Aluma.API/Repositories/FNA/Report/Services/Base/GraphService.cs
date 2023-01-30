@@ -126,7 +126,7 @@ namespace Aluma.API.Repositories.FNA.Report.Services.Base
             return js;
         }
 
-        private static string GetLineChart(GraphReportDto dto)  //@Justin  line graph stuff here
+        private static string GetLineChart(GraphReportDto dto)  
         {
             string js = $"var data = new google.visualization.arrayToDataTable([";
             //js += $"['{dto.XaxisHeader}', '{dto.YaxisHeader}'],";

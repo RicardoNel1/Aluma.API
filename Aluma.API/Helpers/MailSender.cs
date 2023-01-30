@@ -504,7 +504,7 @@ namespace Aluma.API.Helpers
         {
             UserMail um = new()
             {
-                Email = "justin@fintegratetech.co.za",
+                Email = "test@email.com",
                 Name = "Completed FNAs",
                 Subject = "Completed FNAs",
                 Template = "FNAWeeklyReport"
@@ -520,7 +520,7 @@ namespace Aluma.API.Helpers
 
                 };
 
-                message.To.Add(new MailAddress("justin@fintegratetech.co.za"));
+                message.To.Add(new MailAddress("test@email.com"));
                 //message.Bcc.Add(new MailAddress("system@aluma.co.za"));
 
                 char slash = Path.DirectorySeparatorChar;

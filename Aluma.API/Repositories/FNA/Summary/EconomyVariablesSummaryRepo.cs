@@ -39,7 +39,7 @@ namespace Aluma.API.Repositories
             return _mapper.Map<EconomyVariablesDto>(summaryValues);
         }
 
-        public EconomyVariablesDto UpdateEconomyVariablesSummary(EconomyVariablesDto dto) //@Justin never referenced
+        public EconomyVariablesDto UpdateEconomyVariablesSummary(EconomyVariablesDto dto) 
         {
             EconomyVariablesModel newValues = _mapper.Map<EconomyVariablesModel>(dto);
             EconomyVariablesModel currValues = _context.EconomyVariables.Where(a => a.Id == dto.Id).FirstOrDefault();

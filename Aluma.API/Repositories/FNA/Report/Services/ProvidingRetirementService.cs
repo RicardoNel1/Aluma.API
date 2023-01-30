@@ -102,7 +102,7 @@ namespace Aluma.API.Repositories.FNA.Report.Service
 
             double totalcapital = summaryRetirement.TotalAvailable - summaryRetirement.TotalNeeds;
             int exhaustionPeriod = (int)Math.Round(retirement.CapitalAvailable / (retirement.IncomeNeeds * 12));
-            double incomeAvailable = retirement.TotalCapitalAvailable - retirement.CapitalAvailable;  //@Justin bad workaround needed because column is empty
+            double incomeAvailable = retirement.TotalCapitalAvailable - retirement.CapitalAvailable;  
             double totalCapitalNeeds = retirement.CapitalNeeds + retirement.OutstandingLiabilities;
             double capitalizedIncomeNeeds = retirement.TotalCapitalNeeds - retirement.OutstandingLiabilities - retirement.CapitalNeeds;
 
