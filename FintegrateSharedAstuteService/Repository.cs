@@ -24,6 +24,8 @@ namespace FintegrateSharedAstuteService
         SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto advisorCredentials, bool refresh);
 
         public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials);
+
+        public List<ProviderResponseDto> GetProviderResponses(int clientId, AdvisorAstuteDto astuteCredentials);
     }
     public class FSASRepo : IFSASRepo
     {
@@ -66,6 +68,32 @@ namespace FintegrateSharedAstuteService
                 throw new HttpRequestException("Error while trying to retrieve client CCP");
 
             ClientCCPResponseDto responseData = JsonConvert.DeserializeObject<ClientCCPResponseDto>(response.Content);
+
+            return responseData;
+        }
+
+        public List<ProviderResponseDto> GetProviderResponses(int clientId, AdvisorAstuteDto astuteCredentials)
+        {
+            var client = new RestClient($"{_settings.BaseUrl}api/CCP/retrieveProviderResponses");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Accept", "application/json");
+            //request.AddHeader("Content-Type", "multipart/form-data");
+            //request.AlwaysMultipartFormData = true;
+            //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
+            GetCCPRequestDto requestDto = new();
+            requestDto.SystemRef = clientId.ToString();
+            requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
+            request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
+
+            //AddParameter("systemRef", clientId.ToString());
+            IRestResponse response = client.Execute(request);
+
+            if (!response.IsSuccessful)
+                throw new HttpRequestException("Error while trying to retrieve client CCP");
+
+            List<ProviderResponseDto> responseData = JsonConvert.DeserializeObject<List<ProviderResponseDto>>(response.Content);
+
 
             return responseData;
         }

@@ -89,7 +89,7 @@ namespace Aluma.API.Controllers
             {
                 AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
 
-                var ccp = _repo.FSASRepo.GetClientCCP(clientId, advisorCredentials);
+                var ccp = _repo.FSASRepo.GetProviderResponses(clientId, advisorCredentials);
 
                 return Ok(ccp);
             }

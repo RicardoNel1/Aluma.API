@@ -109,4 +109,13 @@ namespace DataService.Dto
 
     }
 
+    public class ProviderResponseDto
+    {
+        public int ID { get; set; }
+        public int CCPID { get; set; }
+        public int ProviderID { get; set; }
+        public int ResponseType { get; set; }
+
+    }
+
 }
