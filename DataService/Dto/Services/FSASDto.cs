@@ -23,6 +23,7 @@ namespace DataService.Dto
     {
         public List<PackageDto> Packages { get; set; }
         public List<InvestmentDto> Investments { get; set; }
+        public List<ProviderResponseDto> ProviderResponse { get; set; }
 
     }
 

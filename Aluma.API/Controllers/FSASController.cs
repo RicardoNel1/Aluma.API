@@ -61,7 +61,7 @@ namespace Aluma.API.Controllers
         }
 
 
-        [HttpGet("fsas_information")]
+        [HttpGet]
         public IActionResult GetFSASInformation(int clientId)
         {
             var claimsDto = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
@@ -80,23 +80,6 @@ namespace Aluma.API.Controllers
             }
         }
 
-        [HttpGet("provider_responses")]
-        public IActionResult GetProviderResponses(int clientId)
-        {
-            var claimsDto = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
-
-            try
-            {
-                AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
-
-                var ccp = _repo.FSASRepo.GetProviderResponses(clientId, advisorCredentials);
-
-                return Ok(ccp);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
+       
     }
 }
