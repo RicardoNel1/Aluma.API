@@ -23,7 +23,6 @@ namespace FintegrateSharedAstuteService
     {
         SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto advisorCredentials, bool refresh);
         public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials);
-        public List<ProviderResponseDto> GetProviderResponses(int clientId, AdvisorAstuteDto astuteCredentials);
         public ClientCCPResponseDto DeleteCCP(int clientId, AdvisorAstuteDto astuteCredentials);
 
     }
@@ -65,27 +64,7 @@ namespace FintegrateSharedAstuteService
             return responseData;
         }
 
-        public List<ProviderResponseDto> GetProviderResponses(int clientId, AdvisorAstuteDto astuteCredentials)
-        {
-            var client = new RestClient($"{_settings.BaseUrl}api/CCP/retrieveProviderResponses");
-            client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("Accept", "application/json");
-            GetCCPRequestDto requestDto = new();
-            requestDto.SystemRef = clientId.ToString();
-            requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
-            request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
-
-            IRestResponse response = client.Execute(request);
-
-            if (!response.IsSuccessful)
-                throw new HttpRequestException("Error while trying to retrieve client CCP");
-
-            List<ProviderResponseDto> responseData = JsonConvert.DeserializeObject<List<ProviderResponseDto>>(response.Content);
-
-
-            return responseData;
-        }
+        
 
         public SubmitCCPResponseDto SubmitClientCCPRequest(ClientDto dto, AdvisorAstuteDto astuteCredentials, bool refresh)
         {
