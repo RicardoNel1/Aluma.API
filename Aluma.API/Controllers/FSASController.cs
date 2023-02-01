@@ -80,6 +80,25 @@ namespace Aluma.API.Controllers
             }
         }
 
-       
+        [HttpDelete]
+        public IActionResult DeleteCCP(int clientId)
+        {
+            var claimsDto = _repo.JwtRepo.GetUserClaims(Request.Headers[HeaderNames.Authorization].ToString());
+
+            try
+            {
+                AdvisorAstuteDto advisorCredentials = _repo.Advisor.GetAstuteAdvisorCredentialByUserId(claimsDto.UserId);
+
+                var ccp = _repo.FSASRepo.DeleteCCP(clientId, advisorCredentials);
+
+                return Ok(ccp);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
     }
 }
