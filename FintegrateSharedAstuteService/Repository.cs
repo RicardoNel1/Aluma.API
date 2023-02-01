@@ -46,22 +46,15 @@ namespace FintegrateSharedAstuteService
         }
 
         public ClientCCPResponseDto GetClientCCP(int clientId, AdvisorAstuteDto astuteCredentials)
-        {
-            //AdvisorAstuteModel astuteCredentials = _context.Advisors.Include(c => c.AdvisorAstute).Where(a => a.UserId == advisorCredentials.UserId).First().AdvisorAstute;
-
+        {            
             var client = new RestClient($"{_settings.BaseUrl}api/CCP/retrieveCCP");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            //request.AddHeader("Content-Type", "multipart/form-data");
-            //request.AlwaysMultipartFormData = true;
-            //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             GetCCPRequestDto requestDto = new();
             requestDto.SystemRef = clientId.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
-
-            //AddParameter("systemRef", clientId.ToString());
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)
@@ -78,15 +71,11 @@ namespace FintegrateSharedAstuteService
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Accept", "application/json");
-            //request.AddHeader("Content-Type", "multipart/form-data");
-            //request.AlwaysMultipartFormData = true;
-            //request.AddHeader("Authorization", $"Basic {_settings.Authorization}");
             GetCCPRequestDto requestDto = new();
             requestDto.SystemRef = clientId.ToString();
             requestDto.AstuteCredentials = _mapper.Map<AdvisorCredentials>(astuteCredentials);
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestDto), ParameterType.RequestBody);
 
-            //AddParameter("systemRef", clientId.ToString());
             IRestResponse response = client.Execute(request);
 
             if (!response.IsSuccessful)

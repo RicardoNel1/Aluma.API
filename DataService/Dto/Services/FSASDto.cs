@@ -114,8 +114,8 @@ namespace DataService.Dto
     {
         public int ID { get; set; }
         public int CCPID { get; set; }
-        public int ProviderID { get; set; }
-        public int ResponseType { get; set; }
+        public string ProviderName { get; set; }
+        public string ResponseStatus { get; set; }
 
     }
 
