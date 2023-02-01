@@ -23,6 +23,7 @@ namespace DataService.Dto
     {
         public List<PackageDto> Packages { get; set; }
         public List<InvestmentDto> Investments { get; set; }
+        public List<ProviderResponseDto> ProviderResponse { get; set; }
 
     }
 
@@ -106,6 +107,15 @@ namespace DataService.Dto
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string[] ConsentedProviders { get; set; }
+
+    }
+
+    public class ProviderResponseDto
+    {
+        public int ID { get; set; }
+        public int CCPID { get; set; }
+        public string ProviderName { get; set; }
+        public string ResponseStatus { get; set; }
 
     }
 
